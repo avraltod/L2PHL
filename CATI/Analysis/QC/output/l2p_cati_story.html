@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Philippines L2P — Monthly Tracking · 5 Rounds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700;9..144,900&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --cream:#FDF6EE;--cream2:#F5EBD8;--cream3:#EDE0C8;
+  --terra:#C4622D;--terra-l:#E8845A;--terra-bg:#FDF0E8;
+  --forest:#2D6A4F;--forest-l:#52A07A;--forest-bg:#EBF5EF;
+  --amber:#C47A1A;--amber-l:#E8A84A;--amber-bg:#FDF3E0;
+  --teal:#1A6B6B;--teal-bg:#E5F4F4;
+  --rose:#9B3D3D;--rose-bg:#FBEDED;
+  --plum:#5C3D6E;--plum-bg:#F0EAF7;
+  --cobalt:#1A4B8A;--cobalt-bg:#E8EFF8;
+  --ink:#2C1810;--ink2:#5C3D2E;--muted:#A08070;--rule:#DFD0BC;
+  --display:'Fraunces',Georgia,serif;
+  --body:'Nunito',system-ui,sans-serif;
+  --mono:'DM Mono',monospace;
+  --radius:14px;--radius-sm:8px;
+  --shadow:rgba(44,24,16,.10);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.7;overflow-x:hidden;}
+
+/* ── EDITOR TOOLBAR ── */
+#ed-bar{position:sticky;top:0;z-index:500;background:#1e1a14;border-bottom:3px solid var(--terra);box-shadow:0 3px 20px rgba(0,0,0,.35);font-family:var(--mono);}
+.eb-top{display:flex;align-items:center;gap:0;padding:0 14px;height:46px;border-bottom:1px solid rgba(255,255,255,.08);}
+.eb-brand{display:flex;align-items:center;gap:8px;color:white;font-size:13px;font-weight:600;padding-right:14px;border-right:1px solid rgba(255,255,255,.1);margin-right:10px;white-space:nowrap;}
+.eb-tabs{display:flex;gap:2px;flex:1;overflow-x:auto;}
+.eb-tab{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);background:none;border:none;cursor:pointer;padding:0 11px;height:46px;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .2s;white-space:nowrap;}
+.eb-tab:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.05);}
+.eb-tab.on{color:#F5C48A;border-bottom-color:var(--terra);}
+.eb-actions{display:flex;gap:6px;align-items:center;margin-left:auto;flex-shrink:0;}
+.eb-btn{background:var(--terra);color:white;border:none;border-radius:6px;padding:5px 12px;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.eb-btn:hover{background:var(--terra-l);}
+.eb-btn.sec{background:rgba(255,255,255,.1);color:rgba(255,255,255,.65);}
+.eb-panel{display:none;padding:8px 14px;align-items:center;gap:16px;flex-wrap:wrap;min-height:52px;background:#2a241c;}
+.eb-panel.on{display:flex;}
+.ec-grp{display:flex;align-items:center;gap:7px;padding:0 14px 0 0;border-right:1px solid rgba(255,255,255,.08);}
+.ec-grp:last-child{border-right:none;padding-right:0;}
+.ec-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);white-space:nowrap;}
+.ec-color{width:28px;height:24px;border-radius:4px;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;background:none;flex-shrink:0;overflow:hidden;transition:border-color .15s;}
+.ec-color:hover{border-color:rgba(255,255,255,.5);}
+.ec-color::-webkit-color-swatch-wrapper{padding:0;}
+.ec-color::-webkit-color-swatch{border:none;border-radius:3px;}
+.ec-slider{-webkit-appearance:none;height:4px;border-radius:3px;background:rgba(255,255,255,.15);outline:none;width:80px;cursor:pointer;}
+.ec-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--terra);cursor:pointer;}
+.ec-val{font-size:9px;color:#F5C48A;min-width:32px;text-align:right;font-weight:500;}
+.ec-select{font-family:var(--mono);font-size:9px;letter-spacing:.06em;background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:3px 7px;cursor:pointer;outline:none;max-width:150px;}
+.ec-select option{background:#2a241c;}
+.ec-pills{display:flex;gap:3px;}
+.ec-pill{font-family:var(--mono);font-size:8px;letter-spacing:.07em;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.18);background:none;color:rgba(255,255,255,.5);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.ec-pill:hover{border-color:rgba(255,255,255,.4);color:white;}
+.ec-pill.on{background:var(--forest);color:white;border-color:var(--forest);}
+.tswatch{display:flex;gap:2px;align-items:center;cursor:pointer;padding:3px 8px;border-radius:5px;border:1.5px solid rgba(255,255,255,.12);transition:all .18s;background:none;}
+.tswatch:hover{border-color:rgba(255,255,255,.35);}
+.tswatch.on{border-color:var(--terra);background:rgba(196,98,45,.2);}
+.tswatch .dot{width:9px;height:9px;border-radius:50%;}
+.tswatch .tn{font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-left:4px;}
+.tswatch.on .tn{color:#F5C48A;}
+.cs-list{display:flex;gap:8px;overflow-x:auto;align-items:center;padding:2px 0;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;}
+.cs-item{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.cs-lbl{font-size:8px;color:rgba(255,255,255,.4);white-space:nowrap;}
+.cs-btns{display:flex;gap:2px;}
+.cs-btn{font-size:7px;padding:3px 5px;border-radius:3px;border:1px solid rgba(255,255,255,.15);background:none;color:rgba(255,255,255,.4);cursor:pointer;transition:all .12s;font-family:var(--mono);}
+.cs-btn:hover{border-color:rgba(255,255,255,.35);color:white;}
+.cs-btn.on{background:var(--amber);color:white;border-color:var(--amber);}
+.vis-chips{display:flex;gap:4px;flex-wrap:wrap;}
+.vis-chip{font-size:8px;padding:3px 9px;border-radius:20px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;font-family:var(--mono);white-space:nowrap;}
+.vis-chip:hover{border-color:rgba(255,255,255,.4);color:white;}
+.vis-chip.off{opacity:.35;text-decoration:line-through;}
+#ed-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--forest);color:white;padding:8px 18px;border-radius:8px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;opacity:0;pointer-events:none;transition:opacity .3s;z-index:9999;}
+#ed-toast.show{opacity:1;}
+
+/* Edit mode */
+body.edit-mode [data-ed]:hover{outline:2px dashed rgba(196,98,45,.6)!important;outline-offset:2px;cursor:text!important;background:rgba(196,98,45,.06)!important;border-radius:3px;}
+body.edit-mode [data-ed]:focus{outline:2px solid var(--terra)!important;cursor:text!important;background:rgba(196,98,45,.09)!important;border-radius:3px;}
+#edit-bar{display:none;position:fixed;bottom:0;left:0;right:0;height:34px;background:var(--terra);color:white;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;align-items:center;justify-content:center;gap:20px;z-index:4000;}
+body.edit-mode #edit-bar{display:flex;}
+#edit-bar kbd{background:rgba(255,255,255,.2);padding:1px 6px;border-radius:3px;font-family:var(--mono);}
+
+/* Data drawer */
+#dd{position:fixed;right:-460px;top:46px;width:440px;height:calc(100vh - 46px);z-index:800;background:#1e1a14;border-left:2px solid rgba(255,255,255,.1);box-shadow:-8px 0 40px rgba(0,0,0,.4);display:flex;flex-direction:column;font-family:var(--mono);font-size:12px;transition:right .3s cubic-bezier(.4,0,.2,1);overflow:hidden;}
+#dd.open{right:0;}
+.dd-head{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.dd-ht{color:white;font-weight:600;font-size:12px;flex:1;}
+.dd-close{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:12px;}
+.dd-body{flex:1;overflow-y:auto;padding:12px 16px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;}
+.dd-row{display:grid;grid-template-columns:1fr 80px 24px;gap:5px;align-items:center;margin:4px 0;padding:5px 7px;border-radius:5px;background:rgba(255,255,255,.04);}
+.dd-row:hover{background:rgba(255,255,255,.08);}
+.ddi{font-family:var(--body);font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:3px;padding:4px 7px;color:white;outline:none;width:100%;}
+.ddi:focus{border-color:var(--terra);background:rgba(196,98,45,.12);}
+.ddi.num{text-align:right;font-family:var(--mono);}
+.ddi.num:focus{color:#F5C48A;}
+.dd-del{background:none;border:none;color:rgba(255,255,255,.25);cursor:pointer;font-size:13px;text-align:center;}
+.dd-del:hover{color:#f87171;}
+.dd-foot{padding:10px 16px;border-top:1px solid rgba(255,255,255,.1);display:flex;gap:6px;flex-shrink:0;}
+.dd-apply{flex:1;background:var(--terra);color:white;border:none;border-radius:5px;padding:8px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
+.dd-sec{background:rgba(255,255,255,.07);color:rgba(255,255,255,.6);border:none;border-radius:5px;padding:8px 12px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
+.csv-ta{width:100%;height:70px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:5px;padding:7px;color:rgba(255,255,255,.7);font-family:var(--mono);font-size:9px;resize:vertical;outline:none;margin:6px 0;}
+.csv-ta:focus{border-color:var(--terra);}
+#dd-ov{display:none;position:fixed;inset:0;z-index:799;background:rgba(0,0,0,.25);}
+
+/* ── STORY STYLES ── */
+.wave{display:block;width:100%;height:50px;}
+.topbar{background:var(--forest);color:white;padding:10px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 16px rgba(45,106,79,.3);}
+.tb-brand{display:flex;align-items:center;gap:8px;}
+.tb-flag{font-size:20px;}
+.tb-name{font-family:var(--display);font-size:14px;font-weight:700;}
+.tb-sub{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:1px;}
+.tb-nav{display:flex;gap:4px;flex-wrap:wrap;}
+.tb-nav a{font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);text-decoration:none;padding:3px 8px;border-radius:20px;border:1px solid rgba(255,255,255,.18);transition:all .2s;}
+.tb-nav a:hover{background:rgba(255,255,255,.12);color:white;}
+@media(max-width:640px){.tb-nav{display:none;}}
+
+/* Hero */
+.hero{min-height:88vh;background:var(--forest);color:white;display:flex;align-items:center;justify-content:center;padding:72px 28px 56px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 65% 65% at 80% 25%,rgba(196,98,45,.22) 0%,transparent 60%),radial-gradient(ellipse 40% 55% at 10% 80%,rgba(196,98,45,.12) 0%,transparent 55%);}
+.hero-deco{position:absolute;border-radius:50%;opacity:.06;}
+.hero-deco-1{width:480px;height:480px;background:white;top:-140px;right:-90px;}
+.hero-deco-2{width:280px;height:280px;background:var(--amber);bottom:-70px;left:-50px;}
+.hero-inner{position:relative;max-width:1040px;width:100%;display:grid;grid-template-columns:1.15fr 1fr;gap:56px;align-items:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:24px;padding:5px 13px;font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-bottom:18px;}
+.hero-hed{font-family:var(--display);font-size:clamp(2.5rem,5vw,4.5rem);font-weight:900;line-height:1.06;letter-spacing:-.02em;margin-bottom:20px;}
+.hero-hed em{font-style:italic;color:#F5C48A;}
+.hero-deck{font-size:1rem;line-height:1.7;color:rgba(255,255,255,.72);max-width:430px;margin-bottom:24px;}
+.hero-src{font-family:var(--mono);font-size:8px;color:rgba(255,255,255,.32);letter-spacing:.1em;text-transform:uppercase;}
+.round-pills{display:flex;flex-direction:column;gap:12px;}
+.rpill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:var(--radius);padding:13px 18px;backdrop-filter:blur(4px);transition:background .2s;}
+.rpill:hover{background:rgba(255,255,255,.15);}
+.rpill-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.rpill-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);}
+.rpill-num{font-family:var(--display);font-size:1.6rem;font-weight:900;color:white;}
+.rpill-bar{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;}
+.rpill-fill{height:100%;border-radius:3px;transition:width 1.4s cubic-bezier(.4,0,.2,1);}
+@media(max-width:700px){.hero-inner{grid-template-columns:1fr;}.round-pills{display:none;}}
+
+/* Round indicator strip */
+.round-strip{background:var(--ink);color:white;padding:14px 28px;display:flex;align-items:center;gap:0;}
+.rs-inner{max-width:1040px;margin:0 auto;width:100%;display:flex;align-items:center;gap:0;}
+.rs-label{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-right:16px;white-space:nowrap;}
+.rs-rounds{display:flex;flex:1;gap:0;}
+.rs-r{flex:1;text-align:center;padding:8px 4px;position:relative;}
+.rs-r::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:rgba(255,255,255,.1);}
+.rs-r:last-child::after{display:none;}
+.rs-rn{font-family:var(--display);font-size:1.1rem;font-weight:700;color:rgba(255,255,255,.9);}
+.rs-rd{font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:2px;}
+.rs-hh{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);margin-top:1px;}
+
+/* Trend arc — big feature section */
+.arc-section{background:var(--ink);color:white;padding:72px 28px;}
+.arc-inner{max-width:1040px;margin:0 auto;}
+.arc-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:32px;}
+.arc-kpi{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);padding:20px;text-align:center;}
+.arc-kpi-arrow{font-size:1.6rem;margin-bottom:6px;}
+.arc-kpi-from{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:4px;}
+.arc-kpi-change{font-family:var(--display);font-size:2rem;font-weight:900;line-height:1;margin-bottom:4px;}
+.arc-kpi-change.up{color:#4ade80;}
+.arc-kpi-change.down{color:#f87171;}
+.arc-kpi-change.flat{color:#F5C48A;}
+.arc-kpi-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);}
+
+/* Sections */
+.sec{max-width:1040px;margin:0 auto;padding:60px 28px;}
+.sec-alt{background:var(--cream2);}
+.sec-forest{background:var(--forest);}
+.sec-terra{background:var(--terra-bg);}
+.sec-amber{background:var(--amber-bg);}
+.sec-cobalt{background:var(--cobalt-bg);}
+.full-w .sec{max-width:100%;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;}
+.two-col.flip{direction:rtl;}.two-col.flip>*{direction:ltr;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+@media(max-width:700px){.two-col,.two-col.flip,.three-col{grid-template-columns:1fr;direction:ltr;}}
+
+/* Chap header */
+.chap-hdr{padding:0 28px;}
+.chap-in{max-width:1040px;margin:0 auto;padding:44px 0 0;display:flex;align-items:center;gap:16px;}
+.chap-stamp{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 4px 16px var(--shadow);}
+.chap-rule{max-width:1040px;margin:16px auto 0;height:2px;border-radius:2px;}
+.chap-title{font-family:var(--display);font-size:1.4rem;font-weight:700;line-height:1.2;}
+.chap-mod{font-family:var(--mono);font-size:8px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:3px;}
+
+/* Typography */
+.eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:11px;display:flex;align-items:center;gap:7px;}
+.eyebrow::before{content:'';width:18px;height:3px;border-radius:2px;flex-shrink:0;}
+.terra{color:var(--terra);}.terra::before{background:var(--terra);}
+.forest{color:var(--forest);}.forest::before{background:var(--forest);}
+.amber{color:var(--amber);}.amber::before{background:var(--amber);}
+.teal{color:var(--teal);}.teal::before{background:var(--teal);}
+.rose{color:var(--rose);}.rose::before{background:var(--rose);}
+.cobalt{color:var(--cobalt);}.cobalt::before{background:var(--cobalt);}
+.hed{font-family:var(--display);font-size:clamp(1.7rem,3vw,2.5rem);font-weight:900;line-height:1.13;letter-spacing:-.02em;margin-bottom:16px;color:var(--ink);}
+.hed em{font-style:italic;}
+.hed em.terra{color:var(--terra);}
+.hed em.forest{color:var(--forest);}
+.hed em.amber{color:var(--amber);}
+.hed em.teal{color:var(--teal);}
+.hed em.cobalt{color:var(--cobalt);}
+.hed.light{color:white;}
+.body-copy{font-size:.97rem;line-height:1.78;color:var(--ink2);}
+.body-copy.light{color:rgba(255,255,255,.74);}
+.body-copy p+p{margin-top:.85em;}
+
+/* Cards */
+.card{background:white;border-radius:var(--radius);border:1.5px solid var(--rule);padding:20px 18px 16px;box-shadow:0 2px 12px var(--shadow);position:relative;}
+.card+.card{margin-top:10px;}
+.card.terra-top{border-top:4px solid var(--terra);}
+.card.forest-top{border-top:4px solid var(--forest);}
+.card.amber-top{border-top:4px solid var(--amber);}
+.card.teal-top{border-top:4px solid var(--teal);}
+.card.cobalt-top{border-top:4px solid var(--cobalt);}
+.card.dark{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12);}
+.card-title{font-family:var(--display);font-size:.97rem;font-weight:700;margin-bottom:2px;color:var(--ink);}
+.card-title.light{color:white;}
+.card-sub{font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.card-sub.light{color:rgba(255,255,255,.38);}
+.chart-wrap{position:relative;}
+.edit-data-btn{position:absolute;top:6px;right:6px;background:var(--terra);color:white;border:none;border-radius:4px;padding:3px 8px;font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;opacity:0;transition:opacity .2s;z-index:10;}
+.card:hover .edit-data-btn{opacity:1;}
+
+/* Big stat */
+.bnum{font-family:var(--display);font-size:clamp(2.8rem,5.5vw,4.8rem);font-weight:900;line-height:1;letter-spacing:-.04em;margin:18px 0 4px;}
+.bnum.terra{color:var(--terra);}
+.bnum.forest{color:var(--forest);}
+.bnum.amber{color:var(--amber);}
+.bnum.teal{color:var(--teal);}
+.bnum.cobalt{color:var(--cobalt);}
+.bnum-cap{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+
+/* Stat grid */
+.sgrid{display:grid;gap:3px;margin:16px 0;}
+.sg2{grid-template-columns:1fr 1fr;}
+.sg3{grid-template-columns:1fr 1fr 1fr;}
+.sg4{grid-template-columns:1fr 1fr 1fr 1fr;}
+.scell{border-radius:4px;padding:14px 12px;text-align:center;}
+.scell.cr{background:var(--cream2);}
+.scell.tr{background:var(--terra-bg);}
+.scell.fo{background:var(--forest-bg);}
+.scell.am{background:var(--amber-bg);}
+.scell.te{background:var(--teal-bg);}
+.scell.co{background:var(--cobalt-bg);}
+.scell.dk{background:rgba(255,255,255,.08);}
+.scell-n{font-family:var(--display);font-size:1.75rem;font-weight:900;line-height:1;margin-bottom:4px;}
+.scell-l{font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);line-height:1.4;}
+
+/* Bar strips */
+.bs{margin:7px 0;}
+.bs-lbl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;gap:7px;}
+.bs-text{font-family:var(--body);font-size:.86rem;font-weight:600;color:var(--ink2);}
+.bs-val{font-family:var(--mono);font-size:.83rem;font-weight:500;flex-shrink:0;}
+.bs-track{height:10px;background:var(--cream2);border-radius:6px;overflow:hidden;}
+.bs-track.dk{background:rgba(255,255,255,.12);}
+.bs-fill{height:100%;border-radius:6px;width:0;transition:width 1.3s cubic-bezier(.4,0,.2,1);}
+
+/* Pull quote */
+.pull{border-radius:var(--radius);padding:18px 22px;margin:18px 0;border-left:5px solid;position:relative;}
+.pull::before{content:'"';font-family:var(--display);font-size:3.5rem;line-height:0;position:absolute;top:26px;left:14px;opacity:.2;}
+.pull.terra{background:var(--terra-bg);border-color:var(--terra);}
+.pull.forest{background:var(--forest-bg);border-color:var(--forest);}
+.pull.amber{background:var(--amber-bg);border-color:var(--amber);}
+.pull p{font-family:var(--display);font-size:1.1rem;font-style:italic;line-height:1.5;color:var(--ink);padding-left:22px;}
+.pull p strong{font-style:normal;}
+
+/* Callout */
+.callout{border-radius:var(--radius);padding:20px 24px;margin:18px 0;}
+.callout.terra{background:var(--terra);color:white;}
+.callout.forest{background:var(--forest);color:white;}
+.callout.amber{background:var(--amber);color:white;}
+.callout.teal{background:var(--teal);color:white;}
+.callout.cobalt{background:var(--cobalt);color:white;}
+.callout-icon{font-size:24px;margin-bottom:8px;display:block;}
+.callout-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px;opacity:.7;}
+.callout p{font-family:var(--display);font-size:1.05rem;font-style:italic;line-height:1.5;}
+.callout p strong{font-style:normal;color:#FFE5B4;}
+.callout.forest p strong{color:#B8EDCA;}
+.callout.teal p strong{color:#B8E8E8;}
+.callout.cobalt p strong{color:#B8D4F8;}
+
+/* Trend badge (shows direction vs R1) */
+.trend-badge{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:3px 10px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.08em;margin-left:8px;}
+.trend-badge.up{background:rgba(74,222,128,.15);color:#16a34a;}
+.trend-badge.down{background:rgba(248,113,113,.15);color:#dc2626;}
+.trend-badge.flat{background:rgba(253,200,100,.15);color:#92400e;}
+
+/* FIES severity bar */
+.sev-bar{height:28px;border-radius:8px;overflow:hidden;display:flex;width:100%;margin:10px 0;}
+.sev-seg{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:white;font-weight:500;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+
+/* Source tag */
+.src{font-family:var(--mono);font-size:8px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:16px;padding-top:12px;border-top:1px dashed var(--rule);}
+.src.light{color:rgba(255,255,255,.28);border-color:rgba(255,255,255,.12);}
+
+/* Rev animation */
+.rev{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+.rev.vis{opacity:1;transform:none;}
+.rev.d1{transition-delay:.1s;}.rev.d2{transition-delay:.2s;}.rev.d3{transition-delay:.3s;}
+
+/* Epilogue */
+.epi{background:var(--forest);color:white;padding:80px 28px;text-align:center;}
+.epi-hed{font-family:var(--display);font-size:clamp(1.9rem,4vw,3.4rem);font-weight:900;font-style:italic;max-width:660px;margin:0 auto 20px;line-height:1.15;}
+.epi-body{font-size:.95rem;color:rgba(255,255,255,.65);max-width:520px;margin:0 auto 36px;line-height:1.75;}
+.epi-stats{display:flex;justify-content:center;gap:0;flex-wrap:wrap;margin-bottom:36px;}
+.epi-stat{padding:16px 28px;border-right:1px solid rgba(255,255,255,.14);}
+.epi-stat:last-child{border-right:none;}
+.epi-stat-n{font-family:var(--display);font-size:2.1rem;font-weight:900;line-height:1;}
+.epi-stat-l{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;opacity:.4;margin-top:3px;}
+.epi-meta{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;opacity:.28;}
+</style>
+</head>
+<body>
+
+<!-- EDITOR BAR -->
+<div id="ed-bar">
+  <div class="eb-top">
+    <div class="eb-brand"><span>🎨</span> Story Editor</div>
+    <div class="eb-tabs">
+      <button class="eb-tab on"  data-panel="colors">🎨 Colors</button>
+      <button class="eb-tab"     data-panel="fonts">Aa Fonts</button>
+      <button class="eb-tab"     data-panel="charts">📊 Charts</button>
+      <button class="eb-tab"     data-panel="layout">⬜ Layout</button>
+      <button class="eb-tab"     data-panel="sections">👁 Sections</button>
+      <button class="eb-tab"     data-panel="text">✏️ Text</button>
+      <button class="eb-tab"     data-panel="data">📈 Data</button>
+    </div>
+    <div class="eb-actions">
+      <span style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase;">Live preview</span>
+      <button class="eb-btn" onclick="edExport()">⬇ Download</button>
+      <button class="eb-btn sec" onclick="edReset()">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- Colors -->
+  <div class="eb-panel on" id="panel-colors">
+    <div class="ec-grp">
+      <div class="ec-lbl">Theme</div>
+      <div style="display:flex;gap:5px;">
+        <button class="tswatch on" onclick="applyTheme('warm',this)"><div class="dot" style="background:#C4622D"></div><div class="dot" style="background:#2D6A4F"></div><div class="dot" style="background:#C47A1A"></div><span class="tn">Warm</span></button>
+        <button class="tswatch" onclick="applyTheme('ocean',this)"><div class="dot" style="background:#1B5E85"></div><div class="dot" style="background:#0D7C5A"></div><div class="dot" style="background:#D4730F"></div><span class="tn">Ocean</span></button>
+        <button class="tswatch" onclick="applyTheme('sunset',this)"><div class="dot" style="background:#B5320E"></div><div class="dot" style="background:#8B2FC9"></div><div class="dot" style="background:#D4840A"></div><span class="tn">Sunset</span></button>
+        <button class="tswatch" onclick="applyTheme('sage',this)"><div class="dot" style="background:#4A7C59"></div><div class="dot" style="background:#8C6B2F"></div><div class="dot" style="background:#3B6B8C"></div><span class="tn">Sage</span></button>
+        <button class="tswatch" onclick="applyTheme('bold',this)"><div class="dot" style="background:#C62A2A"></div><div class="dot" style="background:#1A6B1A"></div><div class="dot" style="background:#C4900A"></div><span class="tn">Bold</span></button>
+        <button class="tswatch" onclick="applyTheme('mono',this)"><div class="dot" style="background:#333"></div><div class="dot" style="background:#666"></div><div class="dot" style="background:#999"></div><span class="tn">Mono</span></button>
+      </div>
+    </div>
+    <div class="ec-grp"><div class="ec-lbl">Accent 1</div><input type="color" class="ec-color" id="cc-terra" value="#C4622D" oninput="setV('--terra',this.value);setV('--terra-l',lt(this.value,20));setV('--terra-bg',lt(this.value,88));reDraw()"></div>
+    <div class="ec-grp"><div class="ec-lbl">Accent 2</div><input type="color" class="ec-color" id="cc-forest" value="#2D6A4F" oninput="setV('--forest',this.value);setV('--forest-l',lt(this.value,20));setV('--forest-bg',lt(this.value,90));reDraw()"></div>
+    <div class="ec-grp"><div class="ec-lbl">Accent 3</div><input type="color" class="ec-color" id="cc-amber" value="#C47A1A" oninput="setV('--amber',this.value);setV('--amber-l',lt(this.value,20));setV('--amber-bg',lt(this.value,90));reDraw()"></div>
+    <div class="ec-grp"><div class="ec-lbl">Accent 4</div><input type="color" class="ec-color" id="cc-teal" value="#1A6B6B" oninput="setV('--teal',this.value);setV('--teal-bg',lt(this.value,90));reDraw()"></div>
+    <div class="ec-grp"><div class="ec-lbl">Background</div><input type="color" class="ec-color" id="cc-cream" value="#FDF6EE" oninput="setV('--cream',this.value);setV('--cream2',dk(this.value,4));setV('--cream3',dk(this.value,9))"></div>
+    <div class="ec-grp"><div class="ec-lbl">Chart palette</div>
+      <div class="ec-pills">
+        <button class="ec-pill on" onclick="setPalette('warm',this)">🍂</button>
+        <button class="ec-pill" onclick="setPalette('ocean',this)">🌊</button>
+        <button class="ec-pill" onclick="setPalette('vivid',this)">⚡</button>
+        <button class="ec-pill" onclick="setPalette('pastel',this)">🌸</button>
+        <button class="ec-pill" onclick="setPalette('mono',this)">⬛</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fonts -->
+  <div class="eb-panel" id="panel-fonts">
+    <div class="ec-grp"><div class="ec-lbl">Display</div><select class="ec-select" onchange="setDisplayFont(this.value)"><option value="'Fraunces',Georgia,serif">Fraunces</option><option value="'Playfair Display',Georgia,serif">Playfair Display</option><option value="'Merriweather',Georgia,serif">Merriweather</option><option value="'Lora',Georgia,serif">Lora</option><option value="'Abril Fatface',Georgia,serif">Abril Fatface</option><option value="Georgia,serif">Georgia</option></select></div>
+    <div class="ec-grp"><div class="ec-lbl">Body</div><select class="ec-select" onchange="setBodyFont(this.value)"><option value="'Nunito',sans-serif">Nunito</option><option value="'Source Serif 4',Georgia,serif">Source Serif 4</option><option value="'Inter',sans-serif">Inter</option><option value="'IBM Plex Sans',sans-serif">IBM Plex Sans</option><option value="'Atkinson Hyperlegible',sans-serif">Atkinson</option></select></div>
+    <div class="ec-grp"><div class="ec-lbl">Base size</div><input type="range" class="ec-slider" min="14" max="22" value="17" step="1" oninput="document.body.style.fontSize=this.value+'px';this.nextElementSibling.textContent=this.value+'px'"><span class="ec-val">17px</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Headline</div><input type="range" class="ec-slider" min="70" max="140" value="100" step="5" oninput="setHedScale(this.value);this.nextElementSibling.textContent=this.value+'%'"><span class="ec-val">100%</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Line height</div><input type="range" class="ec-slider" min="140" max="220" value="178" step="5" oninput="document.querySelectorAll('.body-copy').forEach(el=>el.style.lineHeight=(this.value/100));this.nextElementSibling.textContent=(this.value/100).toFixed(1)"><span class="ec-val">1.78</span></div>
+  </div>
+
+  <!-- Charts -->
+  <div class="eb-panel" id="panel-charts">
+    <div class="ec-grp"><div class="ec-lbl">Bar radius</div><input type="range" class="ec-slider" min="0" max="14" value="5" step="1" oninput="BRAD=+this.value;reDraw();this.nextElementSibling.textContent=this.value+'px'"><span class="ec-val">5px</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Bar width</div><input type="range" class="ec-slider" min="30" max="100" value="70" step="5" oninput="BWIDTH=this.value/100;reDraw();this.nextElementSibling.textContent=this.value+'%'"><span class="ec-val">70%</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Donut cutout</div><input type="range" class="ec-slider" min="20" max="80" value="58" step="5" oninput="CUTOUT=this.value;reDraw();this.nextElementSibling.textContent=this.value+'%'"><span class="ec-val">58%</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Line tension</div><input type="range" class="ec-slider" min="0" max="60" value="35" step="5" oninput="TENSION=this.value/100;reDraw();this.nextElementSibling.textContent=(this.value/100).toFixed(2)"><span class="ec-val">0.35</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Fill area</div><div class="ec-pills"><button class="ec-pill on" onclick="FILL=true;reDraw();setPillOn(this)">On</button><button class="ec-pill" onclick="FILL=false;reDraw();setPillOn(this)">Off</button></div></div>
+    <div class="ec-grp"><div class="ec-lbl">Grid lines</div><div class="ec-pills"><button class="ec-pill on" onclick="SHOWGRID=true;reDraw();setPillOn(this)">On</button><button class="ec-pill" onclick="SHOWGRID=false;reDraw();setPillOn(this)">Off</button></div></div>
+    <div class="ec-grp" style="flex:1;min-width:0;"><div class="ec-lbl" style="white-space:nowrap;">Type switcher ↔</div><div class="cs-list" id="cs-list"></div></div>
+  </div>
+
+  <!-- Layout -->
+  <div class="eb-panel" id="panel-layout">
+    <div class="ec-grp"><div class="ec-lbl">Card radius</div><input type="range" class="ec-slider" min="0" max="28" value="14" step="2" oninput="setV('--radius',this.value+'px');this.nextElementSibling.textContent=this.value+'px'"><span class="ec-val">14px</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Section pad</div><input type="range" class="ec-slider" min="20" max="100" value="60" step="4" oninput="setSectionPad(this.value);this.nextElementSibling.textContent=this.value+'px'"><span class="ec-val">60px</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Max width</div><input type="range" class="ec-slider" min="600" max="1400" value="1040" step="40" oninput="document.querySelectorAll('.sec').forEach(el=>el.style.maxWidth=this.value+'px');this.nextElementSibling.textContent=this.value+'px'"><span class="ec-val">1040px</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Column gap</div><input type="range" class="ec-slider" min="16" max="80" value="44" step="4" oninput="document.querySelectorAll('.two-col').forEach(el=>el.style.gap=this.value+'px');this.nextElementSibling.textContent=this.value+'px'"><span class="ec-val">44px</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Chart height</div><input type="range" class="ec-slider" min="60" max="160" value="100" step="5" oninput="scaleChartH(this.value);this.nextElementSibling.textContent=this.value+'%'"><span class="ec-val">100%</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Shadows</div><input type="range" class="ec-slider" min="0" max="30" value="10" step="2" oninput="setV('--shadow','rgba(44,24,16,'+this.value/100+')');this.nextElementSibling.textContent=this.value+'%'"><span class="ec-val">10%</span></div>
+    <div class="ec-grp"><div class="ec-lbl">Waves</div><div class="ec-pills"><button class="ec-pill on" onclick="document.querySelectorAll('.wave').forEach(el=>el.style.display='block');setPillOn(this)">Show</button><button class="ec-pill" onclick="document.querySelectorAll('.wave').forEach(el=>el.style.display='none');setPillOn(this)">Hide</button></div></div>
+  </div>
+
+  <!-- Sections -->
+  <div class="eb-panel" id="panel-sections">
+    <div class="ec-lbl">Toggle chapters:</div>
+    <div class="vis-chips" id="vis-chips"></div>
+  </div>
+
+  <!-- Text edit -->
+  <div class="eb-panel" id="panel-text">
+    <div class="ec-grp"><div class="ec-lbl">Edit mode</div><div class="ec-pills"><button class="ec-pill on" id="em-on" onclick="setEditMode(true,this)">✏️ Click text to edit</button><button class="ec-pill" id="em-off" onclick="setEditMode(false,this)">👁 View only</button></div></div>
+    <div class="ec-grp"><div class="ec-lbl">Find</div><input id="fnr-find" placeholder="Find…" style="font-family:var(--mono);font-size:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:4px 8px;color:white;width:110px;outline:none;"></div>
+    <div class="ec-grp"><div class="ec-lbl">Replace</div><input id="fnr-rep" placeholder="Replace…" style="font-family:var(--mono);font-size:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:4px 8px;color:white;width:110px;outline:none;"></div>
+    <div class="ec-grp"><button class="ec-pill" onclick="doFNR()">Replace all</button></div>
+    <div class="ec-grp"><div class="ec-lbl">Scope</div><div class="ec-pills"><button class="ec-pill on" onclick="setScope('all',this)">All</button><button class="ec-pill" onclick="setScope('heads',this)">Headlines</button><button class="ec-pill" onclick="setScope('numbers',this)">Numbers</button><button class="ec-pill" onclick="setScope('body',this)">Body</button></div></div>
+    <div class="ec-grp"><button class="ec-pill" onclick="undoText()" title="Undo last edit">↩ Undo</button></div>
+  </div>
+
+  <!-- Data edit -->
+  <div class="eb-panel" id="panel-data">
+    <div class="ec-grp"><div class="ec-lbl">Select chart</div>
+      <select class="ec-select" id="dd-chart-sel" onchange="loadChart(this.value)" style="max-width:200px;">
+        <option value="">— pick chart —</option>
+<option value="cFoodTrend">Food insecurity trend</option>
+<option value="cShockTrend">Shocks trend</option>
+<option value="cLSSat">Life satisfaction trend</option>
+<option value="cFIES">FIES items (latest)</option>
+<option value="cSeverity">Food severity (latest)</option>
+<option value="cSevMacro">Severity by region</option>
+<option value="cShockTypes">Shock types</option>
+<option value="cCoping">Coping mechanisms</option>
+<option value="cShockMacro">Shocks by region</option>
+<option value="cContract">Employment contract</option>
+<option value="cClassWork">Class of worker</option>
+<option value="cIncMacro">Income by region</option>
+<option value="cLoanPurpose">Loan purpose</option>
+<option value="cFinance">Finance indicators</option>
+<option value="cPhilHealth">PhilHealth coverage</option>
+<option value="cPhMacro">PhilHealth by region</option>
+<option value="cFacility">Health facility</option>
+<option value="cEcoChange">Economic change</option>
+<option value="cLikert">Likert attitudes</option>
+<option value="cLifeSat">Life sat distribution</option>
+      </select>
+    </div>
+    <div class="ec-grp"><div class="ec-lbl">Dataset</div><select class="ec-select" id="dd-ds-sel" onchange="loadDS(+this.value)" style="width:100px;"><option value="0">Dataset 1</option><option value="1">Dataset 2</option><option value="2">Dataset 3</option></select></div>
+    <div class="ec-grp"><button class="ec-pill" onclick="addRow()">+ Row</button><button class="ec-pill" onclick="delLastRow()">− Row</button><button class="ec-pill" onclick="sortD(-1)">↓ Sort</button><button class="ec-pill" onclick="sortD(1)">↑ Sort</button></div>
+    <div class="ec-grp"><button class="ec-pill" onclick="openDD()">✏️ Open editor</button></div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="tb-brand"><span class="tb-flag">🇵🇭</span><div><div class="tb-name">L2P Philippines — Monthly Tracking</div><div class="tb-sub">CATI · 5 Rounds · Sep 2025 – Jan 2026</div></div></div>
+  <nav class="tb-nav">
+    <a href="#food">🍱 Food</a>
+    <a href="#shocks">⚡ Shocks</a>
+    <a href="#finance">💳 Finance</a>
+    <a href="#health">🏥 Health</a>
+    <a href="#views">💬 Views</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-deco hero-deco-1"></div>
+  <div class="hero-deco hero-deco-2"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">📞 CATI Panel · Monthly · 5 rounds tracked</div>
+      <h1 class="hero-hed" data-ed="1" data-type="head">Five months.<br><em>One story of recovery.</em></h1>
+      <p class="hero-deck" data-ed="1" data-type="body">From September 2025 to January 2026, L2P called the same Filipino households every month. What they tracked — food stress, economic shocks, wellbeing, and resilience — tells a story of gradual but real improvement.</p>
+      <p class="hero-src">Listening to Philippines (L2P) · CATI Panel · M01–M09 · 5 rounds · ~1,200 HHs/round · Weighted microdata</p>
+    </div>
+    <div class="round-pills">
+<div class="rpill">
+  <div class="rpill-top"><span class="rpill-label">Round 1 · Sep</span><span class="rpill-num">1,239</span></div>
+  <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.40);" data-w="100"></div></div>
+</div>
+<div class="rpill">
+  <div class="rpill-top"><span class="rpill-label">Round 2 · Oct</span><span class="rpill-num">1,193</span></div>
+  <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.53);" data-w="96"></div></div>
+</div>
+<div class="rpill">
+  <div class="rpill-top"><span class="rpill-label">Round 3 · Nov</span><span class="rpill-num">1,174</span></div>
+  <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.66);" data-w="94"></div></div>
+</div>
+<div class="rpill">
+  <div class="rpill-top"><span class="rpill-label">Round 4 · Dec</span><span class="rpill-num">1,243</span></div>
+  <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.79);" data-w="100"></div></div>
+</div>
+<div class="rpill">
+  <div class="rpill-top"><span class="rpill-label">Round 5 · Jan</span><span class="rpill-num">967</span></div>
+  <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.92);" data-w="78"></div></div>
+</div>
+    </div>
+  </div>
+</section>
+
+<!-- WAVE -->
+<svg class="wave" viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" style="background:var(--forest);display:block;"><path d="M0,25 C360,50 720,0 1080,25 C1260,37 1380,12 1440,20 L1440,50 L0,50 Z" fill="#FDF6EE"/></svg>
+
+<!-- ROUND STRIP -->
+<div class="round-strip">
+  <div class="rs-inner">
+    <div class="rs-label">5 rounds tracked</div>
+    <div class="rs-rounds">
+<div class="rs-r"><div class="rs-rn">R1</div><div class="rs-rd">Sep 2025</div><div class="rs-hh">1,239 HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R2</div><div class="rs-rd">Oct 2025</div><div class="rs-hh">1,193 HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R3</div><div class="rs-rd">Nov 2025</div><div class="rs-hh">1,174 HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R4</div><div class="rs-rd">Dec 2025</div><div class="rs-hh">1,243 HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R5</div><div class="rs-rd">Jan 2025 2026</div><div class="rs-hh">967 HHs</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ARC — HEADLINE TRENDS -->
+<div class="arc-section">
+  <div class="arc-inner">
+    <div class="rev">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#F5C48A;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><span style="width:18px;height:3px;background:#F5C48A;border-radius:2px;display:inline-block;"></span> What changed across 5 rounds</div>
+      <h2 class="hed light" data-ed="1" data-type="head" style="max-width:780px;font-size:clamp(1.9rem,3.5vw,3rem);">Food stress halved. Shocks collapsed. <em>Cautious recovery, round by round.</em></h2>
+    </div>
+    <div class="arc-kpis rev d1" style="margin-top:28px;">
+      <div class="arc-kpi">
+        <div class="arc-kpi-arrow">🍱</div>
+        <div class="arc-kpi-from" data-ed="1" data-type="body">Mod-severe food insecurity</div>
+        <div class="arc-kpi-change down" data-ed="1" data-type="number">41% → 18%</div>
+        <div class="arc-kpi-lbl" data-ed="1" data-type="body">R1 to R5 · –23 ppt</div>
+      </div>
+      <div class="arc-kpi">
+        <div class="arc-kpi-arrow">⚡</div>
+        <div class="arc-kpi-from" data-ed="1" data-type="body">Households hit by a shock</div>
+        <div class="arc-kpi-change down" data-ed="1" data-type="number">35% → 12%</div>
+        <div class="arc-kpi-lbl" data-ed="1" data-type="body">R1 to R5 · –23 ppt</div>
+      </div>
+      <div class="arc-kpi">
+        <div class="arc-kpi-arrow">😌</div>
+        <div class="arc-kpi-from" data-ed="1" data-type="body">Life satisfaction (1=best, 5=worst)</div>
+        <div class="arc-kpi-change flat" data-ed="1" data-type="number">2.83 → 2.88</div>
+        <div class="arc-kpi-lbl" data-ed="1" data-type="body">R1 to R5 · Broadly stable</div>
+      </div>
+    </div>
+
+    <!-- Trend charts strip -->
+    <div class="rev d2" style="margin-top:36px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+      <div class="card dark">
+        <div class="card-title light">Food insecurity (mod-severe)</div>
+        <div class="card-sub light">% HHs · FIES score ≥3 · by round</div>
+        <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cFoodTrend';loadChart('cFoodTrend');openDD()">✏️ Edit</button>
+        <div class="chart-wrap" style="height:160px;" data-orig-h="160"><canvas id="cFoodTrend"></canvas></div>
+      </div>
+      <div class="card dark">
+        <div class="card-title light">Households hit by a shock</div>
+        <div class="card-sub light">% HHs experiencing any shock · by round</div>
+        <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cShockTrend';loadChart('cShockTrend');openDD()">✏️ Edit</button>
+        <div class="chart-wrap" style="height:160px;" data-orig-h="160"><canvas id="cShockTrend"></canvas></div>
+      </div>
+      <div class="card dark">
+        <div class="card-title light">Life satisfaction</div>
+        <div class="card-sub light">Mean score 1–5 (1=most satisfied) · by round</div>
+        <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cLSSat';loadChart('cLSSat');openDD()">✏️ Edit</button>
+        <div class="chart-wrap" style="height:160px;" data-orig-h="160"><canvas id="cLSSat"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WAVE -->
+<svg class="wave" viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" style="background:#2C1810;display:block;"><path d="M0,20 C480,50 960,0 1440,30 L1440,50 L0,50 Z" fill="#FDF6EE"/></svg>
+
+<!-- ═══ CH1: FOOD SECURITY ═══ -->
+<div id="food">
+  <div class="chap-hdr">
+    <div class="chap-in">
+      <div class="chap-stamp" style="background:var(--terra-bg);color:var(--terra);">🍱</div>
+      <div><div class="chap-mod" style="color:var(--terra);">Module 08 · Food &amp; Nutrition</div><div class="chap-title" data-ed="1" data-type="head">Food Security — The Biggest Story of Recovery</div></div>
+    </div>
+    <div class="chap-rule" style="background:linear-gradient(90deg,var(--terra),transparent);"></div>
+  </div>
+  <div class="sec">
+    <div class="two-col">
+      <div class="rev">
+        <span class="eyebrow terra">FIES trend</span>
+        <h2 class="hed" data-ed="1" data-type="head">Moderate-to-severe food insecurity fell from <em class="terra">41% to 18%</em> in five months</h2>
+        <div class="body-copy">
+          <p data-ed="1" data-type="body">The Food Insecurity Experience Scale (FIES) asks households five progressively severe questions — from worry about food to going an entire day without eating. When 3 or more are answered "yes," the household is classified as moderately-to-severely food insecure.</p>
+          <p data-ed="1" data-type="body">In Round 1, 41% of households crossed that threshold. By Round 5, that figure had fallen to 18.2% — a drop of 23 percentage points. Severe food insecurity (all 5 items yes) fell from an estimated 6–8% to 3.7%. This is the clearest positive signal in the entire CATI dataset.</p>
+          <p data-ed="1" data-type="body">Mindanao and Visayas remain the most food-insecure macro-regions: 23% and 23% moderate-severe respectively in Round 5. NCR is lowest at 9%.</p>
+        </div>
+        <div class="pull terra rev d1">
+          <p><strong>52.4%</strong> of households are now food secure (FIES=0) in Round 5. In Round 1, fewer than 6 in 10 were fully food secure.</p>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="card terra-top">
+          <div class="card-title">Severity distribution (R5 latest)</div>
+          <div class="card-sub">% of HHs by FIES score · hhw weighted</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cSeverity';loadChart('cSeverity');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:185px;" data-orig-h="185"><canvas id="cSeverity"></canvas></div>
+        </div>
+        <div class="card" style="margin-top:10px;">
+          <div class="card-title">Severity by macro-region (R5)</div>
+          <div class="card-sub">% moderate-to-severe food insecure</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cSevMacro';loadChart('cSevMacro');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:160px;" data-orig-h="160"><canvas id="cSevMacro"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-terra">
+    <div class="sec">
+      <div class="two-col flip">
+        <div class="rev">
+          <span class="eyebrow terra">FIES items</span>
+          <h2 class="hed" data-ed="1" data-type="head"><em class="terra">39%</em> worried about food. <em class="terra">6.5%</em> went a whole day without eating.</h2>
+          <div class="body-copy">
+            <p data-ed="1" data-type="body">The most prevalent food insecurity experience in Round 5 is worry: 39.2% of households worried about not having enough food because of money or resources. This is the "entry" level of food stress.</p>
+            <p data-ed="1" data-type="body">At the severe end: 14.8% were hungry but did not eat, and 6.5% went an entire day without food. These are not abstract worries — they represent real hunger affecting millions of Filipino households even after five months of improvement.</p>
+            <p data-ed="1" data-type="body">Mindanao registers the sharpest vulnerability: 49.1% worried about food vs. 24% in NCR. Visayas closely tracks Mindanao at 47.3%.</p>
+          </div>
+        </div>
+        <div class="rev d2">
+          <div class="card terra-top">
+            <div class="card-title">FIES items prevalence (R5)</div>
+            <div class="card-sub">% households answering "Yes" · hhw weighted</div>
+            <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cFIES';loadChart('cFIES');openDD()">✏️ Edit</button>
+            <div class="chart-wrap" style="height:200px;" data-orig-h="200"><canvas id="cFIES"></canvas></div>
+          </div>
+        </div>
+      </div>
+      <div class="src">Source: M08_food_nonfood.dta · HH level, weighted by hhw · FIES = F08_A–E · R1–R5</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CH2: SHOCKS ═══ -->
+<div id="shocks" style="background:var(--ink);color:white;">
+  <svg class="wave" viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" style="background:var(--cream2);display:block;"><path d="M0,30 C720,50 1080,10 1440,25 L1440,50 L0,50 Z" fill="var(--ink)"/></svg>
+  <div class="chap-hdr" style="padding-top:44px;">
+    <div class="chap-in" style="padding-top:0;">
+      <div class="chap-stamp" style="background:rgba(255,255,255,.12);color:white;">⚡</div>
+      <div><div class="chap-mod" style="color:#F5C48A;">Module 03 · Shocks &amp; Resilience</div><div class="chap-title" style="color:white;" data-ed="1" data-type="head">Shocks — From 35% to 12% Over Five Months</div></div>
+    </div>
+    <div style="max-width:1040px;margin:14px auto 0;height:2px;background:rgba(255,255,255,.12);border-radius:2px;"></div>
+  </div>
+
+  <div class="sec">
+    <div class="two-col">
+      <div class="rev">
+        <span class="eyebrow" style="color:#F5C48A;">Shock incidence<span style="width:18px;height:3px;background:#F5C48A;border-radius:2px;display:inline-block;margin-left:8px;"></span></span>
+        <h2 class="hed light" data-ed="1" data-type="head">The shock burden fell sharply — but <em>illness remains the top driver</em></h2>
+        <div class="body-copy light">
+          <p data-ed="1" data-type="body">In Round 1, 34.9% of households reported being hit by an economic or environmental shock in the past 30 days. By Round 5, only 12.1% reported a shock — a two-thirds reduction. This reflects both seasonal patterns and genuine resilience-building.</p>
+          <p data-ed="1" data-type="body">Major illness (4.5%) is the single largest shock type in Round 5, followed by typhoon exposure (2.5%) and unexpected job loss (1.8%). Visayas is worst-affected at 18.4%, while Mindanao is lowest at 2.1%.</p>
+          <p data-ed="1" data-type="body">Water disruption affected 9.8% of households in Round 5, with an average of 4.2 days disrupted. Electricity outages averaged 13.9 hours in the past week — a persistent service quality gap. Internet disruption in the past month was reported by 29.7%.</p>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="card dark">
+          <div class="card-title light">Shock types (R5)</div>
+          <div class="card-sub light">% HHs reporting each shock type</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cShockTypes';loadChart('cShockTypes');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:210px;" data-orig-h="210"><canvas id="cShockTypes"></canvas></div>
+        </div>
+        <div class="card dark" style="margin-top:10px;">
+          <div class="card-title light">Shocks by macro-region (R5)</div>
+          <div class="card-sub light">% HHs with any shock · hhw weighted</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cShockMacro';loadChart('cShockMacro');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:145px;" data-orig-h="145"><canvas id="cShockMacro"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class="rev d2" style="margin-top:20px;">
+      <div class="card dark">
+        <div class="card-title light">How households cope</div>
+        <div class="card-sub light">% of coping mechanisms used by shocked households · R5</div>
+        <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cCoping';loadChart('cCoping');openDD()">✏️ Edit</button>
+        <div class="chart-wrap" style="height:175px;" data-orig-h="175"><canvas id="cCoping"></canvas></div>
+      </div>
+    </div>
+    <div class="sgrid sg3 rev" style="margin-top:12px;">
+      <div class="scell dk"><div class="scell-n" style="color:#f87171;" data-ed="1" data-type="number">9.8%</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Water disrupted (R5)</div></div>
+      <div class="scell dk"><div class="scell-n" style="color:#fbbf24;" data-ed="1" data-type="number">13.9 hrs</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Mean electricity outage/week</div></div>
+      <div class="scell dk"><div class="scell-n" style="color:#94a3b8;" data-ed="1" data-type="number">29.7%</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Internet disruption (past month)</div></div>
+    </div>
+    <div class="src light">Source: M03_shock.dta · HH level, weighted by hhw · R1–R5</div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" style="display:block;background:var(--ink);"><path d="M0,20 C480,50 960,0 1440,30 L1440,50 L0,50 Z" fill="var(--cream)"/></svg>
+</div>
+
+<!-- ═══ CH3: FINANCE ═══ -->
+<div id="finance">
+  <div class="chap-hdr">
+    <div class="chap-in">
+      <div class="chap-stamp" style="background:var(--amber-bg);color:var(--amber);">💳</div>
+      <div><div class="chap-mod" style="color:var(--amber);">Module 06 · Finance</div><div class="chap-title" data-ed="1" data-type="head">Finance — Mobile Leads, Banks Trail</div></div>
+    </div>
+    <div class="chap-rule" style="background:linear-gradient(90deg,var(--amber),transparent);"></div>
+  </div>
+  <div class="sec-amber">
+    <div class="sec">
+      <div class="two-col">
+        <div class="rev">
+          <span class="eyebrow amber">Financial access (R5)</span>
+          <h2 class="hed" data-ed="1" data-type="head">Mobile money at <em class="amber">50%.</em> Bank accounts at <em class="amber">12%.</em> Online shopping rising fast.</h2>
+          <div class="body-copy">
+            <p data-ed="1" data-type="body">Half of Filipino households now have a mobile money account (GCash, Maya or equivalent) — up sharply from the CAPI baseline of 18%. The gap between mobile money (50%) and formal bank accounts (12%) has never been wider, and it tells a story of fintech reaching where traditional banking hasn't.</p>
+            <p data-ed="1" data-type="body">34.2% used a bank in the past 30 days, and 41.7% used a mobile wallet for a transaction. 23.6% bought something online — a notable jump suggesting digital commerce is entering the mainstream even in lower-income households.</p>
+            <p data-ed="1" data-type="body">18.1% of households took a loan in the past 30 days. The top purpose: medical and health expenses (30%), housing repair (25%), and business needs (12%). Informal lenders remain common (16% of loan sources) despite the fintech growth.</p>
+          </div>
+          <div class="pull amber rev d1">
+            <p>Only <strong>3.5%</strong> of households could absorb a ₱300,000 emergency expense. The financial buffer gap remains severe even as mobile access grows.</p>
+          </div>
+        </div>
+        <div class="rev d2">
+          <div class="card amber-top">
+            <div class="card-title">Financial indicators (R5)</div>
+            <div class="card-sub">% of households · hhw weighted</div>
+            <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cFinance';loadChart('cFinance');openDD()">✏️ Edit</button>
+            <div class="chart-wrap" style="height:230px;" data-orig-h="230"><canvas id="cFinance"></canvas></div>
+          </div>
+          <div class="card" style="margin-top:10px;">
+            <div class="card-title">Loan purpose (R5)</div>
+            <div class="card-sub">% among borrowers · multi-select</div>
+            <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cLoanPurpose';loadChart('cLoanPurpose');openDD()">✏️ Edit</button>
+            <div class="chart-wrap" style="height:165px;" data-orig-h="165"><canvas id="cLoanPurpose"></canvas></div>
+          </div>
+        </div>
+      </div>
+      <div class="two-col" style="margin-top:12px;">
+        <div class="rev">
+          <div class="card amber-top">
+            <div class="card-title">Income by region (R5)</div>
+            <div class="card-sub">Mean total income PHP · among earners · indw</div>
+            <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cIncMacro';loadChart('cIncMacro');openDD()">✏️ Edit</button>
+            <div class="chart-wrap" style="height:160px;" data-orig-h="160"><canvas id="cIncMacro"></canvas></div>
+          </div>
+        </div>
+        <div class="rev d2">
+          <div class="callout amber">
+            <span class="callout-icon">💸</span>
+            <div class="callout-lbl">Remittances</div>
+            <p><strong>18.3%</strong> of households received cash remittances from family members in the past 30 days. <strong>14.3%</strong> sent money via mobile phone — digital transfer is the new normal for family support.</p>
+          </div>
+          <div class="sgrid sg2 rev d1" style="margin-top:10px;">
+            <div class="scell am"><div class="scell-n" style="color:var(--amber);" data-ed="1" data-type="number">₱14,162</div><div class="scell-l">Mean income (earners)</div></div>
+            <div class="scell cr"><div class="scell-n" data-ed="1" data-type="number">12.9%</div><div class="scell-l">Managed to save</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="src">Source: M05_income.dta (indw) + M06_finance.dta (hhw) · R5 latest · Oct 15 2025</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CH4: HEALTH ═══ -->
+<div id="health" style="background:var(--rose-bg);">
+  <div class="chap-hdr" style="background:var(--rose-bg);">
+    <div class="chap-in">
+      <div class="chap-stamp" style="background:white;color:var(--rose);">🏥</div>
+      <div><div class="chap-mod" style="color:var(--rose);">Module 07 · Health</div><div class="chap-title" data-ed="1" data-type="head">Health — PhilHealth at 55%, but Out-of-Pocket is the Norm</div></div>
+    </div>
+    <div class="chap-rule" style="background:linear-gradient(90deg,var(--rose),transparent);"></div>
+  </div>
+  <div class="sec">
+    <div class="two-col">
+      <div class="rev">
+        <span class="eyebrow rose">Health access (R5)</span>
+        <h2 class="hed" data-ed="1" data-type="head">54.9% have PhilHealth — <em class="terra">but 59% pay out-of-pocket</em> for consultations</h2>
+        <div class="body-copy">
+          <p data-ed="1" data-type="body">PhilHealth coverage reaches 54.9% of the panel — a meaningful improvement from the CAPI baseline of 46.1%. NCR leads at 71.8%, while Luzon (excl. NCR) trails at 52.3%. Only 4.8% of households reported needing health care in the past 30 days, and 88.9% of those who needed it managed to access it.</p>
+          <p data-ed="1" data-type="body">Despite coverage gains, out-of-pocket payments remain endemic: 59.3% of those who consulted paid cash, with a mean outlay of ₱1,198 — modest per visit but catastrophic when repeated. Hospitalization hit 5.8% of members, with a mean bill of ₱36,717 and ₱9,009 out-of-pocket.</p>
+          <p data-ed="1" data-type="body">The most-used facility is the Barangay Health Station (37%), followed by public hospitals (34%). Private options serve just 16% of visits.</p>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="card" style="border-top:4px solid var(--rose);">
+          <div class="card-title">PhilHealth coverage type (R5)</div>
+          <div class="card-sub">% of members · indw weighted</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cPhilHealth';loadChart('cPhilHealth');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:175px;" data-orig-h="175"><canvas id="cPhilHealth"></canvas></div>
+        </div>
+        <div class="card" style="margin-top:10px;">
+          <div class="card-title">PhilHealth coverage by region (R5)</div>
+          <div class="card-sub">% covered · any category</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cPhMacro';loadChart('cPhMacro');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:145px;" data-orig-h="145"><canvas id="cPhMacro"></canvas></div>
+        </div>
+        <div class="card" style="margin-top:10px;">
+          <div class="card-title">Healthcare facility used (R5)</div>
+          <div class="card-sub">% among those who sought care</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cFacility';loadChart('cFacility');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:155px;" data-orig-h="155"><canvas id="cFacility"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class="sgrid sg4 rev" style="margin-top:16px;">
+      <div class="scell tr"><div class="scell-n" style="color:var(--terra);" data-ed="1" data-type="number">59.3%</div><div class="scell-l">Pay OOP for consultation</div></div>
+      <div class="scell cr"><div class="scell-n" data-ed="1" data-type="number">₱1,198</div><div class="scell-l">Mean OOP consult cost</div></div>
+      <div class="scell am"><div class="scell-n" style="color:var(--amber);" data-ed="1" data-type="number">₱36,717</div><div class="scell-l">Mean hospital bill</div></div>
+      <div class="scell fo"><div class="scell-n" style="color:var(--forest);" data-ed="1" data-type="number">88.9%</div><div class="scell-l">Access rate (needed care)</div></div>
+    </div>
+    <div class="src">Source: M07_health.dta · Individual level, weighted by indw · R5 latest</div>
+  </div>
+</div>
+
+<!-- ═══ CH5: EMPLOYMENT ═══ -->
+<div class="sec-alt">
+  <div class="chap-hdr" style="background:var(--cream2);">
+    <div class="chap-in">
+      <div class="chap-stamp" style="background:var(--cobalt-bg);color:var(--cobalt);">💼</div>
+      <div><div class="chap-mod" style="color:var(--cobalt);">Modules 04–05 · Employment &amp; Income</div><div class="chap-title" data-ed="1" data-type="head">Employment — 34% Rate, Informality Dominates</div></div>
+    </div>
+    <div class="chap-rule" style="background:linear-gradient(90deg,var(--cobalt),transparent);"></div>
+  </div>
+  <div class="sec">
+    <div class="two-col">
+      <div class="rev">
+        <span class="eyebrow cobalt">Labour market (R4–R5)</span>
+        <h2 class="hed" data-ed="1" data-type="head">Employment at 34% — <em class="cobalt">68.6% have no contract</em></h2>
+        <div class="body-copy">
+          <p data-ed="1" data-type="body">Employment rate in rounds 4–5 is 34–36% (using the composite emp_status indicator). This measures formal employment engagement rather than all work activity. Workers average 39.3 hours per week — full-time for those employed.</p>
+          <p data-ed="1" data-type="body">Job quality remains fragile: 68.6% of employed workers have no contract, only 18.4% have a written agreement. Employer pension contributions cover just 16.4% of workers. Gig work is rare at 0.7% — most informal work is traditional rather than platform-based.</p>
+          <p data-ed="1" data-type="body">Private household work (29%) and private establishment employment (27%) are the top job types. Self-employment stands at 18.3%. Government jobs provide security for 7.5%.</p>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="card cobalt-top">
+          <div class="card-title">Employment contract type (R4–R5)</div>
+          <div class="card-sub">% among employed workers · indw weighted</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cContract';loadChart('cContract');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:175px;" data-orig-h="175"><canvas id="cContract"></canvas></div>
+        </div>
+        <div class="card" style="margin-top:10px;">
+          <div class="card-title">Class of worker (R4–R5)</div>
+          <div class="card-sub">% among employed · weighted</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cClassWork';loadChart('cClassWork');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:175px;" data-orig-h="175"><canvas id="cClassWork"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class="src">Source: M04_employment.dta + M05_income.dta · R4–R5 for emp_status indicator</div>
+  </div>
+</div>
+
+<!-- ═══ CH6: VIEWS ═══ -->
+<div id="views" style="background:var(--forest);color:white;">
+  <svg class="wave" viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" style="background:var(--cream2);display:block;"><path d="M0,15 C360,45 1080,5 1440,25 L1440,50 L0,50 Z" fill="var(--forest)"/></svg>
+  <div class="chap-hdr" style="padding-top:44px;">
+    <div class="chap-in" style="padding-top:0;">
+      <div class="chap-stamp" style="background:rgba(255,255,255,.12);color:white;">💬</div>
+      <div><div class="chap-mod" style="color:#F5C48A;">Module 09 · Views &amp; Perceptions</div><div class="chap-title" style="color:white;" data-ed="1" data-type="head">Voices — Prices, Stability, and Cautious Hope</div></div>
+    </div>
+    <div style="max-width:1040px;margin:14px auto 0;height:2px;background:rgba(255,255,255,.12);border-radius:2px;"></div>
+  </div>
+  <div class="sec">
+    <div class="two-col">
+      <div class="rev">
+        <span class="eyebrow" style="color:#F5C48A;">Perceptions (R5)</span>
+        <h2 class="hed light" data-ed="1" data-type="head">52% say situation is the same. <em>44% say prices are rising too fast.</em></h2>
+        <div class="body-copy light">
+          <p data-ed="1" data-type="body">Life satisfaction averages 2.88 out of 5 (where 1 is most satisfied) — almost identical across all five rounds, ranging only from 2.79 to 2.88. The panel's wellbeing is broadly stable despite food and shock improvements. Economic security may be improving, but subjective satisfaction has not moved.</p>
+          <p data-ed="1" data-type="body">52.4% say their economic situation is the same as last month. 23.9% say it is somewhat worse, and 8.4% say much worse. Only 15.3% report any improvement. Mindanao is most stable (55.5% same) while Visayas is most pessimistic (40.8% worse in some degree).</p>
+          <p data-ed="1" data-type="body">Price anxiety is the sharpest signal: 44.5% agree prices are rising too fast — the highest agreement rate. At the same time, 40.3% believe the country is on the right track, and 38.7% trust taxes are well spent. These positives coexist with 33.7% worried about job loss.</p>
+        </div>
+        <div class="sgrid sg2 rev d1" style="margin-top:16px;">
+          <div class="scell dk"><div class="scell-n" style="color:rgba(255,255,255,.9);" data-ed="1" data-type="number">2.88/5</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Life satisfaction (1=best)</div></div>
+          <div class="scell dk"><div class="scell-n" style="color:#f87171;" data-ed="1" data-type="number">44.5%</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Prices rising too fast</div></div>
+          <div class="scell dk"><div class="scell-n" style="color:#4ade80;" data-ed="1" data-type="number">40.3%</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Country on right track</div></div>
+          <div class="scell dk"><div class="scell-n" style="color:#fbbf24;" data-ed="1" data-type="number">52.4%</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Economy same as last month</div></div>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="card dark">
+          <div class="card-title light">Attitudes & concerns (R5)</div>
+          <div class="card-sub light">% agreeing or strongly agreeing · hhw weighted</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cLikert';loadChart('cLikert');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:245px;" data-orig-h="245"><canvas id="cLikert"></canvas></div>
+        </div>
+        <div class="card dark" style="margin-top:10px;">
+          <div class="card-title light">Economic change vs last month (R5)</div>
+          <div class="card-sub light">% HHs by perceived direction</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cEcoChange';loadChart('cEcoChange');openDD()">✏️ Edit</button>
+          <div class="chart-wrap" style="height:145px;" data-orig-h="145"><canvas id="cEcoChange"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Life satisfaction trend -->
+    <div class="rev d1" style="margin-top:24px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);">
+      <div class="card dark">
+        <div class="card-title light">Life satisfaction — 5-round trend</div>
+        <div class="card-sub light">Mean score 1–5 (lower = more satisfied) · all rounds</div>
+        <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cLSSat';loadChart('cLSSat');openDD()">✏️ Edit</button>
+        <div class="chart-wrap" style="height:155px;" data-orig-h="155"><canvas id="cLSSat2"></canvas></div>
+      </div>
+    </div>
+    <div class="src light">Source: M09_views.dta · HH level, weighted by hhw · R5 latest · Trend: R1–R5</div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" style="display:block;background:var(--forest);"><path d="M0,25 C480,5 960,45 1440,20 L1440,50 L0,50 Z" fill="var(--cream)"/></svg>
+</div>
+
+<!-- EPILOGUE -->
+<section class="epi">
+  <div style="font-size:40px;margin-bottom:18px;">🇵🇭</div>
+  <h2 class="epi-hed" data-ed="1" data-type="head">"Recovery is measurable. Vulnerability is not gone."</h2>
+  <p class="epi-body" data-ed="1" data-type="body">Five months of calls tell a story of real but fragile improvement. Food stress halved. Shock incidence collapsed. PhilHealth coverage grew. And yet: 18% are still moderately food insecure. 59% still pay out-of-pocket when they get sick. 69% of workers have no contract. Price anxiety is the sharpest signal from every round. The improvement is real — but the floor remains low.</p>
+  <div class="epi-stats">
+    <div class="epi-stat"><div class="epi-stat-n" style="color:#F5C48A;" data-ed="1" data-type="number">5</div><div class="epi-stat-l">Monthly rounds</div></div>
+    <div class="epi-stat"><div class="epi-stat-n" style="color:#B8EDCA;" data-ed="1" data-type="number">41→18%</div><div class="epi-stat-l">Food insecurity fall</div></div>
+    <div class="epi-stat"><div class="epi-stat-n" style="color:#4ade80;" data-ed="1" data-type="number">35→12%</div><div class="epi-stat-l">Shock incidence fall</div></div>
+    <div class="epi-stat"><div class="epi-stat-n" style="color:#87CEEB;" data-ed="1" data-type="number">55%</div><div class="epi-stat-l">PhilHealth coverage</div></div>
+    <div class="epi-stat"><div class="epi-stat-n" style="color:#FFB3B3;" data-ed="1" data-type="number">69%</div><div class="epi-stat-l">No work contract</div></div>
+  </div>
+  <p class="epi-meta">L2P Philippines · CATI Panel Survey · Rounds 1–5 · Sep 2025–Jan 2026 · M01–M09 · All estimates weighted (hhw / indw)</p>
+</section>
+
+<!-- Edit bar -->
+<div id="edit-bar">✏️ Edit mode ON — click any text to edit &nbsp;<span>Press <kbd>Esc</kbd> to finish · <kbd>Tab</kbd> next field</span></div>
+
+<!-- Data Drawer -->
+<div id="dd">
+  <div class="dd-head"><span style="font-size:16px;">📊</span><div class="dd-ht" id="dd-title">Chart Data Editor</div><button class="dd-close" onclick="closeDD()">✕</button></div>
+  <div class="dd-body"><div id="dd-rows"><div style="color:rgba(255,255,255,.3);text-align:center;padding:40px 16px;font-size:11px;line-height:1.7;">Select a chart from the<br>Data tab above to edit</div></div>
+  <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);">
+    <div style="color:rgba(255,255,255,.35);font-size:8px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;">Paste CSV to replace all data</div>
+    <textarea class="csv-ta" id="csv-ta" placeholder="Label, Value&#10;R1, 40.99&#10;R2, 30.97&#10;..."></textarea>
+    <button onclick="importCSV()" style="width:100%;background:rgba(255,255,255,.08);color:rgba(255,255,255,.55);border:none;border-radius:4px;padding:6px;font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">⬆ Import CSV</button>
+  </div></div>
+  <div class="dd-foot"><button class="dd-apply" onclick="applyDD()">✓ Apply</button><button class="dd-sec" onclick="previewDD()">👁 Preview</button><button class="dd-sec" onclick="copyCSV()">CSV</button></div>
+</div>
+<div id="dd-ov" onclick="closeDD()"></div>
+<div id="ed-toast">Done!</div>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+const RL = ['R1','R2','R3','R4','R5'];
+const RM = ['Sep','Oct','Nov','Dec','Jan'];
+const RLAB = RL.map((r,i)=>r+'\n'+RM[i]);
+
+const DATA = {
+  food_trend:   [40.99,30.97,26.82,21.49,18.2],
+  shock_trend:  [34.91,22.63,16.71,14.28,12.09],
+  ls_trend:     [2.83,2.81,2.79,2.85,2.88],
+  fies: {"Worried about not having enough food": 39.22, "Ate less than thought should": 27.84, "Ran out of food": 21.41, "Hungry but did not eat": 14.78, "Went without eating whole day": 6.47},
+  severity: {"Food secure": 52.36, "Mild": 29.44, "Moderate": 14.53, "Severe": 3.66},
+  sev_macro: {
+    NCR:   71.78,
+    Luzon: 2.83,
+    Visayas: 5.11,
+    Mindanao: 5.4,
+  },
+  shock_types: {"Major illness": 4.5, "Typhoons": 2.47, "Unexpected loss of job": 1.83, "Non-payment or delay in payment of income": 0.9, "Major injury": 0.64, "Floods/La Ni\u00f1a": 0.61, "Inflation (increase of food/fuel/commodity prices)": 0.54, "Death": 0.31, "Major financial problem": 0.29, "Food shortage": 0.22},
+  coping: {"Borrowed from friends and family": 24.6, "Received assistance from friends and family ": 13.84, "Relied on savings": 9.84, "Received assistance from government": 9.24, "Increased hours of work": 7.85, "Engaged in additional income generating activities": 6.65, "Others, specify": 6.07, "Consulted a medical professional": 4.82},
+  shock_macro: {"Luzon (excl. NCR)": 13.86, "Mindanao": 2.09, "NCR": 9.1, "Visayas": 18.4},
+  finance: {
+    'Mobile money acc':49.93,
+    'Used mobile wallet':41.71,
+    'Bank account':12.1,
+    'Used bank':34.15,
+    'Took loan':18.09,
+    'Managed to save':12.92,
+    'Bought online':23.59,
+    'Received remittance':18.26,
+    'Cover ₱300k emergency':3.46,
+  },
+  loan_purpose: {"Medical/health": 30.04, "Housing repair": 25.21, "Business": 12.26, "Agricultural input": 10.21, "Debt repayment": 6.98, "Food and other daily needs": 6.13, "Education": 4.26},
+  inc_macro: {"Luzon (excl. NCR)": 15611.0, "Mindanao": 11405.8, "NCR": 8904.6, "Visayas": 11870.7},
+  ph_type: {"Not covered": 45.09, "PhilHealth Non-Paying": 15.87, "Dependent (Non-Paying)": 15.5, "PhilHealth Paying": 14.5, "Dependent (Paying)": 9.05},
+  ph_macro: {"Luzon (excl. NCR)": 52.33, "Mindanao": 61.59, "NCR": 71.78, "Visayas": 55.21},
+  facility: {"Barangay Health Station": 36.99, "Public Hospital": 34.22, "Rural Health Unit": 12.55, "Private Clinic": 11.55, "Private Hospital": 4.69},
+  contract: {"No contract": 68.58, "Written": 18.41, "Verbal": 7.23, "Don't know": 5.78},
+  class_work: {"Private HH": 28.81, "Private establishment": 27.03, "Self-employed": 18.25, "Government": 7.5, "Employer": 7.46, "Family business (unpaid)": 2.2},
+  eco_change: {"Same": 52.44, "Somewhat worse": 23.89, "Somewhat better": 9.96, "Much worse": 8.4, "Much better": 5.3},
+  likert: {"Prices rising too fast": 44.49, "Optimistic about economy": 31.8, "More citizen participation in govt": 14.02, "Worried: child education": 14.84, "Worried: job loss": 33.73, "Worried: political instability": 30.38, "Digital services helpful (past month)": 25.97, "Taxes well spent": 38.71, "Govt fighting corruption well": 35.35, "Country on right track": 40.25},
+  life_sat_dist: {"1": 6.8, "2": 24.57, "3": 50.36, "4": 9.85, "5": 8.41},
+};
+
+// ═══════════════════════════════════════
+//  CHART SETUP
+// ═══════════════════════════════════════
+const TIP = {backgroundColor:'rgba(44,24,16,.93)',borderColor:'rgba(196,122,26,.3)',borderWidth:1,titleColor:'#FDF6EE',bodyColor:'rgba(253,246,238,.72)',padding:10,cornerRadius:7};
+const TK  = {color:'#A08070',font:{family:"'DM Mono'",size:10}};
+const TKD = {color:'rgba(253,246,238,.42)',font:{family:"'DM Mono'",size:10}};
+const GR  = {color:'rgba(160,128,112,.18)'};
+const GRD = {color:'rgba(255,255,255,.08)'};
+const LG  = {display:true,labels:{color:'#A08070',font:{family:"'DM Mono'",size:10},boxWidth:9,padding:7}};
+const LGD = {display:true,labels:{color:'rgba(253,246,238,.5)',font:{family:"'DM Mono'",size:10},boxWidth:9,padding:7}};
+
+const PALETTES = {
+  warm:  ['#C4622D','#2D6A4F','#C47A1A','#1A6B6B','#9B3D3D','#5C3D6E','#A08070','#BDA890'],
+  ocean: ['#1B5E85','#0D7C5A','#2E5FA3','#5B3A8C','#0D5C6B','#1A3A6B','#5B7A8C'],
+  vivid: ['#E83A0E','#0EA85A','#E8A50E','#0E5AE8','#E80E8E','#8E0EE8','#0EE8D4'],
+  pastel:['#F4A27A','#7AC9A2','#F4CB7A','#7AACF4','#F47AAC','#AC7AF4','#7AF4E8'],
+  mono:  ['#1A1A1A','#3A3A3A','#5A5A5A','#7A7A7A','#9A9A9A','#BABABA','#DADADA'],
+};
+let activePalette='warm';
+let BRAD=5, BWIDTH=0.70, CUTOUT=58, SHOWGRID=true, TENSION=0.35, FILL=true;
+
+function pal(){ return PALETTES[activePalette]||PALETTES.warm; }
+
+// Make line dataset
+function lineDS(label,data,color,fill=true){
+  return {label,data,borderColor:color,backgroundColor:fill?color.replace(/[^,]+\)$/,'0.15)'):'transparent',
+    tension:TENSION,fill:fill?'origin':false,pointBackgroundColor:color,pointRadius:5,pointHoverRadius:7,borderWidth:2.5};
+}
+
+// Lazy chart init
+const CI={};
+const co=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting&&CI[e.target.id]){CI[e.target.id]();delete CI[e.target.id];co.unobserve(e.target);}
+  });
+},{threshold:.18});
+function lazy(id,fn){CI[id]=fn;const el=document.getElementById(id);if(el)co.observe(el);}
+
+const P = {terra:'#C4622D',forest:'#2D6A4F',amber:'#C47A1A',teal:'#1A6B6B',rose:'#9B3D3D',plum:'#5C3D6E',cobalt:'#1A4B8A',muted:'#A08070'};
+
+// ── TREND CHARTS ──
+function makeTrendChart(id,data,label,color,dark,minY,maxY,yFmt){
+  lazy(id,()=>new Chart(document.getElementById(id),{type:'line',data:{
+    labels:RLAB,datasets:[lineDS(label,data,color,FILL)]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:dark?TKD:TK},
+            y:{grid:dark?GRD:GR,min:minY,max:maxY,ticks:{...(dark?TKD:TK),callback:v=>yFmt?yFmt(v):v}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${label}: ${c.parsed.y}`}}}}}));
+}
+
+makeTrendChart('cFoodTrend',DATA.food_trend,'Mod-severe food insec. %',P.terra,true,0,50,v=>v+'%');
+makeTrendChart('cShockTrend',DATA.shock_trend,'Any shock %',P.amber,true,0,40,v=>v+'%');
+makeTrendChart('cLSSat',DATA.ls_trend,'Life satisfaction (mean)',P.teal,true,2.5,3.1);
+
+// Clone for second chart in views
+lazy('cLSSat2',()=>{
+  const orig=Chart.getChart('cLSSat');
+  if(!orig){makeTrendChart('cLSSat2',DATA.ls_trend,'Life satisfaction',P.teal,true,2.5,3.1);return;}
+  new Chart(document.getElementById('cLSSat2'),{type:'line',data:JSON.parse(JSON.stringify(orig.data)),
+    options:JSON.parse(JSON.stringify(orig.config.options))});
+});
+
+// ── FOOD ──
+lazy('cSeverity',()=>new Chart(document.getElementById('cSeverity'),{type:'bar',data:{
+  labels:Object.keys(DATA.severity),
+  datasets:[{data:Object.values(DATA.severity),backgroundColor:[P.forest,P.amber,P.terra,P.rose],borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+},options:{responsive:true,maintainAspectRatio:false,
+  scales:{x:{grid:{display:false},ticks:TK},y:{grid:GR,ticks:{...TK,callback:v=>v+'%'}}},
+  plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}}));
+
+lazy('cSevMacro',()=>{
+  const d=DATA.sev_macro;
+  new Chart(document.getElementById('cSevMacro'),{type:'bar',data:{
+    labels:['NCR','Luzon','Visayas','Mindanao'],
+    datasets:[{data:[d.NCR,d.Luzon,d.Visayas,d.Mindanao],backgroundColor:[P.forest,P.amber,P.terra,P.rose],borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TK},y:{grid:GR,ticks:{...TK,callback:v=>v+'%'}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}}); });
+
+lazy('cFIES',()=>{
+  const labs=Object.keys(DATA.fies).map(l=>l.length>30?l.slice(0,30)+'…':l);
+  const vals=Object.values(DATA.fies);
+  new Chart(document.getElementById('cFIES'),{type:'bar',data:{
+    labels:labs,datasets:[{data:vals,backgroundColor:vals.map(v=>v>35?P.terra:v>20?P.amber:P.forest),borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GR,ticks:{...TK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TK,font:{size:9}}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}}); });
+
+// ── SHOCKS ──
+lazy('cShockTypes',()=>{
+  const labs=Object.keys(DATA.shock_types).slice(0,8).map(l=>l.length>28?l.slice(0,28)+'…':l);
+  const vals=Object.values(DATA.shock_types).slice(0,8);
+  new Chart(document.getElementById('cShockTypes'),{type:'bar',data:{
+    labels:labs,datasets:[{data:vals,backgroundColor:[P.terra,P.amber,P.cobalt,P.teal,P.rose,P.plum,P.forest,P.muted],borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRD,ticks:{...TKD,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TKD,font:{size:9}}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}}); });
+
+lazy('cShockMacro',()=>{
+  const sm=DATA.shock_macro;
+  new Chart(document.getElementById('cShockMacro'),{type:'bar',data:{
+    labels:Object.keys(sm),datasets:[{data:Object.values(sm),backgroundColor:[P.forest,P.amber,P.terra,P.cobalt],borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TKD},y:{grid:GRD,ticks:{...TKD,callback:v=>v+'%'}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}}); });
+
+lazy('cCoping',()=>{
+  const labs=Object.keys(DATA.coping).slice(0,8).map(l=>l.length>35?l.slice(0,35)+'…':l);
+  const vals=Object.values(DATA.coping).slice(0,8);
+  new Chart(document.getElementById('cCoping'),{type:'bar',data:{
+    labels:labs,datasets:[{data:vals,backgroundColor:pal().slice(0,vals.length),borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRD,ticks:{...TKD,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TKD,font:{size:9}}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}}); });
+
+// ── FINANCE ──
+lazy('cFinance',()=>{
+  const labs=Object.keys(DATA.finance);
+  const vals=Object.values(DATA.finance);
+  new Chart(document.getElementById('cFinance'),{type:'bar',data:{
+    labels:labs.map(l=>l.length>22?l.slice(0,22)+'…':l),
+    datasets:[{data:vals,backgroundColor:vals.map((_,i)=>pal()[i%pal().length]),borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GR,ticks:{...TK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TK,font:{size:9}}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}}); });
+
+lazy('cLoanPurpose',()=>{
+  new Chart(document.getElementById('cLoanPurpose'),{type:'doughnut',data:{
+    labels:Object.keys(DATA.loan_purpose),
+    datasets:[{data:Object.values(DATA.loan_purpose),backgroundColor:pal(),borderWidth:0,hoverOffset:4,cutout:CUTOUT+'%'}]
+  },options:{maintainAspectRatio:false,plugins:{legend:{...LG,position:'right',labels:{...LG.labels,font:{size:9},padding:5}},
+    tooltip:{...TIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}}); });
+
+lazy('cIncMacro',()=>{
+  new Chart(document.getElementById('cIncMacro'),{type:'bar',data:{
+    labels:Object.keys(DATA.inc_macro),
+    datasets:[{data:Object.values(DATA.inc_macro),backgroundColor:pal().slice(0,4),borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TK},y:{grid:GR,ticks:{...TK,callback:v=>'₱'+v.toLocaleString()}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ₱${c.parsed.y.toLocaleString()}`}}}}}); });
+
+// ── HEALTH ──
+lazy('cPhilHealth',()=>new Chart(document.getElementById('cPhilHealth'),{type:'doughnut',data:{
+  labels:Object.keys(DATA.ph_type),datasets:[{data:Object.values(DATA.ph_type),backgroundColor:pal(),borderWidth:0,hoverOffset:4,cutout:CUTOUT+'%'}]
+},options:{maintainAspectRatio:false,plugins:{legend:{...LG,labels:{...LG.labels,font:{size:9},padding:5}},
+  tooltip:{...TIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}}));
+
+lazy('cPhMacro',()=>new Chart(document.getElementById('cPhMacro'),{type:'bar',data:{
+  labels:Object.keys(DATA.ph_macro),datasets:[{data:Object.values(DATA.ph_macro),backgroundColor:pal().slice(0,4),borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+},options:{responsive:true,maintainAspectRatio:false,
+  scales:{x:{grid:{display:false},ticks:TK},y:{grid:GR,min:0,max:100,ticks:{...TK,callback:v=>v+'%'}}},
+  plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}}));
+
+lazy('cFacility',()=>new Chart(document.getElementById('cFacility'),{type:'bar',data:{
+  labels:Object.keys(DATA.facility),datasets:[{data:Object.values(DATA.facility),backgroundColor:pal(),borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+  scales:{x:{grid:GR,ticks:{...TK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TK,font:{size:9}}}},
+  plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}}));
+
+// ── EMPLOYMENT ──
+lazy('cContract',()=>new Chart(document.getElementById('cContract'),{type:'doughnut',data:{
+  labels:Object.keys(DATA.contract),datasets:[{data:Object.values(DATA.contract),backgroundColor:pal(),borderWidth:0,hoverOffset:4,cutout:CUTOUT+'%'}]
+},options:{maintainAspectRatio:false,plugins:{legend:{...LG,labels:{...LG.labels,font:{size:9},padding:5}},
+  tooltip:{...TIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}}));
+
+lazy('cClassWork',()=>{
+  const lbs=Object.keys(DATA.class_work).map(l=>l.length>20?l.slice(0,20)+'…':l);
+  const vals=Object.values(DATA.class_work);
+  new Chart(document.getElementById('cClassWork'),{type:'bar',data:{
+    labels:lbs,datasets:[{data:vals,backgroundColor:pal(),borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GR,ticks:{...TK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TK,font:{size:9}}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}}); });
+
+// ── VIEWS ──
+lazy('cEcoChange',()=>new Chart(document.getElementById('cEcoChange'),{type:'doughnut',data:{
+  labels:Object.keys(DATA.eco_change),datasets:[{data:Object.values(DATA.eco_change),backgroundColor:[P.amber,P.terra,P.forest,P.teal,P.rose],borderWidth:0,hoverOffset:4,cutout:CUTOUT+'%'}]
+},options:{maintainAspectRatio:false,plugins:{legend:{...LGD,labels:{...LGD.labels,font:{size:9},padding:4}},
+  tooltip:{...TIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}}));
+
+lazy('cLikert',()=>{
+  const labs=Object.keys(DATA.likert).filter(k=>DATA.likert[k]>0);
+  const vals=labs.map(k=>DATA.likert[k]);
+  new Chart(document.getElementById('cLikert'),{type:'bar',data:{
+    labels:labs.map(l=>l.length>28?l.slice(0,28)+'…':l),
+    datasets:[{data:vals,backgroundColor:vals.map((v,i)=>i===0?P.terra:v>=38?P.forest:v>=30?P.amber:P.cobalt),borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
+  },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRD,max:55,ticks:{...TKD,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TKD,font:{size:9}}}},
+    plugins:{legend:{display:false},tooltip:{...TIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}}); });
+
+// ═══════════════════════════════════════
+//  SCROLL ANIMATIONS
+// ═══════════════════════════════════════
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.classList.add('vis');
+    e.target.querySelectorAll('.bs-fill[data-w]').forEach(el=>{
+      setTimeout(()=>el.style.width=el.getAttribute('data-w')+'%',150);
+    });
+    e.target.querySelectorAll('.rpill-fill[data-w]').forEach(el=>{
+      setTimeout(()=>el.style.width=el.getAttribute('data-w')+'%',300);
+    });
+    ro.unobserve(e.target);
+  });
+},{threshold:.12});
+document.querySelectorAll('.rev').forEach(el=>ro.observe(el));
+
+// Tag chart wrap heights
+document.querySelectorAll('.chart-wrap[style*="height"]').forEach(el=>{
+  if(!el.dataset.origH) el.dataset.origH=parseInt(el.style.height)||200;
+});
+
+// ═══════════════════════════════════════
+//  EDITOR — CSS & THEME
+// ═══════════════════════════════════════
+function setV(v,val){document.documentElement.style.setProperty(v,val);}
+function getV(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function h2r(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');return[parseInt(hex.slice(0,2),16),parseInt(hex.slice(2,4),16),parseInt(hex.slice(4,6),16)];}
+function r2h(r,g,b){return'#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');}
+function lt(hex,pct){const[r,g,b]=h2r(hex),a=pct/100;return r2h(r+(255-r)*a,g+(255-g)*a,b+(255-b)*a);}
+function dk(hex,pct){const[r,g,b]=h2r(hex),a=pct/100;return r2h(r*(1-a),g*(1-a),b*(1-a));}
+
+const THEMES={
+  warm:{terra:'#C4622D',forest:'#2D6A4F',amber:'#C47A1A',teal:'#1A6B6B',rose:'#9B3D3D',cream:'#FDF6EE',ink:'#2C1810',ink2:'#5C3D2E'},
+  ocean:{terra:'#1B5E85',forest:'#0D7C5A',amber:'#D4730F',teal:'#5B3A8C',rose:'#8C1F4A',cream:'#EEF5FC',ink:'#0A1F2E',ink2:'#1E3D52'},
+  sunset:{terra:'#B5320E',forest:'#8B2FC9',amber:'#D4840A',teal:'#1A5C8A',rose:'#8C1A4A',cream:'#FFF0E8',ink:'#2A1008',ink2:'#5A2810'},
+  sage:{terra:'#4A7C59',forest:'#8C6B2F',amber:'#3B6B8C',teal:'#8C4A4A',rose:'#7C3D5A',cream:'#F2F5EE',ink:'#1E2A1E',ink2:'#3A4A3A'},
+  bold:{terra:'#C62A2A',forest:'#1A6B1A',amber:'#C4900A',teal:'#1A1A8C',rose:'#8C1A1A',cream:'#FAFAFA',ink:'#111',ink2:'#333'},
+  mono:{terra:'#333',forest:'#555',amber:'#888',teal:'#444',rose:'#666',cream:'#F8F8F8',ink:'#111',ink2:'#444'},
+};
+function applyTheme(name,btn){
+  document.querySelectorAll('.tswatch').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  const t=THEMES[name];
+  Object.entries(t).forEach(([k,v])=>{
+    setV('--'+k,v);
+    if(k==='terra'){setV('--terra-l',lt(v,20));setV('--terra-bg',lt(v,88));}
+    if(k==='forest'){setV('--forest-l',lt(v,20));setV('--forest-bg',lt(v,90));}
+    if(k==='amber'){setV('--amber-l',lt(v,20));setV('--amber-bg',lt(v,90));}
+    if(k==='teal'){setV('--teal-bg',lt(v,90));}
+    if(k==='rose'){setV('--rose-bg',lt(v,90));}
+    if(k==='cream'){setV('--cream2',dk(v,4));setV('--cream3',dk(v,9));}
+    const el=document.getElementById('cc-'+k);if(el)el.value=v;
+  });
+  reDraw();
+}
+function setPalette(name,btn){
+  document.querySelectorAll('#panel-colors .ec-pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');activePalette=name;reDraw();
+}
+function setDisplayFont(f){setV('--display',f);loadGFont(f);}
+function setBodyFont(f){setV('--body',f);document.body.style.fontFamily=f;loadGFont(f);}
+function loadGFont(f){const n=f.split(',')[0].replace(/'/g,'').trim().replace(/ /g,'+');if(!n||['Georgia','serif','sans-serif'].includes(n))return;const l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family='+n+':wght@400;600;700;900&display=swap';document.head.appendChild(l);}
+function setHedScale(pct){document.querySelectorAll('.hed').forEach(el=>el.style.fontSize='calc(clamp(1.7rem,3vw,2.5rem)*'+(pct/100)+')');}
+function setSectionPad(px){document.querySelectorAll('.sec').forEach(el=>{el.style.paddingTop=px+'px';el.style.paddingBottom=px+'px';});}
+function scaleChartH(pct){document.querySelectorAll('.chart-wrap[data-orig-h]').forEach(el=>{el.style.height=(parseInt(el.dataset.origH)*pct/100)+'px';});reDraw();}
+function setPillOn(btn){const g=btn.closest('.ec-pills');if(g)g.querySelectorAll('.ec-pill').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+
+// ── TAB SWITCHING ──
+document.querySelectorAll('.eb-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.eb-tab').forEach(t=>t.classList.remove('on'));
+    document.querySelectorAll('.eb-panel').forEach(p=>p.classList.remove('on'));
+    tab.classList.add('on');
+    document.getElementById('panel-'+tab.dataset.panel).classList.add('on');
+    if(tab.dataset.panel==='charts') buildCS();
+    if(tab.dataset.panel==='sections') buildVC();
+    if(tab.dataset.panel==='data') injectEditBtns();
+  });
+});
+
+// ── REDRAW CHARTS ──
+function reDraw(){
+  const p=pal();
+  Object.values(Chart.instances).forEach(chart=>{
+    const id=chart.canvas?.id;
+    const typeOvr=CHART_TYPE_OVR[id];
+    if(typeOvr&&typeOvr!==chart.config.type){
+      chart.config.type=typeOvr;
+      if(typeOvr==='line'){chart.data.datasets.forEach(ds=>{ds.fill=false;ds.tension=TENSION;ds.borderColor=Array.isArray(ds.backgroundColor)?ds.backgroundColor[0]:ds.backgroundColor;ds.pointRadius=4;});}
+    }
+    chart.data.datasets.forEach((ds,di)=>{
+      if(chart.config.type==='bar'){ds.borderRadius=BRAD;ds.barPercentage=BWIDTH;}
+      if(Array.isArray(ds.backgroundColor)){ds.backgroundColor=ds.backgroundColor.map((_,ci)=>p[ci%p.length]);}
+      else if(typeof ds.backgroundColor==='string'){ds.backgroundColor=p[di%p.length];if(ds.borderColor)ds.borderColor=ds.backgroundColor;}
+      if(chart.config.type==='doughnut'||chart.config.type==='pie')chart.options.cutout=CUTOUT+'%';
+      if(chart.config.type==='line'&&ds.fill!==false){ds.tension=TENSION;ds.fill=FILL?'origin':false;}
+    });
+    ['x','y'].forEach(ax=>{if(chart.options.scales?.[ax])chart.options.scales[ax].grid.display=SHOWGRID;});
+    chart.update('none');
+  });
+}
+
+// ── CHART TYPE SWITCHER ──
+const CHART_TYPE_OVR={};
+const CLABELS={cFoodTrend:'Food trend',cShockTrend:'Shock trend',cLSSat:'Life sat trend',cFIES:'FIES items',cSeverity:'Severity',cSevMacro:'Sev/region',cShockTypes:'Shock types',cCoping:'Coping',cShockMacro:'Shock/region',cContract:'Contract',cClassWork:'Class work',cIncMacro:'Income/region',cLoanPurpose:'Loan purpose',cFinance:'Finance',cPhilHealth:'PhilHealth',cPhMacro:'PH/region',cFacility:'Facility',cEcoChange:'Eco change',cLikert:'Likert',cLifeSat:'Life sat dist',cLSSat2:'Life trend 2'};
+function buildCS(){
+  const list=document.getElementById('cs-list');if(list.children.length)return;
+  Object.values(Chart.instances).forEach(chart=>{
+    const id=chart.canvas?.id;if(!id||!CLABELS[id])return;
+    const bt=chart.config.type;
+    const item=document.createElement('div');item.className='cs-item';
+    item.innerHTML=`<span class="cs-lbl">${CLABELS[id]}</span><div class="cs-btns" id="csb-${id}"></div>`;
+    const types=bt==='doughnut'||bt==='pie'?[['doughnut','🍩'],['pie','🥧'],['bar','Bar'],['polarArea','🎯']]:bt==='line'?[['line','Line'],['bar','Bar']]:[[bt,bt.slice(0,3)],['line','Line'],['doughnut','🍩']];
+    const btnsDiv=item.querySelector('.cs-btns');
+    types.forEach(([type,emoji])=>{
+      const b=document.createElement('button');b.className='cs-btn'+(type===(CHART_TYPE_OVR[id]||bt)?' on':'');b.textContent=emoji;b.title=type;
+      b.onclick=()=>{CHART_TYPE_OVR[id]=type;btnsDiv.querySelectorAll('.cs-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');reDraw();};
+      btnsDiv.appendChild(b);
+    });
+    list.appendChild(item);
+  });
+}
+
+// ── SECTION VISIBILITY ──
+const SECTIONS=[{id:'food',label:'🍱 Food security'},{id:'shocks',label:'⚡ Shocks'},{id:'finance',label:'💳 Finance'},{id:'health',label:'🏥 Health'},{id:'views',label:'💬 Views'}];
+function buildVC(){
+  const c=document.getElementById('vis-chips');if(c.children.length)return;
+  SECTIONS.forEach(({id,label})=>{
+    const el=document.getElementById(id);if(!el)return;
+    const chip=document.createElement('button');chip.className='vis-chip';chip.textContent=label;
+    chip.onclick=()=>{const h=chip.classList.toggle('off');el.style.display=h?'none':'';};
+    c.appendChild(chip);
+  });
+}
+
+// ── TEXT EDITOR ──
+let editModeOn=false,editScope='all',textUndo=[];
+const TEXT_SELECTORS={'all':'[data-ed]','heads':'[data-ed][data-type="head"]','numbers':'[data-ed][data-type="number"]','body':'[data-ed][data-type="body"]'};
+function setEditMode(on,btn){
+  editModeOn=on;document.body.classList.toggle('edit-mode',on);
+  document.querySelectorAll('[data-ed]').forEach(el=>{el.contentEditable=on?'true':'false';el.spellcheck=false;});
+  document.querySelectorAll('.eb-tab[data-panel="text"] ~ * .ec-pill, #panel-text .ec-pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  if(on)toast('Click any highlighted text to edit it');
+}
+function setScope(scope,btn){
+  editScope=scope;const sel=TEXT_SELECTORS[scope]||'[data-ed]';
+  document.querySelectorAll('[data-ed]').forEach(el=>el.contentEditable=editModeOn&&el.matches(sel)?'true':'false');
+  setPillOn(btn);
+}
+document.addEventListener('blur',e=>{if(e.target.dataset.ed&&e.target._pre!==undefined&&e.target.innerHTML!==e.target._pre){textUndo.push({el:e.target,html:e.target._pre});if(textUndo.length>50)textUndo.shift();}},true);
+document.addEventListener('focus',e=>{if(e.target.dataset.ed)e.target._pre=e.target.innerHTML;},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&e.target.dataset.ed)e.target.blur();if(e.key==='Tab'&&e.target.dataset.ed){e.preventDefault();const all=[...document.querySelectorAll('[data-ed][contenteditable="true"]')];const idx=all.indexOf(e.target);const nxt=all[(idx+(e.shiftKey?-1:1)+all.length)%all.length];if(nxt){nxt.focus();nxt.scrollIntoView({behavior:'smooth',block:'center'}); }}});
+function undoText(){if(!textUndo.length){toast('Nothing to undo');return;}const{el,html}=textUndo.pop();el.innerHTML=html;toast('Undone ✓');}
+function doFNR(){
+  const f=document.getElementById('fnr-find').value.trim();
+  const r=document.getElementById('fnr-rep').value;
+  if(!f){toast('Enter text to find');return;}
+  let n=0;
+  document.querySelectorAll(TEXT_SELECTORS[editScope]||'[data-ed]').forEach(el=>{
+    if(!el.querySelector('*')){if(el.textContent.includes(f)){textUndo.push({el,html:el.innerHTML});el.textContent=el.textContent.split(f).join(r);n++;}}
+    else{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let node;while((node=w.nextNode())){if(node.textContent.includes(f)){textUndo.push({el,html:el.innerHTML});node.textContent=node.textContent.split(f).join(r);n++;}}}
+  });
+  toast(n?n+' replacement'+(n>1?'s':'')+' made':'No matches found');
+}
+
+// ── DATA EDITOR ──
+let activeChartId=null,activeDSIdx=0,dataUndo=[];
+function openDD(){document.getElementById('dd').classList.add('open');document.getElementById('dd-ov').style.display='block';}
+function closeDD(){document.getElementById('dd').classList.remove('open');document.getElementById('dd-ov').style.display='none';}
+function loadChart(id){
+  if(!id){closeDD();return;}
+  const chart=Object.values(Chart.instances).find(c=>c.canvas?.id===id);
+  if(!chart){const el=document.getElementById(id);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});toast('Scroll to chart, then retry');}return;}
+  activeChartId=id;openDD();
+  document.getElementById('dd-title').textContent=CLABELS[id]||id;
+  const dsSel=document.getElementById('dd-ds-sel');dsSel.innerHTML='';
+  chart.data.datasets.forEach((ds,i)=>{const o=document.createElement('option');o.value=i;o.textContent=ds.label?'DS '+(i+1)+': '+ds.label:'Dataset '+(i+1);dsSel.appendChild(o);});
+  activeDSIdx=0;renderDD(0);
+}
+function loadDS(i){activeDSIdx=i;renderDD(i);}
+function renderDD(dsIdx){
+  const chart=Object.values(Chart.instances).find(c=>c.canvas?.id===activeChartId);if(!chart)return;
+  const labels=chart.data.labels||[];const ds=chart.data.datasets[dsIdx];
+  let html='<div style="display:grid;grid-template-columns:1fr 80px 24px;gap:5px;padding:3px 7px;margin-bottom:2px;"><span style="font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);">Label</span><span style="font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);text-align:right;">Value</span><span></span></div>';
+  labels.forEach((lbl,i)=>{
+    const val=Array.isArray(ds.data)?ds.data[i]??'':'';
+    html+=`<div class="dd-row"><input class="ddi" value="${lbl}" data-row="${i}" data-col="lbl" oninput="onDI(this)"><input class="ddi num" value="${val}" data-row="${i}" data-ds="${dsIdx}" oninput="onDI(this)"><button class="dd-del" onclick="delRow(${i})">×</button></div>`;
+  });
+  html+=`<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:5px;">Paste CSV to replace</div><textarea class="csv-ta" id="csv-ta" placeholder="Label, Value&#10;R1, 40.99&#10;R2, 30.97&#10;..."></textarea><button onclick="importCSV()" style="width:100%;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);border:none;border-radius:4px;padding:5px;font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">⬆ Import CSV</button>`;
+  document.getElementById('dd-rows').innerHTML=html;
+}
+function onDI(inp){inp.style.borderColor='var(--amber)';}
+function collectDD(){
+  const chart=Object.values(Chart.instances).find(c=>c.canvas?.id===activeChartId);if(!chart)return null;
+  const rows=document.getElementById('dd-rows').querySelectorAll('.dd-row');
+  const labels=[],data=chart.data.datasets.map(()=>[]);
+  rows.forEach(row=>{
+    const lbl=row.querySelector('[data-col="lbl"]');if(!lbl)return;
+    labels.push(lbl.value);
+    row.querySelectorAll('[data-ds]').forEach(inp=>{const di=parseInt(inp.dataset.ds);data[di].push(parseFloat(inp.value)||0);});
+  });
+  return{labels,data};
+}
+function applyDD(){
+  const c=collectDD();if(!c)return;
+  const chart=Object.values(Chart.instances).find(c2=>c2.canvas?.id===activeChartId);
+  dataUndo.push({id:activeChartId,labels:[...chart.data.labels],data:chart.data.datasets.map(ds=>[...ds.data])});
+  chart.data.labels=c.labels;c.data.forEach((v,i)=>{if(chart.data.datasets[i])chart.data.datasets[i].data=v;});
+  chart.update();toast('Chart updated ✓');document.getElementById('dd-rows').querySelectorAll('.ddi').forEach(el=>el.style.borderColor='');
+}
+function previewDD(){const c=collectDD();if(!c)return;const chart=Object.values(Chart.instances).find(c2=>c2.canvas?.id===activeChartId);chart.data.labels=c.labels;c.data.forEach((v,i)=>{if(chart.data.datasets[i])chart.data.datasets[i].data=v;});chart.update();toast('Preview updated');}
+function addRow(){const chart=Object.values(Chart.instances).find(c=>c.canvas?.id===activeChartId);if(!chart)return;chart.data.labels.push('New');chart.data.datasets.forEach(ds=>ds.data.push(0));renderDD(activeDSIdx);}
+function delLastRow(){const chart=Object.values(Chart.instances).find(c=>c.canvas?.id===activeChartId);if(!chart||chart.data.labels.length<=1)return;chart.data.labels.pop();chart.data.datasets.forEach(ds=>ds.data.pop());chart.update();renderDD(activeDSIdx);}
+function delRow(i){const chart=Object.values(Chart.instances).find(c=>c.canvas?.id===activeChartId);if(!chart||chart.data.labels.length<=1)return;chart.data.labels.splice(i,1);chart.data.datasets.forEach(ds=>ds.data.splice(i,1));chart.update();renderDD(activeDSIdx);}
+function sortD(dir){const chart=Object.values(Chart.instances).find(c=>c.canvas?.id===activeChartId);if(!chart)return;const ds=chart.data.datasets[activeDSIdx]?.data||[];const pairs=chart.data.labels.map((l,i)=>({l,vals:chart.data.datasets.map(d=>d.data[i])}));pairs.sort((a,b)=>dir*(b.vals[activeDSIdx]-a.vals[activeDSIdx]));chart.data.labels=pairs.map(p=>p.l);chart.data.datasets.forEach((d,di)=>{d.data=pairs.map(p=>p.vals[di]);});chart.update();renderDD(activeDSIdx);}
+function importCSV(){const raw=document.getElementById('csv-ta').value.trim();if(!raw)return;const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);const labs=[],vals=[];lines.forEach(line=>{const p=line.split(',').map(x=>x.trim());if(p.length<2)return;labs.push(p[0]);vals.push(parseFloat(p[1])||0);});if(!labs.length){toast('No valid rows');return;}const chart=Object.values(Chart.instances).find(c=>c.canvas?.id===activeChartId);if(!chart)return;chart.data.labels=labs;chart.data.datasets[activeDSIdx].data=vals;chart.update();renderDD(activeDSIdx);toast(labs.length+' rows imported');}
+function copyCSV(){const chart=Object.values(Chart.instances).find(c=>c.canvas?.id===activeChartId);if(!chart)return;let csv='Label,'+chart.data.datasets.map((_,i)=>'Value'+(i+1)).join(',')+'\n';chart.data.labels.forEach((l,i)=>{csv+=l+','+chart.data.datasets.map(ds=>ds.data[i]??'').join(',')+'\n';});navigator.clipboard?.writeText(csv).then(()=>toast('CSV copied ✓'));}
+function injectEditBtns(){document.querySelectorAll('canvas[id]').forEach(canvas=>{const card=canvas.closest('.card');if(!card||card.querySelector('.edit-data-btn'))return;const btn=document.createElement('button');btn.className='edit-data-btn';btn.textContent='✏️ Edit';btn.onclick=()=>{document.getElementById('dd-chart-sel').value=canvas.id;loadChart(canvas.id);};card.appendChild(btn);});}
+
+// ── EXPORT ──
+function edExport(){
+  const vars=['--terra','--terra-l','--terra-bg','--forest','--forest-l','--forest-bg','--amber','--amber-l','--amber-bg','--teal','--teal-bg','--rose','--rose-bg','--cream','--cream2','--cream3','--ink','--ink2','--muted','--rule','--radius','--radius-sm'];
+  let css=':root{\n';vars.forEach(v=>{const val=document.documentElement.style.getPropertyValue(v);if(val)css+='  '+v+': '+val+';\n';});css+='}\n';
+  const clone=document.documentElement.outerHTML;
+  const out='<!DOCTYPE html>\n'+clone.replace('</style>',css+'</style>');
+  const blob=new Blob([out],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='l2p_cati_story.html';a.click();toast('Downloading…');
+}
+function edReset(){document.documentElement.style.cssText='';document.body.style.cssText='';document.querySelectorAll('.hed,.sec,.two-col,.body-copy').forEach(e=>e.style.cssText='');Object.keys(CHART_TYPE_OVR).forEach(k=>delete CHART_TYPE_OVR[k]);document.querySelectorAll('#cs-list,#vis-chips').forEach(e=>e.innerHTML='');document.querySelectorAll('[id^="food"],[id^="shocks"],[id^="finance"],[id^="health"],[id^="views"]').forEach(e=>e.style.display='');BRAD=5;BWIDTH=0.70;CUTOUT=58;SHOWGRID=true;TENSION=0.35;FILL=true;activePalette='warm';reDraw();toast('Reset ✓');}
+
+// ── TOAST ──
+function toast(msg){const t=document.getElementById('ed-toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+</script>
+</body>
+</html>
