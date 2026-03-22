@@ -343,7 +343,7 @@
 
 	use "${hf}/l2phl_M00_passport.dta", clear
 
-		cap drop x15 subm_date date_str subm_time time_str int_id round_lastint
+		cap drop x15 subm_date date_str subm_time time_str round_lastint
 		// drop person-level vars added by hhw merge (these belong in M01)
 		cap drop age gender age_grp
 
@@ -615,6 +615,8 @@
 		la var trailer_tag             "R1 flag: isfmid recovered via Trailer questionnaire"
 			note trailer_tag: "R1 only: Flags ~220 households whose household head fmid (isfmid) was recovered using the Round 1 Trailer questionnaire. Missing (.) in R2–R5."
 
+		cap drop name 
+		
 	compress
 	save "${hf}/l2phl_M01_roster.dta", replace
 
@@ -920,20 +922,15 @@
 
 
 	// ── M07 Health ────────────────────────────────────────────────────────────
-	// Conceptually HH-level (one row per HH per round; fmid = respondent).
-	// Pooled in the individual loop → fix by dropping indw; re-merge hhw.
+	// Individual-level. Pooled from the individual loop (one row per fmid per round).
 	// h4/h7/h8 collected from R4 onwards.
 	// h9a/h9b/h9c and h12–h16 are R5 only.
 
 	use "${hf}/l2phl_M07_health.dta", clear
 
-		cap drop dur_hlt name excess_int age age_grp
-		// swap individual weight for HH-level weights
-		cap drop fmid indw
-		merge m:1 round hhid using "${hf}/l2phl_cati_hhw.dta" ///
-			, assert(1 3) keep(3) nogen keepusing(popw hhw)
+		cap drop dur_hlt name excess_int
 
-		order hhid round stratum psu region urban popw hhw ///
+		order hhid round fmid stratum psu region urban age age_grp gender indw ///
 		      h2 h2a h3 h3_oth h4 h4_oth h7 h8 h8_amt ///
 		      h9_1 h9_2 h9_3 h9a h9b h9c ///
 		      h10_1 h10_2 h10_3 ///
@@ -945,14 +942,20 @@
 
 		la var hhid      "L2PHL Household ID"
 		la var round     "L2PHL CATI Round"
+		la var fmid      "Family member ID"
 		la var stratum   "Sampling stratum"
 		la var psu       "Primary sampling unit (PSU)"
 		la var region    "Region"
 			la val region REGION
 		la var urban     "Urban/rural classification"
 			la val urban LOCALE
-		la var popw      "Population weight (household-level data)"
-		la var hhw       "Household weight (household-level data)"
+		la var age       "Age of household member"
+		la var age_grp   "Age group"
+			la val age_grp AGEGRP
+		la var gender    "Gender of household member"
+			la val gender GENDER_ENG
+		la var indw      "Individual weight (individual-level data)"
+
 		la var h2        "In the last 30 days, was it necessary for any HH member to get health care services?"
 			la def H2_ENG ///
 				1  "Yes, inpatient" ///
@@ -1111,7 +1114,8 @@
 			la val f08_e YES_NO_ENG
 
 	compress
-	save "${hf}/l2phl_M08_food_nonfood.dta", replace
+	save "${hf}/l2phl_M08_fies.dta", replace
+		erase "${hf}/l2phl_M08_food_nonfood.dta"
 
 
 	// ── M09 Opinions & Views ──────────────────────────────────────────────────
@@ -1226,6 +1230,8 @@
 			cap drop mofd
 			g mofd = mofd(date)
 				format mofd %tm_CCYY!mNN
+			
+			cap drop name 
 
 	save "${hf}/l2phl_cati_household.dta", replace
 
@@ -1240,6 +1246,9 @@
 			merge m:1 round hhid using "${hf}/l2phl_cati_household.dta" ///
 				, assert(1 3) keep(3) nogen keepusing(date year quarter qofd month mofd)
 
+			cap drop name 
+			
+				
 	save "${hf}/l2phl_cati_individual.dta", replace
 
 		cap erase "${hf}/l2phl_Roster_Level_Data.dta"
