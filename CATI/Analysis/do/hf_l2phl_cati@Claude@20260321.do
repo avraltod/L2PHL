@@ -29,52 +29,52 @@
 	clear all
 	set more off
 
-	// Set root
+	// Set CATI path using LOCAL macros (not globals).
+	// Sub-do-files call  macro drop _all  which wipes globals — but locals
+	// defined here in the master scope survive those drops.
 	loc ow = c(os)
 	if ("`ow'"=="MacOSX")  ///
-		glo root "/Users/avraa/iDrive/GitHub/PHL/L2PHL"
+		loc cati "/Users/avraa/iDrive/GitHub/PHL/L2PHL/CATI"
 	if ("`ow'"=="Windows")  ///
-		glo root "C:\Users\wb463427\OneDrive - WBG\ECAPOV\L2Ss\L2Ukr\CATI"
-
-	glo cati "$root/CATI"
+		loc cati "C:\Users\wb463427\OneDrive - WBG\ECAPOV\L2Ss\L2Ukr\CATI"
 
 	di in green "============================================"
 	di in green " L2PHL CATI @Claude Processing Pipeline"
-	di in green " Root: $root"
+	di in green " CATI: `cati'"
 	di in green "============================================"
 
 // ── ROUND 1 ──────────────────────────────────────────────────────────────────
 
 	di in green _newline ">>> Step 1/6: Round 1 Trailer"
-	do "${cati}/Round01/Round 1 - Trailer/do/L2PHL_CATI@R01_TRAILER@Claude@20251125.do"
+	do "`cati'/Round01/Round 1 - Trailer/do/L2PHL_CATI@R01_TRAILER@Claude@20251125.do"
 
 	di in green _newline ">>> Step 2/6: Round 1"
-	do "${cati}/Round01/do/L2PHL_CATI@R01@Claude@20251125.do"
+	do "`cati'/Round01/do/L2PHL_CATI@R01@Claude@20251125.do"
 
 // ── ROUND 2 ──────────────────────────────────────────────────────────────────
 
 	di in green _newline ">>> Step 3/6: Round 2"
-	do "${cati}/Round02/do/L2PHL_CATI@R02@Claude@20251228.do"
+	do "`cati'/Round02/do/L2PHL_CATI@R02@Claude@20251228.do"
 
 // ── ROUND 3 ──────────────────────────────────────────────────────────────────
 
 	di in green _newline ">>> Step 4/6: Round 3"
-	do "${cati}/Round03/do/L2PHL_CATI@R03@Claude@20260128.do"
+	do "`cati'/Round03/do/L2PHL_CATI@R03@Claude@20260128.do"
 
 // ── ROUND 4 ──────────────────────────────────────────────────────────────────
 
 	di in green _newline ">>> Step 5/6: Round 4"
-	do "${cati}/Round04/do/L2PHL_CATI@R04@Claude@20260228.do"
+	do "`cati'/Round04/do/L2PHL_CATI@R04@Claude@20260228.do"
 
 // ── ROUND 5 ──────────────────────────────────────────────────────────────────
 
 	di in green _newline ">>> Step 6/6: Round 5"
-	do "${cati}/Round05/do/L2PHL_CATI@R05@Claude@20260319.do"
+	do "`cati'/Round05/do/L2PHL_CATI@R05@Claude@20260319.do"
 
 // ── POOLING ──────────────────────────────────────────────────────────────────
 
 	di in green _newline ">>> Pooling all rounds → Analysis/HF/"
-	do "${cati}/Analysis/do/hf_l2phl_analysis@AP@20260320.do"
+	do "`cati'/Analysis/do/hf_l2phl_analysis@AP@20260320.do"
 
 // ── DONE ─────────────────────────────────────────────────────────────────────
 

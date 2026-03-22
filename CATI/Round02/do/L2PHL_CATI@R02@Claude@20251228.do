@@ -20,7 +20,7 @@
 	glo R 02
 	glo pR 00
 	
-	scalar user=2 //1=BB, 2=AP, 3=local team
+	scalar user=4 //1=BB, 2=AP, 3=local team
 	if (user==1) glo wd "/Users/batmandakh/Library/CloudStorage/GoogleDrive-bt.mandah@gmail.com/My Drive/L2Phl/CATI/Round${R}"
 	if (user==2) glo wd "~/Library/CloudStorage/GoogleDrive-avraltod@gmail.com/My Drive/L2Phl/CATI/Round${R}"
 	if (user==3) glo wd "C:/Users/Charles Valencia/OneDrive - PSRC/1-Work/2025/0-SOCIAL/TIPON/CATI/Round02"
