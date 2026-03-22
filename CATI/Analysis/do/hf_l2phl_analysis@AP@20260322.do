@@ -93,28 +93,28 @@
 		clonevar stratum_pop = pop_census_s
 		clonevar stratum_nhh = hh_census_s
 
-	foreach v of varlist indw popw hhw indw_design popw_design hhw_design {
-		cap drop sd_w
-		bys stratum age_grp gender: egen sd_w = sd(`v')
-		replace sd_w = round(sd_w)
-		di in red "					`v' by stratum age_grp gender"
-		summ sd_w
+		foreach v of varlist indw popw hhw indw_design popw_design hhw_design {
+			cap drop sd_w
+			bys stratum age_grp gender: egen sd_w = sd(`v')
+			replace sd_w = round(sd_w)
+			di in red "					`v' by stratum age_grp gender"
+			summ sd_w
 
-		cap drop sd_w
-		bys stratum: egen sd_w = sd(`v')
-		replace sd_w = round(sd_w)
-		di in red "					`v' by stratum "
-		summ sd_w
+			cap drop sd_w
+			bys stratum: egen sd_w = sd(`v')
+			replace sd_w = round(sd_w)
+			di in red "					`v' by stratum "
+			summ sd_w
 
-		cap drop sd_w
-		bys psu : egen sd_w = sd(`v')
-		replace sd_w = round(sd_w)
-		di in red "					`v' by psu "
-		summ sd_w
+			cap drop sd_w
+			bys psu : egen sd_w = sd(`v')
+			replace sd_w = round(sd_w)
+			di in red "					`v' by psu "
+			summ sd_w
 
-		drop sd_w
+			drop sd_w
 
-	}
+		}
 
 // 		bys stratum (psu hhid): egen stratum_pop = total(popw)
 // 		bys stratum (psu hhid): egen stratum_nhh = total(hhw)
@@ -453,6 +453,15 @@
 		1 "Yes, still attending school" ///
 		2 "No, not attending school", replace
 
+	// Member status in each round (used in M01 for dynamic panel tracking)
+	la def D5AOPT ///
+		1 "Yes, member in the household in the last 30 days" ///
+		2 "No, member not in the household in the last 30 days" ///
+		3 "Yes, name is recorded incorrectly" ///
+		4 "Yes, age is recorded incorrectly" ///
+		5 "Yes, sex is recorded incorrectly" ///
+		6 "New member (joined this round)", replace
+
 	la def YES_NO_HEALTH ///
 		1 "Yes" ///
 		2 "No", replace
@@ -628,68 +637,10 @@
 	save "${hf}/l2phl_M00_passport.dta", replace
 
 
-	// ── M01 Roster ────────────────────────────────────────────────────────────
-	// Individual-level. age/gender/hhsize come from the questionnaire itself.
-	// age_grp, stratum, psu, region, urban, indw come from the indw merge.
-	// trailer_tag: R1-only flag for HHs whose isfmid was recovered via Trailer.
-
-	use "${hf}/l2phl_M01_roster.dta", clear
-
-		cap drop isfmid dur_rr excess_int
-
-		order hhid round fmid stratum psu region urban age_grp indw ///
-		      fmidpermanent hhsize age gender relationship ///
-		      member_leftreason member_leftreason_oth member_leftreason_other ///
-		      moved_in_reason moved_in_reason_oth ///
-		      country_moved prov_moved city_moved ///
-		      country_migrated_from province_migrated_from city_migrated_from ///
-		      trailer_tag
-
-		// Variable labels
-		la var hhid                    "L2PHL Household ID"
-		la var round                   "L2PHL CATI Round"
-		la var fmid                    "Family member ID"
-		la var stratum                 "Sampling stratum"
-		la var psu                     "Primary sampling unit (PSU)"
-		la var region                  "Region"
-		la var urban                   "Urban/rural classification"
-		la var age_grp                 "Age group"
-		la var indw                    "Individual weight (individual-level data)"
-		la var fmidpermanent           "Permanent family member ID (assigned at R1 roster)"
-		la var hhsize                  "Household size"
-		la var age                     "Age of household member"
-		la var gender                  "Gender of household member"
-		la var relationship            "Relationship of member to household head"
-		la var member_leftreason       "Reason why household member left"
-		la var member_leftreason_oth   "Reason member left: other (specify)"
-		la var member_leftreason_other "Reason member left: other (string)"
-		la var moved_in_reason         "Reason new member moved into household"
-		la var moved_in_reason_oth     "Reason moved in: other (specify)"
-		la var country_moved           "Country where member moved to"
-		la var prov_moved              "Province where member moved to"
-		la var city_moved              "City/Municipality where member moved to"
-		la var country_migrated_from   "Country where new member came from"
-		la var province_migrated_from  "Province where new member came from"
-		la var city_migrated_from      "City/Municipality where new member came from"
-		la var trailer_tag             "R1 flag: isfmid recovered via Trailer questionnaire"
-
-		// Value labels
-		la val region       REGION
-		la val urban        LOCALE
-		la val age_grp      AGEGRP
-		la val gender       GENDER_ENG
-		la val relationship RELATIONSHIP_ENG
-
-		// Notes
-		note trailer_tag: "R1 only: Flags ~220 households whose household head fmid (isfmid) was recovered using the Round 1 Trailer questionnaire, administered after the main R1 interview. Missing (.) in R2–R5."
-
-	compress
-	save "${hf}/l2phl_M01_roster.dta", replace
-
-
 	// ── M02 Education ─────────────────────────────────────────────────────────
 	// Individual-level. Variables renamed in HF processing:
 	//   ed1–ed14 (questionnaire) → ed15 (school attendance) and ed16 (dropout reason).
+	// Processed BEFORE M01 so ed15 can be merged into the roster below.
 
 	use "${hf}/l2phl_M02_education.dta", clear
 
@@ -725,6 +676,94 @@
 
 	compress
 	save "${hf}/l2phl_M02_education.dta", replace
+
+
+	// ── M01 Roster ────────────────────────────────────────────────────────────
+	// Individual-level. The roster is the dynamic panel backbone:
+	//   • isfmid tracks member status each round (active/left/correction/new)
+	//   • New members (isfmid=6) enter with a fresh fmid and full demographics
+	//   • Departing members (isfmid=2) keep their historical rows; fmid unchanged
+	// Core demographics per member: age, gender, relationship, school attendance
+	//
+	// NOTE: marital status not yet collected (R1–R5). To add in R6: include
+	// marital_status in the new-member intake section of the roster module,
+	// alongside age, gender, relationship, and education.
+	//
+	// age_grp, stratum, psu, region, urban, indw come from the indw merge.
+	// trailer_tag: R1-only flag for HHs whose isfmid was recovered via Trailer.
+
+	use "${hf}/l2phl_M01_roster.dta", clear
+
+		// drop system/admin vars only — isfmid KEPT (member status for panel tracking)
+		cap drop dur_rr excess_int
+
+		// fix fmidpermanent for new members (isfmid==6): assign their own fmid
+		// (they have no baseline round, so fmidpermanent is otherwise missing)
+		replace fmidpermanent = fmid if isfmid == 6 & fmidpermanent == .
+
+		// bring in school-attendance status from the cleaned M02 file
+		// (covers ~79% of age group 1 [0-17]; missing for adults/elderly)
+		merge 1:1 round hhid fmid using "${hf}/l2phl_M02_education.dta" ///
+			, assert(1 2 3) keep(1 3) nogen keepusing(ed15 ed16)
+
+		order hhid round fmid stratum psu region urban age age_grp gender indw ///
+		      isfmid fmidpermanent hhsize relationship ed15 ed16 ///
+		      member_leftreason member_leftreason_oth member_leftreason_other ///
+		      moved_in_reason moved_in_reason_oth ///
+		      country_moved prov_moved city_moved ///
+		      country_migrated_from province_migrated_from city_migrated_from ///
+		      trailer_tag
+
+		// Variable labels
+		la var hhid                    "L2PHL Household ID"
+		la var round                   "L2PHL CATI Round"
+		la var fmid                    "Family member ID"
+		la var stratum                 "Sampling stratum"
+		la var psu                     "Primary sampling unit (PSU)"
+		la var region                  "Region"
+		la var urban                   "Urban/rural classification"
+		la var age                     "Age of household member"
+		la var age_grp                 "Age group"
+		la var gender                  "Gender of household member"
+		la var indw                    "Individual weight (individual-level data)"
+		la var isfmid                  "Member status in this round"
+		la var fmidpermanent           "Permanent family member ID (first round entered)"
+		la var hhsize                  "Household size"
+		la var relationship            "Relationship of member to household head"
+		la var ed15                    "Is the person still attending school? (from M02)"
+		la var ed16                    "Why did the person drop out from school? (from M02)"
+		la var member_leftreason       "Reason why household member left"
+		la var member_leftreason_oth   "Reason member left: other (specify)"
+		la var member_leftreason_other "Reason member left: other (string)"
+		la var moved_in_reason         "Reason new member moved into household"
+		la var moved_in_reason_oth     "Reason moved in: other (specify)"
+		la var country_moved           "Country where member moved to"
+		la var prov_moved              "Province where member moved to"
+		la var city_moved              "City/Municipality where member moved to"
+		la var country_migrated_from   "Country where new member came from"
+		la var province_migrated_from  "Province where new member came from"
+		la var city_migrated_from      "City/Municipality where new member came from"
+		la var trailer_tag             "R1 flag: isfmid recovered via Trailer questionnaire"
+
+		// Value labels
+		la val region       REGION
+		la val urban        LOCALE
+		la val age_grp      AGEGRP
+		la val gender       GENDER_ENG
+		la val isfmid       D5AOPT
+		la val relationship RELATIONSHIP_ENG
+		la val ed15         ED15_YN_ENG
+
+		// Notes
+		note isfmid: "Tracks each member's status in every round: 1=active, 2=left HH, 3=name correction, 4=age correction, 5=sex correction, 6=new member. Essential for unbalanced panel construction — use isfmid==1 or ==6 to keep currently active members."
+		note ed15:   "School attendance status merged from M02 education module. Covers ~79% of age group 1 (0-17) and ~14% of age group 2 (18-45). Missing for age group 3 (46+) — not collected."
+		note ed16:   "Dropout reason merged from M02 education module. Only populated when ed15==2 (not attending school)."
+		note trailer_tag: "R1 only: Flags ~220 households whose household head fmid (isfmid) was recovered using the Round 1 Trailer questionnaire. Missing (.) in R2–R5."
+		note fmidpermanent: "Permanent fmid from the first round the member appears. For baseline members (R1) this equals their R1 fmid. For new members (isfmid=6) who joined in R3–R5, fmidpermanent is set equal to their fmid (assigned when they joined)."
+		note hhid: "Dynamic panel roster: members who leave (isfmid=2) retain their rows in earlier rounds with their fmid unchanged. New members (isfmid=6) receive a completely new fmid and have full demographics (age, gender, relationship, ed15) collected at entry. Marital status was NOT collected in R1–R5 — planned for R6 new-member intake."
+
+	compress
+	save "${hf}/l2phl_M01_roster.dta", replace
 
 
 	// ── M03 Shocks ────────────────────────────────────────────────────────────
