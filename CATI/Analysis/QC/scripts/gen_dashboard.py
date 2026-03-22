@@ -411,6 +411,22 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
   <div class="chart-box"><div class="ch-title">Participation Pattern Distribution</div><div class="ch-sub">Top patterns (1=present, 0=absent per round)</div><div style="height:220px"><canvas id="panelPatChart"></canvas></div></div>
 </div>
 <div class="card" style="margin-top:6px">
+  <h2>🏠 Household Panel Tracker <span id="hh-matrix-badge" class="badge badge-blue"></span></h2>
+  <p style="font-size:12px;color:#666;margin-bottom:10px">Every household across all rounds — when they joined, when they left, and their full participation history. Green = interviewed, Red = absent.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+    <input id="hh-search" type="text" placeholder="Search by HHID or PSU…"
+      style="padding:6px 10px;border:1px solid #ccc;border-radius:4px;font-size:12.5px;width:200px">
+    <select id="hh-region-filter" style="padding:6px 8px;border:1px solid #ccc;border-radius:4px;font-size:12.5px">
+      <option value="">All Regions</option>
+    </select>
+    <div id="hh-status-filter" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+    <div id="hh-urban-filter" style="display:flex;gap:4px"></div>
+    <button onclick="window._hhDownloadCsv()" style="margin-left:auto;padding:5px 12px;background:#1a2332;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px">⬇ Download CSV</button>
+  </div>
+  <div id="hh-matrix-table"></div>
+  <div id="hh-matrix-pagination" style="margin-top:8px;display:flex;gap:4px;align-items:center;flex-wrap:wrap"></div>
+</div>
+<div class="card" style="margin-top:6px">
   <h2>📍 PSU Coverage vs Targets <span class="badge badge-blue">Urban: 6 HH/PSU &nbsp;|&nbsp; Rural: 7 HH/PSU</span></h2>
   <div id="panel-psu-status"></div>
 </div>
@@ -1120,6 +1136,184 @@ function buildPanel(){
       scales:{x:{ticks:{font:{size:10}}},
               y:{beginAtZero:true,title:{display:true,text:'Households',font:{size:11}}}}}
   });
+
+  // ── Household panel tracker ───────────────────────────────────────────────
+  if(p.hh_matrix && p.hh_matrix.length){
+    const HHM = p.hh_matrix;
+    const PAGE_SIZE = 50;
+    const STATUS_COLORS = {
+      'All Rounds':       {bg:'#d4edda', txt:'#155724'},
+      'Left Panel':       {bg:'#fde8e8', txt:'#7b1c1c'},
+      'New Entry':        {bg:'#cce5ff', txt:'#004085'},
+      'New Entry → Left': {bg:'#fff3cd', txt:'#856404'},
+      'Intermittent':     {bg:'#e2e3e5', txt:'#383d41'},
+    };
+    const ROUNDS_DISP = [1,2,3,4,5];
+
+    // Badge
+    const matBadge = document.getElementById('hh-matrix-badge');
+    if(matBadge) matBadge.textContent = `${HHM.length} households`;
+
+    // Populate region dropdown
+    const regSel = document.getElementById('hh-region-filter');
+    if(regSel){
+      const regSet = {};
+      HHM.forEach(h=>{if(h.region) regSet[h.region]=h.region_name;});
+      Object.keys(regSet).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(k=>{
+        const opt=document.createElement('option');
+        opt.value=k; opt.textContent=regSet[k];
+        regSel.appendChild(opt);
+      });
+      regSel.addEventListener('change',()=>{_hhState.region=regSel.value;_hhState.page=0;renderHH();});
+    }
+
+    // Status filter buttons
+    const statusFilterEl = document.getElementById('hh-status-filter');
+    const STATUS_LIST = ['All Rounds','Left Panel','New Entry','New Entry → Left','Intermittent'];
+    if(statusFilterEl){
+      const counts = {};
+      STATUS_LIST.forEach(s=>{counts[s]=HHM.filter(h=>h.status===s).length;});
+      [['All',''],...STATUS_LIST.map(s=>[s,s])].forEach(([label,val])=>{
+        const n = val===''?HHM.length:counts[val]||0;
+        const btn=document.createElement('button');
+        btn.textContent=`${label} (${n})`;
+        btn.className='round-btn'+(val===''?' active':'');
+        btn.style.fontSize='11px';
+        btn.addEventListener('click',()=>{
+          statusFilterEl.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          _hhState.status=val; _hhState.page=0; renderHH();
+        });
+        statusFilterEl.appendChild(btn);
+      });
+    }
+
+    // Urban/Rural filter
+    const urbanFilterEl = document.getElementById('hh-urban-filter');
+    if(urbanFilterEl){
+      [['All',''],['Urban','1'],['Rural','2']].forEach(([label,val])=>{
+        const btn=document.createElement('button');
+        btn.textContent=label; btn.className='round-btn'+(val===''?' active':'');
+        btn.style.fontSize='11px';
+        btn.addEventListener('click',()=>{
+          urbanFilterEl.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          _hhState.urban=val; _hhState.page=0; renderHH();
+        });
+        urbanFilterEl.appendChild(btn);
+      });
+    }
+
+    // Search box
+    const searchEl = document.getElementById('hh-search');
+    if(searchEl) searchEl.addEventListener('input',()=>{_hhState.query=searchEl.value.trim().toLowerCase();_hhState.page=0;renderHH();});
+
+    // State
+    const _hhState = {page:0, status:'', region:'', urban:'', query:''};
+
+    function getFiltered(){
+      return HHM.filter(h=>{
+        if(_hhState.status && h.status!==_hhState.status) return false;
+        if(_hhState.region && String(h.region)!==_hhState.region) return false;
+        if(_hhState.urban && String(h.urban)!==_hhState.urban) return false;
+        if(_hhState.query){
+          const q=_hhState.query;
+          if(!String(h.hhid).includes(q) && !h.psu.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderHH(){
+      const filtered = getFiltered();
+      const total = filtered.length;
+      const start = _hhState.page * PAGE_SIZE;
+      const page  = filtered.slice(start, start+PAGE_SIZE);
+      const tableEl  = document.getElementById('hh-matrix-table');
+      const pageEl   = document.getElementById('hh-matrix-pagination');
+
+      // Table
+      let html=`<p style="font-size:11.5px;color:#555;margin:0 0 6px">Showing ${Math.min(start+1,total)}–${Math.min(start+PAGE_SIZE,total)} of ${total} households</p>
+        <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:640px">
+        <thead><tr style="background:#1a2332;color:#fff">
+          <th style="padding:6px 9px;text-align:left;cursor:pointer">HHID</th>
+          <th style="padding:6px 9px;text-align:left">PSU</th>
+          <th style="padding:6px 9px;text-align:left">Region</th>
+          <th style="padding:6px 8px;text-align:center">Type</th>
+          ${ROUNDS_DISP.map(r=>`<th style="padding:6px 8px;text-align:center;width:36px">R${r}</th>`).join('')}
+          <th style="padding:6px 9px;text-align:center">Rounds</th>
+          <th style="padding:6px 9px;text-align:center">First</th>
+          <th style="padding:6px 9px;text-align:center">Last</th>
+          <th style="padding:6px 9px;text-align:center">Status</th>
+        </tr></thead><tbody>`;
+
+      page.forEach((h,i)=>{
+        const rowBg = i%2===0?'#f8f9fa':'#fff';
+        const uTag = h.urban===1
+          ?`<span style="background:#cce5ff;color:#004085;border-radius:3px;padding:1px 5px;font-size:10px">Urban</span>`
+          :`<span style="background:#d4edda;color:#155724;border-radius:3px;padding:1px 5px;font-size:10px">Rural</span>`;
+        const sc = STATUS_COLORS[h.status]||{bg:'#eee',txt:'#333'};
+        const roundCells = ROUNDS_DISP.map(r=>{
+          const present = h.presence[String(r)]===1;
+          return `<td style="padding:4px 6px;text-align:center;background:${present?'#d4edda':'#fde8e8'};color:${present?'#155724':'#c0392b'};font-weight:700;font-size:13px">
+            ${present?'✓':'✗'}</td>`;
+        }).join('');
+        html+=`<tr style="background:${rowBg}">
+          <td style="padding:5px 9px;font-family:monospace;font-size:11px;font-weight:600">${h.hhid}</td>
+          <td style="padding:5px 9px;font-family:monospace;font-size:10.5px;color:#555">${h.psu}</td>
+          <td style="padding:5px 9px;font-size:11.5px">${h.region_name}</td>
+          <td style="padding:5px 8px;text-align:center">${uTag}</td>
+          ${roundCells}
+          <td style="padding:5px 9px;text-align:center;font-weight:700">${h.rounds_present}</td>
+          <td style="padding:5px 9px;text-align:center;color:#555">R${h.first_round||'—'}</td>
+          <td style="padding:5px 9px;text-align:center;color:#555">R${h.last_round||'—'}</td>
+          <td style="padding:5px 9px;text-align:center">
+            <span style="background:${sc.bg};color:${sc.txt};border-radius:3px;padding:2px 7px;font-size:10.5px;font-weight:600;white-space:nowrap">${h.status}</span>
+          </td>
+        </tr>`;
+      });
+      html+=`</tbody></table></div>`;
+      if(tableEl) tableEl.innerHTML=html;
+
+      // Pagination
+      const totalPages = Math.ceil(total/PAGE_SIZE);
+      let pHtml='';
+      if(totalPages>1){
+        pHtml+=`<span style="font-size:12px;color:#555">Page ${_hhState.page+1} of ${totalPages}</span>`;
+        if(_hhState.page>0)
+          pHtml+=`<button class="round-btn" style="font-size:11px" onclick="_hhState.page--;renderHH()">◀ Prev</button>`;
+        // Show up to 7 page buttons around current
+        const pStart=Math.max(0,_hhState.page-3);
+        const pEnd=Math.min(totalPages-1,_hhState.page+3);
+        for(let pg=pStart;pg<=pEnd;pg++){
+          pHtml+=`<button class="round-btn${pg===_hhState.page?' active':''}" style="font-size:11px;min-width:30px"
+            onclick="_hhState.page=${pg};renderHH()">${pg+1}</button>`;
+        }
+        if(_hhState.page<totalPages-1)
+          pHtml+=`<button class="round-btn" style="font-size:11px" onclick="_hhState.page++;renderHH()">Next ▶</button>`;
+      }
+      if(pageEl) pageEl.innerHTML=pHtml;
+    }
+
+    // CSV download
+    window._hhDownloadCsv=function(){
+      const filtered=getFiltered();
+      const header=['hhid','psu','region','region_name','urban_label','R1','R2','R3','R4','R5','rounds_present','first_round','last_round','status','pattern'];
+      const rows=filtered.map(h=>[
+        h.hhid, h.psu, h.region, h.region_name, h.urban_label,
+        h.presence['1'], h.presence['2'], h.presence['3'], h.presence['4'], h.presence['5'],
+        h.rounds_present, h.first_round||'', h.last_round||'', h.status, h.pattern
+      ]);
+      const csv=[header,...rows].map(r=>r.join(',')).join('\\n');
+      const a=document.createElement('a');
+      a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+      a.download='l2phl_panel_households.csv';
+      a.click();
+    };
+
+    renderHH();
+  }
 
   // ── PSU status table ──
   const psuEl = document.getElementById('panel-psu-status');
