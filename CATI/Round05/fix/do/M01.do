@@ -1,0 +1,11 @@
+ replace member_leftreason = 13 if hhid == 13239 & fmid == 4  // 46088
+ replace moved_in_reason = 9 if hhid == 41090 & fmid == 13  // 46088
+ replace moved_in_reason = 26 if hhid == 57080 & fmid == 8  // 46088
+ replace isfmid = 2 if hhid == 13239 & fmid == 4  // 46090
+ replace member_leftreason = 6 if hhid == 31501 & fmid == 2  // 46091
+ replace moved_in_reason = 6 if hhid == 9546 & fmid == 3  // 46091
+ replace moved_in_reason = 28 if hhid == 72535 & fmid == 6  // 46097
+ replace member_leftreason = 1 if hhid == 60065 & fmid == 4  // 46097
+ replace country_moved = 1 if hhid == 60065 & fmid == 4  // 46098
+ replace prov_moved = 67 if hhid == 60065 & fmid == 4  // 46098
+ replace city_moved = 1349 if hhid == 60065 & fmid == 4  // 46098

@@ -1,0 +1,16 @@
+ replace hhid = 74025 if hhid == . & hhid == .  // 46002
+ replace v1 = 5 if v1 == . & hhid == 74025  // 46002
+ replace v5 = 4 if v5 == . & hhid == 74025  // 46002
+ replace v9_a = 5 if v9_a == . & hhid == 74025  // 46002
+ replace v9_b = 4 if v9_b == . & hhid == 74025  // 46002
+ replace v9_c = 4 if v9_c == . & hhid == 74025  // 46002
+ replace v9_e = 4 if v9_e == . & hhid == 74025  // 46002
+ replace v9_f = 4 if v9_f == . & hhid == 74025  // 46002
+ replace v9_g = 2 if v9_g == . & hhid == 74025  // 46002
+ replace v9_i = 2 if v9_i == . & hhid == 74025  // 46002
+ replace v9_j = 3 if v9_j == . & hhid == 74025  // 46002
+ replace v9_k = 2 if v9_k == . & hhid == 74025  // 46002
+ replace v9_l = 3 if v9_l == . & hhid == 74025  // 46002
+ replace v9_m = 3 if v9_m == . & hhid == 74025  // 46002
+ replace v11 = 2 if v11 == . & hhid == 74025  // 46002
+ replace v12 = 2 if v12 == . & hhid == 74025  // 46002

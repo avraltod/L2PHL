@@ -21,7 +21,9 @@ CATI/Analysis/QC/cache/
 **/tpn/
 
 # ── Fix records (may contain PII corrections) ─────────────────────────────────
-**/fix/
+**/fix/*/            # date-stamped fix snapshots (e.g. fix/20251125/) — contain data
+**/fix/fix_record/   # supervisor fix logs — may contain PII
+# Note: fix/do/ is intentionally NOT ignored — cleaning scripts are tracked
 
 # ── Stata log and temp files ──────────────────────────────────────────────────
 *.smcl

@@ -1,0 +1,47 @@
+ replace h3 = 99 if hhid == 24058  // 46088
+ replace h3 = 1 if hhid == 32532  // 46088
+ replace h16 = "" if hhid == 114034  // 46088
+ replace h16_1 = . if hhid == 114034  // 46088
+ replace h3 = 11 if hhid == 11088  // 46091
+ replace h3 = 99 if hhid == 4100  // 46091
+ replace h4 = 4 if hhid == 2597  // 46091
+ replace h13 = 3 if hhid == 33017  // 46091
+ replace h11b_1__1 = 11 if hhid == 39558  // 46091
+ replace h11b_1__1 = 11 if hhid == 92024  // 46091
+ replace h11b_2__1 = 25 if hhid == 92024  // 46091
+ replace h11b_1__1 = 11 if hhid == 37680  // 46091
+ replace h4 = 4 if hhid == 20502  // 46092
+ replace h11b_1__2 = 11 if hhid == 17127  // 46092
+ replace h11b_2__1 = 6 if hhid == 20502  // 46092
+ replace h3 = 2 if hhid == 10538  // 46093
+ replace h3 = 32 if hhid == 24528  // 46093
+ replace h3 = 32 if hhid == 14261  // 46093
+ replace h3 = 47 if hhid == 29585  // 46094
+ replace h3 = 32 if hhid == 6224  // 46094
+ replace h11b_1__1 = 11 if hhid == 29585  // 46094
+ replace h11b_1__1 = 11 if hhid == 71034  // 46094
+ replace h11b_1__1 = 11 if hhid == 32068  // 46094
+ replace h11b_2__1 = 11 if hhid == 32068  // 46094
+ replace h3 = 32 if hhid == 42079  // 46095
+ replace h11b_3__1 = 6 if hhid == 15580  // 46097
+ replace h11b_1__1 = 8 if hhid == 38176  // 46097
+ replace h3 = 2 if hhid == 22582  // 46098
+ replace h3 = 32 if hhid == 10718  // 46098
+ replace h4 = 2 if hhid == 34030  // 46098
+ replace h3 = 99 if hhid == 24590  // 46099
+ replace h9_1 = 1 if hhid == 5087  // 46099
+ replace h10_1 = 2 if hhid == 5087  // 46099
+ replace h9_1 = 2 if hhid == 32506  // 46099
+ replace h10_1 = 1 if hhid == 32506  // 46099
+ replace h9_1 = 1 if hhid == 54511  // 46099
+ replace h10_1 = 1 if hhid == 54511  // 46099
+ replace h9_1 = 1 if hhid == 99016  // 46099
+ replace h10_1 = 1 if hhid == 99016  // 46099
+replace h11a_1 = 620 if hhid == 32506  // 45734
+replace h11a_1 = 1000 if hhid == 54511  // 45734
+replace h11a_1 = 700 if hhid == 99016  // 45734
+replace h11b_1__1 = 2 if hhid == 32506  // 45734
+replace h11b_1__1 = 2 if hhid == 54511  // 45734
+replace h11b_1__1 = 2 if hhid == 99016  // 45734
+replace h15 = . if hhid == 17578  // 45734
+replace h15 = . if hhid == 29088  // 45734

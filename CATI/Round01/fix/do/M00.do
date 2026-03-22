@@ -1,0 +1,21 @@
+ replace int_id = 9408 if int_id == . & hhid == 536  // 46000
+ replace int_id = 1943 if int_id == . & hhid == 54094  // 46000
+ replace int_id = 9539 if int_id == . & hhid == 85073  // 46000
+ replace int_id = 9539 if int_id == . & hhid == 87024  // 46000
+ replace hhid = 74025 in 1240  // 46000
+ replace round = 1 if round == . & hhid == 74025  // 46000
+ replace hhsize = 4 if hhsize == . & hhid == 74025  // 46000
+ replace int_id = 1050 if int_id == . & hhid == 74025  // 46000
+ replace call_attemp = 1 if call_attemp == . & hhid == 74025  // 46000
+ replace correct_resp = 1 if correct_resp == . & hhid == 74025  // 46000
+ replace agreement = 1 if agreement == . & hhid == 74025  // 46000
+ replace interview_record = 1 if interview_record == . & hhid == 74025  // 46000
+ replace x11 = 1 if x11 == . & hhid == 74025  // 46000
+ replace x12 = 1 if x12 == . & hhid == 74025  // 46000
+ replace x13_phone = 639060855369 if x13_phone == . & hhid == 74025  // 46000
+ replace x14 = 639105482029 if x14 == . & hhid == 74025  // 46000
+ replace x15 = 1 if x15 == . & hhid == 74025  // 46000
+ replace region = 3 if region == 13 & hhid == 47575  // 46000
+ replace region = 6 if region == 13 & hhid == 50556  // 46000
+ replace barangay = 1158 if barangay == 7841 & hhid == 50556  // 46000
+ replace locale = 2 if locale == 1 & hhid == 50556  // 46000

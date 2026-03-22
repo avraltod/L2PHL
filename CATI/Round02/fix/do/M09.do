@@ -1,0 +1,9 @@
+ replace v5 = 4 if v5 == 3 & hhid == 53613  // 46020
+ replace v9_a = 5 if v9_a == 4 & hhid == 53613  // 46020
+ replace v9_b = 3 if v9_b == 4 & hhid == 53613  // 46020
+ replace v9_e = 5 if v9_e == 4 & hhid == 53613  // 46020
+ replace v9_g = 3 if v9_g == 4 & hhid == 53613  // 46020
+ replace v9_k = 3 if v9_k == 2 & hhid == 53613  // 46020
+ replace v9_l = 1 if v9_l == 2 & hhid == 53613  // 46020
+ replace v9_m = 1 if v9_m == 2 & hhid == 53613  // 46020
+ replace v12 = 2 if v12 == 1 & hhid == 53613  // 46020
