@@ -869,8 +869,23 @@ pre.stata-pre .op{color:#F5C48A;}
 <span class="co">* Table 3-B: Mobile money trend R1–R5  →  14.9% → 16.2% → 18.7% → 18.9% → 20.8%</span>
 <span class="cm">svy:</span> <span class="cm">mean</span> f2_y, <span class="kw">over</span>(round)
 
-<span class="co">* Table 3-C: Loan purpose R5 (among borrowers; f8_1=Medical f8_2=Housing f8_3=Business)</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> f8_1 f8_2 f8_3 f8_4 f8_5 f8_6 f8_7 <span class="kw">if</span> round==<span class="nu">5</span> &amp; f7_y==<span class="nu">1</span>
+<span class="co">* Table 3-C: Loan purpose R5 — f8_1..f8_7 are SLOTS (1st, 2nd… purpose mentioned)</span>
+<span class="co">* Purpose codes: 1=Housing  3=Food  4=Other consumption  5=Business  6=Education  7=Health</span>
+<span class="co">* Create binary indicators by searching across all slots</span>
+<span class="kw">foreach</span> p <span class="kw">in</span> food business education health housing other {
+    <span class="kw">gen</span> purp_`p' = <span class="nu">0</span> <span class="kw">if</span> f7_y==<span class="nu">1</span>
+}
+<span class="kw">foreach</span> slot <span class="kw">of varlist</span> f8_1 f8_2 f8_3 f8_4 f8_5 f8_6 f8_7 {
+    <span class="kw">replace</span> purp_food      = <span class="nu">1</span> <span class="kw">if</span> `slot'==<span class="nu">3</span>  &amp; f7_y==<span class="nu">1</span>
+    <span class="kw">replace</span> purp_business  = <span class="nu">1</span> <span class="kw">if</span> `slot'==<span class="nu">5</span>  &amp; f7_y==<span class="nu">1</span>
+    <span class="kw">replace</span> purp_education = <span class="nu">1</span> <span class="kw">if</span> `slot'==<span class="nu">6</span>  &amp; f7_y==<span class="nu">1</span>
+    <span class="kw">replace</span> purp_health    = <span class="nu">1</span> <span class="kw">if</span> `slot'==<span class="nu">7</span>  &amp; f7_y==<span class="nu">1</span>
+    <span class="kw">replace</span> purp_housing   = <span class="nu">1</span> <span class="kw">if</span> `slot'==<span class="nu">1</span>  &amp; f7_y==<span class="nu">1</span>
+    <span class="kw">replace</span> purp_other     = <span class="nu">1</span> <span class="kw">if</span> (`slot'==<span class="nu">4</span> | `slot'==<span class="nu">25</span>) &amp; f7_y==<span class="nu">1</span>
+}
+<span class="cm">svy:</span> <span class="cm">mean</span> purp_food purp_business purp_education purp_health purp_housing purp_other ///
+     <span class="kw">if</span> round==<span class="nu">5</span> &amp; f7_y==<span class="nu">1</span>
+<span class="co">* Food: 37.4%   Business: 15.2%   Education: 13.5%   Health: 9.4%   Housing: 8.2%</span>
 
 <span class="co">* Table 3-D: Loan source R5  (f9: 1=formal bank  2=informal  3=coop  4=pawnshop)</span>
 <span class="cm">tab</span> f9 <span class="kw">if</span> round==<span class="nu">5</span> &amp; f7_y==<span class="nu">1</span>

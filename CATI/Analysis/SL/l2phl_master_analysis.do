@@ -34,7 +34,7 @@
 * ═══════════════════════════════════════════════════════════════════════════════
 
 * ── Globals ────────────────────────────────────────────────────────────────────
-global HF  "CATI/Analysis/HF"
+global HF  "~/iDrive/GitHub/PHL/L2PHL/CATI/Analysis/HF"
 global OUT "CATI/Analysis/SL/output"
 cap mkdir "$OUT"
 
@@ -229,10 +229,25 @@ svy: mean f2_y, over(round)
 * R1=14.9%  R2=16.2%  R3=18.7%  R4=18.9%  R5=20.8%
 
 * ── Table 3-C: Loan purpose R5 (among borrowers) ────────────────────────────
-* f8_1=Medical  f8_2=Housing  f8_3=Business  f8_4=Food  f8_5=Education
-* f8_6=Ceremonial  f8_7=Debt repayment
-svy: mean f8_1 f8_2 f8_3 f8_4 f8_5 f8_6 f8_7 if round==5 & f7_y==1
-* Medical/health: top purpose; followed by housing and business
+* f8_1..f8_7 are PURPOSE SLOTS (1st, 2nd, 3rd… purpose mentioned) — NOT binary dummies.
+* Purpose codes: 1=Housing  3=Food  4=Other consumption  5=Business
+*                6=Education  7=Health  25=Unexpected bills
+* Strategy: create a binary indicator for each purpose by searching all slots.
+foreach p in food business education health housing other {
+    gen purp_`p' = 0 if f7_y==1
+}
+foreach slot of varlist f8_1 f8_2 f8_3 f8_4 f8_5 f8_6 f8_7 {
+    replace purp_food      = 1 if `slot'==3  & f7_y==1
+    replace purp_business  = 1 if `slot'==5  & f7_y==1
+    replace purp_education = 1 if `slot'==6  & f7_y==1
+    replace purp_health    = 1 if `slot'==7  & f7_y==1
+    replace purp_housing   = 1 if `slot'==1  & f7_y==1
+    replace purp_other     = 1 if (`slot'==4 | `slot'==25) & f7_y==1
+}
+svy: mean purp_food purp_business purp_education purp_health purp_housing purp_other ///
+     if round==5 & f7_y==1
+* Food: 37.4%   Other consumption: 33.3%   Business: 15.2%
+* Education: 13.5%   Health: 9.4%   Housing: 8.2%
 
 * ── Table 3-D: Loan source R5 (among borrowers) ─────────────────────────────
 * f9: 1=formal bank  2=informal lender  3=cooperative  4=pawnshop  5=govt
