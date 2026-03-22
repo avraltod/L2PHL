@@ -461,6 +461,11 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
   <div id="panel-psu-problems"></div>
 </div>
 <div class="card">
+  <h2>🔗 Within-PSU Refusal Clustering Risk <span class="badge badge-red">Field Action Required</span></h2>
+  <p style="font-size:12px;color:#666;margin-bottom:8px">Cross-reference of under-target PSUs with round-to-round attrition rates by region. Regions flagged HIGH show both elevated attrition AND PSU coverage problems — two failure modes that compound each other and cannot both be fixed by weighting alone.</p>
+  <div id="panel-refusal-risk"></div>
+</div>
+<div class="card">
   <h2>📅 Call Interval Tracker <span id="panel-call-badge" class="badge badge-red"></span></h2>
   <p style="font-size:12px;color:#666;margin-bottom:10px">Days between consecutive interviews for the same household. Minimum required interval is 30 days.</p>
   <div id="panel-call-summary"></div>
@@ -1519,6 +1524,117 @@ function buildPanel(){
       });
     }
     renderPsuProblems();
+  }
+
+  // ── Within-PSU refusal clustering risk ───────────────────────────────────
+  const refusalEl = document.getElementById('panel-refusal-risk');
+  if(refusalEl && p.psu_problem_list && bias && (bias.transitions||[]).length){
+
+    // Step 1: aggregate PSU problem counts by region
+    const regPsu = {};
+    p.psu_problem_list.forEach(psu=>{
+      const rk=String(psu.region);
+      if(!regPsu[rk]) regPsu[rk]={name:psu.region_name, total:0, chronic:0, zero:0};
+      regPsu[rk].total++;
+      if(psu.n_under>=3) regPsu[rk].chronic++;
+      if(psu.n_zero>0)   regPsu[rk].zero++;
+    });
+
+    // Step 2: build per-region retention lookup from bias.transitions
+    const regRetMap = {};
+    bias.transitions.forEach(t=>{
+      (t.reg_ret_rates||[]).forEach(r=>{
+        const rk=String(r.region);
+        if(!regRetMap[rk]) regRetMap[rk]={name:r.name};
+        regRetMap[rk][t.label]=r.pct_retained;
+      });
+    });
+
+    // Step 3: merge all regions and classify risk
+    const allRks=new Set([...Object.keys(regPsu),...Object.keys(regRetMap)]);
+    const rows=[];
+    allRks.forEach(rk=>{
+      const pi=regPsu[rk]; const ri=regRetMap[rk];
+      if(!pi && !ri) return;
+      const name=(pi||ri).name||rk;
+      const nTotal  = pi?pi.total:0;
+      const nChronic= pi?pi.chronic:0;
+      const nZero   = pi?pi.zero:0;
+      // Lowest retention across any transition
+      let lowestRet=100;
+      if(ri) bias.transitions.forEach(t=>{
+        const pct=ri[t.label];
+        if(pct!==undefined && pct<lowestRet) lowestRet=pct;
+      });
+      const hasPsu=(nChronic>0||nZero>0);
+      const hasAttr=(lowestRet<65);
+      const risk=hasPsu&&hasAttr?'HIGH':hasPsu||hasAttr?'MODERATE':'LOW';
+      rows.push({rk,name,nTotal,nChronic,nZero,lowestRet,risk,ri});
+    });
+    const rOrder={HIGH:0,MODERATE:1,LOW:2};
+    rows.sort((a,b)=>{
+      if(rOrder[a.risk]!==rOrder[b.risk]) return rOrder[a.risk]-rOrder[b.risk];
+      return b.nChronic-a.nChronic;
+    });
+
+    const nHigh=rows.filter(r=>r.risk==='HIGH').length;
+    const nMod =rows.filter(r=>r.risk==='MODERATE').length;
+    const tLabels=bias.transitions.map(t=>t.label);
+
+    let html=`<div style="background:#fde8e8;border-left:4px solid #e74c3c;padding:12px 16px;border-radius:4px;margin-bottom:14px;font-size:12px;color:#333">
+      <strong>⚠️ Methodological note for fieldwork team</strong><br>
+      Post-stratification weights correct for <em>between-PSU</em> regional imbalances, but
+      <em>within-PSU</em> refusal clustering cannot be fixed by weighting. If the households
+      that refused replacement share characteristics (same community norms, socioeconomic profile,
+      or local trust in the survey), the responding sample within those PSUs is already self-selected
+      before any weight is applied. <strong>${nHigh} region${nHigh!==1?'s':''} below are flagged HIGH</strong>
+      — they show both elevated round-to-round attrition <em>and</em> chronic PSU shortfalls.
+      These require field-level intervention (re-contact, community entry strategy) rather than
+      statistical correction. <strong>${nMod} region${nMod!==1?'s':''} are MODERATE</strong> — one
+      of the two problems is present.
+    </div>
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:640px">
+    <thead><tr style="background:#1a2332;color:#fff">
+      <th style="padding:7px 10px;text-align:left">Region</th>
+      <th style="padding:7px 10px;text-align:center">Under-target<br><span style="font-weight:normal;font-size:10px">PSUs</span></th>
+      <th style="padding:7px 10px;text-align:center;background:#8e1e1e">Chronic<br><span style="font-weight:normal;font-size:10px">≥3 rounds under</span></th>
+      <th style="padding:7px 10px;text-align:center;background:#6d1212">Ever-zero<br><span style="font-weight:normal;font-size:10px">0 HHs in any round</span></th>
+      ${tLabels.map(l=>`<th style="padding:7px 8px;text-align:center">% Ret<br><span style="font-weight:normal;font-size:10px">${l}</span></th>`).join('')}
+      <th style="padding:7px 10px;text-align:center">Risk</th>
+    </tr></thead><tbody>`;
+
+    rows.forEach((r,i)=>{
+      const bg=i%2===0?'#f8f9fa':'#fff';
+      const rBadge={HIGH:'badge-red',MODERATE:'badge-yellow',LOW:'badge-green'};
+      html+=`<tr style="background:${bg}">
+        <td style="padding:6px 10px;font-weight:600">${r.name}</td>
+        <td style="padding:6px 10px;text-align:center">${r.nTotal>0?r.nTotal:'—'}</td>
+        <td style="padding:6px 10px;text-align:center">${r.nChronic>0
+          ?`<span style="background:#e74c3c;color:#fff;border-radius:3px;padding:1px 7px;font-weight:700">${r.nChronic}</span>`:'—'}</td>
+        <td style="padding:6px 10px;text-align:center">${r.nZero>0
+          ?`<span style="background:#c0392b;color:#fff;border-radius:3px;padding:1px 7px;font-weight:700">${r.nZero}</span>`:'—'}</td>
+        ${bias.transitions.map(t=>{
+          const pct=r.ri?r.ri[t.label]:null;
+          if(pct==null) return `<td style="padding:6px 8px;text-align:center;color:#aaa">—</td>`;
+          const cBg=pct<50?'#fde8e8':pct<65?'#fff3cd':pct<75?'#fef9e7':'#d4edda';
+          const cTxt=pct<50?'#c0392b':pct<65?'#856404':'#155724';
+          return `<td style="padding:6px 8px;text-align:center;background:${cBg};color:${cTxt};font-weight:600">${pct}%</td>`;
+        }).join('')}
+        <td style="padding:6px 10px;text-align:center">
+          <span class="badge ${rBadge[r.risk]}">${r.risk}</span>
+        </td>
+      </tr>`;
+    });
+
+    html+=`</tbody></table></div>
+    <p style="font-size:11px;color:#888;margin-top:7px">
+      <strong>Risk = HIGH</strong>: region has ≥1 chronic or ever-zero PSU AND retention dropped below 65% in at least one transition. &nbsp;
+      <strong>MODERATE</strong>: one of the two problems present. &nbsp;
+      Retention columns show % of previous-round HHs still present in each transition (colour scale: red &lt;50%, orange 50–65%, green ≥75%).
+    </p>`;
+
+    refusalEl.innerHTML=html;
   }
 
   // ── Call interval summary and violations ──
