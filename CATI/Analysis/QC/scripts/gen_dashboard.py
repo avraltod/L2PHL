@@ -483,10 +483,11 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
 </div>
 <div class="card">
   <h2>📅 Call Interval Tracker <span id="panel-call-badge" class="badge badge-red"></span></h2>
-  <p style="font-size:12px;color:#666;margin-bottom:10px">Days between consecutive interviews for the same household. Minimum required interval is 30 days.</p>
+  <p style="font-size:12px;color:#666;margin-bottom:10px">Days between consecutive interviews for the same household. Minimum required interval is 20 days. Intervals of 20&#x2013;29 days are permissible with supervisor approval; anything under 20 days is flagged as a violation.</p>
   <div id="panel-call-summary"></div>
   <div style="margin-top:14px">
-    <div class="ch-title" style="margin-bottom:6px">Households Called Too Early (&lt;30 days since last interview)</div>
+    <div class="ch-title" style="margin-bottom:6px">Households Called Too Early (&lt;20 days since last interview)</div>
+    <div id="panel-call-round-tabs" style="margin-bottom:8px"></div>
     <div id="panel-call-violations"></div>
   </div>
 </div>
@@ -1262,10 +1263,10 @@ function buildPanel(){
             cellBg='#fde8e8'; cellTxt='#c0392b';
           } else if(r===1 || days===null){
             cellBg='#d4edda'; cellTxt='#155724';       // first appearance
-          } else if(days < 30){
+          } else if(days < 20){
             cellBg='#e74c3c'; cellTxt='#fff';           // violation — red
-          } else if(days < 60){
-            cellBg='#fff3cd'; cellTxt='#856404';        // tight — amber
+          } else if(days < 30){
+            cellBg='#fff3cd'; cellTxt='#856404';        // tight (20–29d, needs approval) — amber
           } else {
             cellBg='#d4edda'; cellTxt='#155724';        // normal — green
           }
@@ -1293,9 +1294,9 @@ function buildPanel(){
         <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:7px;font-size:11px;align-items:center">
           <span style="color:#888">Days since previous interview:</span>
           <span><span style="background:#d4edda;color:#155724;padding:1px 7px;border-radius:3px;font-weight:600">✓ —</span> First appearance</span>
-          <span><span style="background:#d4edda;color:#155724;padding:1px 7px;border-radius:3px;font-weight:600">✓ 60d+</span> Normal</span>
-          <span><span style="background:#fff3cd;color:#856404;padding:1px 7px;border-radius:3px;font-weight:600">✓ 30–59d</span> Tight</span>
-          <span><span style="background:#e74c3c;color:#fff;padding:1px 7px;border-radius:3px;font-weight:600">✓ &lt;30d</span> Violation</span>
+          <span><span style="background:#d4edda;color:#155724;padding:1px 7px;border-radius:3px;font-weight:600">✓ 30d+</span> Normal</span>
+          <span><span style="background:#fff3cd;color:#856404;padding:1px 7px;border-radius:3px;font-weight:600">✓ 20–29d</span> Needs approval</span>
+          <span><span style="background:#e74c3c;color:#fff;padding:1px 7px;border-radius:3px;font-weight:600">✓ &lt;20d</span> Violation</span>
           <span><span style="background:#fde8e8;color:#c0392b;padding:1px 7px;border-radius:3px;font-weight:600">✗</span> Absent</span>
           <span style="color:#aaa">| Hover status badge for first/last round</span>
         </div>`;
@@ -1873,7 +1874,7 @@ function buildPanel(){
         <thead><tr style="background:#1a2332;color:#fff">
           <th style="padding:7px 10px">Round</th>
           <th style="padding:7px 10px;text-align:center">HHs with prev. interview</th>
-          <th style="padding:7px 10px;text-align:center;background:#e74c3c">Called &lt;30 days</th>
+          <th style="padding:7px 10px;text-align:center;background:#e74c3c">Called &lt;20 days</th>
           <th style="padding:7px 10px;text-align:center">% Early</th>
           <th style="padding:7px 10px;text-align:center">Median gap (days)</th>
           <th style="padding:7px 10px;text-align:center">Min</th>
@@ -1881,17 +1882,17 @@ function buildPanel(){
         </tr></thead><tbody>`;
       p.call_interval_summary.forEach((row,i)=>{
         const bg=i%2===0?'#f8f9fa':'#fff';
-        const pct=row.pct_under30||0;
+        const pct=row.pct_under||0;
         const pctClr=pct>50?'#e74c3c':pct>20?'#e67e22':'#27ae60';
         html+=`<tr style="background:${bg}">
           <td style="padding:7px 10px;font-weight:700">R${row.round}</td>
           <td style="padding:7px 10px;text-align:center">${row.n_total}</td>
-          <td style="padding:7px 10px;text-align:center;color:#e74c3c;font-weight:700">${row.n_under30}</td>
+          <td style="padding:7px 10px;text-align:center;color:${(row.n_under||0)>0?'#e74c3c':'#27ae60'};font-weight:700">${row.n_under||0}</td>
           <td style="padding:7px 10px;text-align:center">
             <span style="color:${pctClr};font-weight:700">${pct}%</span>
           </td>
           <td style="padding:7px 10px;text-align:center;font-weight:600">${row.median??'—'}</td>
-          <td style="padding:7px 10px;text-align:center;color:${row.min<30?'#e74c3c':'#222'};font-weight:${row.min<30?700:400}">${row.min??'—'}</td>
+          <td style="padding:7px 10px;text-align:center;color:${row.min<20?'#e74c3c':'#222'};font-weight:${row.min<20?700:400}">${row.min??'—'}</td>
           <td style="padding:7px 10px;text-align:center">${row.max??'—'}</td>
         </tr>`;
       });
@@ -1899,10 +1900,38 @@ function buildPanel(){
       sumEl.innerHTML=html;
     }
 
-    const violEl = document.getElementById('panel-call-violations');
-    if(violEl && p.call_violations){
-      const viols = p.call_violations.slice(0,200);
-      let html=`<p style="font-size:11.5px;color:#555;margin-bottom:8px">Showing ${viols.length} of ${p.call_violations.length} violations (&lt;30 days since last interview).</p>`;
+    // Per-round tab buttons + violation table
+    const allViols = p.call_violations || [];
+    const rounds = [...new Set(allViols.map(v=>v.round))].sort((a,b)=>a-b);
+    let _ciRound = rounds[0] || null;   // currently selected round
+
+    function renderViolTabs(){
+      const tabEl = document.getElementById('panel-call-round-tabs');
+      const violEl = document.getElementById('panel-call-violations');
+      if(!tabEl || !violEl) return;
+
+      // Build round tab buttons
+      let tabHtml = `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px">
+        <span style="font-size:11px;color:#888;margin-right:2px">Filter by round:</span>`;
+      const allBtn = `<button onclick="_ciRound=null;renderViolTabs()" style="padding:3px 10px;border-radius:3px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid ${_ciRound===null?'#2d3f55':'#aab8c8'};background:${_ciRound===null?'#2d3f55':'#f8f9fa'};color:${_ciRound===null?'#fff':'#444'}">All (${allViols.length})</button>`;
+      tabHtml += allBtn;
+      rounds.forEach(r=>{
+        const cnt = allViols.filter(v=>v.round===r).length;
+        const active = _ciRound===r;
+        tabHtml+=`<button onclick="_ciRound=${r};renderViolTabs()" style="padding:3px 10px;border-radius:3px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid ${active?'#e74c3c':'#aab8c8'};background:${active?'#e74c3c':'#f8f9fa'};color:${active?'#fff':'#444'}">R${r} (${cnt})</button>`;
+      });
+      tabHtml += `</div>`;
+      tabEl.innerHTML = tabHtml;
+
+      // Filter violations
+      const viols = (_ciRound===null ? allViols : allViols.filter(v=>v.round===_ciRound)).slice(0,300);
+      const total  = _ciRound===null ? allViols.length : allViols.filter(v=>v.round===_ciRound).length;
+
+      if(viols.length===0){
+        violEl.innerHTML=`<p style="color:#27ae60;font-size:12px;padding:8px 0">✓ No violations for this round.</p>`;
+        return;
+      }
+      let html=`<p style="font-size:11.5px;color:#555;margin-bottom:8px">Showing ${viols.length} of ${total} violations (&lt;20 days since last interview).</p>`;
       html+=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px;min-width:500px">
         <thead><tr style="background:#1a2332;color:#fff">
           <th style="padding:6px 10px">HH ID</th>
@@ -1915,10 +1944,10 @@ function buildPanel(){
         </tr></thead><tbody>`;
       viols.forEach((v,i)=>{
         const bg=i%2===0?'#f8f9fa':'#fff';
-        const gapClr=v.days_gap<20?'#c0392b':v.days_gap<25?'#e74c3c':'#e67e22';
+        const gapClr=v.days_gap<10?'#7b241c':v.days_gap<15?'#c0392b':'#e74c3c';
         html+=`<tr style="background:${bg}">
           <td style="padding:5px 10px;font-weight:600">${v.hhid}</td>
-          <td style="padding:5px 10px;text-align:center">R${v.round}</td>
+          <td style="padding:5px 10px;text-align:center;font-weight:700">R${v.round}</td>
           <td style="padding:5px 10px;text-align:center;color:#888">R${v.prev_round}</td>
           <td style="padding:5px 10px;text-align:center">
             <span style="background:${gapClr};color:#fff;border-radius:3px;padding:2px 8px;font-weight:700">${v.days_gap}d</span>
@@ -1935,6 +1964,7 @@ function buildPanel(){
       html+=`</tbody></table></div>`;
       violEl.innerHTML=html;
     }
+    renderViolTabs();
   }
 }
 

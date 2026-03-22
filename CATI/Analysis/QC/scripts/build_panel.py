@@ -10,7 +10,7 @@ Tracks:
   - PSU coverage vs targets (urban=6 HH/PSU, rural=7 HH/PSU) — problem PSU list
   - HH counts by region x urban x round
   - Participation pattern distribution
-  - Call intervals: days between consecutive interviews per HH, flag < 30 days
+  - Call intervals: days between consecutive interviews per HH, flag < 20 days
 """
 import os as _os
 _HERE  = _os.path.dirname(_os.path.abspath(__file__))
@@ -690,12 +690,14 @@ def build_attrition_bias(hh, meta):
     }
 
 
+MIN_CALL_INTERVAL = 20   # days — anything below this is flagged as a violation
+
 def build_call_intervals(hh):
     """
     Days between consecutive interviews per HH.
     Returns:
-      - per_round summary (median, mean, min, max, n_total, n_under30)
-      - violations: HH-round pairs where gap < 30 days
+      - per_round summary (median, mean, min, max, n_total, n_under)
+      - violations: HH-round pairs where gap < MIN_CALL_INTERVAL days
     """
     df = (hh[['hhid','round','int_date','urban','region','psu']]
           .dropna(subset=['int_date'])
@@ -714,26 +716,26 @@ def build_call_intervals(hh):
     for rnd in ROUNDS[1:]:
         rnd_gaps  = gaps[gaps['round'] == rnd]['days_gap']
         n_total   = int(len(rnd_gaps))
-        n_under30 = int((rnd_gaps < 30).sum())
+        n_under = int((rnd_gaps < MIN_CALL_INTERVAL).sum())
         if n_total == 0:
-            summary.append({'round': rnd, 'n_total': 0, 'n_under30': 0,
-                             'pct_under30': 0.0,
+            summary.append({'round': rnd, 'n_total': 0, 'n_under': 0,
+                             'pct_under': 0.0,
                              'median': None, 'mean': None,
                              'min': None, 'max': None})
         else:
             summary.append({
-                'round':       rnd,
-                'n_total':     n_total,
-                'n_under30':   n_under30,
-                'pct_under30': round(n_under30 / n_total * 100, 1),
-                'median':      int(rnd_gaps.median()),
-                'mean':        round(float(rnd_gaps.mean()), 1),
-                'min':         int(rnd_gaps.min()),
-                'max':         int(rnd_gaps.max()),
+                'round':    rnd,
+                'n_total':  n_total,
+                'n_under':  n_under,
+                'pct_under': round(n_under / n_total * 100, 1),
+                'median':   int(rnd_gaps.median()),
+                'mean':     round(float(rnd_gaps.mean()), 1),
+                'min':      int(rnd_gaps.min()),
+                'max':      int(rnd_gaps.max()),
             })
 
-    # Violation list (gap < 30 days)
-    viol = gaps[gaps['days_gap'] < 30].copy()
+    # Violation list (gap < MIN_CALL_INTERVAL days)
+    viol = gaps[gaps['days_gap'] < MIN_CALL_INTERVAL].copy()
     violations = []
     for _, row in viol.iterrows():
         region_val = row.get('region')
