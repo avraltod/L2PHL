@@ -369,6 +369,16 @@ def build_leaver_vs_new(hh, meta, aux):
     )
     pp = pp.drop_duplicates(subset=['hhid','round'])
     pp['region'] = pp['psu'].astype(str).str[:2].astype(int)
+    # gender is in M01 roster (HH head = fmid==1), not M00 — merge it in
+    if 'gender' not in pp.columns:
+        try:
+            _m01 = pd.read_stata(_os.path.join(_HF, 'l2phl_M01_roster.dta'),
+                                 convert_categoricals=False)
+            _head = (_m01[_m01['fmid']==1][['hhid','round','gender']]
+                     .drop_duplicates(subset=['hhid','round']))
+            pp = pp.merge(_head, on=['hhid','round'], how='left')
+        except Exception:
+            pp['gender'] = float('nan')
 
     chars = pp[['hhid','round','hhsize','urban','gender','region']].copy()
     if len(aux) > 0 and 'hhid' in aux.columns:
@@ -495,6 +505,16 @@ def build_attrition_bias(hh, meta):
     )
     pp = pp.drop_duplicates(subset=['hhid','round'])
     pp['region'] = pp['psu'].astype(str).str[:2].astype(int)
+    # gender is in M01 roster (HH head = fmid==1), not M00 — merge it in
+    if 'gender' not in pp.columns:
+        try:
+            _m01 = pd.read_stata(_os.path.join(_HF, 'l2phl_M01_roster.dta'),
+                                 convert_categoricals=False)
+            _head = (_m01[_m01['fmid']==1][['hhid','round','gender']]
+                     .drop_duplicates(subset=['hhid','round']))
+            pp = pp.merge(_head, on=['hhid','round'], how='left')
+        except Exception:
+            pp['gender'] = float('nan')
 
     # Load employment (valid R4+) and finance for all rounds
     emp_hh = pd.DataFrame(columns=['hhid','round','employed'])
