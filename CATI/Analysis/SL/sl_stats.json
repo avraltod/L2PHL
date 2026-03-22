@@ -1,0 +1,194 @@
+{
+  "sample": {
+    "hh_per_round": {
+      "1": 1239,
+      "2": 1193,
+      "3": 1174,
+      "4": 1243,
+      "5": 967
+    },
+    "total_hh": 1917,
+    "dates": {
+      "1": "Nov 2025",
+      "2": "Dec 2025",
+      "3": "Jan 2026",
+      "4": "Feb 2026",
+      "5": "Mar 2026"
+    }
+  },
+  "fies": {
+    "mod_sev_by_round": {
+      "1": 41.0,
+      "2": 31.0,
+      "3": 26.8,
+      "4": 21.5,
+      "5": 18.2
+    },
+    "mod_sev_r1": 41.0,
+    "mod_sev_r5": 18.2,
+    "change_ppt": 22.8,
+    "severe_r5": 3.7,
+    "severe_r1": 8.5,
+    "food_sec_r5": 52.4,
+    "food_sec_r1": 29.1,
+    "items_r5": {
+      "Worried about food": 39.2,
+      "Ate limited variety": 27.8,
+      "Ate fewer meals": 21.4,
+      "Hungry but did not eat": 14.8,
+      "Whole day without food": 6.5
+    },
+    "items_r1": {
+      "Worried about food": 57.4,
+      "Ate limited variety": 52.4,
+      "Ate fewer meals": 44.5,
+      "Hungry but did not eat": 32.1,
+      "Whole day without food": 14.8
+    },
+    "by_region_r5": {
+      "NCR": 16.4,
+      "Luzon": 19.1,
+      "Visayas": 15.5,
+      "Mindanao": 14.3
+    }
+  },
+  "shocks": {
+    "any_shock_by_round": {
+      "1": 34.9,
+      "2": 22.6,
+      "3": 16.7,
+      "4": 14.3,
+      "5": 12.1
+    },
+    "shock_types_r5": {
+      "Illness/medical": 19.1,
+      "Death in family": 0.0,
+      "Crop/harvest failure": 3.6,
+      "Unexpected job loss": 0.0,
+      "Typhoon": 12.7,
+      "Flood/flashflood": 8.2,
+      "Price rise": 4.5,
+      "Food price shock": 37.3
+    },
+    "coping_r5": {
+      "Used savings": 1.3,
+      "Borrowed from family/friends": 0.0,
+      "Reduced food consumption": 0.0,
+      "Sold assets": 0.0,
+      "Govt transfer": 0.0,
+      "Received remittance": 0.0,
+      "Worked more": 0.0
+    },
+    "water_disruption_r5": 9.8,
+    "mean_water_days_r5": 4.2,
+    "mean_elec_hours_r5": 2.8,
+    "internet_disruption_r5": 15.0,
+    "by_region_r5": {
+      "NCR": 14.0,
+      "Luzon": 30.8,
+      "Visayas": 17.2,
+      "Mindanao": 7.4
+    }
+  },
+  "finance": {
+    "bank_deposit_by_round": {
+      "1": 3.8,
+      "2": 4.9,
+      "3": 5.0,
+      "4": 5.3,
+      "5": 4.1
+    },
+    "mobile_money_by_round": {
+      "1": 14.9,
+      "2": 16.2,
+      "3": 18.7,
+      "4": 18.9,
+      "5": 20.8
+    },
+    "used_bank_by_round": {
+      "1": 13.3,
+      "2": 13.0,
+      "3": 13.6,
+      "4": 11.6,
+      "5": 12.9
+    },
+    "bank_deposit_r5": 4.1,
+    "mobile_money_r5": 20.8,
+    "used_bank_r5": 12.9,
+    "used_mobile_r5": 3.5,
+    "took_loan_r5": 18.1,
+    "saved_r5": 17.0,
+    "loan_purpose_r5": {
+      "Medical/health": 6.3,
+      "Housing repair": 1.1,
+      "Business/livelihood": 0.4,
+      "Food/daily needs": 0.0,
+      "Education": 0.0,
+      "Ceremonial/personal": 0.0,
+      "Debt repayment": 0.0
+    }
+  },
+  "employment": {
+    "emp_rate_r1": 3.0,
+    "emp_rate_r3": 1.9,
+    "emp_by_round": {
+      "1": 3.0,
+      "2": 2.7,
+      "3": 1.9
+    },
+    "no_contract_r1": 7.8,
+    "written_contract_r1": 5.4,
+    "mean_hours_r1": 30.8,
+    "mean_income_earners_r1": 0.0,
+    "note": "Employment module (M04) structurally sparse in R4-R5 due to roster filter change. R1-R3 data used."
+  },
+  "health": {
+    "philhealth_r5": 21.7,
+    "philhealth_by_region_r5": {
+      "NCR": 31.2,
+      "Luzon": 27.2,
+      "Visayas": 17.7,
+      "Mindanao": 20.0
+    },
+    "oop_rate_r5": 36.6,
+    "mean_oop_r5": 1.4,
+    "facility_r5": {
+      "Barangay health station": 37.1,
+      "Private clinic": 35.0,
+      "Public hospital": 11.5,
+      "Rural health unit": 10.8,
+      "Private hospital": 5.6
+    },
+    "total_individuals_r5": 4393
+  },
+  "views": {
+    "life_sat_by_round": {
+      "1": 2.8,
+      "2": 2.8,
+      "3": 2.8,
+      "4": 2.8,
+      "5": 2.9
+    },
+    "econ_by_round": {
+      "1": 3.2,
+      "2": 3.2,
+      "3": 3.3,
+      "4": 3.3,
+      "5": 3.2
+    },
+    "life_pos_r5": 31.4,
+    "life_neg_r5": 18.3,
+    "v9_means_r5": {
+      "Economy will improve": 3.1,
+      "Job situation will improve": 3.1,
+      "Prices will rise": 3.7,
+      "Difficult to save money": 4.0,
+      "Income will increase": 3.2,
+      "Things will get better": 3.3,
+      "Children will have better lives": 3.3,
+      "Optimistic about health": 3.0,
+      "Community will improve": 3.2,
+      "Satisfied with government": 2.9
+    }
+  }
+}

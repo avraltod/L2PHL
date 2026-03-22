@@ -313,6 +313,25 @@ body.edit-mode #edit-bar{display:flex;}
 .epi-stat-n{font-family:var(--display);font-size:2.1rem;font-weight:900;line-height:1;}
 .epi-stat-l{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;opacity:.4;margin-top:3px;}
 .epi-meta{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;opacity:.28;}
+
+/* ── STATA CODE DRAWERS ── */
+.stata-drawer{margin:16px 0 4px;border-radius:var(--radius-sm);overflow:hidden;}
+.stata-btn{width:100%;display:flex;align-items:center;gap:9px;padding:9px 14px;background:#1e1a14;color:rgba(253,246,238,.65);border:none;cursor:pointer;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;border-radius:var(--radius-sm);transition:background .18s,color .18s;}
+.stata-btn:hover{background:#2a241c;color:#F5C48A;}
+.stata-btn .sb-pill{background:rgba(196,98,45,.2);color:#E8845A;border:1px solid rgba(196,98,45,.3);border-radius:4px;padding:2px 7px;font-size:8px;letter-spacing:.06em;margin-left:auto;}
+.stata-code-wrap{max-height:0;opacity:0;overflow:hidden;transition:max-height .42s cubic-bezier(.4,0,.2,1),opacity .3s ease;}
+.stata-code-head{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#161210;border-bottom:1px solid rgba(255,255,255,.07);}
+.stata-code-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(253,246,238,.35);}
+.stata-copy{font-family:var(--mono);font-size:8px;letter-spacing:.06em;background:rgba(255,255,255,.07);color:rgba(253,246,238,.5);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:3px 10px;cursor:pointer;transition:all .15s;}
+.stata-copy:hover{background:rgba(196,98,45,.2);color:#F5C48A;border-color:rgba(196,98,45,.4);}
+pre.stata-pre{background:#161210;margin:0;padding:14px 18px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent;}
+pre.stata-pre code{font-family:var(--mono);font-size:11.5px;line-height:1.8;color:#d4c8b8;white-space:pre;}
+pre.stata-pre .co{color:#6b6458;font-style:italic;}
+pre.stata-pre .kw{color:#C4622D;}
+pre.stata-pre .cm{color:#E8A84A;font-weight:600;}
+pre.stata-pre .st{color:#7AC9A2;}
+pre.stata-pre .nu{color:#87CEEB;}
+pre.stata-pre .op{color:#F5C48A;}
 </style>
 </head>
 <body>
@@ -628,6 +647,43 @@ body.edit-mode #edit-bar{display:flex;}
         </div>
       </div>
       <div class="src">Source: M08_food_nonfood.dta · HH level, weighted by hhw · FIES = F08_A–E · R1–R5</div>
+      <div class="stata-drawer">
+        <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 1 · FIES</span></button>
+        <div class="stata-code-wrap">
+          <div class="stata-code-head"><span class="stata-code-lbl">l2phl_master_analysis.do · Section 1 — Food Security (M08)</span><button class="stata-copy" onclick="copyCode(this)">📋 Copy</button></div>
+          <pre class="stata-pre"><code><span class="co">* ── SECTION 1: FOOD SECURITY (Module 08) ──────────────────────────────────</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M08_fies.dta"</span>, <span class="kw">clear</span>
+<span class="kw">label values</span> round round_lbl
+<span class="kw">label values</span> region region_lbl
+
+<span class="co">* Recode FIES items: 1 (yes) → 1, 2 (no) → 0</span>
+<span class="kw">foreach</span> v <span class="kw">of varlist</span> f08_a f08_b f08_c f08_d f08_e {
+    <span class="cm">recode</span> `v' (<span class="nu">1</span>=<span class="nu">1</span>) (<span class="nu">2</span>=<span class="nu">0</span>) (<span class="kw">else</span>=.), <span class="kw">gen</span>(`v'_b)
+}
+
+<span class="co">* FIES score (0–5) and outcome indicators</span>
+<span class="cm">egen</span> fies_score = <span class="cm">rowtotal</span>(f08_a_b f08_b_b f08_c_b f08_d_b f08_e_b)
+<span class="kw">gen</span> mod_sev  = (fies_score &gt;= <span class="nu">3</span>) <span class="kw">if</span> fies_score &lt; .   <span class="co">// moderate-to-severe</span>
+<span class="kw">gen</span> severe   = (fies_score == <span class="nu">5</span>) <span class="kw">if</span> fies_score &lt; .   <span class="co">// severe (all 5 yes)</span>
+<span class="kw">gen</span> food_sec = (fies_score == <span class="nu">0</span>) <span class="kw">if</span> fies_score &lt; .   <span class="co">// fully food-secure</span>
+
+<span class="co">* Survey design</span>
+<span class="cm">svyset</span> psu [pweight=hhw], strata(stratum)
+
+<span class="co">* Table 1-A: Mod-severe rate by round  →  R1=41.0%  R2=31.0%  R3=26.8%  R4=21.5%  R5=18.2%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> mod_sev, <span class="kw">over</span>(round)
+
+<span class="co">* Table 1-B: Severity distribution R5  →  food_sec=52.4%  severe=3.7%  mod_sev=18.2%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> food_sec severe mod_sev <span class="kw">if</span> round==<span class="nu">5</span>
+
+<span class="co">* Table 1-C: Item-level prevalence R5</span>
+<span class="co">* Worried=39.2%  Limited variety=27.8%  Fewer meals=21.4%  Hungry=14.8%  Whole day=6.5%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> f08_a_b f08_b_b f08_c_b f08_d_b f08_e_b <span class="kw">if</span> round==<span class="nu">5</span>
+
+<span class="co">* Table 1-D: Regional breakdown R5</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> mod_sev <span class="kw">if</span> round==<span class="nu">5</span>, <span class="kw">over</span>(region)</code></pre>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -683,6 +739,48 @@ body.edit-mode #edit-bar{display:flex;}
       <div class="scell dk"><div class="scell-n" style="color:#94a3b8;" data-ed="1" data-type="number">29.7%</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Internet disruption (past month)</div></div>
     </div>
     <div class="src light">Source: M03_shock.dta · HH level, weighted by hhw · R1–R5</div>
+    <div class="stata-drawer">
+      <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 2 · SHOCKS</span></button>
+      <div class="stata-code-wrap">
+        <div class="stata-code-head"><span class="stata-code-lbl">l2phl_master_analysis.do · Section 2 — Shocks &amp; Resilience (M03)</span><button class="stata-copy" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre class="stata-pre"><code><span class="co">* ── SECTION 2: SHOCKS &amp; RESILIENCE (Module 03) ────────────────────────────</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M03_shock.dta"</span>, <span class="kw">clear</span>
+<span class="kw">label values</span> round round_lbl
+<span class="kw">label values</span> region region_lbl
+
+<span class="co">* sh1 = any shock last 30 days (1=yes, 2=no)</span>
+<span class="kw">gen</span> any_shock = (sh1==<span class="nu">1</span>) <span class="kw">if</span> sh1 &lt; .
+
+<span class="co">* Clean electricity outage hours (negative values and 99 are errors)</span>
+<span class="kw">replace</span> el5 = . <span class="kw">if</span> el5 &lt; <span class="nu">0</span> | el5 == <span class="nu">99</span>
+
+<span class="kw">gen</span> internet_dis = (n5==<span class="nu">1</span>)  <span class="kw">if</span> n5  &lt; .   <span class="co">// internet disruption past month</span>
+<span class="kw">gen</span> water_dis    = (sh3==<span class="nu">1</span>) <span class="kw">if</span> sh3 &lt; .   <span class="co">// water disruption</span>
+
+<span class="co">* Survey design</span>
+<span class="cm">svyset</span> psu [pweight=hhw], strata(stratum)
+
+<span class="co">* Table 2-A: Any shock by round  →  R1=34.9%  R2=22.6%  R3=16.7%  R4=14.3%  R5=12.1%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> any_shock, <span class="kw">over</span>(round)
+
+<span class="co">* Table 2-B: Shock types R5 (among shocked HHs, sh1b_1 = type of first shock)</span>
+<span class="co">*   Major illness=4.5%  Typhoons=2.5%  Job loss=1.8%</span>
+<span class="cm">tab</span> sh1b_1 <span class="kw">if</span> round==<span class="nu">5</span> &amp; any_shock==<span class="nu">1</span>
+
+<span class="co">* Table 2-C: Coping mechanisms R5 (sh2_1_1..7 = strategies for first shock)</span>
+<span class="kw">foreach</span> i <span class="kw">of numlist</span> <span class="nu">1</span>/<span class="nu">7</span> {
+    <span class="kw">cap svy:</span> <span class="cm">mean</span> sh2_1_`i' <span class="kw">if</span> round==<span class="nu">5</span> &amp; any_shock==<span class="nu">1</span>
+}
+
+<span class="co">* Table 2-D: Utilities disruption R5</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> water_dis internet_dis <span class="kw">if</span> round==<span class="nu">5</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> el5 <span class="kw">if</span> round==<span class="nu">5</span>          <span class="co">// mean outage hours</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> sh4 <span class="kw">if</span> round==<span class="nu">5</span> &amp; water_dis==<span class="nu">1</span>  <span class="co">// mean disruption days</span>
+
+<span class="co">* Table 2-E: Shock rate by region R5</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> any_shock <span class="kw">if</span> round==<span class="nu">5</span>, <span class="kw">over</span>(region)</code></pre>
+      </div>
+    </div>
   </div>
   <svg class="wave" viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" style="display:block;background:var(--ink);"><path d="M0,20 C480,50 960,0 1440,30 L1440,50 L0,50 Z" fill="var(--cream)"/></svg>
 </div>
@@ -748,6 +846,45 @@ body.edit-mode #edit-bar{display:flex;}
         </div>
       </div>
       <div class="src">Source: M05_income.dta (indw) + M06_finance.dta (hhw) · R5 latest · Oct 15 2025</div>
+      <div class="stata-drawer">
+        <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 3 · FINANCE</span></button>
+        <div class="stata-code-wrap">
+          <div class="stata-code-head"><span class="stata-code-lbl">l2phl_master_analysis.do · Section 3 — Finance &amp; Mobile Money (M06)</span><button class="stata-copy" onclick="copyCode(this)">📋 Copy</button></div>
+          <pre class="stata-pre"><code><span class="co">* ── SECTION 3: FINANCE &amp; MOBILE MONEY (Module 06) ─────────────────────────</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M06_finance.dta"</span>, <span class="kw">clear</span>
+<span class="kw">label values</span> round round_lbl
+
+<span class="co">* f1=bank deposit  f2=mobile money  f3=used bank  f6=mobile wallet  f7=loan  f10=saved</span>
+<span class="kw">foreach</span> v <span class="kw">of varlist</span> f1 f2 f3 f6 f7 f10 {
+    <span class="kw">gen</span> `v'_y = (`v'==<span class="nu">1</span>) <span class="kw">if</span> `v' &lt; .
+}
+
+<span class="cm">svyset</span> psu [pweight=hhw], strata(stratum)
+
+<span class="co">* Table 3-A: Key finance indicators R5</span>
+<span class="co">*   Bank deposit=4.1%  Mobile money=20.8%  Used bank=12.9%  Used mobile=3.5%</span>
+<span class="co">*   Took loan=18.1%    Managed to save=17.0%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> f1_y f2_y f3_y f6_y f7_y f10_y <span class="kw">if</span> round==<span class="nu">5</span>
+
+<span class="co">* Table 3-B: Mobile money trend R1–R5  →  14.9% → 16.2% → 18.7% → 18.9% → 20.8%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> f2_y, <span class="kw">over</span>(round)
+
+<span class="co">* Table 3-C: Loan purpose R5 (among borrowers; f8_1=Medical f8_2=Housing f8_3=Business)</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> f8_1 f8_2 f8_3 f8_4 f8_5 f8_6 f8_7 <span class="kw">if</span> round==<span class="nu">5</span> &amp; f7_y==<span class="nu">1</span>
+
+<span class="co">* Table 3-D: Loan source R5  (f9: 1=formal bank  2=informal  3=coop  4=pawnshop)</span>
+<span class="cm">tab</span> f9 <span class="kw">if</span> round==<span class="nu">5</span> &amp; f7_y==<span class="nu">1</span>
+
+<span class="co">* ── Income (Module 05) ───────────────────────────────────────────────────────</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M05_income.dta"</span>, <span class="kw">clear</span>
+<span class="kw">gen</span> has_income = (ia2==<span class="nu">1</span>) <span class="kw">if</span> ia2 &lt; .
+<span class="cm">svyset</span> psu [pweight=indw], strata(stratum)
+
+<span class="co">* Mean income among earners R5 (ia7 = total income last 30 days, PHP)</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> ia7 <span class="kw">if</span> round==<span class="nu">5</span> &amp; ia2==<span class="nu">1</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> ia7 <span class="kw">if</span> round==<span class="nu">5</span> &amp; ia2==<span class="nu">1</span>, <span class="kw">over</span>(region)  <span class="co">// by macro-region</span></code></pre>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -800,6 +937,43 @@ body.edit-mode #edit-bar{display:flex;}
       <div class="scell fo"><div class="scell-n" style="color:var(--forest);" data-ed="1" data-type="number">88.9%</div><div class="scell-l">Access rate (needed care)</div></div>
     </div>
     <div class="src">Source: M07_health.dta · Individual level, weighted by indw · R5 latest</div>
+    <div class="stata-drawer">
+      <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 4 · HEALTH</span></button>
+      <div class="stata-code-wrap">
+        <div class="stata-code-head"><span class="stata-code-lbl">l2phl_master_analysis.do · Section 4 — Health (M07, R5 only)</span><button class="stata-copy" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre class="stata-pre"><code><span class="co">* ── SECTION 4: HEALTH (Module 07, Round 5 only) ─────────────────────────────</span>
+<span class="co">* NOTE: M07 is individual-level (indw) and Round 5 ONLY (4,393 observations)</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M07_health.dta"</span>, <span class="kw">clear</span>
+
+<span class="co">* h2=PhilHealth status (1=member+card  2=member no card  3=dependent  4=none)</span>
+<span class="co">* h3=sought outpatient care last 30 days   h4=facility type</span>
+<span class="co">* h9a=paid OOP for consult (1=yes 2=no)   h12=hospitalized last 12m (1=yes)</span>
+<span class="kw">gen</span> philhealth  = (h2 &lt;= <span class="nu">3</span>)                  <span class="kw">if</span> h2  &lt; .   <span class="co">// any coverage</span>
+<span class="kw">gen</span> sought_care = (h3 &gt;= <span class="nu">1</span> &amp; h3 &lt;= <span class="nu">50</span>)      <span class="kw">if</span> h3  &lt; .   <span class="co">// sought outpatient care</span>
+<span class="kw">gen</span> paid_oop    = (h9a == <span class="nu">1</span>)                  <span class="kw">if</span> h9a &lt; .   <span class="co">// paid out-of-pocket</span>
+<span class="kw">gen</span> hosp12      = (h12 == <span class="nu">1</span>)                  <span class="kw">if</span> h12 &lt; .   <span class="co">// hospitalized last 12m</span>
+
+<span class="cm">svyset</span> psu [pweight=indw], strata(stratum)
+
+<span class="co">* Table 4-A: PhilHealth coverage overall and by region</span>
+<span class="co">*   Overall=21.7%  NCR=31.2%  Luzon=27.2%  Visayas=17.7%  Mindanao=20.0%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> philhealth
+<span class="cm">svy:</span> <span class="cm">mean</span> philhealth, <span class="kw">over</span>(region)
+
+<span class="co">* Table 4-B: Care-seeking rate (only ~4–5% sought outpatient care in past 30 days)</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> sought_care
+
+<span class="co">* Table 4-C: OOP payment rate among care-seekers  →  36.6%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> paid_oop <span class="kw">if</span> sought_care==<span class="nu">1</span>
+
+<span class="co">* Table 4-D: Facility type distribution among care-seekers</span>
+<span class="co">*   1=Barangay health 37.1%   4=Private clinic 35.0%   3=Public hosp 11.5%</span>
+<span class="cm">tab</span> h4 <span class="kw">if</span> sought_care==<span class="nu">1</span>
+
+<span class="co">* Table 4-E: Hospitalization rate</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> hosp12</code></pre>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -839,6 +1013,45 @@ body.edit-mode #edit-bar{display:flex;}
       </div>
     </div>
     <div class="src">Source: M04_employment.dta + M05_income.dta · R4–R5 for emp_status indicator</div>
+    <div class="stata-drawer">
+      <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 5 · EMPLOYMENT</span></button>
+      <div class="stata-code-wrap">
+        <div class="stata-code-head"><span class="stata-code-lbl">l2phl_master_analysis.do · Section 5 — Employment &amp; Income (M04 + M05)</span><button class="stata-copy" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre class="stata-pre"><code><span class="co">* ── SECTION 5: EMPLOYMENT &amp; INCOME (Modules 04 + 05) ───────────────────────</span>
+<span class="co">* IMPORTANT: M04 structurally sparse in R4–R5 (roster filter change).</span>
+<span class="co">*            Use R1–R3 only for employment estimates.</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M04_employment.dta"</span>, <span class="kw">clear</span>
+<span class="kw">label values</span> round round_lbl
+
+<span class="co">* a1=worked last 7 days   a16=contract type   a8=gig work   a11=hours last week</span>
+<span class="kw">gen</span> worked      = (a1==<span class="nu">1</span>)   <span class="kw">if</span> a1  &lt; .
+<span class="kw">gen</span> no_contract = (a16==<span class="nu">2</span>)  <span class="kw">if</span> a16 &lt; .   <span class="co">// no written contract</span>
+<span class="kw">gen</span> gig_work    = (a8==<span class="nu">1</span>)   <span class="kw">if</span> a8  &lt; .   <span class="co">// platform/gig work</span>
+<span class="kw">gen</span> hours       = a11        <span class="kw">if</span> a1==<span class="nu">1</span>     <span class="co">// hours worked last week</span>
+
+<span class="cm">svyset</span> psu [pweight=indw], strata(stratum)
+
+<span class="co">* Table 5-A: Employment rate R1–R3 (note: denominator = all HH members)</span>
+<span class="co">*   R1=3.0%  R2=2.7%  R3=1.9%  (R4–R5 unreliable — DO NOT USE)</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> worked <span class="kw">if</span> round&lt;=<span class="nu">3</span>, <span class="kw">over</span>(round)
+
+<span class="co">* Table 5-B: Contract type among employed R1</span>
+<span class="co">*   No contract=7.8%  Mean hours=30.8 hrs/week   Gig work=0.6%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> no_contract <span class="kw">if</span> round==<span class="nu">1</span> &amp; worked==<span class="nu">1</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> hours       <span class="kw">if</span> round==<span class="nu">1</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> gig_work     <span class="kw">if</span> round&lt;=<span class="nu">3</span>
+
+<span class="co">* Class of worker (a4): 1=private HH  2=private firm  3=govt  4=self  5=family</span>
+<span class="cm">tab</span> a4 <span class="kw">if</span> round==<span class="nu">1</span> &amp; worked==<span class="nu">1</span>
+
+<span class="co">* ── Income (Module 05) ───────────────────────────────────────────────────────</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M05_income.dta"</span>, <span class="kw">clear</span>
+<span class="cm">svyset</span> psu [pweight=indw], strata(stratum)
+<span class="co">* ia7 = total income last 30 days (PHP, among earners with ia2==1)</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> ia7 <span class="kw">if</span> round==<span class="nu">5</span> &amp; ia2==<span class="nu">1</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> ia7 <span class="kw">if</span> round==<span class="nu">5</span> &amp; ia2==<span class="nu">1</span>, <span class="kw">over</span>(region)</code></pre>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -895,6 +1108,41 @@ body.edit-mode #edit-bar{display:flex;}
       </div>
     </div>
     <div class="src light">Source: M09_views.dta · HH level, weighted by hhw · R5 latest · Trend: R1–R5</div>
+    <div class="stata-drawer">
+      <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 6 · VIEWS</span></button>
+      <div class="stata-code-wrap">
+        <div class="stata-code-head"><span class="stata-code-lbl">l2phl_master_analysis.do · Section 6 — Views &amp; Perceptions (M09)</span><button class="stata-copy" onclick="copyCode(this)">📋 Copy</button></div>
+        <pre class="stata-pre"><code><span class="co">* ── SECTION 6: VIEWS &amp; PERCEPTIONS (Module 09) ─────────────────────────────</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M09_views.dta"</span>, <span class="kw">clear</span>
+<span class="kw">label values</span> round round_lbl
+
+<span class="co">* v1=life satisfaction (1=very satisfied…5=very dissatisfied)</span>
+<span class="co">* v5=economic situation vs last month (1=much better…5=much worse)</span>
+<span class="co">* v9_a–m=perceptions (1=strongly agree…5=strongly disagree)</span>
+<span class="kw">gen</span> satisfied    = (v1 &lt;= <span class="nu">2</span>) <span class="kw">if</span> v1 &lt; .   <span class="co">// satisfied or very satisfied</span>
+<span class="kw">gen</span> dissatisfied = (v1 &gt;= <span class="nu">4</span>) <span class="kw">if</span> v1 &lt; .   <span class="co">// dissatisfied or very dissatisfied</span>
+
+<span class="cm">svyset</span> psu [pweight=hhw], strata(stratum)
+
+<span class="co">* Table 6-A: Mean life satisfaction by round (stable 2.8–2.9; lower = more satisfied)</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> v1, <span class="kw">over</span>(round)
+<span class="co">* Satisfied/very satisfied R5: 31.4%   Dissatisfied/very: 18.3%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> satisfied dissatisfied <span class="kw">if</span> round==<span class="nu">5</span>
+
+<span class="co">* Table 6-B: Economic situation distribution R5</span>
+<span class="co">*   Same=52.4%  Somewhat worse=23.9%  Much worse=8.4%  Better=15.3%</span>
+<span class="cm">tab</span> v5 <span class="kw">if</span> round==<span class="nu">5</span>
+
+<span class="co">* Table 6-C: Perception scores R5 (mean 1–5; lower = agree more strongly)</span>
+<span class="co">*   v9_e Prices will rise:  3.7   v9_f Difficult to save: 4.0</span>
+<span class="co">*   v9_a Economy improve:   3.1   v9_m Satisfied w/govt:  2.9</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> v9_a v9_c v9_e v9_f v9_g v9_i v9_j v9_k v9_l v9_m <span class="kw">if</span> round==<span class="nu">5</span>
+
+<span class="co">* Table 6-D: Attrition bias check (Section 7 in .do file)</span>
+<span class="co">*   Compare worried-about-food rate: stayers vs non-stayers from R1</span>
+<span class="co">*   → merge M00 (stayed_r5 flag) with M08, run svy: mean worried, over(stayed_r5)</span></code></pre>
+      </div>
+    </div>
   </div>
   <svg class="wave" viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" style="display:block;background:var(--forest);"><path d="M0,25 C480,5 960,45 1440,20 L1440,50 L0,50 Z" fill="var(--cream)"/></svg>
 </div>
@@ -1400,6 +1648,21 @@ function edReset(){document.documentElement.style.cssText='';document.body.style
 
 // ── TOAST ──
 function toast(msg){const t=document.getElementById('ed-toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+// ── STATA CODE DRAWERS ──
+function toggleStata(btn){
+  const drawer=btn.nextElementSibling;
+  const open=drawer.style.maxHeight&&drawer.style.maxHeight!=='0px';
+  if(open){drawer.style.maxHeight='0px';drawer.style.opacity='0';btn.textContent=btn.textContent.replace('▼','▶');}
+  else{drawer.style.maxHeight=drawer.scrollHeight+'px';drawer.style.opacity='1';btn.textContent=btn.textContent.replace('▶','▼');}
+}
+function copyCode(btn){
+  const pre=btn.closest('.stata-drawer').querySelector('pre');
+  navigator.clipboard?.writeText(pre.textContent).then(()=>{
+    btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent='📋 Copy',2000);
+    toast('Stata code copied ✓');
+  });
+}
 </script>
 </body>
 </html>
