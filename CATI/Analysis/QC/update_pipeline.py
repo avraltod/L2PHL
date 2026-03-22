@@ -22,6 +22,7 @@ Outputs:
 
 Cache (intermediate JSON):
   cache/dq_data.json
+  cache/panel_data.json
   cache/all_questions.json
   cache/module_tables.json
   cache/do_modules.json
@@ -118,6 +119,20 @@ def rebuild_dq(dta_files):
     if ok:
         size = (CACHE / 'dq_data.json').stat().st_size // 1024
         log(f"cache/dq_data.json written ({size} KB)", 'OK')
+    return ok
+
+
+# ── STEP 2b — Rebuild panel tracking data ─────────────────────────────────────
+def rebuild_panel(dta_files):
+    step('2b', "Rebuilding panel tracking data")
+    passport = next((f for f in dta_files if 'M00' in f.name), None)
+    if not passport:
+        log("l2phl_M00_passport.dta not found — skipping panel build", 'WARN')
+        return False
+    ok = run_script('build_panel.py')
+    if ok:
+        size = (CACHE / 'panel_data.json').stat().st_size // 1024
+        log(f"cache/panel_data.json written ({size} KB)", 'OK')
     return ok
 
 
@@ -441,7 +456,8 @@ if __name__ == '__main__':
     t0 = time.time()
 
     if do_dta:
-        if not rebuild_dq(dta_files): errors.append('DQ rebuild failed')
+        if not rebuild_dq(dta_files):    errors.append('DQ rebuild failed')
+        if not rebuild_panel(dta_files): errors.append('Panel rebuild failed')
 
     if do_q:
         if not rebuild_questionnaire(quest_files): errors.append('Questionnaire parse failed')

@@ -8561,18 +8561,3 @@
 // QC dashboard flags: M04 A1=2→A10/A11 (85 violations in R3)
 //                     M04 A8=2/99→A9 (63 violations in R3 only)
 // ============================================================================
-
-// FIX 1: A1=2 (not working last 7 days) → A10, A11 must be empty
-// Skip rule: A1=2 skips to A24. A10 (days worked) and A11 (hours worked)
-// should only be filled if respondent IS working (A1=1).
-// Assumption: if A1=2, any value in A10/A11 is a programming error.
-	replace a10 = . if a1 == 2  // A10: days worked last week — skip if not working
-	replace a11 = . if a1 == 2  // A11: hours worked last week — skip if not working
-
-// FIX 2: A8=2 or A8=99 (not gig work / don't know) → A9 must be empty
-// Skip rule: A8 asks "is work a gig/digital platform work?". Only A8=1 (yes)
-// should proceed to A9 (type of digital platform). This gap appeared in R3
-// only (63 cases) — likely a CATI skip logic bug introduced in R3 revision.
-// Assumption: if A8≠1, any value in A9 is a programming error.
-	replace a9 = . if inlist(a8, 2, 99)  // A9: digital platform — skip if not gig work
-

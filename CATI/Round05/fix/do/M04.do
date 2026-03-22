@@ -332,11 +332,3 @@
 // Note: declining trend R1=184 → R5=40 suggests CATI fix was partly applied
 // in later rounds but not fully resolved.
 // ============================================================================
-
-// FIX 1: A1=2 (not working last 7 days) → A10, A11 must be empty
-// Skip rule: A1=2 skips to A24. A10 (days worked) and A11 (hours worked)
-// should only be filled if respondent IS working (A1=1).
-// Assumption: if A1=2, any value in A10/A11 is a programming error.
-	replace a10 = . if a1 == 2  // A10: days worked last week — skip if not working
-	replace a11 = . if a1 == 2  // A11: hours worked last week — skip if not working
-

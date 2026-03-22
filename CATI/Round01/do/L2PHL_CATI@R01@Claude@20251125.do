@@ -6311,10 +6311,6 @@
 	
 	/// FIX FOR TRAILER
 	run "${wd}/fix/do/M04_trailer.do"
-	// @Claude: systematic skip logic fixes (applied inline — M04.do not called in @AP R01)
-	// A10 (days worked) and A11 (hours worked) should be missing when A1==2 (not working)
-	replace a10 = . if a1 == 2
-	replace a11 = . if a1 == 2
 	replace a4_oth = "" if a4 !=.
 	replace a4_oth = "" if a4 != 9996
 	replace a3_oth = "" if a3 != .

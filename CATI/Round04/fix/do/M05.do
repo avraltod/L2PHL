@@ -273,17 +273,3 @@
 // Note: gap appears in R4 only — likely a CATI skip logic regression
 // introduced in the R4 questionnaire revision.
 // ============================================================================
-
-// FIX 1: IA2=2 (no regular salary/wages) → IA3_a through IA3_f must be empty
-// Skip rule: IA2 asks "received regular salaries and wages in past month?".
-// Only IA2=1 (yes) should proceed to IA3 (earnings breakdown by component).
-// IA3 has 6 sub-variables: a=cash basic, b=cash other, c=in-kind basic,
-// d=in-kind housing, e=in-kind food, f=in-kind other.
-// Assumption: if IA2=2 (no), any values in IA3_* are a programming error.
-	replace ia3_a = . if ia2 == 2  // IA3_A: cash basic salary — skip if no wages
-	replace ia3_b = . if ia2 == 2  // IA3_B: cash other (bonus etc.) — skip if no wages
-	replace ia3_c = . if ia2 == 2  // IA3_C: in-kind basic — skip if no wages
-	replace ia3_d = . if ia2 == 2  // IA3_D: in-kind housing — skip if no wages
-	replace ia3_e = . if ia2 == 2  // IA3_E: in-kind food — skip if no wages
-	replace ia3_f = . if ia2 == 2  // IA3_F: in-kind other — skip if no wages
-

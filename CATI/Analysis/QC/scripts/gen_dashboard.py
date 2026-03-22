@@ -14,10 +14,17 @@ with open(_os.path.join(_CACHE, 'module_tables.json')) as f:
     module_tables = json.load(f)
 with open(_os.path.join(_CACHE, 'all_questions.json')) as f:
     all_qs = json.load(f)
+_panel_path = _os.path.join(_CACHE, 'panel_data.json')
+if _os.path.exists(_panel_path):
+    with open(_panel_path) as f:
+        panel_raw = json.load(f)
+else:
+    panel_raw = {}
 
 DQ  = json.dumps(dq_raw,       separators=(',',':'))
 MT  = json.dumps(module_tables, separators=(',',':'))
 AQ  = json.dumps(all_qs,        separators=(',',':'))
+PAN = json.dumps(panel_raw,     separators=(',',':'))
 
 HTML = r"""<!DOCTYPE html>
 <html lang="en">
@@ -259,6 +266,10 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
     <span class="dot" style="background:#2ecc71"></span>Interview Quality
   </a>
 
+  <div class="nav-section">Panel Structure</div>
+  <a href="#" onclick="return showPage('panel')" id="nav-panel">
+    <span class="dot" style="background:#8e44ad"></span>Panel Tracking
+  </a>
   <div class="nav-section">Questionnaire Changes</div>
   <a href="#" onclick="return showPage('changes')" id="nav-changes">
     <span class="dot" style="background:#f1c40f"></span>All Changes by Round
@@ -366,6 +377,31 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
 </div>
 </div>
 
+<!-- ═══════ PANEL TRACKING ═══════ -->
+<div id="page-panel" class="page">
+<h1>Panel Structure &amp; Household Tracking</h1>
+<p class="subtitle">Participation across rounds · PSU coverage vs targets · In / out households</p>
+<div id="panel-stats" class="stats-row"></div>
+<div id="panel-attrition-note" class="note-box note-info" style="margin-bottom:14px"></div>
+<div class="chart-grid">
+  <div class="chart-box"><div class="ch-title">Households per Round</div><div class="ch-sub">Retained from R1 vs new entries</div><div style="height:220px"><canvas id="panelAttrChart"></canvas></div></div>
+  <div class="chart-box"><div class="ch-title">Participation Pattern Distribution</div><div class="ch-sub">Top patterns (1=present, 0=absent per round)</div><div style="height:220px"><canvas id="panelPatChart"></canvas></div></div>
+</div>
+<div class="card" style="margin-top:6px">
+  <h2>📍 PSU Coverage vs Targets <span class="badge badge-blue">Urban: 6 HH/PSU &nbsp;|&nbsp; Rural: 7 HH/PSU</span></h2>
+  <div id="panel-psu-status"></div>
+</div>
+<div class="card">
+  <h2>🗺️ Household Counts by Region, Urban/Rural &amp; Round</h2>
+  <div id="panel-region-table"></div>
+</div>
+<div class="card">
+  <h2>🔄 Round-by-Round In / Out Summary</h2>
+  <p style="font-size:12px;color:#666;margin-bottom:10px">Tracked relative to R1 baseline. "New" = households not seen in R1.</p>
+  <div id="panel-inout-table"></div>
+</div>
+</div>
+
 <!-- ═══════ ALL CHANGES BY ROUND ═══════ -->
 <div id="page-changes" class="page">
 <h1>All Questionnaire Changes by Round</h1>
@@ -384,9 +420,10 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
 
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────────────
-const DQ = """ + DQ + """;
-const MT = """ + MT + """;
-const AQ = """ + AQ + """;
+const DQ  = """ + DQ  + """;
+const MT  = """ + MT  + """;
+const AQ  = """ + AQ  + """;
+const PAN = """ + PAN + """;
 
 const ROUNDS = [1,2,3,4,5];
 const RLABELS = {1:'R1 (Nov)',2:'R2 (Dec)',3:'R3 (Jan)',4:'R4 (Feb)',5:'R5 (Mar)'};
@@ -687,6 +724,186 @@ function buildOOR(){
       }]),30);
     });
   },50);
+}
+
+// ── PANEL TRACKING ───────────────────────────────────────────────────────────
+function buildPanel(){
+  if(!PAN || !PAN.attrition) return;
+  const p = PAN;
+  const rounds = [1,2,3,4,5];
+  const rLabels = rounds.map(r=>'R'+r);
+
+  // ── Stats row ──
+  const statsEl = document.getElementById('panel-stats');
+  if(statsEl){
+    const retPct = p.attrition[4] ? Math.round(p.attrition[4].retained/p.attrition[0].n*100) : '?';
+    statsEl.innerHTML = [
+      {n:p.all_hhs,    lbl:'Unique HHs (all rounds)', cls:'purple'},
+      {n:p.attrition[0].n, lbl:'R1 Baseline', cls:'blue'},
+      {n:p.always_in,  lbl:'Present in all 5 rounds', cls:'green'},
+      {n:p.r1_only,    lbl:'R1 only (never seen again)', cls:'yellow'},
+      {n:p.never_r1,   lbl:'Never in R1 (new entries)', cls:''},
+      {n:retPct+'%',   lbl:'R1 HHs retained by R5', cls:retPct<60?'red':'green'},
+    ].map(s=>`<div class="stat-box ${s.cls}"><div class="num">${s.n}</div><div class="lbl">${s.lbl}</div></div>`).join('');
+  }
+
+  // ── Attrition note ──
+  const noteEl = document.getElementById('panel-attrition-note');
+  if(noteEl){
+    const a5 = p.attrition[4];
+    noteEl.innerHTML = `<strong>R5 retention:</strong> ${a5.retained} of ${p.attrition[0].n} R1 baseline households (${Math.round(a5.retained/p.attrition[0].n*100)}%) were re-interviewed in Round 5. ${a5.new_in} households appear in R5 that were not in the R1 sample.`;
+  }
+
+  // ── Attrition stacked bar ──
+  const retArr  = p.attrition.map(r=>r.retained);
+  const newArr  = p.attrition.map(r=>r.new_in);
+  const dropArr = p.attrition.map(r=>r.dropped);
+  new Chart(document.getElementById('panelAttrChart'),{
+    type:'bar',
+    data:{
+      labels: rLabels,
+      datasets:[
+        {label:'Retained from R1', data:retArr,  backgroundColor:'#2980b9'},
+        {label:'New (not in R1)',   data:newArr,  backgroundColor:'#27ae60'},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},
+      scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,
+        title:{display:true,text:'Households',font:{size:11}}}}}
+  });
+
+  // ── Pattern distribution bar ──
+  const topPat = p.pattern_dist.slice(0,10);
+  new Chart(document.getElementById('panelPatChart'),{
+    type:'bar',
+    data:{
+      labels: topPat.map(x=>x.pattern),
+      datasets:[{label:'HHs', data:topPat.map(x=>x.n),
+        backgroundColor: topPat.map(x=>{
+          const ones = (x.pattern.match(/1/g)||[]).length;
+          return ones===5?'#27ae60':ones>=3?'#2980b9':ones===1?'#e67e22':'#e74c3c';
+        })}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>`${c.raw} HHs`}}},
+      scales:{x:{ticks:{font:{size:10}}},
+              y:{beginAtZero:true,title:{display:true,text:'Households',font:{size:11}}}}}
+  });
+
+  // ── PSU status table ──
+  const psuEl = document.getElementById('panel-psu-status');
+  if(psuEl && p.psu_status){
+    const tgt = `Urban PSUs: target ${p.urban_target} HH &nbsp;|&nbsp; Rural PSUs: target ${p.rural_target} HH`;
+    let html = `<p class="note-box note-info" style="margin-bottom:10px;font-size:12px">${tgt}</p>`;
+    html += `<table style="width:100%;border-collapse:collapse;font-size:12.5px">
+      <thead><tr style="background:#1a2332;color:#fff">
+        <th style="padding:7px 10px;text-align:left">Round</th>
+        <th style="padding:7px 10px;text-align:center">Total PSUs</th>
+        <th style="padding:7px 10px;text-align:center;background:#27ae60">On Target</th>
+        <th style="padding:7px 10px;text-align:center;background:#e67e22">Under Target</th>
+        <th style="padding:7px 10px;text-align:center;background:#2980b9">Over Target</th>
+        <th style="padding:7px 10px;text-align:center">% On Target</th>
+      </tr></thead><tbody>`;
+    p.psu_status.forEach((row,i)=>{
+      const tot = (row.on_target||0)+(row.under||0)+(row.over||0);
+      const pct = tot>0?Math.round(row.on_target/tot*100):0;
+      const bg  = i%2===0?'#f8f9fa':'#fff';
+      html += `<tr style="background:${bg}">
+        <td style="padding:6px 10px;font-weight:600">R${row.round}</td>
+        <td style="padding:6px 10px;text-align:center">${tot}</td>
+        <td style="padding:6px 10px;text-align:center;color:#27ae60;font-weight:600">${row.on_target||0}</td>
+        <td style="padding:6px 10px;text-align:center;color:#e67e22;font-weight:600">${row.under||0}</td>
+        <td style="padding:6px 10px;text-align:center;color:#2980b9;font-weight:600">${row.over||0}</td>
+        <td style="padding:6px 10px;text-align:center">
+          <div style="background:#eee;border-radius:4px;overflow:hidden;height:14px;min-width:80px">
+            <div style="background:${pct>=70?'#27ae60':'#e67e22'};width:${pct}%;height:100%"></div>
+          </div>
+          <span style="font-size:11px">${pct}%</span>
+        </td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    psuEl.innerHTML = html;
+  }
+
+  // ── Region x Urban x Round table ──
+  const regEl = document.getElementById('panel-region-table');
+  if(regEl && p.reg_summary){
+    // Group by region
+    const regMap = {};
+    p.reg_summary.forEach(r=>{
+      const key = r.region_name;
+      if(!regMap[key]) regMap[key] = {region:r.region, name:r.region_name, rows:[]};
+      regMap[key].rows.push(r);
+    });
+    const sortedRegs = Object.values(regMap).sort((a,b)=>a.region-b.region);
+
+    let html = `<table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:#1a2332;color:#fff">
+        <th style="padding:7px 10px;text-align:left">Region</th>
+        <th style="padding:7px 10px;text-align:left">Urban/Rural</th>`;
+    rounds.forEach(r=>html+=`<th style="padding:7px 10px;text-align:center">R${r}</th>`);
+    html += `<th style="padding:7px 10px;text-align:center">Total</th></tr></thead><tbody>`;
+
+    sortedRegs.forEach((reg,ri)=>{
+      reg.rows.sort((a,b)=>a.urban_label.localeCompare(b.urban_label));
+      reg.rows.forEach((row,j)=>{
+        const bg = ri%2===0?'#f8f9fa':'#fff';
+        const rowTotal = rounds.reduce((s,r)=>s+(row.counts[String(r)]||0),0);
+        html += `<tr style="background:${bg}">`;
+        if(j===0) html += `<td style="padding:6px 10px;font-weight:600;vertical-align:top" rowspan="${reg.rows.length}">${reg.name}</td>`;
+        const uLabel = row.urban_label==='Urban'
+          ? `<span style="background:#cce5ff;color:#004085;border-radius:3px;padding:1px 5px;font-size:10.5px">Urban</span>`
+          : `<span style="background:#d4edda;color:#155724;border-radius:3px;padding:1px 5px;font-size:10.5px">Rural</span>`;
+        html += `<td style="padding:6px 10px">${uLabel}</td>`;
+        rounds.forEach(r=>{
+          const cnt = row.counts[String(r)]||0;
+          const clr = cnt===0?'#ccc':'#222';
+          html += `<td style="padding:6px 10px;text-align:center;color:${clr};font-weight:${cnt>0?600:400}">${cnt||'—'}</td>`;
+        });
+        html += `<td style="padding:6px 10px;text-align:center;font-weight:700">${rowTotal}</td>`;
+        html += `</tr>`;
+      });
+    });
+    html += `</tbody></table>`;
+    regEl.innerHTML = html;
+  }
+
+  // ── In/Out summary table ──
+  const inoutEl = document.getElementById('panel-inout-table');
+  if(inoutEl && p.attrition){
+    const baseN = p.attrition[0].n;
+    let html = `<table style="width:100%;border-collapse:collapse;font-size:12.5px">
+      <thead><tr style="background:#1a2332;color:#fff">
+        <th style="padding:7px 10px">Round</th>
+        <th style="padding:7px 10px;text-align:center">Total HHs</th>
+        <th style="padding:7px 10px;text-align:center;background:#2980b9">Retained from R1</th>
+        <th style="padding:7px 10px;text-align:center;background:#e74c3c">Not seen from R1</th>
+        <th style="padding:7px 10px;text-align:center;background:#27ae60">New entries</th>
+        <th style="padding:7px 10px;text-align:center">Retention %</th>
+      </tr></thead><tbody>`;
+    p.attrition.forEach((row,i)=>{
+      const retPct = Math.round(row.retained/baseN*100);
+      const bg = i%2===0?'#f8f9fa':'#fff';
+      html += `<tr style="background:${bg}">
+        <td style="padding:7px 10px;font-weight:700">R${row.round}</td>
+        <td style="padding:7px 10px;text-align:center;font-weight:600">${row.n}</td>
+        <td style="padding:7px 10px;text-align:center;color:#2980b9;font-weight:600">${row.retained}</td>
+        <td style="padding:7px 10px;text-align:center;color:#e74c3c;font-weight:600">${row.dropped}</td>
+        <td style="padding:7px 10px;text-align:center;color:#27ae60;font-weight:600">${row.new_in}</td>
+        <td style="padding:7px 10px;text-align:center">
+          <div style="background:#eee;border-radius:4px;overflow:hidden;height:14px;min-width:80px;display:inline-block;width:60px">
+            <div style="background:${retPct>=70?'#27ae60':retPct>=50?'#e67e22':'#e74c3c'};width:${retPct}%;height:100%"></div>
+          </div>
+          <span style="font-size:11px;margin-left:4px">${retPct}%</span>
+        </td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    inoutEl.innerHTML = html;
+  }
 }
 
 // ── MISSING HEATMAP ──────────────────────────────────────────────────────────
@@ -1131,6 +1348,7 @@ buildMissing();
 buildInterview();
 buildChanges();
 buildAllModulePages();
+buildPanel();
 </script>
 </body>
 </html>"""
@@ -1138,9 +1356,10 @@ buildAllModulePages();
 out = _os.path.join(_OUTPUT, 'l2ph_dq_dashboard.html')
 # Replace placeholders with actual JSON data
 content = HTML
-content = content.replace('""" + DQ + """', DQ)
-content = content.replace('""" + MT + """', MT)
-content = content.replace('""" + AQ + """', AQ)
+content = content.replace('""" + DQ  + """', DQ)
+content = content.replace('""" + MT  + """', MT)
+content = content.replace('""" + AQ  + """', AQ)
+content = content.replace('""" + PAN + """', PAN)
 with open(out,'w') as f:
     f.write(content)
 print(f'Generated: {out} ({round(os.path.getsize(out)/1024,1)} KB)')
