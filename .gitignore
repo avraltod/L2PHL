@@ -14,6 +14,7 @@
 CATI/Analysis/QC/output/*
 !CATI/Analysis/QC/output/l2ph_dq_dashboard.html
 !CATI/Analysis/QC/output/L2PHL_Questionnaire_Cross_Round_Report.xlsx
+!CATI/Analysis/QC/output/L2PHL_QC_Memo_March2026_Revised.docx
 CATI/Analysis/QC/cache/
 
 # ── Tabulation outputs & Excel intermediates ──────────────────────────────────
