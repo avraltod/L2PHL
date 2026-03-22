@@ -380,8 +380,31 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
 <!-- ═══════ PANEL TRACKING ═══════ -->
 <div id="page-panel" class="page">
 <h1>Panel Structure &amp; Household Tracking</h1>
-<p class="subtitle">Participation across rounds · PSU coverage vs targets · In / out households</p>
-<div id="panel-stats" class="stats-row"></div>
+<p class="subtitle">Participation across rounds · Attrition bias · PSU coverage vs targets · In / out households</p>
+<div id="panel-bias-banner"></div>
+<div class="card" style="margin-top:10px">
+  <h2>🔬 Attrition Bias Analysis <span id="panel-bias-verdict-badge"></span></h2>
+  <p style="font-size:12px;color:#666;margin-bottom:12px">Round-to-round selection bias: for each transition (R1→R2, R2→R3, …) are households that <em>stay</em> systematically different from those that <em>drop out</em>? Characteristics compared using data from the <em>previous</em> round.</p>
+  <div id="panel-bias-table"></div>
+  <div class="chart-grid" style="margin-top:14px">
+    <div class="chart-box">
+      <div class="ch-title">Regional Retention Rate by Transition <span id="bias-reg-chart-label" style="font-weight:normal;font-size:11px;color:#888">(R1→R2)</span></div>
+      <div class="ch-sub">Click a transition tab above to update — sorted lowest to highest</div>
+      <div style="height:340px"><canvas id="panelBiasRegChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="ch-title">Sample Composition Drift</div>
+      <div class="ch-sub">Each region's share of total sample: R1 vs latest complete round (pp change)</div>
+      <div style="height:340px"><canvas id="panelBiasDriftChart"></canvas></div>
+    </div>
+  </div>
+  <div style="margin-top:14px">
+    <div class="ch-title" style="margin-bottom:6px">Retention Rate Heatmap — Region × Transition</div>
+    <p style="font-size:11.5px;color:#666;margin-bottom:8px">% of previous-round HHs retained per transition, by region. Red &lt;50%, orange 50–65%, yellow 65–75%, green ≥75%.</p>
+    <div id="panel-trans-heatmap"></div>
+  </div>
+</div>
+<div id="panel-stats" class="stats-row" style="margin-top:10px"></div>
 <div id="panel-attrition-note" class="note-box note-info" style="margin-bottom:14px"></div>
 <div class="chart-grid">
   <div class="chart-box"><div class="ch-title">Households per Round</div><div class="ch-sub">Retained from R1 vs new entries</div><div style="height:220px"><canvas id="panelAttrChart"></canvas></div></div>
@@ -399,6 +422,52 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
   <h2>🔄 Round-by-Round In / Out Summary</h2>
   <p style="font-size:12px;color:#666;margin-bottom:10px">Tracked relative to R1 baseline. "New" = households not seen in R1.</p>
   <div id="panel-inout-table"></div>
+</div>
+<div class="card">
+  <h2>🔁 Leavers vs. New Entries — Are Replacements Representative? <span id="lvn-verdict-badge" class="badge"></span></h2>
+  <p style="font-size:12px;color:#666;margin-bottom:12px">For each transition, compares households that <strong>left</strong> (using their last-observed characteristics) against households that <strong>entered</strong> (using first-observed characteristics). If replacements differ from leavers, the survey composition is shifting.</p>
+  <div id="panel-lvn-summary"></div>
+  <div class="chart-grid" style="margin-top:14px">
+    <div class="chart-box">
+      <div class="ch-title">% Urban: Leavers vs New Entries</div>
+      <div class="ch-sub">Are new entries more/less urban than those who left?</div>
+      <div style="height:220px"><canvas id="lvnUrbanChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="ch-title">Mean HH Size: Leavers vs New Entries</div>
+      <div class="ch-sub">Are new households larger/smaller?</div>
+      <div style="height:220px"><canvas id="lvnHhsizeChart"></canvas></div>
+    </div>
+  </div>
+  <div style="margin-top:14px">
+    <div class="ch-title" style="margin-bottom:6px">Regional Composition: Leavers vs New Entries</div>
+    <p style="font-size:11.5px;color:#666;margin-bottom:8px">Each region's share of leavers vs share of new entries per transition. Large differences indicate regional replacement bias.</p>
+    <div id="panel-lvn-region"></div>
+  </div>
+</div>
+<div class="card">
+  <h2>👥 Attrition Composition — Who Stays, Who Leaves, Who Is New?</h2>
+  <p style="font-size:12px;color:#666;margin-bottom:12px">Urban/Rural split of retained, dropped, and new-entry households per round transition.</p>
+  <div id="panel-attrition-profile"></div>
+  <div class="chart-grid" style="margin-top:14px">
+    <div class="chart-box"><div class="ch-title">Urban/Rural Mix by Group</div><div class="ch-sub">% Urban among retained vs dropped vs new (each transition)</div><div style="height:240px"><canvas id="panelAttrProfileChart"></canvas></div></div>
+    <div class="chart-box"><div class="ch-title">Volume by Group per Transition</div><div class="ch-sub">Absolute HH counts</div><div style="height:240px"><canvas id="panelAttrVolumeChart"></canvas></div></div>
+  </div>
+</div>
+<div class="card">
+  <h2>⚠️ PSU Problem Tracker <span class="badge badge-red">Under-Target Only</span></h2>
+  <p style="font-size:12px;color:#666;margin-bottom:8px">PSUs that are below their household target in at least one round. Sorted by most rounds under target. Over-target is not flagged.</p>
+  <div id="panel-psu-filter" style="margin-bottom:10px"></div>
+  <div id="panel-psu-problems"></div>
+</div>
+<div class="card">
+  <h2>📅 Call Interval Tracker <span id="panel-call-badge" class="badge badge-red"></span></h2>
+  <p style="font-size:12px;color:#666;margin-bottom:10px">Days between consecutive interviews for the same household. Minimum required interval is 30 days.</p>
+  <div id="panel-call-summary"></div>
+  <div style="margin-top:14px">
+    <div class="ch-title" style="margin-bottom:6px">Households Called Too Early (&lt;30 days since last interview)</div>
+    <div id="panel-call-violations"></div>
+  </div>
 </div>
 </div>
 
@@ -733,6 +802,261 @@ function buildPanel(){
   const rounds = [1,2,3,4,5];
   const rLabels = rounds.map(r=>'R'+r);
 
+  // ── Attrition Bias Analysis ──
+  const bias = p.attrition_bias;
+  if(bias){
+    // ── Banner ──────────────────────────────────────────────────────────────
+    const bannerEl = document.getElementById('panel-bias-banner');
+    if(bannerEl){
+      const colors = {HIGH:'#e74c3c', MODERATE:'#e67e22', LOW:'#27ae60'};
+      const icons  = {HIGH:'🔴', MODERATE:'🟡', LOW:'🟢'};
+      const msgs   = {
+        HIGH:     `HIGH — Significant selection bias in ${bias.n_biased_trans} of ${(bias.transitions||[]).length} round-to-round transitions. Households that stay are systematically different from those that leave in multiple waves.`,
+        MODERATE: `MODERATE — Differences detected in ${bias.n_biased_trans} transition(s). Panel may be selectively retaining certain household types.`,
+        LOW:      'LOW — No significant differences detected between retained and dropped households in any transition.',
+      };
+      const wvars = (bias.worst_vars||[]);
+      bannerEl.innerHTML=`<div style="background:${colors[bias.verdict]}18;border-left:4px solid ${colors[bias.verdict]};padding:12px 16px;border-radius:4px;margin-bottom:12px">
+        <strong style="color:${colors[bias.verdict]};font-size:13px">${icons[bias.verdict]} Selection Bias Verdict: ${bias.verdict}</strong>
+        <p style="margin:4px 0 0 0;font-size:12.5px;color:#333">${msgs[bias.verdict]}</p>
+        ${wvars.length ? `<p style="margin:4px 0 0 0;font-size:12px;color:#555">Variables significant in ≥1 transition: <strong>${wvars.join(', ')}</strong></p>` : ''}
+      </div>`;
+    }
+
+    // ── Badge ────────────────────────────────────────────────────────────────
+    const badgeEl = document.getElementById('panel-bias-verdict-badge');
+    if(badgeEl){
+      const bc={HIGH:'badge-red',MODERATE:'badge-yellow',LOW:'badge-green'};
+      badgeEl.className=`badge ${bc[bias.verdict]||'badge-blue'}`;
+      badgeEl.textContent=bias.verdict+' CONCERN';
+    }
+
+    // ── Per-transition comparison table (tabbed) ──────────────────────────
+    const biasTableEl = document.getElementById('panel-bias-table');
+    const bTrans = bias.transitions||[];
+    if(biasTableEl && bTrans.length){
+      const VAR_LABELS = {
+        urban:'% Urban', hhsize:'HH Size (mean)', female:'% Female head',
+        employed:'% Employed', has_account:'% Has bank account',
+        has_savings:'% Has savings',
+      };
+      // Tab buttons
+      let tabHtml=`<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">`;
+      bTrans.forEach((t,idx)=>{
+        const bc2=t.verdict==='BIASED'?'#e74c3c':'#27ae60';
+        const isFirst=(idx===0);
+        tabHtml+=`<button onclick="showBiasTab(${idx})" id="bias-tab-btn-${idx}"
+          style="padding:5px 13px;border:2px solid ${bc2};border-radius:4px;
+                 background:${isFirst?bc2:'transparent'};color:${isFirst?'#fff':bc2};
+                 cursor:pointer;font-size:12px;font-weight:600">
+          ${t.label} ${t.verdict==='BIASED'?'⚠️':'✓'}
+        </button>`;
+      });
+      tabHtml+=`</div>`;
+
+      // Per-transition panels
+      let panelsHtml='';
+      bTrans.forEach((t,idx)=>{
+        const vars=t.vars||{};
+        const varKeys=['urban','hhsize','female','employed','has_account'];
+        panelsHtml+=`<div id="bias-panel-${idx}" style="display:${idx===0?'block':'none'}">
+          <p style="font-size:11.5px;color:#666;margin:0 0 8px">
+            Comparing <strong>${t.n_retained}</strong> retained vs
+            <strong>${t.n_dropped}</strong> dropped households
+            (n prev round = ${t.n_prev}) — characteristics from R${t.from_round}.
+          </p>
+          <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:12.5px;min-width:540px">
+          <thead><tr style="background:#1a2332;color:#fff">
+            <th style="padding:7px 10px;text-align:left">Variable</th>
+            <th style="padding:7px 10px;text-align:center">Retained</th>
+            <th style="padding:7px 10px;text-align:center">Dropped</th>
+            <th style="padding:7px 10px;text-align:center">Diff</th>
+            <th style="padding:7px 10px;text-align:center">Test stat</th>
+            <th style="padding:7px 10px;text-align:center">p-value</th>
+            <th style="padding:7px 10px;text-align:center">Sig.</th>
+          </tr></thead><tbody>`;
+
+        varKeys.forEach((vk,ri)=>{
+          const v=vars[vk]; if(!v) return;
+          const isSig=(v.p<0.05);
+          const rowBg=isSig?'#fff3cd':(ri%2===0?'#f8f9fa':'#fff');
+          const sigClr=v.p<0.05?'#e74c3c':v.p<0.10?'#e67e22':'#555';
+          const isCont=(vk==='hhsize');
+          const rDisp=isCont?v.retained:(v.retained+'%');
+          const dDisp=isCont?v.dropped:(v.dropped+'%');
+          const rawDiff=v.diff;
+          const diffSign=rawDiff>0?'+':'';
+          const diffUnit=isCont?'':' pp';
+          const diffClr=Math.abs(rawDiff)>(isCont?0.3:5)?'#e74c3c':'#555';
+          const statDisp=isCont?`t=${v.t}`:`χ²=${v.chi2}`;
+          panelsHtml+=`<tr style="background:${rowBg}">
+            <td style="padding:7px 10px;font-weight:600">${VAR_LABELS[vk]||vk}${isSig?' ⚠️':''}</td>
+            <td style="padding:7px 10px;text-align:center">${rDisp}</td>
+            <td style="padding:7px 10px;text-align:center">${dDisp}</td>
+            <td style="padding:7px 10px;text-align:center;color:${diffClr}">${diffSign}${rawDiff}${diffUnit}</td>
+            <td style="padding:7px 10px;text-align:center;font-family:monospace;font-size:11px">${statDisp}</td>
+            <td style="padding:7px 10px;text-align:center;font-family:monospace;font-size:11px;color:${sigClr}">${v.p}</td>
+            <td style="padding:7px 10px;text-align:center;font-weight:700;color:${sigClr}">${v.sig}</td>
+          </tr>`;
+        });
+
+        // Region row
+        const reg=vars['region'];
+        if(reg){
+          const isSig=(reg.p<0.05);
+          const rowBg=isSig?'#fff3cd':'#f8f9fa';
+          const sigClr=reg.p<0.05?'#e74c3c':reg.p<0.10?'#e67e22':'#555';
+          panelsHtml+=`<tr style="background:${rowBg}">
+            <td style="padding:7px 10px;font-weight:600">Region (composition)${isSig?' ⚠️':''}</td>
+            <td style="padding:7px 10px;text-align:center;color:#888" colspan="3">(see chart & heatmap below)</td>
+            <td style="padding:7px 10px;text-align:center;font-family:monospace;font-size:11px">χ²=${reg.chi2}, V=${reg.v}</td>
+            <td style="padding:7px 10px;text-align:center;font-family:monospace;font-size:11px;color:${sigClr}">${reg.p}</td>
+            <td style="padding:7px 10px;text-align:center;font-weight:700;color:${sigClr}">${reg.sig}</td>
+          </tr>`;
+        }
+
+        panelsHtml+=`</tbody></table></div>
+          <p style="font-size:11px;color:#888;margin-top:6px">*** p&lt;0.001 &nbsp;** p&lt;0.01 &nbsp;* p&lt;0.05 &nbsp;† p&lt;0.10 &nbsp;ns=not significant</p>
+        </div>`;
+      });
+
+      biasTableEl.innerHTML=tabHtml+panelsHtml;
+
+      // Tab switching + chart update
+      let _biasRegChartInst=null;
+      window._biasUpdateRegChart=function(idx){
+        const t=bTrans[idx]; if(!t) return;
+        const rr=(t.reg_ret_rates||[]).slice().sort((a,b)=>(a.pct_retained||0)-(b.pct_retained||0));
+        const labels=rr.map(r=>r.name);
+        const vals=rr.map(r=>r.pct_retained||0);
+        const colors2=vals.map(v=>v<50?'#e74c3c':v<65?'#e67e22':v<75?'#f39c12':'#27ae60');
+        const lbl=document.getElementById('bias-reg-chart-label');
+        if(lbl) lbl.textContent=`(${t.label})`;
+        if(_biasRegChartInst){ _biasRegChartInst.destroy(); _biasRegChartInst=null; }
+        const canvas=document.getElementById('panelBiasRegChart');
+        if(!canvas) return;
+        _biasRegChartInst=new Chart(canvas,{
+          type:'bar',
+          data:{
+            labels:labels,
+            datasets:[{
+              label:`% Retained ${t.label}`,
+              data:vals,
+              backgroundColor:colors2,
+              borderRadius:3,
+            }]
+          },
+          options:{
+            indexAxis:'y',
+            responsive:true, maintainAspectRatio:false,
+            plugins:{
+              legend:{display:false},
+              tooltip:{callbacks:{label:c=>{
+                const r=rr[c.dataIndex];
+                return `${c.raw}% retained (n=${r.n}, ret=${r.retained}, drop=${r.dropped})`;
+              }}}
+            },
+            scales:{
+              x:{min:0,max:100,title:{display:true,text:'% Retained',font:{size:11}},ticks:{callback:v=>v+'%'}},
+              y:{ticks:{font:{size:10.5}}}
+            }
+          }
+        });
+      };
+
+      window.showBiasTab=function(idx){
+        bTrans.forEach((_,i)=>{
+          const panel=document.getElementById('bias-panel-'+i);
+          const btn=document.getElementById('bias-tab-btn-'+i);
+          if(panel) panel.style.display=(i===idx)?'block':'none';
+          if(btn){
+            const bc2=bTrans[i].verdict==='BIASED'?'#e74c3c':'#27ae60';
+            btn.style.background=(i===idx)?bc2:'transparent';
+            btn.style.color=(i===idx)?'#fff':bc2;
+          }
+        });
+        window._biasUpdateRegChart(idx);
+      };
+      window._biasUpdateRegChart(0);
+    }
+
+    // ── Composition drift chart (unchanged — uses bias.comp_drift) ─────────
+    const driftData = [...(bias.comp_drift||[])].sort((a,b)=>a.drift-b.drift);
+    const driftColors = driftData.map(r=>r.drift<0?'#e74c3c':'#27ae60');
+    new Chart(document.getElementById('panelBiasDriftChart'),{
+      type:'bar',
+      data:{
+        labels: driftData.map(r=>r.region_name),
+        datasets:[{
+          label:'Share change (pp)',
+          data: driftData.map(r=>r.drift),
+          backgroundColor: driftColors,
+          borderRadius:3,
+        }]
+      },
+      options:{
+        indexAxis:'y',
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:c=>{
+            const r=driftData[c.dataIndex];
+            const rounds=Object.keys(r.pct_per_round||{}).sort();
+            const r1=r.pct_per_round['1']||0;
+            const rLast=r.pct_per_round[rounds[rounds.length-1]]||0;
+            return `${c.raw>0?'+':''}${c.raw}pp  (R1=${r1}%  → R${rounds[rounds.length-1]}=${rLast}%)`;
+          }}}
+        },
+        scales:{
+          x:{title:{display:true,text:'Share change (pp)',font:{size:11}}},
+          y:{ticks:{font:{size:10.5}}}
+        }
+      }
+    });
+
+    // ── Retention heatmap: Region × Transition ────────────────────────────
+    const hmEl = document.getElementById('panel-trans-heatmap');
+    if(hmEl && bTrans.length){
+      // Collect all regions across all transitions
+      const regKeySet=new Set();
+      const regNameMap={};
+      bTrans.forEach(t=>(t.reg_ret_rates||[]).forEach(r=>{
+        const k=String(r.region);
+        regKeySet.add(k);
+        regNameMap[k]=r.name;
+      }));
+      const allRegKeys=[...regKeySet].sort((a,b)=>parseInt(a)-parseInt(b));
+
+      let html=`<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:11.5px;min-width:480px">
+        <thead><tr style="background:#1a2332;color:#fff">
+          <th style="padding:6px 10px;text-align:left">Region</th>
+          ${bTrans.map(t=>{
+            const bc2=t.verdict==='BIASED'?'#e74c3c50':'#27ae6030';
+            return `<th style="padding:6px 8px;text-align:center;background:${bc2}">${t.label}${t.verdict==='BIASED'?' ⚠️':''}</th>`;
+          }).join('')}
+        </tr></thead><tbody>`;
+
+      allRegKeys.forEach((rk,i)=>{
+        const bg=i%2===0?'#f8f9fa':'#fff';
+        html+=`<tr style="background:${bg}">
+          <td style="padding:5px 10px;font-weight:600">${regNameMap[rk]||rk}</td>`;
+        bTrans.forEach(t=>{
+          const rd=(t.reg_ret_rates||[]).find(r=>String(r.region)===rk);
+          const pct=rd?rd.pct_retained:null;
+          const cellBg=pct===null?'#f0f0f0':pct<50?'#fde8e8':pct<65?'#fff3cd':pct<75?'#fef9e7':'#d4edda';
+          const textClr=pct===null?'#aaa':pct<50?'#c0392b':pct<65?'#856404':'#155724';
+          const tip=rd?`title="${rd.retained} ret / ${rd.dropped} drop (n=${rd.n})"` :'';
+          html+=`<td style="padding:5px 8px;text-align:center;background:${cellBg};color:${textClr};font-weight:600" ${tip}>
+            ${pct!==null?pct+'%':'—'}</td>`;
+        });
+        html+=`</tr>`;
+      });
+      html+=`</tbody></table></div>`;
+      hmEl.innerHTML=html;
+    }
+  }
+
   // ── Stats row ──
   const statsEl = document.getElementById('panel-stats');
   if(statsEl){
@@ -903,6 +1227,374 @@ function buildPanel(){
     });
     html += `</tbody></table>`;
     inoutEl.innerHTML = html;
+  }
+
+  // ── Leavers vs New Entries ──
+  if(p.leaver_vs_new){
+    const lvn = p.leaver_vs_new;
+    const transLabels = lvn.map(t=>t.label);
+
+    // Overall verdict badge
+    const allDiff = lvn.every(t=>t.verdict==='DIFFERENT');
+    const anyDiff = lvn.some(t=>t.verdict==='DIFFERENT');
+    const lvnBadge = document.getElementById('lvn-verdict-badge');
+    if(lvnBadge){
+      const cls = allDiff?'badge-red':anyDiff?'badge-yellow':'badge-green';
+      const txt = allDiff?'REGIONAL BIAS IN EVERY ROUND':anyDiff?'DIFFERENCES FOUND':'SIMILAR';
+      lvnBadge.className=`badge ${cls}`;
+      lvnBadge.textContent=txt;
+    }
+
+    // Summary table
+    const sumEl = document.getElementById('panel-lvn-summary');
+    if(sumEl){
+      const allVarKeys = [...new Set(lvn.flatMap(t=>Object.keys(t.vars).filter(k=>k!=='region')))];
+      const varLabels = {urban:'% Urban',hhsize:'HH Size',female:'% Female',employed:'% Employed',has_account:'% Has Bank Acct'};
+
+      let html=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:600px">
+        <thead>
+        <tr style="background:#1a2332;color:#fff">
+          <th style="padding:7px 10px" rowspan="2">Variable</th>
+          ${lvn.map(t=>`<th colspan="3" style="padding:7px 8px;text-align:center;border-left:1px solid #334">${t.label}</th>`).join('')}
+        </tr>
+        <tr style="background:#2c3e50;color:#ccc;font-size:11px">
+          ${lvn.map(()=>`<th style="padding:4px 6px;text-align:center;border-left:1px solid #334">Leavers</th><th style="padding:4px 6px;text-align:center">New</th><th style="padding:4px 6px;text-align:center">Δ</th>`).join('')}
+        </tr></thead><tbody>`;
+
+      allVarKeys.forEach((vk,i)=>{
+        const bg=i%2===0?'#f8f9fa':'#fff';
+        html+=`<tr style="background:${bg}"><td style="padding:6px 10px;font-weight:600">${varLabels[vk]||vk}</td>`;
+        lvn.forEach(t=>{
+          const res=t.vars[vk];
+          if(!res){
+            html+=`<td colspan="3" style="padding:6px 8px;text-align:center;color:#ccc;border-left:1px solid #eee">n/a</td>`;
+          } else {
+            const diff=res.diff;
+            const diffClr=res.p<0.05?'#e74c3c':res.p<0.10?'#e67e22':'#555';
+            const diffStr=(diff>=0?'+':'')+diff+(vk!=='hhsize'?'pp':'');
+            html+=`<td style="padding:6px 8px;text-align:center;border-left:1px solid #eee">${res.leavers}</td>
+              <td style="padding:6px 8px;text-align:center">${res.new}</td>
+              <td style="padding:6px 8px;text-align:center">
+                <span style="color:${diffClr};font-weight:${res.p<0.10?700:400}">${diffStr}</span>
+                <span style="font-size:10px;color:${diffClr};display:block">${res.sig}</span>
+              </td>`;
+          }
+        });
+        html+=`</tr>`;
+      });
+
+      // Region row
+      html+=`<tr style="background:#fff3cd"><td style="padding:6px 10px;font-weight:700">Region composition</td>`;
+      lvn.forEach(t=>{
+        const r=t.vars.region;
+        if(!r){ html+=`<td colspan="3" style="padding:6px 8px;text-align:center;color:#ccc;border-left:1px solid #eee">n/a</td>`; return; }
+        const clr=r.p<0.001?'#e74c3c':r.p<0.01?'#e67e22':r.p<0.05?'#f39c12':'#27ae60';
+        html+=`<td colspan="2" style="padding:6px 8px;text-align:center;border-left:1px solid #eee;font-size:11px">χ²=${r.chi2} V=${r.v}</td>
+          <td style="padding:6px 8px;text-align:center"><span style="color:${clr};font-weight:700">${r.sig}</span><span style="font-size:10px;color:${clr};display:block">p=${r.p}</span></td>`;
+      });
+      html+=`</tr></tbody></table></div>
+        <p style="font-size:11px;color:#888;margin-top:6px">Δ = new minus leavers &nbsp;|&nbsp; *** p&lt;0.001 &nbsp;** p&lt;0.01 &nbsp;* p&lt;0.05 &nbsp;† p&lt;0.10 &nbsp;ns=not significant</p>`;
+      sumEl.innerHTML=html;
+    }
+
+    // Urban chart: leavers vs new per transition
+    new Chart(document.getElementById('lvnUrbanChart'),{
+      type:'bar',
+      data:{
+        labels: transLabels,
+        datasets:[
+          {label:'Leavers % Urban', data: lvn.map(t=>t.vars.urban?.leavers||null), backgroundColor:'#e74c3c', borderRadius:3},
+          {label:'New entries % Urban', data: lvn.map(t=>t.vars.urban?.new||null), backgroundColor:'#27ae60', borderRadius:3},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{font:{size:11}}},
+          tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw}%`}}},
+        scales:{x:{},y:{min:40,max:80,title:{display:true,text:'% Urban',font:{size:11}},ticks:{callback:v=>v+'%'}}}}
+    });
+
+    // HHsize chart
+    new Chart(document.getElementById('lvnHhsizeChart'),{
+      type:'bar',
+      data:{
+        labels: transLabels,
+        datasets:[
+          {label:'Leavers', data: lvn.map(t=>t.vars.hhsize?.leavers||null), backgroundColor:'#e74c3c', borderRadius:3},
+          {label:'New entries', data: lvn.map(t=>t.vars.hhsize?.new||null), backgroundColor:'#27ae60', borderRadius:3},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},
+        scales:{x:{},y:{min:3,title:{display:true,text:'Mean HH size',font:{size:11}}}}}
+    });
+
+    // Regional composition table per transition
+    const regLvnEl = document.getElementById('panel-lvn-region');
+    if(regLvnEl){
+      const allRegKeys = [...new Set(lvn.flatMap(t=>Object.keys(t.vars.region?.by_region||{})))].sort((a,b)=>+a-+b);
+      const regNames = {};
+      lvn.forEach(t=>Object.entries(t.vars.region?.by_region||{}).forEach(([k,v])=>{ if(!regNames[k]) regNames[k]=v.name; }));
+
+      let html=`<div style="overflow-x:auto"><table style="border-collapse:collapse;font-size:11px;min-width:600px">
+        <thead><tr style="background:#1a2332;color:#fff">
+          <th style="padding:6px 10px">Region</th>
+          ${lvn.map(t=>`<th colspan="2" style="padding:6px 8px;text-align:center;border-left:1px solid #334">${t.label}</th>`).join('')}
+        </tr>
+        <tr style="background:#2c3e50;color:#ccc;font-size:10.5px">
+          <th style="padding:4px 10px"></th>
+          ${lvn.map(()=>`<th style="padding:4px 6px;text-align:center;border-left:1px solid #334">Leavers%</th><th style="padding:4px 6px;text-align:center">New%</th>`).join('')}
+        </tr></thead><tbody>`;
+
+      allRegKeys.forEach((rk,i)=>{
+        const bg=i%2===0?'#f8f9fa':'#fff';
+        html+=`<tr style="background:${bg}"><td style="padding:5px 10px;font-weight:600">${regNames[rk]||rk}</td>`;
+        lvn.forEach(t=>{
+          const rd=t.vars.region?.by_region?.[rk];
+          if(!rd){ html+=`<td colspan="2" style="padding:5px 6px;text-align:center;color:#ccc;border-left:1px solid #eee">—</td>`; return; }
+          const diff=rd.n_pct-rd.l_pct;
+          const diffClr=Math.abs(diff)>5?'#e74c3c':Math.abs(diff)>2?'#e67e22':'#555';
+          html+=`<td style="padding:5px 6px;text-align:center;border-left:1px solid #eee">${rd.l_pct}%</td>
+            <td style="padding:5px 6px;text-align:center"><span style="color:${diffClr};font-weight:${Math.abs(diff)>5?700:400}">${rd.n_pct}%</span></td>`;
+        });
+        html+=`</tr>`;
+      });
+      // Chi2 row
+      html+=`<tr style="background:#fff3cd;font-weight:700">
+        <td style="padding:6px 10px">Regional χ²</td>
+        ${lvn.map(t=>{const r=t.vars.region; const clr=r?.p<0.001?'#e74c3c':r?.p<0.01?'#e67e22':'#f39c12'; return `<td colspan="2" style="padding:6px 8px;text-align:center;border-left:1px solid #eee"><span style="color:${clr}">${r?.sig||'—'} (p=${r?.p||'?'})</span></td>`;}).join('')}
+      </tr>`;
+      html+=`</tbody></table></div>`;
+      regLvnEl.innerHTML=html;
+    }
+  }
+
+  // ── Attrition composition profile ──
+  if(p.attrition_profile){
+    const prof = p.attrition_profile;
+    const transLabels = prof.map(t=>t.label);
+
+    // Urban % by group per transition
+    const pctUrban = grp => grp.n>0 ? Math.round(grp.n_urban/grp.n*100) : 0;
+    const retPct  = prof.map(t=>pctUrban(t.retained));
+    const dropPct = prof.map(t=>pctUrban(t.dropped));
+    const newPct  = prof.map(t=>pctUrban(t.new_in));
+
+    new Chart(document.getElementById('panelAttrProfileChart'),{
+      type:'bar',
+      data:{
+        labels: transLabels,
+        datasets:[
+          {label:'Retained % Urban', data:retPct,  backgroundColor:'#2980b9'},
+          {label:'Dropped % Urban',  data:dropPct, backgroundColor:'#e74c3c'},
+          {label:'New-entry % Urban',data:newPct,  backgroundColor:'#27ae60'},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{font:{size:11}}},
+          tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.raw}%`}}},
+        scales:{x:{},y:{beginAtZero:true,max:100,
+          title:{display:true,text:'% Urban',font:{size:11}}}}}
+    });
+
+    // Volume chart
+    const retN  = prof.map(t=>t.retained.n);
+    const dropN = prof.map(t=>t.dropped.n);
+    const newN  = prof.map(t=>t.new_in.n);
+    new Chart(document.getElementById('panelAttrVolumeChart'),{
+      type:'bar',
+      data:{
+        labels: transLabels,
+        datasets:[
+          {label:'Retained', data:retN,  backgroundColor:'#2980b9'},
+          {label:'Dropped',  data:dropN, backgroundColor:'#e74c3c'},
+          {label:'New',      data:newN,  backgroundColor:'#27ae60'},
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},
+        scales:{x:{},y:{beginAtZero:true,
+          title:{display:true,text:'Households',font:{size:11}}}}}
+    });
+
+    // Composition table
+    const profEl = document.getElementById('panel-attrition-profile');
+    if(profEl){
+      let html=`<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px">
+        <thead><tr style="background:#1a2332;color:#fff">
+          <th style="padding:7px 10px">Transition</th>
+          <th colspan="2" style="padding:7px 10px;text-align:center;background:#2980b9">Retained</th>
+          <th colspan="2" style="padding:7px 10px;text-align:center;background:#e74c3c">Dropped</th>
+          <th colspan="2" style="padding:7px 10px;text-align:center;background:#27ae60">New Entry</th>
+        </tr>
+        <tr style="background:#2c3e50;color:#ccc;font-size:11px">
+          <th style="padding:4px 10px"></th>
+          <th style="padding:4px 10px;text-align:center">n</th><th style="padding:4px 10px;text-align:center">%Urban</th>
+          <th style="padding:4px 10px;text-align:center">n</th><th style="padding:4px 10px;text-align:center">%Urban</th>
+          <th style="padding:4px 10px;text-align:center">n</th><th style="padding:4px 10px;text-align:center">%Urban</th>
+        </tr></thead><tbody>`;
+      prof.forEach((t,i)=>{
+        const bg=i%2===0?'#f8f9fa':'#fff';
+        const pu=g=>g.n>0?Math.round(g.n_urban/g.n*100)+'%':'—';
+        html+=`<tr style="background:${bg}">
+          <td style="padding:6px 10px;font-weight:700">${t.label}</td>
+          <td style="padding:6px 10px;text-align:center;color:#2980b9;font-weight:600">${t.retained.n}</td>
+          <td style="padding:6px 10px;text-align:center">${pu(t.retained)}</td>
+          <td style="padding:6px 10px;text-align:center;color:#e74c3c;font-weight:600">${t.dropped.n}</td>
+          <td style="padding:6px 10px;text-align:center">${pu(t.dropped)}</td>
+          <td style="padding:6px 10px;text-align:center;color:#27ae60;font-weight:600">${t.new_in.n}</td>
+          <td style="padding:6px 10px;text-align:center">${pu(t.new_in)}</td>
+        </tr>`;
+      });
+      html+=`</tbody></table>`;
+      profEl.innerHTML=html;
+    }
+  }
+
+  // ── PSU problem tracker ──
+  if(p.psu_problem_list){
+    const filterEl = document.getElementById('panel-psu-filter');
+    const probEl   = document.getElementById('panel-psu-problems');
+    let psuFilter  = 'all';
+
+    function renderPsuProblems(){
+      let list = p.psu_problem_list;
+      if(psuFilter==='urban') list=list.filter(x=>x.urban===1);
+      if(psuFilter==='rural') list=list.filter(x=>x.urban===2);
+      const show = list.slice(0,100);
+      let html=`<p style="font-size:11.5px;color:#555;margin-bottom:8px">Showing ${show.length} of ${list.length} under-target PSUs (out of ${p.psu_problem_list.length} total). Over-target PSUs are excluded.</p>`;
+      html+=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px;min-width:600px">
+        <thead><tr style="background:#1a2332;color:#fff">
+          <th style="padding:6px 8px;text-align:left">PSU</th>
+          <th style="padding:6px 8px;text-align:left">Region</th>
+          <th style="padding:6px 8px;text-align:center">Type</th>
+          <th style="padding:6px 8px;text-align:center">Target</th>
+          ${rounds.map(r=>`<th style="padding:6px 8px;text-align:center">R${r}</th>`).join('')}
+          <th style="padding:6px 8px;text-align:center;background:#e74c3c">Rounds Under</th>
+          <th style="padding:6px 8px;text-align:center;background:#c0392b">Rounds Zero</th>
+        </tr></thead><tbody>`;
+      show.forEach((psu,i)=>{
+        const bg=i%2===0?'#f8f9fa':'#fff';
+        const uTag=psu.urban===1
+          ?`<span style="background:#cce5ff;color:#004085;border-radius:3px;padding:1px 5px;font-size:10px">Urban</span>`
+          :`<span style="background:#d4edda;color:#155724;border-radius:3px;padding:1px 5px;font-size:10px">Rural</span>`;
+        const cellColor=cnt=>cnt===0?'background:#fde8e8;color:#c0392b;font-weight:700':
+                              cnt<psu.target?'background:#fff3cd;color:#856404;font-weight:600':
+                              cnt===psu.target?'background:#d4edda;color:#155724;font-weight:600':
+                              'color:#2980b9;font-weight:600';
+        html+=`<tr style="background:${bg}">
+          <td style="padding:5px 8px;font-family:monospace;font-size:10.5px">${psu.psu}</td>
+          <td style="padding:5px 8px">${psu.region_name}</td>
+          <td style="padding:5px 8px;text-align:center">${uTag}</td>
+          <td style="padding:5px 8px;text-align:center;font-weight:700">${psu.target}</td>
+          ${rounds.map(r=>{
+            const cnt=psu.counts[String(r)]??'—';
+            return `<td style="padding:5px 8px;text-align:center;${typeof cnt==='number'?cellColor(cnt):''}">${cnt}</td>`;
+          }).join('')}
+          <td style="padding:5px 8px;text-align:center">
+            <span style="background:${psu.n_under===5?'#e74c3c':psu.n_under>=3?'#e67e22':'#f39c12'};color:#fff;border-radius:3px;padding:2px 7px;font-size:11px;font-weight:700">${psu.n_under}/5</span>
+          </td>
+          <td style="padding:5px 8px;text-align:center">
+            ${psu.n_zero>0?`<span style="background:#c0392b;color:#fff;border-radius:3px;padding:2px 7px;font-size:11px;font-weight:700">${psu.n_zero}</span>`:`<span style="color:#888">0</span>`}
+          </td>
+        </tr>`;
+      });
+      html+=`</tbody></table></div>`;
+      if(probEl) probEl.innerHTML=html;
+    }
+
+    if(filterEl){
+      filterEl.innerHTML=[
+        {v:'all',l:`All PSUs (${p.psu_problem_list.length})`},
+        {v:'urban',l:`Urban only (${p.psu_problem_list.filter(x=>x.urban===1).length})`},
+        {v:'rural',l:`Rural only (${p.psu_problem_list.filter(x=>x.urban===2).length})`},
+      ].map(b=>`<button onclick="window._psuFilter='${b.v}';document.querySelectorAll('#panel-psu-filter button').forEach(x=>x.classList.remove('active'));this.classList.add('active');${''}"
+        class="round-btn${psuFilter===b.v?' active':''}" style="margin-right:6px" id="psu-btn-${b.v}">${b.l}</button>`).join('');
+      filterEl.querySelectorAll('button').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          psuFilter=btn.id.replace('psu-btn-','');
+          filterEl.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+          renderPsuProblems();
+        });
+      });
+    }
+    renderPsuProblems();
+  }
+
+  // ── Call interval summary and violations ──
+  if(p.call_interval_summary){
+    const totalViol = (p.call_violations||[]).length;
+    const badgeEl = document.getElementById('panel-call-badge');
+    if(badgeEl) badgeEl.textContent=`${totalViol} violations across all rounds`;
+
+    const sumEl = document.getElementById('panel-call-summary');
+    if(sumEl){
+      let html=`<table style="width:100%;border-collapse:collapse;font-size:12.5px">
+        <thead><tr style="background:#1a2332;color:#fff">
+          <th style="padding:7px 10px">Round</th>
+          <th style="padding:7px 10px;text-align:center">HHs with prev. interview</th>
+          <th style="padding:7px 10px;text-align:center;background:#e74c3c">Called &lt;30 days</th>
+          <th style="padding:7px 10px;text-align:center">% Early</th>
+          <th style="padding:7px 10px;text-align:center">Median gap (days)</th>
+          <th style="padding:7px 10px;text-align:center">Min</th>
+          <th style="padding:7px 10px;text-align:center">Max</th>
+        </tr></thead><tbody>`;
+      p.call_interval_summary.forEach((row,i)=>{
+        const bg=i%2===0?'#f8f9fa':'#fff';
+        const pct=row.pct_under30||0;
+        const pctClr=pct>50?'#e74c3c':pct>20?'#e67e22':'#27ae60';
+        html+=`<tr style="background:${bg}">
+          <td style="padding:7px 10px;font-weight:700">R${row.round}</td>
+          <td style="padding:7px 10px;text-align:center">${row.n_total}</td>
+          <td style="padding:7px 10px;text-align:center;color:#e74c3c;font-weight:700">${row.n_under30}</td>
+          <td style="padding:7px 10px;text-align:center">
+            <span style="color:${pctClr};font-weight:700">${pct}%</span>
+          </td>
+          <td style="padding:7px 10px;text-align:center;font-weight:600">${row.median??'—'}</td>
+          <td style="padding:7px 10px;text-align:center;color:${row.min<30?'#e74c3c':'#222'};font-weight:${row.min<30?700:400}">${row.min??'—'}</td>
+          <td style="padding:7px 10px;text-align:center">${row.max??'—'}</td>
+        </tr>`;
+      });
+      html+=`</tbody></table>`;
+      sumEl.innerHTML=html;
+    }
+
+    const violEl = document.getElementById('panel-call-violations');
+    if(violEl && p.call_violations){
+      const viols = p.call_violations.slice(0,200);
+      let html=`<p style="font-size:11.5px;color:#555;margin-bottom:8px">Showing ${viols.length} of ${p.call_violations.length} violations (&lt;30 days since last interview).</p>`;
+      html+=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11.5px;min-width:500px">
+        <thead><tr style="background:#1a2332;color:#fff">
+          <th style="padding:6px 10px">HH ID</th>
+          <th style="padding:6px 10px;text-align:center">Round</th>
+          <th style="padding:6px 10px;text-align:center">Prev Round</th>
+          <th style="padding:6px 10px;text-align:center;background:#e74c3c">Days Gap</th>
+          <th style="padding:6px 10px;text-align:center">Urban/Rural</th>
+          <th style="padding:6px 10px;text-align:left">Region</th>
+          <th style="padding:6px 10px;text-align:left">PSU</th>
+        </tr></thead><tbody>`;
+      viols.forEach((v,i)=>{
+        const bg=i%2===0?'#f8f9fa':'#fff';
+        const gapClr=v.days_gap<20?'#c0392b':v.days_gap<25?'#e74c3c':'#e67e22';
+        html+=`<tr style="background:${bg}">
+          <td style="padding:5px 10px;font-weight:600">${v.hhid}</td>
+          <td style="padding:5px 10px;text-align:center">R${v.round}</td>
+          <td style="padding:5px 10px;text-align:center;color:#888">R${v.prev_round}</td>
+          <td style="padding:5px 10px;text-align:center">
+            <span style="background:${gapClr};color:#fff;border-radius:3px;padding:2px 8px;font-weight:700">${v.days_gap}d</span>
+          </td>
+          <td style="padding:5px 10px;text-align:center">
+            ${v.urban_label==='Urban'
+              ?`<span style="background:#cce5ff;color:#004085;border-radius:3px;padding:1px 5px;font-size:10px">Urban</span>`
+              :`<span style="background:#d4edda;color:#155724;border-radius:3px;padding:1px 5px;font-size:10px">Rural</span>`}
+          </td>
+          <td style="padding:5px 10px">${v.region_name}</td>
+          <td style="padding:5px 10px;font-family:monospace;font-size:10.5px">${v.psu}</td>
+        </tr>`;
+      });
+      html+=`</tbody></table></div>`;
+      violEl.innerHTML=html;
+    }
   }
 }
 
