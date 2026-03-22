@@ -22,7 +22,7 @@
 	glo R 01
 	glo pR 00
 	
-	scalar user=2 //1=BB, 2=AP, 3=local team
+	scalar user=4 //1=BB, 2=AP, 3=local team
 	if (user==1) glo wd "/Users/batmandakh/Library/CloudStorage/GoogleDrive-bt.mandah@gmail.com/My Drive/L2Phl/CATI/Round${R}"
 	if (user==2) glo wd  "/Users/avraa/Library/CloudStorage/GoogleDrive-avraltod@gmail.com/My Drive/L2Phl/CATI/Round01"
 	if (user==3) glo wd "C:\Users\Joy Yangyang\Downloads\TIPON\Round01"
@@ -6311,9 +6311,10 @@
 	
 	/// FIX FOR TRAILER
 	run "${wd}/fix/do/M04_trailer.do"
-	// @Claude: run systematic skip logic fixes (not called in @AP version)
-	// M04.do contains: replace a10/a11=. if a1==2 (skip logic gap fix)
-	run "${wd}/fix/do/M04.do"
+	// @Claude: systematic skip logic fixes (applied inline — M04.do not called in @AP R01)
+	// A10 (days worked) and A11 (hours worked) should be missing when A1==2 (not working)
+	replace a10 = . if a1 == 2
+	replace a11 = . if a1 == 2
 	replace a4_oth = "" if a4 !=.
 	replace a4_oth = "" if a4 != 9996
 	replace a3_oth = "" if a3 != .
