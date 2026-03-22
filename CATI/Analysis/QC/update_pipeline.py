@@ -23,6 +23,7 @@ Outputs:
 Cache (intermediate JSON):
   cache/dq_data.json
   cache/panel_data.json
+  cache/interviewer_data.json
   cache/all_questions.json
   cache/module_tables.json
   cache/do_modules.json
@@ -133,6 +134,22 @@ def rebuild_panel(dta_files):
     if ok:
         size = (CACHE / 'panel_data.json').stat().st_size // 1024
         log(f"cache/panel_data.json written ({size} KB)", 'OK')
+    return ok
+
+
+# ── STEP 2c — Rebuild interviewer/operator performance data ───────────────────
+def rebuild_interviewer(dta_files):
+    step('2c', "Rebuilding operator performance data")
+    passport = next((f for f in dta_files if 'M00' in f.name), None)
+    if not passport:
+        log("l2phl_M00_passport.dta not found — skipping interviewer build", 'WARN')
+        return False
+    ok = run_script('build_interviewer.py')
+    if ok:
+        ipath = CACHE / 'interviewer_data.json'
+        if ipath.exists():
+            size = ipath.stat().st_size // 1024
+            log(f"cache/interviewer_data.json written ({size} KB)", 'OK')
     return ok
 
 
@@ -456,8 +473,9 @@ if __name__ == '__main__':
     t0 = time.time()
 
     if do_dta:
-        if not rebuild_dq(dta_files):    errors.append('DQ rebuild failed')
-        if not rebuild_panel(dta_files): errors.append('Panel rebuild failed')
+        if not rebuild_dq(dta_files):          errors.append('DQ rebuild failed')
+        if not rebuild_panel(dta_files):       errors.append('Panel rebuild failed')
+        if not rebuild_interviewer(dta_files): errors.append('Interviewer rebuild failed')
 
     if do_q:
         if not rebuild_questionnaire(quest_files): errors.append('Questionnaire parse failed')

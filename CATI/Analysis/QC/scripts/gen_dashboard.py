@@ -21,10 +21,18 @@ if _os.path.exists(_panel_path):
 else:
     panel_raw = {}
 
-DQ  = json.dumps(dq_raw,       separators=(',',':'))
-MT  = json.dumps(module_tables, separators=(',',':'))
-AQ  = json.dumps(all_qs,        separators=(',',':'))
-PAN = json.dumps(panel_raw,     separators=(',',':'))
+_iview_path = _os.path.join(_CACHE, 'interviewer_data.json')
+if _os.path.exists(_iview_path):
+    with open(_iview_path) as f:
+        iview_raw = json.load(f)
+else:
+    iview_raw = {}
+
+DQ   = json.dumps(dq_raw,       separators=(',',':'))
+MT   = json.dumps(module_tables, separators=(',',':'))
+AQ   = json.dumps(all_qs,        separators=(',',':'))
+PAN  = json.dumps(panel_raw,     separators=(',',':'))
+IVIEW= json.dumps(iview_raw,     separators=(',',':'))
 
 HTML = r"""<!DOCTYPE html>
 <html lang="en">
@@ -270,6 +278,11 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
   <a href="#" onclick="return showPage('panel')" id="nav-panel">
     <span class="dot" style="background:#8e44ad"></span>Panel Tracking
   </a>
+  <div class="nav-section">Operator Performance</div>
+  <a href="#" onclick="return showPage('operators')" id="nav-operators">
+    <span class="dot" style="background:#c0392b"></span>Operator QC
+    <span class="nav-count red" id="nc-ops-red">—</span>
+  </a>
   <div class="nav-section">Questionnaire Changes</div>
   <a href="#" onclick="return showPage('changes')" id="nav-changes">
     <span class="dot" style="background:#f1c40f"></span>All Changes by Round
@@ -493,6 +506,40 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
 </div>
 </div>
 
+<!-- ═══════ OPERATOR PERFORMANCE ═══════ -->
+<div id="page-operators" class="page">
+<h1>Operator Performance QC</h1>
+<p style="font-size:12.5px;color:#555;margin-bottom:14px">
+  Performance metrics per interviewer (int_id), derived from M00 passport and cross-module checks.
+  Flags are independent indicators — a red operator should be reviewed, not automatically penalised.
+  <strong>Short-circuit rates</strong> show the % of interviews where a skip-heavy gate answer was recorded
+  (M03 SH1=2 "no shock", M04 A1=2 "not employed", M06 F1=2 "no bank account") compared with the fleet average.
+  Unusually high rates may indicate that the operator is guiding respondents toward shorter-survey answers.
+</p>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px" id="ops-rag-summary"></div>
+
+<div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+  <span style="font-size:11.5px;color:#888">Filter:</span>
+  <div id="ops-filter-btns" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  <input id="ops-search" type="text" placeholder="Search operator ID…"
+    style="margin-left:8px;padding:4px 10px;border:1px solid #ccc;border-radius:4px;font-size:12px;width:160px"
+    oninput="renderOpsTable()">
+</div>
+
+<div id="ops-table-wrap" style="overflow-x:auto"></div>
+
+<!-- Operator detail drawer -->
+<div id="ops-detail" style="display:none;margin-top:18px;background:#f4f7fb;border:1px solid #d0d8e4;border-radius:6px;padding:16px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <h2 style="margin:0;font-size:15px" id="ops-detail-title">Operator Detail</h2>
+    <button onclick="document.getElementById('ops-detail').style.display='none'"
+      style="background:none;border:none;font-size:18px;cursor:pointer;color:#888">✕</button>
+  </div>
+  <div id="ops-detail-body"></div>
+</div>
+</div>
+
 <!-- ═══════ ALL CHANGES BY ROUND ═══════ -->
 <div id="page-changes" class="page">
 <h1>All Questionnaire Changes by Round</h1>
@@ -511,10 +558,11 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
 
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────────────
-const DQ  = """ + DQ  + """;
-const MT  = """ + MT  + """;
-const AQ  = """ + AQ  + """;
-const PAN = """ + PAN + """;
+const DQ   = """ + DQ   + """;
+const MT   = """ + MT   + """;
+const AQ   = """ + AQ   + """;
+const PAN  = """ + PAN  + """;
+const IVIEW= """ + IVIEW+ """;
 
 const ROUNDS = [1,2,3,4,5];
 const RLABELS = {1:'R1 (Nov)',2:'R2 (Dec)',3:'R3 (Jan)',4:'R4 (Feb)',5:'R5 (Mar)'};
@@ -818,6 +866,285 @@ function buildOOR(){
 }
 
 // ── PANEL TRACKING ───────────────────────────────────────────────────────────
+// ── OPERATOR PERFORMANCE ─────────────────────────────────────────────────────
+let _opsFilter = 'all';
+
+function buildOperators(){
+  if(!IVIEW || !IVIEW.operators) return;
+  const fleet = IVIEW.fleet || {};
+  const ops   = IVIEW.operators || [];
+
+  // Nav badge
+  const nRed = fleet.n_red || 0;
+  const badge = document.getElementById('nc-ops-red');
+  if(badge){ badge.textContent=nRed; badge.className=`nav-count ${nRed>0?'red':''}`; }
+
+  // RAG summary boxes
+  const sumEl = document.getElementById('ops-rag-summary');
+  if(sumEl){
+    const RAG_CLR = {red:'#e74c3c', amber:'#e67e22', green:'#27ae60'};
+    sumEl.innerHTML = `
+      <div class="stat-box red"><div class="num">${fleet.n_red||0}</div><div class="lbl">🔴 Needs review</div></div>
+      <div class="stat-box yellow"><div class="num">${fleet.n_amber||0}</div><div class="lbl">🟡 Watch list</div></div>
+      <div class="stat-box green"><div class="num">${fleet.n_green||0}</div><div class="lbl">🟢 OK</div></div>
+      <div class="stat-box"><div class="num">${fleet.n_operators||0}</div><div class="lbl">Total operators</div></div>
+      <div class="stat-box"><div class="num">${fleet.median_dur||'—'}</div><div class="lbl">Fleet median duration (min)</div></div>`;
+  }
+
+  // Filter buttons
+  const filtEl = document.getElementById('ops-filter-btns');
+  if(filtEl){
+    filtEl.innerHTML = ['all','red','amber','green'].map(f=>{
+      const lbl = f==='all' ? `All (${ops.length})` :
+                  f==='red' ? `🔴 Review (${fleet.n_red||0})` :
+                  f==='amber' ? `🟡 Watch (${fleet.n_amber||0})` :
+                  `🟢 OK (${fleet.n_green||0})`;
+      const clr = f==='red'?'#e74c3c':f==='amber'?'#e67e22':f==='green'?'#27ae60':'#2d3f55';
+      return `<button onclick="_opsFilter='${f}';renderOpsTable()"
+        id="ops-flt-${f}"
+        style="padding:3px 11px;border-radius:3px;font-size:11.5px;font-weight:600;cursor:pointer;
+               border:1.5px solid ${clr};background:#f8f9fa;color:${clr}">${lbl}</button>`;
+    }).join('');
+  }
+
+  renderOpsTable();
+}
+
+function renderOpsTable(){
+  if(!IVIEW || !IVIEW.operators) return;
+  const fleet = IVIEW.fleet || {};
+  const sc_fleet = fleet.fleet_shortcircuit || {};
+
+  const search = (document.getElementById('ops-search')||{value:''}).value.trim().toLowerCase();
+
+  // Update button styles
+  ['all','red','amber','green'].forEach(f=>{
+    const btn = document.getElementById(`ops-flt-${f}`);
+    if(!btn) return;
+    const clr = f==='red'?'#e74c3c':f==='amber'?'#e67e22':f==='green'?'#27ae60':'#2d3f55';
+    btn.style.background = _opsFilter===f ? clr : '#f8f9fa';
+    btn.style.color = _opsFilter===f ? '#fff' : clr;
+  });
+
+  const filtered = IVIEW.operators.filter(op=>{
+    if(_opsFilter !== 'all' && op.rag !== _opsFilter) return false;
+    if(search && !String(op.int_id).includes(search)) return false;
+    return true;
+  });
+
+  const wrapEl = document.getElementById('ops-table-wrap');
+  if(!wrapEl) return;
+  if(filtered.length===0){
+    wrapEl.innerHTML='<p style="color:#888;padding:12px">No operators match the current filter.</p>';
+    return;
+  }
+
+  const RAG_ICON = {red:'🔴', amber:'🟡', green:'🟢'};
+  const RAG_BG   = {red:'#fde8e8', amber:'#fff8e1', green:'#e8f8ee'};
+
+  let html=`<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:900px">
+    <thead><tr style="background:#1a2332;color:#fff;font-size:11.5px">
+      <th style="padding:7px 10px;text-align:center">Status</th>
+      <th style="padding:7px 10px">Operator ID</th>
+      <th style="padding:7px 10px;text-align:center">Interviews</th>
+      <th style="padding:7px 10px;text-align:center">Rounds</th>
+      <th style="padding:7px 10px;text-align:center">Median dur (min)</th>
+      <th style="padding:7px 10px;text-align:center">vs fleet</th>
+      <th style="padding:7px 10px;text-align:center">% &lt;5min</th>
+      <th style="padding:7px 10px;text-align:center">Skip viols</th>
+      <th style="padding:7px 10px;text-align:center">Replacements</th>
+      <th style="padding:7px 10px;text-align:center">Attrition %</th>
+      <th style="padding:7px 10px;text-align:center">Late-night</th>
+      <th style="padding:7px 10px;text-align:left">Flags</th>
+      <th style="padding:7px 10px;text-align:center">Detail</th>
+    </tr></thead><tbody>`;
+
+  filtered.forEach((op,i)=>{
+    const bg = i%2===0 ? '#f8f9fa' : '#fff';
+    const dur = op.duration || {};
+    const ratio = dur.ratio_to_median;
+    const ratioBg = ratio!==null && ratio<0.75 ? '#e74c3c' : ratio!==null && ratio<0.85 ? '#e67e22' : 'transparent';
+    const ratioTxt = ratio!==null && ratio<0.85 ? '#fff' : '#444';
+    const ratioStr = ratio!=null ? `${(ratio*100).toFixed(0)}%` : '—';
+
+    const skipTot = (op.skip_violations||{})._total || 0;
+    const skipClr = skipTot>10 ? '#e74c3c' : skipTot>3 ? '#e67e22' : '#27ae60';
+
+    const repPct = (op.replacements||{}).pct || 0;
+    const repClr = repPct>10 ? '#e74c3c' : repPct>5 ? '#e67e22' : '#444';
+
+    const attr = ((op.attrition||{})._overall)||{};
+    const attrPct = attr.pct || 0;
+    const attrN   = attr.n_total || 0;
+    const attrClr = attrPct>20 ? '#e74c3c' : attrPct>12 ? '#e67e22' : '#444';
+    const attrStr = attrN>=5 ? `${attrPct.toFixed(1)}%` : '—';
+
+    const tf = op.time_flags || {};
+    const late = tf.n_late_night || 0;
+    const lateClr = late>3 ? '#e74c3c' : late>0 ? '#e67e22' : '#444';
+
+    const flags = op.flags || [];
+    const flagHtml = flags.length===0
+      ? '<span style="color:#27ae60;font-size:11px">✓ No flags</span>'
+      : flags.map(f=>`<span style="display:inline-block;background:#fde8e8;color:#c0392b;border-radius:3px;padding:1px 5px;font-size:10.5px;margin:1px">${f}</span>`).join('');
+
+    const rounds = (op.rounds||[]).map(r=>`R${r}`).join(' ');
+
+    html+=`<tr style="background:${bg}">
+      <td style="padding:6px 10px;text-align:center;font-size:16px">${RAG_ICON[op.rag]||''}</td>
+      <td style="padding:6px 10px;font-weight:700;color:#1a2332">${op.int_id}</td>
+      <td style="padding:6px 10px;text-align:center">${op.n_interviews}</td>
+      <td style="padding:6px 10px;text-align:center;font-size:11px;color:#666">${rounds}</td>
+      <td style="padding:6px 10px;text-align:center;font-weight:600">${dur.median??'—'}</td>
+      <td style="padding:6px 10px;text-align:center">
+        <span style="background:${ratioBg};color:${ratioTxt};border-radius:3px;padding:2px 6px;font-size:11px;font-weight:600">${ratioStr}</span>
+      </td>
+      <td style="padding:6px 10px;text-align:center;color:${dur.pct_fast>10?'#e74c3c':dur.pct_fast>5?'#e67e22':'#444'};font-weight:${dur.pct_fast>5?700:400}">${dur.pct_fast??0}%</td>
+      <td style="padding:6px 10px;text-align:center;color:${skipClr};font-weight:700">${skipTot}</td>
+      <td style="padding:6px 10px;text-align:center;color:${repClr}">${repPct.toFixed(1)}%</td>
+      <td style="padding:6px 10px;text-align:center;color:${attrClr}">${attrStr}</td>
+      <td style="padding:6px 10px;text-align:center;color:${lateClr}">${late>0?late:'—'}</td>
+      <td style="padding:6px 10px;max-width:260px">${flagHtml}</td>
+      <td style="padding:6px 10px;text-align:center">
+        <button onclick="showOpDetail(${op.int_id})"
+          style="padding:2px 8px;background:#2d3f55;color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:11px">▶ View</button>
+      </td>
+    </tr>`;
+  });
+
+  html+=`</tbody></table>`;
+  wrapEl.innerHTML=html;
+}
+
+function showOpDetail(intId){
+  if(!IVIEW) return;
+  const op = IVIEW.operators.find(o=>o.int_id===intId);
+  if(!op) return;
+  const fleet = IVIEW.fleet || {};
+  const sc_fleet = fleet.fleet_shortcircuit || {};
+  const dur = op.duration || {};
+  const attr = (op.attrition||{})._overall || {};
+  const tf   = op.time_flags || {};
+  const sc   = op.shortcircuit || {};
+
+  document.getElementById('ops-detail-title').textContent =
+    `Operator ${intId}  —  ${op.n_interviews} interviews  (${(op.rounds||[]).map(r=>'R'+r).join(', ')})`;
+
+  const RAG_BG = {red:'#fde8e8', amber:'#fff8e1', green:'#e8f8ee'};
+  const RAG_CLR = {red:'#c0392b', amber:'#d35400', green:'#1e8449'};
+  const RAG_LBL = {red:'⚠ Needs Review', amber:'⚡ Watch List', green:'✓ OK'};
+
+  // Duration breakdown
+  let durRows = '';
+  const modDur = op.module_dur || {};
+  Object.values(modDur).forEach(md=>{
+    if(!md.mean) return;
+    const zAbs = Math.abs(md.z||0);
+    const zClr = zAbs>2 ? '#e74c3c' : zAbs>1.5 ? '#e67e22' : '#444';
+    durRows+=`<tr>
+      <td style="padding:4px 10px">${md.label}</td>
+      <td style="padding:4px 10px;text-align:center">${md.mean} min</td>
+      <td style="padding:4px 10px;text-align:center;color:${zClr};font-weight:${zAbs>1.5?700:400}">${md.z!=null?md.z:'—'}</td>
+    </tr>`;
+  });
+
+  // Skip violations detail
+  const skips = op.skip_violations || {};
+  const skipDetail = Object.entries(skips).filter(([k])=>k!=='_total')
+    .map(([mod,cnt])=>`<span style="background:#fde8e8;color:#c0392b;border-radius:3px;padding:2px 8px;margin:2px;display:inline-block;font-size:11.5px">${mod}: ${cnt}</span>`)
+    .join('') || '<span style="color:#27ae60">None</span>';
+
+  // Short-circuit rates
+  const scLabels = {sh1_skip:'M03 No-shock (SH1=2)', a1_skip:'M04 Not-employed (A1=2)', f1_skip:'M06 No-account (F1=2)'};
+  let scRows = '';
+  Object.entries(scLabels).forEach(([key, label])=>{
+    const opPct  = (sc[key]||{}).pct;
+    const fltPct = sc_fleet[key];
+    if(opPct==null) return;
+    const diff = opPct - (fltPct||0);
+    const clr = diff>15 ? '#e74c3c' : diff>8 ? '#e67e22' : '#27ae60';
+    const diffStr = diff>=0 ? `+${diff.toFixed(1)}pp` : `${diff.toFixed(1)}pp`;
+    scRows+=`<tr>
+      <td style="padding:4px 10px">${label}</td>
+      <td style="padding:4px 10px;text-align:center;font-weight:600">${opPct.toFixed(1)}%</td>
+      <td style="padding:4px 10px;text-align:center">${fltPct!=null?fltPct.toFixed(1)+'%':'—'}</td>
+      <td style="padding:4px 10px;text-align:center;color:${clr};font-weight:${Math.abs(diff)>8?700:400}">${diffStr}</td>
+    </tr>`;
+  });
+
+  // Attrition by transition
+  let attrRows = '';
+  Object.entries(op.attrition||{}).filter(([k])=>k!=='_overall').forEach(([key,d])=>{
+    const clr = d.pct>20?'#e74c3c':d.pct>12?'#e67e22':'#444';
+    attrRows+=`<tr>
+      <td style="padding:4px 10px">${key}</td>
+      <td style="padding:4px 10px;text-align:center">${d.n_total} HHs</td>
+      <td style="padding:4px 10px;text-align:center;color:${clr};font-weight:${d.pct>12?700:400}">${d.pct.toFixed(1)}%</td>
+    </tr>`;
+  });
+
+  const body = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+      <div style="background:${RAG_BG[op.rag]};border-radius:6px;padding:10px;text-align:center">
+        <div style="font-size:22px">${{red:'🔴',amber:'🟡',green:'🟢'}[op.rag]}</div>
+        <div style="color:${RAG_CLR[op.rag]};font-weight:700">${RAG_LBL[op.rag]}</div>
+      </div>
+      <div style="background:#f0f4f8;border-radius:6px;padding:10px">
+        <div style="font-size:11px;color:#888">Duration (median / fleet ratio)</div>
+        <div style="font-size:20px;font-weight:700">${dur.median??'—'} min <span style="font-size:13px;color:#666">(${dur.ratio_to_median!=null?(dur.ratio_to_median*100).toFixed(0)+'%':'—'} of fleet)</span></div>
+        <div style="font-size:11px;color:#888;margin-top:4px">P10: ${dur.p10??'—'} | P90: ${dur.p90??'—'} | CV: ${dur.cv??'—'}</div>
+      </div>
+      <div style="background:#f0f4f8;border-radius:6px;padding:10px">
+        <div style="font-size:11px;color:#888">Fast interviews / Replacements</div>
+        <div style="font-size:18px;font-weight:700">${dur.pct_fast??0}% &lt;5min &nbsp;|&nbsp; ${(op.replacements||{}).pct??0}% replaced</div>
+        <div style="font-size:11px;color:#888;margin-top:4px">Late-night: ${tf.n_late_night||0} | Call attempts (mean): ${(op.call_attempts||{}).mean??'—'}</div>
+      </div>
+    </div>
+    ${op.flags&&op.flags.length>0 ? `<div style="margin-bottom:14px"><strong style="font-size:12.5px">Active flags:</strong><br>${op.flags.map(f=>`<span style="display:inline-block;background:#fde8e8;color:#c0392b;border-radius:3px;padding:2px 8px;margin:2px;font-size:11.5px">⚠ ${f}</span>`).join('')}</div>` : ''}
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+      <div>
+        <strong style="font-size:12px">Module duration z-scores</strong>
+        <p style="font-size:10.5px;color:#888;margin:2px 0 6px">z &lt; −1.5 = unusually fast for this module</p>
+        <table style="width:100%;border-collapse:collapse;font-size:11.5px">
+          <thead><tr style="background:#e8ecf0;font-size:11px">
+            <th style="padding:4px 10px;text-align:left">Module</th>
+            <th style="padding:4px 10px;text-align:center">Mean (min)</th>
+            <th style="padding:4px 10px;text-align:center">z-score</th>
+          </tr></thead><tbody>${durRows||'<tr><td colspan="3" style="padding:6px;color:#888">No data</td></tr>'}</tbody>
+        </table>
+      </div>
+      <div>
+        <strong style="font-size:12px">Short-circuit gate rates</strong>
+        <p style="font-size:10.5px;color:#888;margin:2px 0 6px">High rate vs fleet → possible survey shortcutting</p>
+        <table style="width:100%;border-collapse:collapse;font-size:11.5px">
+          <thead><tr style="background:#e8ecf0;font-size:11px">
+            <th style="padding:4px 10px;text-align:left">Gate</th>
+            <th style="padding:4px 10px;text-align:center">Operator</th>
+            <th style="padding:4px 10px;text-align:center">Fleet avg</th>
+            <th style="padding:4px 10px;text-align:center">Diff</th>
+          </tr></thead><tbody>${scRows||'<tr><td colspan="4" style="padding:6px;color:#888">No data</td></tr>'}</tbody>
+        </table>
+        <div style="margin-top:10px"><strong style="font-size:12px">Skip violations by module</strong><br>${skipDetail}</div>
+      </div>
+      <div>
+        <strong style="font-size:12px">Attrition by transition</strong>
+        <p style="font-size:10.5px;color:#888;margin:2px 0 6px">% of their R_prev HHs that dropped in R_curr</p>
+        <table style="width:100%;border-collapse:collapse;font-size:11.5px">
+          <thead><tr style="background:#e8ecf0;font-size:11px">
+            <th style="padding:4px 10px">Transition</th>
+            <th style="padding:4px 10px;text-align:center">N</th>
+            <th style="padding:4px 10px;text-align:center">Drop %</th>
+          </tr></thead><tbody>${attrRows||'<tr><td colspan="3" style="padding:6px;color:#888">No data</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>`;
+
+  document.getElementById('ops-detail-body').innerHTML = body;
+  const detailEl = document.getElementById('ops-detail');
+  detailEl.style.display = 'block';
+  detailEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
 function buildPanel(){
   if(!PAN || !PAN.attrition) return;
   const p = PAN;
@@ -2411,6 +2738,7 @@ buildInterview();
 buildChanges();
 buildAllModulePages();
 buildPanel();
+buildOperators();
 </script>
 </body>
 </html>"""
@@ -2418,10 +2746,11 @@ buildPanel();
 out = _os.path.join(_OUTPUT, 'l2ph_dq_dashboard.html')
 # Replace placeholders with actual JSON data
 content = HTML
-content = content.replace('""" + DQ  + """', DQ)
-content = content.replace('""" + MT  + """', MT)
-content = content.replace('""" + AQ  + """', AQ)
-content = content.replace('""" + PAN + """', PAN)
+content = content.replace('""" + DQ   + """', DQ)
+content = content.replace('""" + MT   + """', MT)
+content = content.replace('""" + AQ   + """', AQ)
+content = content.replace('""" + PAN  + """', PAN)
+content = content.replace('""" + IVIEW+ """', IVIEW)
 with open(out,'w') as f:
     f.write(content)
 print(f'Generated: {out} ({round(os.path.getsize(out)/1024,1)} KB)')
