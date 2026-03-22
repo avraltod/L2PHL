@@ -23,7 +23,7 @@
 	if (user==3) glo wd "C:\Users\Joy Yangyang\OneDrive - PSRC\PROJECTS\2026\SOCIAL\TIPON\CATI\Round05"
 	if (user==4) glo wd "C:\Users\Charles Valencia\OneDrive - PSRC\1-Work\2026\0-SOCIAL\TIPON\Round05"
 	if (user==5) glo wd  "/Users/avraa/Library/CloudStorage/GoogleDrive-avraltod@gmail.com/My Drive/L2Phl/CATI/Round${R}"
-	if (user==6) glo wd  "~/iDrive/GitHub/PHL/L2PHL/CATI/Round05"   // iDrive/GitHub — @Claude version
+	if (user==6) glo wd  "/Users/avraa/iDrive/GitHub/PHL/L2PHL/CATI/Round05"   // iDrive/GitHub — @Claude version
 
 			
 	cd "$wd" //changing directory 

@@ -32,7 +32,7 @@
 	// Set root
 	loc ow = c(os)
 	if ("`ow'"=="MacOSX")  ///
-		glo root "~/iDrive/GitHub/PHL/L2PHL"
+		glo root "/Users/avraa/iDrive/GitHub/PHL/L2PHL"
 	if ("`ow'"=="Windows")  ///
 		glo root "C:\Users\wb463427\OneDrive - WBG\ECAPOV\L2Ss\L2Ukr\CATI"
 

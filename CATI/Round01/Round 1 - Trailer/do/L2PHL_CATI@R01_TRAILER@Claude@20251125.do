@@ -26,7 +26,7 @@
 	if (user==1) glo wd "/Users/batmandakh/Library/CloudStorage/GoogleDrive-bt.mandah@gmail.com/My Drive/L2Phl/CATI/Round${R}"
 	if (user==2) glo wd  "/Users/avraa/Library/CloudStorage/GoogleDrive-avraltod@gmail.com/My Drive/L2Phl/CATI/Round01/Round 1 - Trailer"
 	if (user==3) glo wd "C:\Users\Joy Yangyang\Downloads\TIPON\R1 - Trailer"
-	if (user==4) glo wd  "~/iDrive/GitHub/PHL/L2PHL/CATI/Round01/Round 1 - Trailer"   // iDrive/GitHub — @Claude version
+	if (user==4) glo wd  "/Users/avraa/iDrive/GitHub/PHL/L2PHL/CATI/Round01/Round 1 - Trailer"   // iDrive/GitHub — @Claude version
 			
 	cd "$wd" //changing directory 
 	
