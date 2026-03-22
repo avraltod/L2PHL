@@ -814,6 +814,47 @@ def main():
 
     round_counts = {str(r): int((pivot[r]==1).sum()) for r in ROUNDS}
 
+    # ── Household-level panel matrix ─────────────────────────────────────────
+    print("  [panel] Building household matrix...")
+    hh_matrix = []
+    for _, row in pivot.iterrows():
+        presence = {str(r): int(row[r]) for r in ROUNDS}
+        participated = [r for r in ROUNDS if row[r] == 1]
+        first_r = min(participated) if participated else None
+        last_r  = max(participated) if participated else None
+
+        # Status label
+        if row['rounds_present'] == 5:
+            status = 'All Rounds'
+        elif first_r == 1 and last_r == max(ROUNDS):
+            status = 'Intermittent'
+        elif first_r == 1 and last_r < max(ROUNDS):
+            status = 'Left Panel'
+        elif first_r is not None and first_r > 1 and last_r == max(ROUNDS):
+            status = 'New Entry'
+        elif first_r is not None and first_r > 1 and last_r < max(ROUNDS):
+            status = 'New Entry → Left'
+        else:
+            status = 'Intermittent'
+
+        reg_int = int(row['region']) if pd.notna(row.get('region')) else 0
+        urb_val = row.get('urban')
+        hh_matrix.append({
+            'hhid':         int(row['hhid']),
+            'psu':          str(row['psu']) if pd.notna(row.get('psu')) else '',
+            'region':       reg_int,
+            'region_name':  REGION_NAMES.get(reg_int, f'Region {reg_int}'),
+            'urban':        int(urb_val) if pd.notna(urb_val) else None,
+            'urban_label':  'Urban' if urb_val == 1.0 else 'Rural',
+            'pattern':      str(row['pattern']),
+            'rounds_present': int(row['rounds_present']),
+            'first_round':  first_r,
+            'last_round':   last_r,
+            'status':       status,
+            'presence':     presence,
+        })
+    hh_matrix.sort(key=lambda x: x['hhid'])
+
     out = {
         'all_hhs':               all_hhs,
         'always_in':             always_in,
@@ -833,6 +874,7 @@ def main():
         'call_violations':       call_violations,
         'attrition_bias':        attrition_bias,
         'leaver_vs_new':         leaver_vs_new,
+        'hh_matrix':             hh_matrix,
     }
 
     out_path = _os.path.join(_CACHE, 'panel_data.json')
