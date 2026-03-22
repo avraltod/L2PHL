@@ -734,7 +734,18 @@ def build_call_intervals(hh):
             'psu':        str(row['psu']),
         })
     violations.sort(key=lambda x: (x['round'], x['days_gap']))
-    return summary, violations
+
+    # Per-HH per-round gaps lookup: {hhid: {round: days_gap}}
+    # round here is the "arrival" round (the one being interviewed)
+    gaps_lookup = {}
+    for _, row in gaps.iterrows():
+        hid = int(row['hhid'])
+        rnd = int(row['round'])
+        if hid not in gaps_lookup:
+            gaps_lookup[hid] = {}
+        gaps_lookup[hid][rnd] = int(row['days_gap'])
+
+    return summary, violations, gaps_lookup
 
 
 def main():
@@ -760,7 +771,7 @@ def main():
     reg_df = build_region_summary(hh, meta)
 
     print("  [panel] Computing call intervals...")
-    call_interval_summary, call_violations = build_call_intervals(hh)
+    call_interval_summary, call_violations, gaps_lookup = build_call_intervals(hh)
 
     print("  [panel] Loading auxiliary characteristics (employment, finance)...")
     aux = load_aux_characteristics()
@@ -839,8 +850,12 @@ def main():
 
         reg_int = int(row['region']) if pd.notna(row.get('region')) else 0
         urb_val = row.get('urban')
+        hid     = int(row['hhid'])
+        hh_gaps = gaps_lookup.get(hid, {})
+        # days_gap[r] = days since previous interview to reach round r (None if first appearance)
+        days_gap = {str(r): hh_gaps.get(r, None) for r in ROUNDS}
         hh_matrix.append({
-            'hhid':         int(row['hhid']),
+            'hhid':         hid,
             'psu':          str(row['psu']) if pd.notna(row.get('psu')) else '',
             'region':       reg_int,
             'region_name':  REGION_NAMES.get(reg_int, f'Region {reg_int}'),
@@ -852,6 +867,7 @@ def main():
             'last_round':   last_r,
             'status':       status,
             'presence':     presence,
+            'days_gap':     days_gap,
         })
     hh_matrix.sort(key=lambda x: x['hhid'])
 

@@ -1241,10 +1241,8 @@ function buildPanel(){
           <th style="padding:6px 9px;text-align:left">PSU</th>
           <th style="padding:6px 9px;text-align:left">Region</th>
           <th style="padding:6px 8px;text-align:center">Type</th>
-          ${ROUNDS_DISP.map(r=>`<th style="padding:6px 8px;text-align:center;width:36px">R${r}</th>`).join('')}
+          ${ROUNDS_DISP.map(r=>`<th style="padding:6px 8px;text-align:center;min-width:48px">R${r}${r>1?'<br><span style="font-weight:normal;font-size:9px;opacity:0.8">days</span>':''}</th>`).join('')}
           <th style="padding:6px 9px;text-align:center">Rounds</th>
-          <th style="padding:6px 9px;text-align:center">First</th>
-          <th style="padding:6px 9px;text-align:center">Last</th>
           <th style="padding:6px 9px;text-align:center">Status</th>
         </tr></thead><tbody>`;
 
@@ -1254,10 +1252,29 @@ function buildPanel(){
           ?`<span style="background:#cce5ff;color:#004085;border-radius:3px;padding:1px 5px;font-size:10px">Urban</span>`
           :`<span style="background:#d4edda;color:#155724;border-radius:3px;padding:1px 5px;font-size:10px">Rural</span>`;
         const sc = STATUS_COLORS[h.status]||{bg:'#eee',txt:'#333'};
+        const dg = h.days_gap||{};
         const roundCells = ROUNDS_DISP.map(r=>{
           const present = h.presence[String(r)]===1;
-          return `<td style="padding:4px 6px;text-align:center;background:${present?'#d4edda':'#fde8e8'};color:${present?'#155724':'#c0392b'};font-weight:700;font-size:13px">
-            ${present?'✓':'✗'}</td>`;
+          const days = dg[String(r)]!=null ? dg[String(r)] : null;
+          // Cell colour when present: driven by days gap (R1 has no gap)
+          let cellBg, cellTxt;
+          if(!present){
+            cellBg='#fde8e8'; cellTxt='#c0392b';
+          } else if(r===1 || days===null){
+            cellBg='#d4edda'; cellTxt='#155724';       // first appearance
+          } else if(days < 30){
+            cellBg='#e74c3c'; cellTxt='#fff';           // violation — red
+          } else if(days < 60){
+            cellBg='#fff3cd'; cellTxt='#856404';        // tight — amber
+          } else {
+            cellBg='#d4edda'; cellTxt='#155724';        // normal — green
+          }
+          const daysLabel = (r>1 && days!==null)
+            ? `<div style="font-size:9.5px;font-weight:400;margin-top:1px;opacity:0.85">${days}d</div>`
+            : (r===1 && present ? `<div style="font-size:9px;opacity:0.6;margin-top:1px">—</div>` : '');
+          const tick = present ? '✓' : '✗';
+          return `<td style="padding:3px 5px;text-align:center;background:${cellBg};color:${cellTxt};font-weight:700;font-size:13px;line-height:1.2">
+            ${tick}${daysLabel}</td>`;
         }).join('');
         html+=`<tr style="background:${rowBg}">
           <td style="padding:5px 9px;font-family:monospace;font-size:11px;font-weight:600">${h.hhid}</td>
@@ -1265,15 +1282,23 @@ function buildPanel(){
           <td style="padding:5px 9px;font-size:11.5px">${h.region_name}</td>
           <td style="padding:5px 8px;text-align:center">${uTag}</td>
           ${roundCells}
-          <td style="padding:5px 9px;text-align:center;font-weight:700">${h.rounds_present}</td>
-          <td style="padding:5px 9px;text-align:center;color:#555">R${h.first_round||'—'}</td>
-          <td style="padding:5px 9px;text-align:center;color:#555">R${h.last_round||'—'}</td>
+          <td style="padding:5px 9px;text-align:center;font-weight:700">${h.rounds_present}/5</td>
           <td style="padding:5px 9px;text-align:center">
-            <span style="background:${sc.bg};color:${sc.txt};border-radius:3px;padding:2px 7px;font-size:10.5px;font-weight:600;white-space:nowrap">${h.status}</span>
+            <span style="background:${sc.bg};color:${sc.txt};border-radius:3px;padding:2px 7px;font-size:10.5px;font-weight:600;white-space:nowrap"
+              title="First: R${h.first_round||'?'}  Last: R${h.last_round||'?'}">${h.status}</span>
           </td>
         </tr>`;
       });
-      html+=`</tbody></table></div>`;
+      html+=`</tbody></table></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:7px;font-size:11px;align-items:center">
+          <span style="color:#888">Days since previous interview:</span>
+          <span><span style="background:#d4edda;color:#155724;padding:1px 7px;border-radius:3px;font-weight:600">✓ —</span> First appearance</span>
+          <span><span style="background:#d4edda;color:#155724;padding:1px 7px;border-radius:3px;font-weight:600">✓ 60d+</span> Normal</span>
+          <span><span style="background:#fff3cd;color:#856404;padding:1px 7px;border-radius:3px;font-weight:600">✓ 30–59d</span> Tight</span>
+          <span><span style="background:#e74c3c;color:#fff;padding:1px 7px;border-radius:3px;font-weight:600">✓ &lt;30d</span> Violation</span>
+          <span><span style="background:#fde8e8;color:#c0392b;padding:1px 7px;border-radius:3px;font-weight:600">✗</span> Absent</span>
+          <span style="color:#aaa">| Hover status badge for first/last round</span>
+        </div>`;
       if(tableEl) tableEl.innerHTML=html;
 
       // Pagination
@@ -1299,12 +1324,17 @@ function buildPanel(){
     // CSV download
     window._hhDownloadCsv=function(){
       const filtered=getFiltered();
-      const header=['hhid','psu','region','region_name','urban_label','R1','R2','R3','R4','R5','rounds_present','first_round','last_round','status','pattern'];
-      const rows=filtered.map(h=>[
-        h.hhid, h.psu, h.region, h.region_name, h.urban_label,
-        h.presence['1'], h.presence['2'], h.presence['3'], h.presence['4'], h.presence['5'],
-        h.rounds_present, h.first_round||'', h.last_round||'', h.status, h.pattern
-      ]);
+      const header=['hhid','psu','region','region_name','urban_label','R1','R2','R3','R4','R5','days_to_R2','days_to_R3','days_to_R4','days_to_R5','rounds_present','first_round','last_round','status','pattern'];
+      const rows=filtered.map(h=>{
+        const dg=h.days_gap||{};
+        return [
+          h.hhid, h.psu, h.region, h.region_name, h.urban_label,
+          h.presence['1'], h.presence['2'], h.presence['3'], h.presence['4'], h.presence['5'],
+          dg['2']!=null?dg['2']:'', dg['3']!=null?dg['3']:'',
+          dg['4']!=null?dg['4']:'', dg['5']!=null?dg['5']:'',
+          h.rounds_present, h.first_round||'', h.last_round||'', h.status, h.pattern
+        ];
+      });
       const csv=[header,...rows].map(r=>r.join(',')).join('\\n');
       const a=document.createElement('a');
       a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
