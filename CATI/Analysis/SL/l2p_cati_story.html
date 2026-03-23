@@ -646,6 +646,28 @@ pre.stata-pre .op{color:#F5C48A;}
           </div>
         </div>
       </div>
+      <div class="sec-terra" style="padding-top:0;margin-top:0;">
+        <div class="sec">
+          <div class="card terra-top" style="margin-top:0;">
+            <div class="card-title">All five FIES items — trend R1&#xB7;R5</div>
+            <div class="card-sub">% of households answering "Yes" each round &#xB7; hhw weighted</div>
+            <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cFiesItemsTrend';loadChart('cFiesItemsTrend');openDD()">&#x270F;&#xFE0F; Edit</button>
+            <div class="chart-wrap" style="height:230px;" data-orig-h="230"><canvas id="cFiesItemsTrend"></canvas></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+            <div class="card">
+              <div class="card-title">Food security improving — % fully food secure</div>
+              <div class="card-sub">FIES score = 0 &#xB7; hhw weighted</div>
+              <div class="chart-wrap" style="height:140px;" data-orig-h="140"><canvas id="cFoodSecTrend"></canvas></div>
+            </div>
+            <div class="callout terra">
+              <span class="callout-icon">&#x1F4C9;</span>
+              <div class="callout-lbl">Recovery signal</div>
+              <p>"Worried about food" fell from <strong>57%</strong> to <strong>39%</strong>. "Went a whole day without food" fell from <strong>14.8%</strong> to <strong>6.5%</strong>. Every item declined every round.</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="src">Source: M08_food_nonfood.dta · HH level, weighted by hhw · FIES = F08_A–E · R1–R5</div>
       <div class="stata-drawer">
         <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 1 · FIES</span></button>
@@ -681,7 +703,22 @@ pre.stata-pre .op{color:#F5C48A;}
 <span class="cm">svy:</span> <span class="cm">mean</span> f08_a_b f08_b_b f08_c_b f08_d_b f08_e_b <span class="kw">if</span> round==<span class="nu">5</span>
 
 <span class="co">* Table 1-D: Regional breakdown R5</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> mod_sev <span class="kw">if</span> round==<span class="nu">5</span>, <span class="kw">over</span>(region)</code></pre>
+<span class="cm">svy:</span> <span class="cm">mean</span> mod_sev <span class="kw">if</span> round==<span class="nu">5</span>, <span class="kw">over</span>(region)
+
+<span class="co">* ── Figure: FIES items trend (all 5 items x R1–R5) ──────────────────────────</span>
+<span class="co">* Replicate using a loop — gives the multi-line trend data for the chart</span>
+<span class="kw">foreach</span> v <span class="kw">in</span> f08_a_b f08_b_b f08_c_b f08_d_b f08_e_b {
+    <span class="cm">svy:</span> <span class="cm">mean</span> `v', <span class="kw">over</span>(round)
+}
+<span class="co">* Worried:      R1=57.4%  R2=46.7%  R3=46.2%  R4=42.0%  R5=39.2%</span>
+<span class="co">* Ate less:     R1=52.4%  R2=43.2%  R3=39.4%  R4=29.2%  R5=27.8%</span>
+<span class="co">* Ran out:      R1=44.5%  R2=35.1%  R3=29.1%  R4=24.4%  R5=21.4%</span>
+<span class="co">* Hungry:       R1=32.1%  R2=25.4%  R3=21.7%  R4=17.8%  R5=14.8%</span>
+<span class="co">* Whole day:    R1=14.8%  R2=10.2%  R3= 8.4%  R4= 8.2%  R5= 6.5%</span>
+
+<span class="co">* % fully food secure (FIES=0) trend</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> food_sec, <span class="kw">over</span>(round)
+<span class="co">* R1=29.1%  R2=40.4%  R3=44.7%  R4=48.3%  R5=52.4%</span></code></pre>
         </div>
       </div>
     </div>
@@ -738,6 +775,21 @@ pre.stata-pre .op{color:#F5C48A;}
       <div class="scell dk"><div class="scell-n" style="color:#fbbf24;" data-ed="1" data-type="number">13.9 hrs</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Mean electricity outage/week</div></div>
       <div class="scell dk"><div class="scell-n" style="color:#94a3b8;" data-ed="1" data-type="number">29.7%</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Internet disruption (past month)</div></div>
     </div>
+    <div class="sec" style="padding-top:0;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+        <div class="card dark">
+          <div class="card-title light">Shock type breakdown — trend</div>
+          <div class="card-sub light">% of all HHs affected by each shock type &#xB7; R1&#xB7;R5</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cShockTypesTrend';loadChart('cShockTypesTrend');openDD()">&#x270F;&#xFE0F; Edit</button>
+          <div class="chart-wrap" style="height:195px;" data-orig-h="195"><canvas id="cShockTypesTrend"></canvas></div>
+        </div>
+        <div class="card dark">
+          <div class="card-title light">Utilities disruption — trend</div>
+          <div class="card-sub light">% HHs with disruption &#xB7; hhw weighted</div>
+          <div class="chart-wrap" style="height:195px;" data-orig-h="195"><canvas id="cUtilTrend"></canvas></div>
+        </div>
+      </div>
+    </div>
     <div class="src light">Source: M03_shock.dta · HH level, weighted by hhw · R1–R5</div>
     <div class="stata-drawer">
       <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 2 · SHOCKS</span></button>
@@ -778,7 +830,22 @@ pre.stata-pre .op{color:#F5C48A;}
 <span class="cm">svy:</span> <span class="cm">mean</span> sh4 <span class="kw">if</span> round==<span class="nu">5</span> &amp; water_dis==<span class="nu">1</span>  <span class="co">// mean disruption days</span>
 
 <span class="co">* Table 2-E: Shock rate by region R5</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> any_shock <span class="kw">if</span> round==<span class="nu">5</span>, <span class="kw">over</span>(region)</code></pre>
+<span class="cm">svy:</span> <span class="cm">mean</span> any_shock <span class="kw">if</span> round==<span class="nu">5</span>, <span class="kw">over</span>(region)
+
+<span class="co">* ── Figure: Top shock types trend (% of ALL HHs by round) ──────────────────</span>
+<span class="co">* sh1b_1 codes: 1=Typhoons  20=Major illness  13=Job loss  3=Floods</span>
+<span class="kw">foreach</span> code <span class="kw">in</span> <span class="nu">1</span> <span class="nu">20</span> <span class="nu">13</span> <span class="nu">3</span> {
+    <span class="kw">gen</span> shock_`code' = ((sh1b_1==`code') &amp; any_shock==<span class="nu">1</span>) <span class="kw">if</span> any_shock &lt; .
+    <span class="cm">svy:</span> <span class="cm">mean</span> shock_`code', <span class="kw">over</span>(round)
+}
+<span class="co">* Typhoons:  R1=17.6%  R2=12.7%  R3=7.1%  R4=5.4%  R5=2.4%</span>
+<span class="co">* Illness:   R1= 7.5%  R2= 4.9%  R3=3.9%  R4=4.2%  R5=4.3%  (persistent)</span>
+<span class="co">* Job loss:  R1= 2.3%  R2= 2.1%  R3=2.3%  R4=2.6%  R5=1.6%  (stable)</span>
+
+<span class="co">* ── Figure: Utilities disruption trend ──────────────────────────────────────</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> water_dis, <span class="kw">over</span>(round)     <span class="co">// 25.8% → 9.8%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> internet_dis, <span class="kw">over</span>(round) <span class="co">// 46.7% → 29.7%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> el5, <span class="kw">over</span>(round)           <span class="co">// 14.2 hrs → 2.6 hrs</span></code></pre>
       </div>
     </div>
   </div>
@@ -845,6 +912,14 @@ pre.stata-pre .op{color:#F5C48A;}
           </div>
         </div>
       </div>
+      <div style="margin-top:12px;">
+        <div class="card amber-top">
+          <div class="card-title">Financial behaviour trend — R1&#xB7;R5</div>
+          <div class="card-sub">% of households &#xB7; hhw weighted &#xB7; Note: mobile wallet &amp; bank usage R5 figure treats non-response as No</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cFinanceTrend';loadChart('cFinanceTrend');openDD()">&#x270F;&#xFE0F; Edit</button>
+          <div class="chart-wrap" style="height:210px;" data-orig-h="210"><canvas id="cFinanceTrend"></canvas></div>
+        </div>
+      </div>
       <div class="src">Source: M05_income.dta (indw) + M06_finance.dta (hhw) · R5 latest · Oct 15 2025</div>
       <div class="stata-drawer">
         <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 3 · FINANCE</span></button>
@@ -897,7 +972,19 @@ pre.stata-pre .op{color:#F5C48A;}
 
 <span class="co">* Mean income among earners R5 (ia7 = total income last 30 days, PHP)</span>
 <span class="cm">svy:</span> <span class="cm">mean</span> ia7 <span class="kw">if</span> round==<span class="nu">5</span> &amp; ia2==<span class="nu">1</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> ia7 <span class="kw">if</span> round==<span class="nu">5</span> &amp; ia2==<span class="nu">1</span>, <span class="kw">over</span>(region)  <span class="co">// by macro-region</span></code></pre>
+<span class="cm">svy:</span> <span class="cm">mean</span> ia7 <span class="kw">if</span> round==<span class="nu">5</span> &amp; ia2==<span class="nu">1</span>, <span class="kw">over</span>(region)  <span class="co">// by macro-region</span>
+
+<span class="co">* ── Figure: Financial behaviour trend (R1–R5) ───────────────────────────────</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M06_finance.dta"</span>, <span class="kw">clear</span>
+<span class="kw">foreach</span> v <span class="kw">of varlist</span> f2 f3 f6 f7 {
+    <span class="kw">gen</span> `v'_b = (`v'==<span class="nu">1</span>) <span class="kw">if</span> `v' &lt; .
+}
+<span class="cm">svyset</span> psu [pweight=hhw], strata(stratum)
+<span class="co">* f2=mobile wallet used  f3=saved  f6=cover 300k  f7=took loan</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> f2_b, <span class="kw">over</span>(round)   <span class="co">// 14.9% → 16.2% → 18.7% → 18.9% → 20.8%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> f7_b, <span class="kw">over</span>(round)   <span class="co">// 22.1% → 19.8% → 22.4% → 21.0% → 18.1%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> f3_b, <span class="kw">over</span>(round)   <span class="co">// 13.3% → 13.0% → 13.6% → 11.6% → 12.9% (stable)</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> f6_b, <span class="kw">over</span>(round)   <span class="co">// 3.7% → 2.9% → 2.3% → 2.2% → 3.5% (low throughout)</span></code></pre>
         </div>
       </div>
     </div>
@@ -1122,6 +1209,22 @@ pre.stata-pre .op{color:#F5C48A;}
         <div class="chart-wrap" style="height:155px;" data-orig-h="155"><canvas id="cLSSat2"></canvas></div>
       </div>
     </div>
+    <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="card dark">
+          <div class="card-title light">Economic situation trend</div>
+          <div class="card-sub light">% HHs by perceived direction vs last month &#xB7; R1&#xB7;R5</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cEcoTrend';loadChart('cEcoTrend');openDD()">&#x270F;&#xFE0F; Edit</button>
+          <div class="chart-wrap" style="height:185px;" data-orig-h="185"><canvas id="cEcoTrend"></canvas></div>
+        </div>
+        <div class="card dark">
+          <div class="card-title light">Perceptions trend</div>
+          <div class="card-sub light">% agreeing &#xB7; key attitude items &#xB7; R1&#xB7;R5</div>
+          <button class="edit-data-btn" onclick="document.querySelector('#dd-chart-sel').value='cPercepTrend';loadChart('cPercepTrend');openDD()">&#x270F;&#xFE0F; Edit</button>
+          <div class="chart-wrap" style="height:185px;" data-orig-h="185"><canvas id="cPercepTrend"></canvas></div>
+        </div>
+      </div>
+    </div>
     <div class="src light">Source: M09_views.dta · HH level, weighted by hhw · R5 latest · Trend: R1–R5</div>
     <div class="stata-drawer">
       <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 6 · VIEWS</span></button>
@@ -1155,7 +1258,26 @@ pre.stata-pre .op{color:#F5C48A;}
 
 <span class="co">* Table 6-D: Attrition bias check (Section 7 in .do file)</span>
 <span class="co">*   Compare worried-about-food rate: stayers vs non-stayers from R1</span>
-<span class="co">*   → merge M00 (stayed_r5 flag) with M08, run svy: mean worried, over(stayed_r5)</span></code></pre>
+<span class="co">*   → merge M00 (stayed_r5 flag) with M08, run svy: mean worried, over(stayed_r5)</span>
+
+<span class="co">* ── Figure: Economic situation trend (better/same/worse) ────────────────────</span>
+<span class="kw">gen</span> eco_better = (v5&lt;=<span class="nu">2</span>) <span class="kw">if</span> v5 &lt; .
+<span class="kw">gen</span> eco_same   = (v5==<span class="nu">3</span>) <span class="kw">if</span> v5 &lt; .
+<span class="kw">gen</span> eco_worse  = (v5&gt;=<span class="nu">4</span>) <span class="kw">if</span> v5 &lt; .
+<span class="cm">svy:</span> <span class="cm">mean</span> eco_better eco_same eco_worse, <span class="kw">over</span>(round)
+<span class="co">* Worse:   R1=36%  R2=34%  R3=37%  R4=34%  R5=32%  (gradual decline)</span>
+<span class="co">* Same:    R1=45%  R2=49%  R3=49%  R4=52%  R5=52%  (growing)</span>
+<span class="co">* Better:  R1=18%  R2=17%  R3=14%  R4=13%  R5=15%  (low but stable)</span>
+
+<span class="co">* ── Figure: Key perceptions trend (% agreeing, v9 items R1–R5) ──────────────</span>
+<span class="kw">foreach</span> v <span class="kw">in</span> v9_a v9_e v9_i v9_m {
+    <span class="kw">gen</span> `v'_agree = (`v'&lt;=<span class="nu">2</span>) <span class="kw">if</span> `v' &lt; .
+    <span class="cm">svy:</span> <span class="cm">mean</span> `v'_agree, <span class="kw">over</span>(round)
+}
+<span class="co">* Economy improve (v9_a): R1=49.7%  R4=37.6%  R5=44.5%  (dipped R4, rebounding)</span>
+<span class="co">* Prices rising  (v9_e): R1=19.5%  R4=15.0%  R5=14.0%  (stable-low)</span>
+<span class="co">* Things better  (v9_i): R1=27.9%  R4=32.2%  R5=30.4%  (modest uptick)</span>
+<span class="co">* Satisfied govt (v9_m): R1=43.7%  R3=37.8%  R5=40.3%  (U-shape)</span></code></pre>
       </div>
     </div>
   </div>
@@ -1238,6 +1360,43 @@ const DATA = {
   eco_change: {"Same": 52.44, "Somewhat worse": 23.89, "Somewhat better": 9.96, "Much worse": 8.4, "Much better": 5.3},
   likert: {"Prices rising too fast": 44.49, "Optimistic about economy": 31.8, "More citizen participation in govt": 14.02, "Worried: child education": 14.84, "Worried: job loss": 33.73, "Worried: political instability": 30.38, "Digital services helpful (past month)": 25.97, "Taxes well spent": 38.71, "Govt fighting corruption well": 35.35, "Country on right track": 40.25},
   life_sat_dist: {"1": 6.8, "2": 24.57, "3": 50.36, "4": 9.85, "5": 8.41},
+  // ── TREND DATA (R1–R5, weighted) ──
+  fies_items_trend: {
+    'Worried about food':      [57.43, 46.70, 46.17, 41.95, 39.22],
+    'Ate less than should':    [52.44, 43.24, 39.43, 29.17, 27.84],
+    'Ran out of food':         [44.48, 35.06, 29.08, 24.41, 21.41],
+    'Hungry, didn\'t eat':    [32.05, 25.42, 21.70, 17.84, 14.78],
+    'Whole day without food':  [14.79, 10.21,  8.40,  8.24,  6.47],
+  },
+  fies_foodsec_trend: [29.08, 40.41, 44.68, 48.26, 52.36],
+  shock_types_trend: {
+    'Typhoons':       [17.63, 12.71, 7.14, 5.37, 2.37],
+    'Major illness':  [ 7.48,  4.90, 3.87, 4.23, 4.31],
+    'Job loss':       [ 2.30,  2.11, 2.30, 2.55, 1.64],
+    'Floods':         [ 1.73,  0.66, 0.59, 0.37, 0.32],
+  },
+  utilities_trend: {
+    'Water disrupted %':    [25.79, 16.42, 14.07, 11.55,  9.83],
+    'Internet disrupted %': [46.66, 34.76, 39.62, 33.61, 29.69],
+    'Elec outage (hrs)':    [14.24,  9.33,  8.64,  2.67,  2.59],
+  },
+  finance_trend: {
+    'Mobile wallet used %': [14.95, 16.21, 18.67, 18.88, 20.83],
+    'Took loan %':          [22.14, 19.83, 22.40, 21.04, 18.09],
+    'Able to save %':       [13.28, 13.04, 13.57, 11.60, 12.92],
+    'Cover 300k %':         [ 3.71,  2.86,  2.31,  2.21,  3.46],
+  },
+  eco_trend: {
+    'Worse':  [36.17, 34.34, 36.58, 34.41, 32.29],
+    'Same':   [45.37, 49.06, 49.46, 52.31, 52.44],
+    'Better': [18.46, 16.60, 13.96, 13.28, 15.27],
+  },
+  perception_trend: {
+    'Economy will improve': [49.68, 49.11, 45.12, 37.56, 44.49],
+    'Things will get better': [27.94, 25.68, 29.99, 32.22, 30.38],
+    'Prices keep rising':   [19.49, 16.80, 19.38, 15.01, 14.02],
+    'Satisfied with govt':  [43.72, 43.86, 37.78, 43.42, 40.25],
+  },
 };
 
 // ═══════════════════════════════════════
@@ -1535,7 +1694,7 @@ function reDraw(){
 
 // ── CHART TYPE SWITCHER ──
 const CHART_TYPE_OVR={};
-const CLABELS={cFoodTrend:'Food trend',cShockTrend:'Shock trend',cLSSat:'Life sat trend',cFIES:'FIES items',cSeverity:'Severity',cSevMacro:'Sev/region',cShockTypes:'Shock types',cCoping:'Coping',cShockMacro:'Shock/region',cContract:'Contract',cClassWork:'Class work',cIncMacro:'Income/region',cLoanPurpose:'Loan purpose',cFinance:'Finance',cPhilHealth:'PhilHealth',cPhMacro:'PH/region',cFacility:'Facility',cEcoChange:'Eco change',cLikert:'Likert',cLifeSat:'Life sat dist',cLSSat2:'Life trend 2'};
+const CLABELS={cFiesItemsTrend:'FIES items trend',cFoodSecTrend:'Food secure trend',cShockTypesTrend:'Shock types trend',cUtilTrend:'Utilities trend',cFinanceTrend:'Finance trend',cEcoTrend:'Eco situation trend',cPercepTrend:'Perceptions trend',cFoodTrend:'Food trend',cShockTrend:'Shock trend',cLSSat:'Life sat trend',cFIES:'FIES items',cSeverity:'Severity',cSevMacro:'Sev/region',cShockTypes:'Shock types',cCoping:'Coping',cShockMacro:'Shock/region',cContract:'Contract',cClassWork:'Class work',cIncMacro:'Income/region',cLoanPurpose:'Loan purpose',cFinance:'Finance',cPhilHealth:'PhilHealth',cPhMacro:'PH/region',cFacility:'Facility',cEcoChange:'Eco change',cLikert:'Likert',cLifeSat:'Life sat dist',cLSSat2:'Life trend 2'};
 function buildCS(){
   const list=document.getElementById('cs-list');if(list.children.length)return;
   Object.values(Chart.instances).forEach(chart=>{
@@ -1663,6 +1822,78 @@ function edReset(){document.documentElement.style.cssText='';document.body.style
 
 // ── TOAST ──
 function toast(msg){const t=document.getElementById('ed-toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+
+// ── TREND CHARTS (new) ──────────────────────────────────────────────────────
+
+// ── FIES items multi-line trend ──
+lazy('cFiesItemsTrend',()=>{
+  const colors=[P.terra,P.amber,P.rose,P.cobalt,P.plum];
+  const datasets=Object.entries(DATA.fies_items_trend).map(([label,data],i)=>
+    lineDS(label,data,colors[i%colors.length],false));
+  new Chart(document.getElementById('cFiesItemsTrend'),{type:'line',data:{labels:RLAB,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{grid:{display:false},ticks:TK},y:{grid:GR,min:0,max:65,ticks:{...TK,callback:v=>v+'%'}}},
+      plugins:{legend:{...LG},tooltip:{...TIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// ── Food security trend (% food secure) ──
+makeTrendChart('cFoodSecTrend',DATA.fies_foodsec_trend,'% fully food secure (FIES=0)',P.forest,false,20,60,v=>v+'%');
+
+// ── Shock types multi-line trend ──
+lazy('cShockTypesTrend',()=>{
+  const colors=[P.amber,P.terra,P.cobalt,P.teal];
+  const datasets=Object.entries(DATA.shock_types_trend).map(([label,data],i)=>
+    lineDS(label,data,colors[i%colors.length],false));
+  new Chart(document.getElementById('cShockTypesTrend'),{type:'line',data:{labels:RLAB,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{grid:{display:false},ticks:TKD},y:{grid:GRD,min:0,max:22,ticks:{...TKD,callback:v=>v+'%'}}},
+      plugins:{legend:{...LGD},tooltip:{...TIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// ── Utilities disruption trend ──
+lazy('cUtilTrend',()=>{
+  const entries=Object.entries(DATA.utilities_trend);
+  const colors=[P.teal,P.cobalt,P.amber];
+  const datasets=entries.map(([label,data],i)=>lineDS(label,data,colors[i],false));
+  new Chart(document.getElementById('cUtilTrend'),{type:'line',data:{labels:RLAB,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{grid:{display:false},ticks:TKD},y:{grid:GRD,min:0,ticks:{...TKD,callback:v=>v}}},
+      plugins:{legend:{...LGD},tooltip:{...TIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}`}}}}});
+});
+
+// ── Finance trend multi-line ──
+lazy('cFinanceTrend',()=>{
+  const colors=[P.amber,P.terra,P.forest,P.cobalt];
+  const datasets=Object.entries(DATA.finance_trend).map(([label,data],i)=>
+    lineDS(label,data,colors[i%colors.length],false));
+  new Chart(document.getElementById('cFinanceTrend'),{type:'line',data:{labels:RLAB,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{grid:{display:false},ticks:TK},y:{grid:GR,min:0,max:30,ticks:{...TK,callback:v=>v+'%'}}},
+      plugins:{legend:{...LG},tooltip:{...TIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}`}}}}});
+});
+
+// ── Economic situation trend (multi-line: better/same/worse) ──
+lazy('cEcoTrend',()=>{
+  const colors=[P.terra,P.teal,P.forest];
+  const datasets=Object.entries(DATA.eco_trend).map(([label,data],i)=>
+    lineDS(label,data,colors[i],false));
+  new Chart(document.getElementById('cEcoTrend'),{type:'line',data:{labels:RLAB,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{grid:{display:false},ticks:TKD},y:{grid:GRD,min:0,max:65,ticks:{...TKD,callback:v=>v+'%'}}},
+      plugins:{legend:{...LGD},tooltip:{...TIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// ── Perceptions trend multi-line ──
+lazy('cPercepTrend',()=>{
+  const colors=[P.forest,P.teal,P.terra,P.amber];
+  const datasets=Object.entries(DATA.perception_trend).map(([label,data],i)=>
+    lineDS(label,data,colors[i%colors.length],false));
+  new Chart(document.getElementById('cPercepTrend'),{type:'line',data:{labels:RLAB,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{grid:{display:false},ticks:TKD},y:{grid:GRD,min:0,max:60,ticks:{...TKD,callback:v=>v+'%'}}},
+      plugins:{legend:{...LGD},tooltip:{...TIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
 
 // ── STATA CODE DRAWERS ──
 function toggleStata(btn){
