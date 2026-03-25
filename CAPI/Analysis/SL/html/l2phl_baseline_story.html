@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Philippines 2025 — A Complete Portrait</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js"></script>
+<style>
+:root {
+  --ink:#002244; --paper:#f5f0e8; --cream:#e8eef7; --rule:#b8cce0;
+  --red:#CE1126; --blue:#009FDA; --gold:#D4A017; --green:#2d7a3e;
+  --orange:#0038A8; --purple:#00529b; --teal:#006eb6;
+  --dark-amber:#B8860B;
+  --muted:#4a6278; --dim:#002244;
+  --serif:"Playfair Display",Georgia,serif;
+  --body:"Source Serif 4",Georgia,serif;
+  --mono:"IBM Plex Mono",monospace;
+  /* WB + PH palette */
+  --wb-navy:#002244; --wb-blue:#009FDA; --wb-sky:#40B4E5;
+  --ph-blue:#0038A8; --ph-red:#CE1126; --ph-gold:#FCD116;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.7;overflow-x:hidden;}
+
+/* MASTHEAD */
+.mast{background:var(--ink);color:var(--paper);padding:10px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #009FDA;position:sticky;top:0;z-index:200;}
+.mast-logo{font-family:var(--serif);font-size:16px;font-weight:700;display:flex;align-items:center;gap:16px;}
+.mast-sub{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;opacity:.5;}
+.mast-nav{display:flex;gap:6px;flex-wrap:wrap;}
+.mast-nav a{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.9);text-decoration:none;padding:3px 7px;border:1px solid rgba(255,255,255,.5);border-radius:2px;transition:all .2s;}
+.mast-nav a:hover{color:#FFFFFF;border-color:#009FDA;background:rgba(0,159,218,.15);}
+@media(max-width:720px){.mast-nav{display:none;}}
+
+/* HERO */
+.hero{min-height:100vh;background:var(--ink);color:var(--paper);display:grid;place-items:center;padding:80px 40px 60px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 35%,#001a3a 0%,transparent 65%),radial-gradient(ellipse 45% 75% at 15% 85%,#001230 0%,transparent 55%);}
+.hero-inner{position:relative;max-width:1020px;width:100%;display:grid;grid-template-columns:1.2fr 1fr;gap:70px;align-items:center;}
+.hero-flag{font-size:72px;line-height:1;margin-bottom:14px;}
+.hero-eye{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#D4A017;margin-bottom:18px;font-weight:600;}
+.hero-hed{font-family:var(--serif);font-size:clamp(3rem,6.5vw,5.5rem);font-weight:900;line-height:1.04;letter-spacing:-.03em;margin-bottom:22px;}
+.hero-hed em{font-style:italic;color:#e8c4a0;}
+.hero-deck{font-size:1.1rem;line-height:1.7;color:rgba(255,255,255,.85);max-width:440px;margin-bottom:28px;}
+.hero-src{font-family:var(--mono);font-size:11px;opacity:.7;letter-spacing:.1em;text-transform:uppercase;}
+.hero-kpis{display:flex;flex-direction:column;gap:20px;}
+.hkpi{border-left:3px solid;padding-left:18px;}
+.hkpi.r{border-color:#CE1126;}
+.hkpi.b{border-color:#009FDA;}
+.hkpi.g{border-color:#D4A017;}
+.hkpi.o{border-color:#009FDA;}
+.hkpi-n{font-family:var(--serif);font-size:2.8rem;font-weight:900;line-height:1;color:var(--paper);}
+.hkpi-n span{font-size:1.4rem;font-weight:400;opacity:.55;}
+.hkpi-l{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-top:2px;}
+.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.35;color:var(--paper);animation:bob 2s infinite;}
+.scroll-hint::after{content:"↓";font-size:16px;}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(5px)}}
+
+/* TABLE OF CONTENTS */
+.toc{background:var(--cream);border-top:2px solid #009FDA;border-bottom:2px solid #009FDA;padding:40px;max-width:100%;}
+.toc-inner{max-width:1100px;margin:0 auto;}
+.toc-title{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;font-weight:600;}
+.toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+.toc-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;border:1px solid var(--rule);border-radius:3px;text-decoration:none;color:var(--ink);font-family:var(--body);font-size:.88rem;transition:all .2s;}
+.toc-item:hover{border-color:#009FDA;background:#009FDA;color:#FFFFFF;}
+.toc-num{font-family:var(--mono);font-size:9px;color:var(--muted);flex-shrink:0;}
+
+/* CHAPTER */
+.chap{background:#002244;color:#FFFFFF;padding:18px 40px;display:flex;align-items:center;gap:18px;}
+.chap-n{font-family:var(--mono);font-size:12px;color:#40B4E5;letter-spacing:.18em;font-weight:600;}
+.chap-r{flex:1;height:1px;background:rgba(245,240,232,.12);}
+.chap-l{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.75;}
+
+/* SECTION WRAPPER */
+.sec{max-width:1100px;margin:0 auto;padding:70px 40px;}
+.sec+.sec{border-top:1px solid var(--rule);}
+.sec.dark-bg{background:#EAF0F8;color:#002244;max-width:100%;padding:0;}
+.sec.dark-bg .sec-inner{max-width:1100px;margin:0 auto;padding:70px 40px;}
+.sec.cream-bg{background:var(--cream);}
+
+/* LAYOUTS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
+.two-col.flip{direction:rtl;}.two-col.flip>*{direction:ltr;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;}
+.full-w{}
+@media(max-width:760px){.two-col,.two-col.flip,.three-col{grid-template-columns:1fr;direction:ltr;}}
+
+/* TYPOGRAPHY */
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px;display:block;font-weight:600;}
+.eyebrow.r{color:var(--red);} .eyebrow.b{color:#009FDA;} .eyebrow.g{color:var(--green);}
+.eyebrow.o{color:var(--orange);} .eyebrow.p{color:var(--purple);} .eyebrow.t{color:var(--teal);}
+.eyebrow.gold{color:var(--dark-amber);}
+.hed{font-family:var(--serif);font-size:clamp(1.8rem,3.2vw,2.7rem);font-weight:900;line-height:1.1;letter-spacing:-.025em;margin-bottom:20px;}
+.hed em{font-style:italic;} .hed em.r{color:var(--red);} .hed em.b{color:#009FDA;}
+.hed em.g{color:#00A651;} .hed em.o{color:#E05206;} .hed em.gold{color:#D4A017;}
+.hed em.p{color:#a98fd4;} .hed em.t{color:#4abfb0;}
+.hed.light{color:#002244;}
+.subhed{font-family:var(--serif);font-size:1.3rem;font-weight:700;margin-bottom:12px;margin-top:28px;}
+.body-copy{font-size:.98rem;line-height:1.78;color:var(--dim);}
+.body-copy.light{color:#4A6278;}
+.body-copy p+p{margin-top:.9em;}
+
+/* BIG NUMBERS */
+.bnum{font-family:var(--serif);font-size:clamp(3rem,6.5vw,5.5rem);font-weight:900;line-height:1;letter-spacing:-.04em;margin:22px 0 4px;}
+.bnum.r{color:var(--red);} .bnum.b{color:#009FDA;} .bnum.g{color:#00A651;}
+.bnum.o{color:#E05206;} .bnum.gold{color:var(--gold);} .bnum.p{color:#772583;}
+.bnum-cap{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;font-weight:500;}
+
+/* PULL QUOTE */
+.pull{border-left:4px solid var(--red);padding:18px 24px;margin:24px 0;background:var(--cream);}
+.pull.b{border-color:#009FDA;} .pull.g{border-color:#00A651;}
+.pull.o{border-color:#D4A017;} .pull.gold{border-color:var(--gold);}
+.pull p{font-family:var(--serif);font-size:1.2rem;font-style:italic;line-height:1.45;color:var(--ink);}
+.pull.dark{background:#EEF4FB;} .pull.dark p{color:#002244;}
+
+/* CHART BOX */
+.cbox{background:white;border:1px solid var(--rule);border-radius:3px;padding:24px 20px 18px;box-shadow:0 2px 12px rgba(0,0,0,.05);}
+.cbox.dark{background:#FFFFFF;border-color:#d0dce8;}
+.cbox+.cbox{margin-top:12px;}
+.ctitle{font-family:var(--serif);font-size:1rem;font-weight:700;margin-bottom:3px;}
+.ctitle.light{color:#002244;}
+.csub{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#4A6278;margin-bottom:14px;font-weight:500;}
+.csub.light{color:#4A6278;font-size:11px;}
+.cwrap{position:relative;}
+
+/* BAR STRIPS */
+.bs{margin:7px 0;}
+.bs-lbl{display:flex;justify-content:space-between;margin-bottom:3px;}
+.bs-lbl span:first-child{font-family:var(--body);font-size:.86rem;line-height:1.3;}
+.bs-lbl span:last-child{font-family:var(--mono);font-size:.82rem;font-weight:500;flex-shrink:0;margin-left:8px;}
+.btrack{height:7px;background:var(--cream);border-radius:2px;overflow:hidden;}
+.btrack.dark-t{background:#d0dce8;}
+.bfill{height:100%;border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+
+/* STAT GRID */
+.sgrid{display:grid;gap:2px;margin:20px 0;}
+.sgrid-2{grid-template-columns:1fr 1fr;}
+.sgrid-3{grid-template-columns:1fr 1fr 1fr;}
+.sgrid-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+.scell{background:var(--cream);padding:18px 16px;text-align:center;}
+.scell.dark-c{background:#EEF5FA;}
+.scell.ink-c{background:#002244;color:#FFFFFF;}
+.scell.r-c{background:rgba(192,57,43,.08);}
+.scell.b-c{background:rgba(26,107,154,.08);}
+.scell.g-c{background:rgba(45,122,62,.08);}
+.scell.o-c{background:rgba(212,130,26,.08);}
+.scell-n{font-family:var(--serif);font-size:1.8rem;font-weight:900;line-height:1;margin-bottom:5px;}
+.scell-l{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.8;line-height:1.4;}
+
+/* CALLOUT */
+.callout{background:#003B6F;color:#FFFFFF;padding:30px 36px;margin:24px 0;border-radius:3px;}
+.callout-lbl{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#D4A017;margin-bottom:10px;font-weight:600;}
+.callout p{font-family:var(--serif);font-size:1.25rem;font-style:italic;line-height:1.45;}
+.callout p strong{font-style:normal;color:#e8c4a0;}
+.callout.b .callout-lbl{color:#4a9fd0;} .callout.g .callout-lbl{color:#5aad6f;}
+.callout.o .callout-lbl{color:var(--orange);} .callout.gold .callout-lbl{color:var(--gold);}
+
+/* HIGHLIGHT BOX */
+.hbox{border:2px solid var(--red);border-radius:3px;padding:18px 22px;margin:18px 0;background:rgba(192,57,43,.05);}
+.hbox.b{border-color:#009FDA;background:rgba(0,159,218,.04);}
+.hbox.g{border-color:#00A651;background:rgba(0,166,81,.04);}
+.hbox.o{border-color:#D4A017;background:rgba(212,160,23,.06);}
+.hbox.gold{border-color:var(--gold);background:rgba(184,134,11,.05);}
+.hbox-lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:8px;font-weight:600;}
+.hbox.b .hbox-lbl{color:#009FDA;} .hbox.g .hbox-lbl{color:#00A651;}
+.hbox.o .hbox-lbl{color:#D4A017;} .hbox.gold .hbox-lbl{color:var(--dark-amber);}
+.hbox p{font-size:.9rem;line-height:1.6;}
+
+/* SOURCE TAG */
+.src{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:16px;padding-top:12px;border-top:1px solid var(--rule);}
+.src.light{color:#7A8FA0;border-color:#D4E2EE;}
+
+/* REPLICATION CODE BLOCKS */
+.repl{margin-top:16px;padding-top:12px;border-top:1px solid var(--rule);}
+.repl summary{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;user-select:none;}
+.repl summary::-webkit-details-marker{display:none;}
+.repl summary::before{content:"▶";font-size:9px;transition:transform .2s;}
+.repl[open] summary::before{transform:rotate(90deg);}
+.repl summary:hover{color:var(--blue);}
+.repl-code{position:relative;margin-top:10px;background:#001a2e;color:#c9d8e6;border-radius:6px;overflow:hidden;}
+.repl-code pre{padding:16px 18px;font-family:var(--mono);font-size:12px;line-height:1.55;overflow-x:auto;white-space:pre;tab-size:4;margin:0;}
+.repl-copy{position:absolute;top:8px;right:8px;background:rgba(0,157,218,.15);border:1px solid rgba(0,157,218,.35);color:#40B4E5;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:3px;cursor:pointer;transition:all .2s;}
+.repl-copy:hover{background:rgba(0,157,218,.3);color:#fff;}
+.repl-note{font-family:var(--mono);font-size:10px;color:var(--muted);padding:6px 18px 10px;opacity:.7;}
+
+/* DIVIDER */
+.div-rule{height:2px;background:#009FDA;margin:0;}
+
+/* VISUAL SEPARATOR */
+.vis-sep{text-align:center;padding:32px 0;font-family:var(--mono);font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--rule);}
+
+/* EPILOGUE */
+.epi{background:#002244;color:#FFFFFF;padding:100px 40px;text-align:center;}
+.epi-hed{font-family:var(--serif);font-size:clamp(2rem,4vw,3.5rem);font-weight:900;font-style:italic;max-width:700px;margin:0 auto 24px;line-height:1.12;}
+.epi-body{font-size:.95rem;color:rgba(245,240,232,.58);max-width:560px;margin:0 auto 40px;line-height:1.7;}
+.epi-nums{display:flex;justify-content:center;gap:44px;flex-wrap:wrap;margin-bottom:44px;}
+.epi-n{text-align:center;}
+.epi-n-val{font-family:var(--serif);font-size:2.2rem;font-weight:900;line-height:1;}
+.epi-n-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;opacity:.4;margin-top:4px;}
+.epi-meta{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;}
+
+/* ANIMATED */
+.rev{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
+.rev.vis{opacity:1;transform:translateY(0);}
+.rev.d1{transition-delay:.1s;} .rev.d2{transition-delay:.2s;} .rev.d3{transition-delay:.3s;}
+
+/* INLINE ANNOTATION */
+.ann{display:inline-flex;align-items:center;gap:4px;background:rgba(0,159,218,.1);border:1px solid rgba(0,159,218,.3);border-radius:3px;padding:1px 7px;font-family:var(--mono);font-size:.78rem;font-weight:500;color:#009FDA;}
+.ann.b{background:rgba(0,166,81,.1);border-color:rgba(0,166,81,.3);color:#00A651;}
+
+/* WAFFLE GRID */
+.waffle{display:flex;flex-wrap:wrap;gap:2px;margin:12px 0;}
+.wc{width:16px;height:16px;border-radius:2px;}
+
+/* COMPARISON ROW */
+.comp-row{display:flex;align-items:center;gap:12px;margin:8px 0;}
+.comp-label{font-family:var(--body);font-size:.88rem;min-width:90px;}
+.comp-bar{flex:1;height:20px;background:var(--cream);border-radius:2px;overflow:hidden;position:relative;}
+.comp-fill{height:100%;border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;padding:0 6px;}
+.comp-val{font-family:var(--mono);font-size:9px;font-weight:500;color:white;position:absolute;left:6px;top:50%;transform:translateY(-50%);white-space:nowrap;}
+
+/* FILTER BUTTONS */
+.filter-group{display:flex;gap:6px;margin:10px 0;}
+.filter-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--rule);border-radius:3px;background:white;color:var(--muted);cursor:pointer;transition:all .2s;}
+.filter-btn:hover{border-color:#009FDA;color:#009FDA;}
+.filter-btn.active{background:#009FDA;color:white;border-color:#009FDA;}
+.filter-btn.active:hover{background:#0088c7;}
+
+/* REGION SELECT */
+.region-select{font-family:var(--mono);font-size:11px;padding:4px 8px;border:1px solid var(--rule);border-radius:3px;background:white;color:var(--ink);margin:8px 0;}
+
+/* SANKEY */
+.sankey-wrap{width:100%;min-height:300px;position:relative;}
+.sankey-wrap svg{width:100%;height:100%;}
+
+/* SVG MAP */
+.map-wrap{position:relative;width:100%;max-width:400px;margin:0 auto;}
+.map-region{cursor:pointer;transition:opacity .2s;}
+.map-region:hover{opacity:.85;}
+.map-tooltip{position:absolute;background:rgba(0,34,68,.93);color:white;padding:6px 10px;border-radius:3px;font-family:var(--mono);font-size:11px;pointer-events:none;z-index:10;display:none;}
+
+/* COUNTER ANIMATION */
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.count-anim{animation:countUp .6s ease-out forwards;}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="mast">
+  <div>
+    <div class="mast-logo" style="display:flex;align-items:center;gap:16px;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 42" width="200" height="35" role="img" aria-label="World Bank Group">
+  <!-- Globe icon — bright WB blue tones, transparent bg -->
+  <g transform="translate(1,1)">
+    <!-- Globe base fill -->
+    <circle cx="20" cy="20" r="18" fill="#003B6F"/>
+    <!-- Latitude arcs -->
+    <line x1="2" y1="20" x2="38" y2="20" stroke="#40B4E5" stroke-width="1.2"/>
+    <path d="M4,13 Q20,16.5 36,13"  fill="none" stroke="#40B4E5" stroke-width="1"/>
+    <path d="M4,27 Q20,23.5 36,27"  fill="none" stroke="#40B4E5" stroke-width="1"/>
+    <path d="M9,7  Q20,11  31,7"    fill="none" stroke="#40B4E5" stroke-width="0.8"/>
+    <path d="M9,33 Q20,29  31,33"   fill="none" stroke="#40B4E5" stroke-width="0.8"/>
+    <!-- Longitude arcs -->
+    <ellipse cx="20" cy="20" rx="6.5" ry="18" fill="none" stroke="#40B4E5" stroke-width="1"/>
+    <ellipse cx="20" cy="20" rx="12.5" ry="18" fill="none" stroke="#40B4E5" stroke-width="0.8"/>
+    <line x1="20" y1="2" x2="20" y2="38" stroke="#40B4E5" stroke-width="1.2"/>
+    <!-- Outer ring -->
+    <circle cx="20" cy="20" r="18" fill="none" stroke="#009FDA" stroke-width="2"/>
+  </g>
+  <!-- WORLD BANK GROUP text — all white, clearly visible on dark bg -->
+  <text x="50" y="15.5" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="700" letter-spacing="0.8" fill="#FFFFFF">WORLD BANK</text>
+  <text x="50" y="31"   font-family="Arial,Helvetica,sans-serif" font-size="10.5" font-weight="400" letter-spacing="2.5" fill="#40B4E5">GROUP</text>
+</svg>
+      <span style="width:1px;height:28px;background:rgba(64,180,229,.35);display:inline-block;"></span>
+      <span>🇵🇭 Listening to the Philippines</span>
+    </div>
+  </div>
+  <nav class="mast-nav">
+    <a href="#ch-roster">People</a>
+    <a href="#ch-edu">Education</a>
+    <a href="#ch-work">Work</a>
+    <a href="#ch-money">Money</a>
+    <a href="#ch-health">Health</a>
+    <a href="#ch-food">Food</a>
+    <a href="#ch-hazard">Hazards</a>
+    <a href="#ch-home">Home</a>
+    <a href="#ch-utils">Utilities</a>
+    <a href="#ch-assets">Assets</a>
+    <a href="#ch-views">Voices</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <p class="hero-eye">Philippines 2025</p>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#FFFFFF;margin-bottom:18px;border:1px solid rgba(255,255,255,.7);display:inline-block;padding:6px 16px;border-radius:4px;background:rgba(0,159,218,.25);font-weight:600;">L2Phl Baseline Household Survey · Sep–Oct 2025</div>
+      <h1 class="hero-hed">Listening to the Philippines: <em>Baseline Survey Results</em></h1>
+      <p class="hero-deck">A nationally representative look at Filipino households covering education, livelihoods, food security, technology, and more. What the data reveals is both a snapshot of where the Philippines stands today and a foundation for evidence-based action tomorrow.</p>
+      <p class="hero-src">Listening to the Philippines (L2Phl) · Sep–Oct 2025</p>
+    </div>
+    <div class="hero-kpis">
+      <div class="hkpi r"><div class="hkpi-n">108.7<span>M</span></div><div class="hkpi-l">People represented</div></div>
+      <div class="hkpi b"><div class="hkpi-n">2,470</div><div class="hkpi-l">Households surveyed</div></div>
+      <div class="hkpi g"><div class="hkpi-n">14</div><div class="hkpi-l">Survey modules</div></div>
+      <div class="hkpi o"><div class="hkpi-n">40.6<span>%</span></div><div class="hkpi-l">Population under 20</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll to explore</div>
+</section>
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <div class="toc-inner">
+    <div class="toc-title">Contents — 11 chapters · 14 survey modules</div>
+    <div class="toc-grid">
+      <a href="#ch-roster" class="toc-item"><span class="toc-num">01</span>Who lives here — Demographics</a>
+      <a href="#ch-edu" class="toc-item"><span class="toc-num">02</span>Learning — Education</a>
+      <a href="#ch-work" class="toc-item"><span class="toc-num">03</span>Working — Employment</a>
+      <a href="#ch-money" class="toc-item"><span class="toc-num">04</span>Money — Income &amp; Finance</a>
+      <a href="#ch-mig" class="toc-item"><span class="toc-num">05</span>On the move — Migration</a>
+      <a href="#ch-health" class="toc-item"><span class="toc-num">06</span>Getting sick — Health</a>
+      <a href="#ch-food" class="toc-item"><span class="toc-num">07</span>Eating — Food &amp; Nutrition</a>
+      <a href="#ch-hazard" class="toc-item"><span class="toc-num">08</span>When disasters strike — Hazards</a>
+      <a href="#ch-home" class="toc-item"><span class="toc-num">09</span>Where families live — Dwelling</a>
+      <a href="#ch-utils" class="toc-item"><span class="toc-num">10</span>Lights, water, internet — Utilities</a>
+      <a href="#ch-assets" class="toc-item"><span class="toc-num">11</span>What families own — Assets &amp; Energy</a>
+      <a href="#ch-views" class="toc-item"><span class="toc-num">12</span>What they think — Voices &amp; Perceptions</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ CH 1: ROSTER ═══════════════════════════════ -->
+<div class="div-rule"></div>
+<div class="chap" id="ch-roster"><span class="chap-n">01</span><span class="chap-r"></span><span class="chap-l">M01 Roster — Who lives here</span></div>
+
+<div class="sec">
+  <div class="two-col">
+    <div class="rev">
+      <span class="eyebrow b">Population structure</span>
+      <h2 class="hed">A young, growing nation — with <em class="b">41% under 20</em></h2>
+      <div class="body-copy">
+        <p>The Philippines is a young country. The largest single age cohort is 10–19 year-olds at 23 percent, followed by children under 10 at 18 percent while only 4 percent of the population is over 70. With a median age of 25, the demographic dividend is real — but realizing it depends on delivering education, jobs, and social infrastructure to translate into broad-based prosperity.</p>
+        <p>This is not uniform across the country. Mindanao is the youngest, with 20 percent of its population under 10, while NCR has the smallest share in that bracket at 15 percent – a gap consistent with long-standing patterns of internal migration toward urban centers, which tend to skew slightly older.</p>
+      </div>
+      <div class="sgrid sgrid-3 rev d1" style="margin-top:20px;">
+        <div class="scell ink-c"><div class="scell-n" style="color:#e8c4a0;">25</div><div class="scell-l">Median age (M: 24 · F: 26)</div></div>
+        <div class="scell"><div class="scell-n">41%</div><div class="scell-l">Under 20</div></div>
+        <div class="scell"><div class="scell-n">51%</div><div class="scell-l">Male</div></div>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Age group distribution</div>
+        <div class="csub">% within each group (total / male / female)</div>
+        <div class="cwrap" style="height:220px;"><canvas id="cAge"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec cream-bg">
+  <div class="sec two-col" style="padding-top:0;padding-bottom:0;max-width:1100px;margin:0 auto;padding:70px 40px;">
+    <div class="rev">
+      <span class="eyebrow r">Household composition</span>
+      <h2 class="hed">Modal household: a <em class="r">head, spouse, and children</em></h2>
+      <div class="body-copy">
+        <p>Four in ten Filipino households (40 percent) follow the classic nuclear pattern: a head, spouse, and children. But nearly as many (38 percent) are extended families — households that include grandchildren, siblings, parents, or other relatives alongside the nuclear core. The average household has 4 members, with extended families averaging 5 and nuclear families 5.</p>
+        <p>Single-parent households — a head with children but no spouse — account for 9 percent, while couples without children make up 8 percent. Just 5 percent of households are single-person.</p>
+        <p>Marital status mirrors the country's young age structure. Over half of all household members are single or unmarried. Women are far more likely to be widowed than men — 6 percent versus 1 percent — pointing to longer female life expectancy and the disproportionate care burdens that older women bear.</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Relationship to household head</div>
+        <div class="csub">% of all members</div>
+        <div class="cwrap" style="height:210px;"><canvas id="cRel"></canvas></div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Household structure type</div>
+        <div class="csub">% of households (N=2,470 · mean size 4.3)</div>
+        <div class="cwrap" style="height:190px;display:flex;align-items:center;"><canvas id="cHHComp"></canvas></div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Marital status by sex</div>
+        <div class="csub">% of all members</div>
+        <div class="cwrap" style="height:170px;"><canvas id="cMarital"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="two-col">
+    <div class="rev">
+      <span class="eyebrow p">Disability</span>
+      <h2 class="hed">3% live with disability — but <em class="p">42% have no PWD ID</em></h2>
+      <div class="body-copy">
+        <p>An estimated 3 percent of household members — approximately 2.7 million Filipinos — have a disability. Prevalence is higher among men (3 percent) than women (2 percent), and slightly higher in rural areas (3 percent) than in urban (2 percent).</p>
+        <p>What the numbers also reveal is a significant gap in formal recognition. While 58 percent of persons with disabilities hold a PWD ID card, 42 percent do not — meaning that for nearly half of this population, access to disability benefits, PhilHealth discounts, and priority services may be out of reach. The gap is most acute in Mindanao, where fewer than half of PWDs hold an ID, suggesting that geographic and administrative barriers compound the challenge of reaching those who need support most.</p>
+      </div>
+      <div class="sgrid sgrid-2 rev d1">
+        <div class="scell b-c"><div class="scell-n" style="color:var(--blue);">3%</div><div class="scell-l">Individual disability prevalence</div></div>
+        <div class="scell r-c"><div class="scell-n" style="color:var(--red);">42%</div><div class="scell-l">PWDs without ID card</div></div>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">PWD ID coverage by region</div>
+        <div class="csub">% of PWDs with ID card</div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>NCR</span><span style="color:var(--green);">65.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="65.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Visayas</span><span>61.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="61.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Luzon (excl. NCR)</span><span>59.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="59.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span style="color:var(--red);">Mindanao</span><span style="color:var(--red);">47.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="47.8"></div></div></div>
+        </div>
+      </div>
+      <div class="hbox b" style="margin-top:12px;">
+        <div class="hbox-lbl">Disability by type (top)</div>
+        <p>Intellectual/Mental/Psychosocial leads at 26 percent, followed by Visual disability (12 percent), Speech and Language (10 percent), and Perforated eardrum (7 percent).</p>
+      </div>
+    </div>
+  </div>
+  <details class="repl"><summary>Replication do-file · M01 Roster</summary>
+  <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §1  ROSTER (M01) — Demographics, age, sex, disability ──────────
+* Weight: indw (individual level)
+
+use "$dta/${dta_file}_${date}_M01_roster.dta", clear
+merge m:1 hhid fmid using "$ado/final_weights.dta", ///
+    keepusing(indw hhw popw region urban hhsize) nogen keep(match)
+
+gen_macroreg
+gen_settlement
+
+* Age groups (corrected per colleague: &lt;15, 15-17, 18-45, 46-59, 60+)
+cap drop age_grp_new
+gen age_grp_new = .
+replace age_grp_new = 1 if age &lt; 15
+replace age_grp_new = 2 if age >= 15 &amp; age &lt;= 17
+replace age_grp_new = 3 if age >= 18 &amp; age &lt;= 45
+replace age_grp_new = 4 if age >= 46 &amp; age &lt;= 59
+replace age_grp_new = 5 if age >= 60 &amp; age &lt; .
+la def AGE_GRP_NEW 1 "Below 15" 2 "15-17" 3 "18-45" 4 "46-59" 5 "60+", replace
+la val age_grp_new AGE_GRP_NEW
+
+* Under-20 share
+gen under20 = (age &lt; 20) if age &lt; .
+su under20 [aw=indw]
+di as res "Under 20: " %5.1f r(mean)*100 "%"
+drop under20
+
+* Median age — total and by sex
+_pctile age [pw=indw], p(50)
+di as res "  Median age (total): " r(r1)
+forvalues s = 1/2 {
+    _pctile age [pw=indw] if gender == `s', p(50)
+    local lbl: label (gender) `s'
+    di as res "  Median age (`lbl'): " r(r1)
+}
+
+* Gender split
+tab gender [aw=indw]
+
+* Disability prevalence
+tab member_disability [aw=indw]
+tab member_disability gender [aw=indw], col nofreq
+
+* PWD ID coverage (among those with disability)
+tab inci_pwdid [aw=indw] if member_disability == 1
+tab inci_pwdid macroreg [aw=indw] if member_disability == 1, col nofreq
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement programs)</div></div>
+  </details>
+</div>
+
+<!-- ═══════════════════════════════ CH 2: EDUCATION ═══════════════════════════════ -->
+<div class="chap" id="ch-edu"><span class="chap-n">02</span><span class="chap-r"></span><span class="chap-l">M02 Education — Learning</span></div>
+
+<div class="sec">
+  <div class="full-w rev">
+    <span class="eyebrow g">School attendance</span>
+    <h2 class="hed" style="max-width:800px;">78% of 5–24 year-olds are in school — but only <em class="r">65% continue after K-12 graduation</em></h2>
+  </div>
+  <div class="two-col" style="margin-top:32px;">
+    <div class="rev">
+      <div class="body-copy">
+        <p>The K-12 system keeps students in school through senior high. Attendance is near-universal at elementary level (98 percent for ages 6–11) and stays high through junior high (96 percent for 12–15). Senior high school (ages 16–17) holds at 87 percent. The sharp transition comes at 18–19 — the post-K-12 years — where only 65 percent continue to tertiary education. By 20–24, just 30 percent remain enrolled.</p>
+        <p>Girls outperform boys at every stage beyond elementary. The gender gap widens with age: at 16–17 girls attend at 93 percent versus boys at 82 percent, and at 18–19 the gap is 71 percent versus 60 percent. Overall, girls attend at 80 percent compared to boys at 76 percent — a consistent 4 percentage-point advantage.</p>
+        <p>Ninety percent of students attend public schools. Private school attendance is highest in NCR at 15 percent, and lowest in Visayas at 9 percent — reflecting urban wealth concentration.</p>
+      </div>
+      <div class="callout g rev d1">
+        <div class="callout-lbl">Why do young people leave school?</div>
+        <p>Family circumstances are the top reason (26 percent), followed by household chores (16 percent), financial constraints (15 percent), and distance to school (10 percent). The cost of education is a recurring barrier across multiple categories.</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Attendance rate by age band and gender</div>
+        <div class="csub">% attending school · K-12 ages mapped</div>
+        <div class="cwrap" style="height:220px;"><canvas id="cAttend"></canvas></div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Reasons for not attending (ages 5–24)</div>
+        <div class="csub">% of reported reasons · multi-select</div>
+        <div style="margin-top:6px;">
+          <div class="bs"><div class="bs-lbl"><span>Family circumstances</span><span>25.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="51.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Household chores</span><span>16.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="32.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Financial constraints</span><span>14.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="29.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Distance to school</span><span>9.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="19.2"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec cream-bg">
+  <div class="sec two-col" style="padding:70px 40px;max-width:1100px;margin:0 auto;">
+    <div class="rev">
+      <span class="eyebrow b">Educational attainment</span>
+      <h2 class="hed">Half of adults stopped at <em class="b">secondary level</em>. Women outpace men at college.</h2>
+      <div class="body-copy">
+        <p>Among adults 18 and older, 51 percent have secondary as their highest attainment. Only 13 percent have completed college — though women (16 percent) outperform men (11 percent) at that level. Less than 1 percent hold postgraduate degrees.</p>
+        <p>Intergenerational mobility is limited: 56 percent of fathers and 53 percent of mothers attained only primary education. The path from primary-educated parents to college-educated children is the central educational mobility challenge.</p>
+      </div>
+      <div class="pull b rev d1">
+        <p>Annual education spend per student: <strong>₱16,973</strong>. Urban families spend more (₱18,004) than rural (₱15,636). School fees show the biggest urban-rural gap: ₱4,062 vs ₱2,048 — reflecting higher private school enrolment in cities.</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Highest attainment by sex (adults 18+)</div>
+        <div class="csub">% · grouped education levels</div>
+        <div class="cwrap" style="height:230px;"><canvas id="cAttain"></canvas></div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Annual education expenditure by category</div>
+        <div class="csub">Mean PHP among spenders</div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Meals &amp; lodging</span><span>₱10,310</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="100"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>School fees &amp; tuition</span><span>₱7,891</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="76.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Transportation</span><span>₱6,040</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="58.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Textbooks &amp; materials</span><span>₱1,857</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="18"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Uniforms &amp; footwear</span><span>₱1,516</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="14.7"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <details class="repl" style="max-width:1100px;margin:0 auto;padding:0 40px 24px;"><summary>Replication do-file · M02 Education</summary>
+  <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §2  EDUCATION (M02) — Attendance, attainment, expenditure ──────
+* Weight: indw (individual level)
+
+use "$dta/${dta_file}_${date}_M02_edu.dta", clear
+merge m:1 hhid fmid using "$ado/final_weights.dta", ///
+    keepusing(indw hhw popw region urban hhsize) nogen keep(match)
+
+gen_macroreg
+gen_settlement
+
+* School attendance — ages 5-24
+tab ed1 [aw=indw] if age >= 5 &amp; age &lt;= 24
+
+* School type (public vs. private) — among attending
+tab ed2 [aw=indw] if ed1 == 1
+tab ed2 macroreg [aw=indw] if ed1 == 1, col nofreq
+tab ed2 settlement [aw=indw] if ed1 == 1, col nofreq
+
+* Education level — among attending
+tab ed3 [aw=indw] if ed1 == 1
+
+* Total education expenditure — among students
+cap drop ed_total_exp
+egen ed_total_exp = rowtotal(ed5a ed5b ed5c ed5d ed5e ed5f ed5g ed5h ed5i) ///
+    if ed1 == 1
+su ed_total_exp [aw=indw] if ed_total_exp > 0 &amp; ed_total_exp &lt; .
+di as res "  Mean total: " %10.0f r(mean)
+
+* Education expenditure by settlement (urban vs rural)
+table settlement [aw=indw] if ed_total_exp > 0, ///
+    stat(mean ed_total_exp) nformat(%10.0f)
+
+* Education expenditure by macro-region
+table macroreg [aw=indw] if ed_total_exp > 0, ///
+    stat(mean ed_total_exp) nformat(%10.0f)
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement programs)</div></div>
+  </details>
+</div>
+
+<!-- ═══════════════════════════════ CH 3: EMPLOYMENT ═══════════════════════════════ -->
+<div class="chap" id="ch-work"><span class="chap-n">03</span><span class="chap-r"></span><span class="chap-l">M03 Employment — Working</span></div>
+
+<div class="sec dark-bg">
+  <div class="sec-inner">
+    <div class="two-col">
+      <div class="rev">
+        <span class="eyebrow r">Labour market</span>
+        <h2 class="hed light">45% work. But <em>jobs without protection</em> dominate.</h2>
+        <div class="body-copy light">
+          <p>The employment rate stands at 45 percent for adults 15 and older — but that headline figure masks a sharp gender divide. Men participate at 59 percent, women at 30 percent, a 29 percentage-point gap that reflects not just cultural norms but the structural weight of unpaid care work and limited access to formal employment for women.</p>
+          <p>Employment peaks at ages 45–54, where 64 percent are working. Youth employment (ages 15–24) appears low at 19 percent, though this figure requires context: many young people in this age band are still in school, making a direct comparison with older cohorts misleading. Regionally, Luzon leads at 48 percent while the Visayas lags at 41 percent.</p>
+        </div>
+        <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
+          <div class="scell dark-c"><div class="scell-n" style="color:#009FDA;">59%</div><div class="scell-l" style="color:#4a6278;">Male employment rate</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#E05206;">30%</div><div class="scell-l" style="color:#4a6278;">Female employment rate</div></div>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="cbox dark">
+          <div class="ctitle light">Employment rate by age group</div>
+          <div class="csub light">% employed · adults 15+</div>
+          <div class="cwrap" style="height:210px;"><canvas id="cEmpAge"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vis-sep" style="color:rgba(245,240,232,.12);">· · ·</div>
+
+    <div class="two-col">
+      <div class="rev d2">
+        <div class="cbox dark">
+          <div class="ctitle light">Class of worker</div>
+          <div class="csub light">% among employed</div>
+          <div class="cwrap" style="height:215px;"><canvas id="cClass"></canvas></div>
+        </div>
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">Industry sector (top 8)</div>
+          <div class="csub light">% of employed by sector</div>
+          <div class="cwrap" style="height:215px;"><canvas id="cIndustry"></canvas></div>
+        </div>
+      </div>
+      <div class="rev">
+        <span class="eyebrow r">Informality</span>
+        <h2 class="hed light">About three in four workers have <em>no contract.</em></h2>
+        <div class="body-copy light">
+          <p>Informality is the norm in the Philippine labor market. Seventy-two percent of employed workers have no formal contract. Only 18 percent hold a written contract, concentrated largely in government and formal private sector roles.</p>
+          <p>The absence of contracts translates directly into an absence of protection. Employers contribute to pension or social security for just 27 percent of workers — ranging from 46 percent in NCR to 21 percent in Visayas, a gap that maps closely onto the geographic concentration of formal employment. Among workers reporting on benefits, PhilHealth (32 percent) and SSS/GSIS (30 percent) are the most commonly reported where coverage exists while 62 percent receive none.</p>
+          <p>Working hours tell a related story. The average working week is 32 hours — pulled down considerably by the 41 percent of workers putting in fewer than 20 hours. Gig work accounts for 6 percent of employment, modest but worth tracking as platform-based work expands.</p>
+        </div>
+        <div class="callout rev d1" style="margin-top:20px;">
+          <div class="callout-lbl">Job loss &amp; search</div>
+          <p><strong>10 percent</strong> of households had a member lose a job in the past 30 days. <strong>18 percent</strong> of working-age adults are actively looking for a new job, and another 3 percent want more work.</p>
+        </div>
+      </div>
+    </div>
+    <details class="repl"><summary>Replication do-file · M03 Employment (detail)</summary>
+    <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §3  EMPLOYMENT (M03) — Sector, class of worker, benefits ─────
+* (Continued from main employment block above)
+* NOTE: employed = (a1==1) [narrow definition, storyline match]
+
+* Industry sector — among employed
+tab a5 [aw=indw] if employed == 1
+
+* Class of worker
+tab a6 [aw=indw] if employed == 1
+
+* Employer pension/SS contributions
+tab a9 [aw=indw] if employed == 1
+tab a9 macroreg [aw=indw] if employed == 1, col nofreq
+
+* Benefits (multi-select)
+forvalues b = 1/6 {
+    cap tab a19_ben`b' [aw=indw] if employed == 1
+}
+
+* Travel time &amp; transport cost
+su a22 [aw=indw] if employed == 1 &amp; a22 > 0 &amp; a22 &lt; .
+su a23 [aw=indw] if employed == 1 &amp; a23 > 0 &amp; a23 &lt; .
+</pre><div class="repl-note">Requires §0 setup + §3 Employment setup (employed variable)</div></div>
+    </details>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ CH 4: MONEY ═══════════════════════════════ -->
+<div class="chap" id="ch-money"><span class="chap-n">04</span><span class="chap-r"></span><span class="chap-l">M04–M05 Income &amp; Finance — Money</span></div>
+
+<div class="sec">
+  <div class="two-col">
+    <div class="rev">
+      <span class="eyebrow gold">Income sources</span>
+      <h2 class="hed">66% receive regular income — <em class="gold">OFW remittances</em> reach 9 percent of households</h2>
+      <div class="body-copy">
+        <p>Sixty-six percent of individuals received regular income in the past 6 months, and 86 percent received at least some seasonal or occasional income. The sources of income are diverse: wages and salaries dominate, but non-wage income streams play a critical role for many households.</p>
+        <p>Nine percent of households receive OFW remittances from family members working abroad. Twenty-three percent received domestic support from relatives or relief organizations. Just 7 percent receive pension income — reflecting the limited reach of formal retirement systems in a country where most work is informal.</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Income sources</div>
+        <div class="csub">% of individuals / households receiving</div>
+        <div class="cwrap" style="height:200px;"><canvas id="cIncMacro"></canvas></div>
+      </div>
+      <div class="sgrid sgrid-3 rev d1" style="margin-top:12px;">
+        <div class="scell"><div class="scell-n">9%</div><div class="scell-l">HHs receive OFW</div></div>
+        <div class="scell"><div class="scell-n">23%</div><div class="scell-l">Domestic support</div></div>
+        <div class="scell"><div class="scell-n">7%</div><div class="scell-l">Pension income</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec cream-bg">
+  <div class="sec two-col" style="padding:70px 40px;max-width:1100px;margin:0 auto;">
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Financial access indicators</div>
+        <div class="csub">% of households</div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Mobile money (GCash/Maya)</span><span>18.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="18.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Took a loan (past 6 months)</span><span style="color:var(--red);">18.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="18.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Credit / debit card</span><span>10.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="10.7"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Managed to save money</span><span>12.87%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="12.87"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Savings group / paluwagan</span><span>8.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="8.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Formal bank account</span><span>4.95%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="4.95"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span style="color:var(--red);">Could cover ₱300k emergency</span><span style="color:var(--red);">2.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="2.1"></div></div></div>
+        </div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Mobile money adoption by region</div>
+        <div class="csub">% of HHs with mobile money account</div>
+        <div style="margin-top:6px;">
+          <div class="bs"><div class="bs-lbl"><span>NCR</span><span style="color:var(--blue);">25.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="25.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Mindanao</span><span>18.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="18.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Luzon (excl. NCR)</span><span>17.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="17.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span style="color:var(--red);">Visayas</span><span style="color:var(--red);">12.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="12.7"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="rev">
+      <span class="eyebrow b">Financial inclusion</span>
+      <h2 class="hed">Mobile money arrived. <em class="b">Banks haven't.</em></h2>
+      <div class="body-copy">
+        <p>Only 5 percent of households have a formal bank account — placing the Philippines far below regional peers. The gap is widest in Visayas, where just 1 percent of households are banked.</p>
+        <p>Mobile money (18 percent) has outpaced banking significantly, but even this is uneven: rural households lag urban by 6 percentage points. NCR reaches 26 percent mobile money penetration — rural Visayas is the other end of the spectrum.</p>
+        <p>Paradoxically, rural households save at slightly higher rates (15 percent) than urban (12 percent) — likely through informal mechanisms like paluwagan savings groups (8 percent nationally). The financial system has not yet caught up with how ordinary Filipinos actually manage money.</p>
+      </div>
+      <div class="pull b rev d1">
+        <p>Borrowing (18 percent) outpaces saving (13 percent) by 5 percentage points. Many households are <strong>net borrowers</strong> — managing cash flow through debt rather than savings buffers.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sec two-col" style="padding:0 40px 40px;max-width:1100px;margin:0 auto;">
+    <div class="rev">
+      <span class="eyebrow g">Government support</span>
+      <h2 class="hed">23% receive <em class="g">domestic support</em> — CCT reaches 1 in 4</h2>
+      <div class="body-copy">
+        <p>Twenty-three percent of households received gift, support, assistance, or relief from domestic sources in the past 6 months. Government institutions are the single largest provider (34 percent of recipients), followed by the CCT/Pantawid/4Ps programme (25 percent).</p>
+        <p>NCR sees the highest government support rate (55 percent of recipients), while reliance on AKAP (22 percent) and AICS (18 percent) is higher in Mindanao. Pension and social security programmes reach 7 percent of all households.</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Government programme beneficiaries</div>
+        <div class="csub">% of HHs receiving domestic support · by programme</div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Government institutions</span><span style="color:var(--green);">33.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="33.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>CCT / Pantawid / 4Ps</span><span style="color:var(--blue);">25.3%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="25.3"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Other social programmes</span><span>15.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="15.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>AKAP</span><span>14.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="14.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Family members</span><span>12.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="12.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>AICS</span><span>7.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="7.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Rice/agri support</span><span>3.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="3.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Scholarships/education</span><span>2.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="2.7"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <details class="repl" style="max-width:1100px;margin:0 auto;padding:0 40px 24px;"><summary>Replication do-file · M03 Employment + M04 Income + M05 Finance</summary>
+  <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ══════════════════════════════════════════════════════════════════════
+* §3  EMPLOYMENT (M03) — Base = 15+ working-age population
+* ══════════════════════════════════════════════════════════════════════
+use "$dta/${dta_file}_${date}_M03_emp.dta", clear
+merge m:1 hhid fmid using "$ado/final_weights.dta", ///
+    keepusing(indw hhw popw region urban hhsize age gender) nogen keep(match)
+gen_macroreg
+gen_settlement
+
+* NARROW definition (a1==1 only) — matches storyline charts &amp; text
+* Broad (a1==1|a2==1) gives ~52%; Narrow gives ~45% (storyline match)
+cap drop employed
+gen employed = (a1 == 1) if age >= 15 &amp; age &lt; .
+
+* Employment rate — 15+ (narrow: ~44.7% → storyline "45 percent")
+su employed [aw=indw] if age >= 15
+di as res "  Employment rate (total): " %5.1f r(mean)*100 "%"
+
+* By sex (Male ~59%, Female ~30%)
+forvalues s = 1/2 {
+    su employed [aw=indw] if age >= 15 &amp; gender == `s'
+    local lbl: label (gender) `s'
+    di as res "  `lbl': " %5.1f r(mean)*100 "%"
+}
+
+* By age group
+cap drop emp_age_grp
+gen emp_age_grp = .
+replace emp_age_grp = 1 if age >= 15 &amp; age &lt;= 24
+replace emp_age_grp = 2 if age >= 25 &amp; age &lt;= 34
+replace emp_age_grp = 3 if age >= 35 &amp; age &lt;= 44
+replace emp_age_grp = 4 if age >= 45 &amp; age &lt;= 54
+replace emp_age_grp = 5 if age >= 55 &amp; age &lt;= 64
+replace emp_age_grp = 6 if age >= 65 &amp; age &lt; .
+table emp_age_grp [aw=indw] if age >= 15, stat(mean employed) nformat(%5.3f)
+
+* Contract type — among employed (72% no contract, 18% written)
+tab a16 [aw=indw] if employed == 1
+
+* Hours worked per week (~32 hours mean)
+su a11 [aw=indw] if employed == 1 &amp; a11 > 0 &amp; a11 &lt;= 168
+di as res "  Mean hours: " %5.1f r(mean)
+
+* Job loss in past 30 days
+tab a12 [aw=indw] if age >= 15
+
+* ══════════════════════════════════════════════════════════════════════
+* §4  INCOME (M04) — Income sources (storyline focuses on sources only)
+* ══════════════════════════════════════════════════════════════════════
+use "$dta/${dta_file}_${date}_M04_inc1.dta", clear
+merge m:1 hhid fmid using "$ado/final_weights.dta", ///
+    keepusing(indw hhw popw region urban hhsize) nogen keep(match)
+gen_macroreg
+gen_settlement
+
+* Regular income (storyline: "66 percent receive regular income")
+tab ia1 [aw=indw]
+
+* Mean 6-month cash earnings (reference only, not in storyline text)
+su ia3ab [aw=indw] if ia3ab > 0 &amp; ia3ab &lt; .
+di as res "  Mean: PHP " %10.0f r(mean)
+
+* OFW remittances (HH level, storyline: "9 percent of HHs")
+use "$dta/${dta_file}_${date}_M04_inc2.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+gen has_ofw = (ic1_1 &lt; .)   /* has OFW member = ic1_1 not missing → 8.72% → 9% */
+tab has_ofw [aw=hhw]
+
+* Domestic support (storyline: "23 percent")
+tab ic3 [aw=hhw]
+
+* Pension (storyline: "7 percent")
+tab ic8a [aw=hhw]
+
+* 4Ps/CCT
+tab id1 [aw=hhw]
+
+* ══════════════════════════════════════════════════════════════════════
+* §5  FINANCE (M05) — Banking, mobile money, saving, loans
+* ══════════════════════════════════════════════════════════════════════
+use "$dta/${dta_file}_${date}_M05_fin.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+tab f1 [aw=hhw]          /* Formal bank account */
+tab f2 [aw=hhw]          /* Mobile money (GCash/Maya) */
+tab f3 [aw=hhw]          /* Managed to save */
+tab f6 [aw=hhw]          /* Can cover PHP 300k emergency */
+
+* Mobile money by macro-region
+tab f2 macroreg [aw=hhw], col nofreq
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+  </details>
+</div>
+
+<!-- ═══════════════════════════════ CH 5: MIGRATION ═══════════════════════════════ -->
+<div class="chap" id="ch-mig"><span class="chap-n">05</span><span class="chap-r"></span><span class="chap-l">M06 Migration — On the move</span></div>
+
+<div class="sec">
+  <div class="two-col">
+    <div class="rev">
+      <span class="eyebrow o">Migration</span>
+      <h2 class="hed">2% of households have someone <em class="o">thinking about leaving</em> — but among them, intent is strong</h2>
+      <div class="body-copy">
+        <p>Migration intent is narrow but concentrated. Only 2 percent of households report at least one member aged 15 or older considering migration within the next year, translating to about 1 percent of the adult population. The overwhelmingly dominant reason for past moves: employment and job relocation.</p>
+        <p>Within those households, 36 percent of individual members are the ones actively considering the move. NCR shows the highest household-level intent at 3 percent, while Visayas has the lowest. Women (1 percent) are slightly more likely to be considering migration than men (0.8 percent).</p>
+        <p>Among those with a stated destination, two-thirds intend to go abroad and one-third to stay within the Philippines. The United States is the top overseas destination (18 percent of abroad-bound), followed by Australia (11 percent), the United Kingdom (8 percent), South Korea (8 percent), Japan (8 percent), Saudi Arabia (5 percent), and Canada (4 percent). Visayas shows the strongest abroad preference (81 percent abroad) while NCR leans more domestic (54 percent).</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">HHs with migration intent by macro-region</div>
+        <div class="csub">% of households with at least one member 15+ considering (m6==1)</div>
+        <div class="cwrap" style="height:200px;"><canvas id="cMigration"></canvas></div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Migration destination: domestic vs. abroad</div>
+        <div class="csub">% of those with stated destination · by region and top countries</div>
+        <div id="sankeyMig" class="sankey-wrap" style="height:360px;"></div>
+      </div>
+      <div class="sgrid sgrid-2 rev d1" style="margin-top:12px;">
+        <div class="scell o-c"><div class="scell-n" style="color:var(--orange);">2.9%</div><div class="scell-l">Mindanao — highest HH intent</div></div>
+        <div class="scell"><div class="scell-n">1.1%</div><div class="scell-l">Visayas — lowest HH intent</div></div>
+      </div>
+      <div class="hbox o rev d2">
+        <div class="hbox-lbl">Gender gap</div>
+        <p>Women (1 percent of 15+) slightly more likely to consider migration than men (0.8 percent). Employment is the dominant stated reason for past moves — economic push prevails.</p>
+      </div>
+    </div>
+  </div>
+  <details class="repl"><summary>Replication do-file · M06 Migration</summary>
+  <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §6  MIGRATION (M06) — Weight: indw (13+ y/o) ──────────────────
+use "$dta/${dta_file}_${date}_M06_mig.dta", clear
+merge m:1 hhid fmid using "$ado/final_weights.dta", ///
+    keepusing(indw hhw popw region urban hhsize) nogen keep(match)
+gen_macroreg
+gen_settlement
+
+* Moved in past (m1)
+tab m1 [aw=indw] if age >= 13
+
+* HH considering migration (m6) — HH level → Storyline: 2%
+* m6: 1=Yes (any member 15+ considering), 2=No
+preserve
+    bys hhid: keep if _n == 1
+    tab m6 [aw=hhw]
+    tab m6 macroreg [aw=hhw], col nofreq
+restore
+
+* Individual migration intent (m7) — asked if m6==1
+* m7==1 among all 15+ = ~1% (population share)
+* m7==1 among those asked = 36% (conditional, within m6==1 HHs)
+gen considering15 = (m7 == 1) if age >= 15
+replace considering15 = 0 if considering15 == . &amp; age >= 15
+su considering15 [aw=indw]
+tab m7 [aw=indw]
+tab m7 macroreg [aw=indw], col nofreq
+tab m7 gender [aw=indw], col nofreq
+
+* Displaced in past 12 months
+tab m9 [aw=indw] if age >= 13
+tab m9 macroreg [aw=indw] if age >= 13, col nofreq
+
+* Was/Is OFW
+tab m2 [aw=indw] if age >= 13
+
+* Destination preferences (among considering)
+tab m8 [aw=indw] if m7 == 1
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement programs)</div></div>
+  </details>
+</div>
+
+<!-- ═══════════════════════════════ CH 6: HEALTH ═══════════════════════════════ -->
+<div class="chap" id="ch-health"><span class="chap-n">06</span><span class="chap-r"></span><span class="chap-l">M07 Health — Getting sick</span></div>
+
+<div class="sec dark-bg">
+  <div class="sec-inner">
+    <div class="full-w rev">
+      <span class="eyebrow r">Health system</span>
+      <h2 class="hed light" style="max-width:780px;">54% have no PhilHealth. When hospitalization hits, a ₱52,160 bill arrives — <em>more than half paid out-of-pocket.</em></h2>
+    </div>
+    <div class="two-col" style="margin-top:32px;">
+      <div class="rev">
+        <div class="body-copy light">
+          <p>The health service access gap has a financial explanation. Fifty-four percent of household members have no PhilHealth coverage — and of the 46 percent who do, most are non-paying members or dependents. Only 17 percent are contributing members.</p>
+          <p>The regional pattern echoes what we saw on access: the Visayas trails at 36 percent coverage against NCR's 53 percent. Notably, rural and urban rates are nearly identical at 46 percent each.</p>
+          <p>When hospitalization does happen, the cost lands hard. Nine percent reported they were hospitalized in the past three months with an average bill of ₱52,160 — more than half paid directly out-of-pocket.</p>
+        </div>
+        <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
+          <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">54%</div><div class="scell-l" style="color:#4a6278;">No PhilHealth at all</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">46%</div><div class="scell-l" style="color:#4a6278;">With coverage</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;font-size:1.3rem;">₱52,160</div><div class="scell-l" style="color:#4a6278;">Mean hospital bill</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;font-size:1.2rem;">57%</div><div class="scell-l" style="color:#4a6278;">Out-of-pocket share</div></div>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="cbox dark">
+          <div class="ctitle light">PhilHealth coverage type</div>
+          <div class="csub light">% of members</div>
+          <div class="cwrap" style="height:185px;display:flex;align-items:center;"><canvas id="cPhilType"></canvas></div>
+        </div>
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">PhilHealth coverage by macro-region</div>
+          <div class="csub light">% covered · all categories</div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#00A651;">52.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#1a6b9a;" data-w="52.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Mindanao</span><span style="color:#009FDA;">50.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="50.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Luzon (excl. NCR)</span><span style="color:#40B4E5;">45.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="45.0"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span style="color:#E05206;">Visayas</span><span style="color:#E05206;">35.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:var(--red);" data-w="35.6"></div></div></div>
+          </div>
+        </div>
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">PhilHealth coverage by age & gender</div>
+          <div class="csub light">% covered · grouped by age band</div>
+          <div class="cwrap" style="height:220px;"><canvas id="cPhilAgeGender"></canvas></div>
+        </div>
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">Healthcare facility used (past 30 days)</div>
+          <div class="csub light">% of those who sought care</div>
+          <div class="cwrap" style="height:175px;"><canvas id="cFacility"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class="vis-sep light" style="color:rgba(245,240,232,.12);">· · ·</div>
+
+    <div class="two-col">
+      <div class="rev d2">
+        <div class="cbox dark">
+          <div class="ctitle light">Reasons for not accessing health care</div>
+          <div class="csub light">% of those who could not get care</div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Cannot afford</span><span style="color:#CE1126;">42.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="42.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Not yet needed</span><span>25.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="25.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>No medical personnel</span><span>4.4%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="4.4"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Not able to avail</span><span>2.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="2.7"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Afraid</span><span>2.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="2.0"></div></div></div>
+          </div>
+        </div>
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">Under-5 nutritional status</div>
+          <div class="csub light">% of children under 5 · z-score measures</div>
+          <div style="margin-top:8px;">
+            <p style="font-family:var(--mono);font-size:10px;color:#7A8FA0;margin-bottom:8px;">Under-5 = age &lt; 5 years (0–59 months, UNICEF definition) · N = 739 (393 boys, 346 girls)</p>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Stunted (low height-for-age)</span><span style="color:#CE1126;">26.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="26.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Underweight (low weight-for-age)</span><span style="color:#E05206;">18.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#E05206;" data-w="18.2"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Wasted (low weight-for-height)</span><span style="color:#D4A017;">18.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="18.0"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Severely stunted</span><span>11.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#772583;" data-w="11.1"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="rev">
+        <span class="eyebrow r">Health access &amp; child nutrition</span>
+        <h2 class="hed light">1 in 3 needed health care — but only <em>38% got it.</em></h2>
+        <div class="body-copy light">
+          <p>Thirty-three percent of household members needed health services in the past 30 days. Of those, only 38 percent were able to access care — a 62 percent unmet need rate. NCR fares best (48 percent access) while Visayas struggles most (26 percent).</p>
+          <p>The top reason for not accessing care is cost: 43 percent cite inability to afford it. Visayas is hardest hit, where 64 percent of those denied care blame cost — more than double the NCR rate (28 percent).</p>
+          <p>Among children under 5, malnutrition remains widespread: 27 percent are stunted (low height-for-age), 18 percent are underweight, and 18 percent are wasted. Boys show slightly higher stunting (30 percent) than girls (23 percent). Visayas has the highest stunting rate (32 percent) and severe stunting (18 percent).</p>
+        </div>
+        <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
+          <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">62%</div><div class="scell-l" style="color:#4a6278;">Unmet health care need</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#E05206;">26.6%</div><div class="scell-l" style="color:#4a6278;">Under-5 stunting rate</div></div>
+        </div>
+      </div>
+    </div>
+    <details class="repl"><summary>Replication do-file · M07 Health</summary>
+    <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §7  HEALTH (M07) — PhilHealth, OOP, hospitalisation ──────────
+* Weight: indw · Corrected: H2A among codes 1-3 in H2 only
+
+use "$dta/${dta_file}_${date}_M07_med.dta", clear
+merge m:1 hhid fmid using "$ado/final_weights.dta", ///
+    keepusing(indw hhw popw region urban hhsize) nogen keep(match)
+gen_macroreg
+gen_settlement
+
+* Need for health care (past 30 days)
+tab h2 [aw=indw]
+
+* Able to get care — CORRECTED base (H2 codes 1-3 only)
+tab h2a [aw=indw] if inlist(h2, 1, 2, 3)
+tab h2a macroreg [aw=indw] if inlist(h2, 1, 2, 3), col nofreq
+
+* Reason unable to get care
+tab h3 [aw=indw] if h2a == 2
+
+* Type of facility
+tab h4 [aw=indw] if inlist(h2, 1, 2, 3)
+
+* Out-of-pocket
+tab h8 [aw=indw] if inlist(h2, 1, 2, 3) &amp; h2a == 1
+su h8a [aw=indw] if h8 == 1 &amp; h8a > 0 &amp; h8a &lt; .
+
+* Hospitalisation (past 12 months)
+tab h12 [aw=indw]
+* Hospital bill — exclude free stays, use popw with hh_tag for HH-level stat
+* su h14 [aw=popw] if hh_tag == 1 &amp; h12 == 1 &amp; h14 > 0 &amp; h14 &lt; .
+* Simplified (individual-level approximation):
+su h14 [aw=indw] if h12 == 1 &amp; h14 > 0 &amp; h14 &lt; .
+di as res "  Mean hospital bill: PHP " %10.0f r(mean)
+* Note: Storyline uses popw + hh_tag for ₱52,160; indw gives similar
+
+* PhilHealth
+tab h17 [aw=indw]
+tab h17 macroreg [aw=indw], col nofreq
+tab h17 settlement [aw=indw], col nofreq
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement programs)</div></div>
+    </details>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ CH 7: FOOD ═══════════════════════════════ -->
+<div class="chap" id="ch-food"><span class="chap-n">07</span><span class="chap-r"></span><span class="chap-l">M08 Food &amp; Nutrition — Eating</span></div>
+
+<div class="sec">
+  <div class="two-col">
+    <div class="rev">
+      <span class="eyebrow g">Food access</span>
+      <h2 class="hed">The wet market rules. <em class="g">99.6% pay in cash.</em></h2>
+      <div class="body-copy">
+        <p>The Philippine food system is profoundly local and informal. Nearly three in four households buy most of their food from wet markets, with sari-sari stores a distant second at 15 percent. Modern retail — supermarkets and large chains combined — accounts for just 7 percent.</p>
+        <p>The transactions that happen in these markets leave almost no trace. Eighty-four percent of shoppers receive no receipt, and nearly 100 percent pay in cash. Digital payments — GCash, Maya, QR codes — account for less than 1 percent of food purchases. This is an economy that runs on physical money and personal trust, not platforms.</p>
+        <p>Food shopping is also a frequent, routine part of daily life. Forty-three percent shop more than once a week, and another 40 percent go once a week. The wet market is not an errand — it is a rhythm.</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Primary food source</div>
+        <div class="csub">% of households</div>
+        <div class="cwrap" style="height:195px;"><canvas id="cFoodSrc"></canvas></div>
+      </div>
+      <div class="sgrid sgrid-3 rev d1" style="margin-top:12px;">
+        <div class="scell g-c"><div class="scell-n" style="color:var(--green);">74%</div><div class="scell-l">Shop at wet market</div></div>
+        <div class="scell"><div class="scell-n">99.6%</div><div class="scell-l">Pay in cash</div></div>
+        <div class="scell"><div class="scell-n">17.6</div><div class="scell-l">Min travel to food</div></div>
+      </div>
+      <div class="cbox rev d2" style="margin-top:14px;">
+        <div class="ctitle">Wet market usage by macro-region</div>
+        <div class="csub">% of HHs buying food mainly from wet markets</div>
+        <div class="cwrap" style="height:170px;"><canvas id="cWetMkt"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec cream-bg">
+  <div class="sec two-col" style="padding:70px 40px;max-width:1100px;margin:0 auto;">
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Sugary beverage consumption by age group</div>
+        <div class="csub">% consuming SSBs daily</div>
+        <div class="filter-group" id="ssbFilter">
+          <button class="filter-btn active" onclick="updateSSB('all')">All</button>
+          <button class="filter-btn" onclick="updateSSB('male')">Male</button>
+          <button class="filter-btn" onclick="updateSSB('female')">Female</button>
+        </div>
+        <div class="cwrap" style="height:200px;"><canvas id="cSSB"></canvas></div>
+      </div>
+      <div class="hbox" style="margin-top:14px;">
+        <div class="hbox-lbl">The SSB paradox</div>
+        <p>Consumption is lowest among young children (under 10: 79 percent) and the elderly (65+: 83 percent), but peaks sharply in working-age adults (25–44: 94 percent). This is not a childhood habit — it is a working-age norm.</p>
+      </div>
+    </div>
+    <div class="rev">
+      <span class="eyebrow r">Sugary beverages</span>
+      <h2 class="hed">Almost <em class="r">9 in 10</em> drink sugar-sweetened beverages — 6.9 servings a day</h2>
+      <div class="body-copy">
+        <p>Eighty-nine percent of individuals consume sweetened sugary beverages. The average consumer drinks 6.9 single-serve portions daily. This pattern is essentially uniform across urban (89 percent) and rural (90 percent) settings — it is a national dietary norm, not a segmented one.</p>
+        <p>At the household level, 90 percent of households have at least one SSB consumer. This means the category of "SSB-free household" is a statistical minority (10 percent).</p>
+        <p>The implications for non-communicable disease burden — diabetes, hypertension, dental caries, obesity — are significant. The Philippines already faces a rising NCD burden, and the near-universal SSB consumption is a major dietary risk factor.</p>
+      </div>
+      <div class="bnum r rev d1">89.4<span style="font-size:2rem;">%</span></div>
+      <p class="bnum-cap">consume sugary beverages · mean 6.9 servings/day · near-universal across all age groups</p>
+    </div>
+  </div>
+  <details class="repl" style="max-width:1100px;margin:0 auto;padding:0 40px 24px;"><summary>Replication do-file · M08 Food &amp; SSB</summary>
+  <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §8  FOOD &amp; NON-FOOD (M08) ─────────────────────────────────────
+* Weight: hhw (household) for food; indw for SSB
+
+* ── Food (M08_food) — HH level ────────────────────────────────────
+use "$dta/${dta_file}_${date}_M08_food.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+* Where food mostly bought
+tab fo1 [aw=hhw]
+
+* Frequency by food source (corrected per colleague)
+tab fo1 fo2 [aw=hhw], row nofreq
+
+* Receipts, payment, travel time
+tab fo5 [aw=hhw]
+tab fo6 [aw=hhw]
+tab fo4 [aw=hhw]
+
+* Food source by macro-region
+tab fo1 macroreg [aw=hhw], col nofreq
+
+* ── SSB (M08_ssb) — individual level ──────────────────────────────
+use "$dta/${dta_file}_${date}_M08_ssb.dta", clear
+merge m:1 hhid fmid using "$ado/final_weights.dta", ///
+    keepusing(indw hhw popw region urban hhsize) nogen keep(match)
+gen_macroreg
+gen_settlement
+
+* SSB consumption
+tab ssb1 [aw=indw]
+
+* SSB servings per day
+su ssb3 [aw=indw] if ssb1 == 1 &amp; ssb3 > 0 &amp; ssb3 &lt; .  /* ssb3 = servings/day → ~7.15 */
+di as res "  Mean servings/day: " %5.1f r(mean)
+
+* SSB by macro-region
+tab ssb1 macroreg [aw=indw], col nofreq
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+  </details>
+</div>
+
+<!-- ═══════════════════════════════ CH 8: HAZARDS ═══════════════════════════════ -->
+<div class="chap" id="ch-hazard"><span class="chap-n">08</span><span class="chap-r"></span><span class="chap-l">M09 Natural Hazards — When disasters strike</span></div>
+
+<div class="sec dark-bg">
+  <div class="sec-inner">
+    <div class="full-w rev">
+      <span class="eyebrow r">Climate &amp; disasters</span>
+      <h2 class="hed light" style="max-width:800px;">76% hit by typhoon. 50% by extreme heat. 40% by earthquake. Half got no warning.</h2>
+    </div>
+    <div class="two-col" style="margin-top:32px;">
+      <div class="rev">
+        <div class="body-copy light">
+          <p>The Philippines is one of the world's most disaster-prone countries, situated at the convergence of the Pacific typhoon belt, the Ring of Fire, and an increasingly volatile El Niño/La Niña cycle. For Filipino households, multi-hazard exposure is not the exception — it is the baseline condition.</p>
+          <p>Three in four households experienced a typhoon in the past three years. Half were affected by extreme heat events. Four in ten reported earthquake exposure. More than a third experienced flooding. These are not isolated shocks — they are recurring, overlapping hazards that erode household welfare, deplete assets, and set back human capital accumulation, particularly among the poor and vulnerable.</p>
+          <p>Early warning systems represent a critical gap in disaster risk management. Only 55 percent of affected households received advance warning before a hazard event. Yet among those who did, 97 percent reported understanding the message — indicating that the bottleneck lies in coverage, not communication design. Strengthening last-mile warning delivery should be a priority for disaster risk reduction investments, ahead of further investment in message content.</p>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="cbox dark">
+          <div class="ctitle light">Hazard exposure rate (past 3 years)</div>
+          <div class="csub light">% of HHs experiencing each hazard</div>
+          <div class="cwrap" style="height:280px;"><canvas id="cHazard"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class="vis-sep" style="color:rgba(245,240,232,.12);">· · ·</div>
+    <div class="two-col">
+      <div class="rev">
+        <div class="cbox dark">
+          <div class="ctitle light">Hazard exposure by macro-region</div>
+          <div class="csub light">% of HHs affected by any hazard (past 3 years)</div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon (excl. NCR)</span><span style="color:#CE1126;">96.4%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="96.4"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#E05206;">93.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#E05206;" data-w="93.3"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Visayas</span><span>85.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="85.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Mindanao</span><span>82.4%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="82.4"></div></div></div>
+          </div>
+        </div>
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">Early warning received</div>
+          <div class="csub light">% of affected HHs that received advance warning</div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#00A651;">70.4%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="70.4"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon</span><span>58.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="58.7"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Visayas</span><span>48.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="48.7"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span style="color:#CE1126;">Mindanao</span><span style="color:#CE1126;">41.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="41.7"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <details class="repl"><summary>Replication do-file · M09 Natural Hazards</summary>
+    <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §9  NATURAL HAZARDS (M09) — Weight: hhw ──────────────────────
+* Data at hazard level (multiple rows per HH)
+
+use "$dta/${dta_file}_${date}_M09_nh.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+* Hazard incidence by type
+tab hazard nh1 [aw=hhw], row nofreq
+
+* Any hazard experienced (HH-level)
+preserve
+    bys hhid: egen any_hazard = max(nh1 == 1)
+    bys hhid: keep if _n == 1
+    tab any_hazard [aw=hhw]
+restore
+
+* Early warning received (among affected)
+tab nh2 [aw=hhw] if nh1 == 1
+
+* Understood warning
+tab nh6 [aw=hhw] if nh2 == 1
+
+* Damages/impact (multi-select)
+forvalues i = 1/7 {
+    cap tab nh3_imp`i' [aw=hhw] if nh1 == 1
+}
+
+* Received assistance
+tab nh4 [aw=hhw] if nh1 == 1
+
+* Awareness of hazard maps
+cap tab nh11 [aw=hhw]
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+    </details>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ CH 9: HOME ═══════════════════════════════ -->
+<div class="chap" id="ch-home"><span class="chap-n">09</span><span class="chap-r"></span><span class="chap-l">M10–M11 Dwelling &amp; Sanitation — Where families live</span></div>
+
+<div class="sec">
+  <div class="two-col">
+    <div class="rev">
+      <span class="eyebrow p">Dwelling</span>
+      <h2 class="hed">88% live in a <em class="p">single house</em> — but half have peeling paint</h2>
+      <div class="body-copy">
+        <p>Eighty-eight percent of households live in standalone single houses. Condos and apartments account for just 1 percent. Fifty-seven percent own their dwelling. Seventeen percent live rent-free with consent (often extended family), and 4 percent rent.</p>
+        <p>Roofing materials: 25 percent use strong galvanised iron materials, but 8 percent live under makeshift roofing — vulnerable in a typhoon-prone country. Wall materials: 41 percent are GI/metal sheet, 28 percent concrete/brick, 17 percent makeshift.</p>
+        <p>The average home has 1.8 bedrooms. Fifty-two percent have peeling paint inside, and 53 percent outside — a potential lead paint exposure concern given the survey module's focus on this risk factor.</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Type of building/house</div>
+        <div class="csub">% of HHs</div>
+        <select class="region-select" id="dwellRegionSelect" onchange="updateDwelling(this.value)">
+          <option value="national">National</option>
+          <option value="NCR">NCR</option>
+          <option value="Luzon">Luzon (excl. NCR)</option>
+          <option value="Visayas">Visayas</option>
+          <option value="Mindanao">Mindanao</option>
+        </select>
+        <div class="cwrap" style="height:170px;display:flex;align-items:center;"><canvas id="cDwellType"></canvas></div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Housing tenure status</div>
+        <div class="csub">% of HHs</div>
+        <div class="cwrap" style="height:160px;display:flex;align-items:center;"><canvas id="cTenure"></canvas></div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Roof construction materials</div>
+        <div class="csub">% of HHs</div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Strong (GI sheet/tile)</span><span>25.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="25.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Mixed materials</span><span>19.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="19.7"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Concrete</span><span>6.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Light (cogon/bamboo/nipa)</span><span>6.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="6.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span style="color:var(--red);">Makeshift</span><span style="color:var(--red);">8.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="8.2"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec cream-bg">
+  <div class="sec two-col" style="padding:70px 40px;max-width:1100px;margin:0 auto;">
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Toilet facility type</div>
+        <div class="csub">% of HHs</div>
+        <div class="cwrap" style="height:200px;"><canvas id="cToilet"></canvas></div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Open defecation rate by macro-region</div>
+        <div class="csub">% of HHs practicing open defecation</div>
+        <div class="cwrap" style="height:160px;"><canvas id="cSanitRegion"></canvas></div>
+      </div>
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Solid waste disposal method</div>
+        <div class="csub">% of HHs</div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Municipal collection</span><span style="color:var(--green);">65.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="65.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Pit / landfill</span><span>21.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="21.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Burning</span><span style="color:var(--red);">6.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="6.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Compost</span><span>5.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="5.0"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="rev">
+      <span class="eyebrow g">Sanitation</span>
+      <h2 class="hed">Flush toilets are common — but <em class="g">6% still practice open defecation</em></h2>
+      <div class="body-copy">
+        <p>Seventy-one percent of households use flush toilets connected to sewage and 10 percent to septic tanks. But 6 percent still practice open defecation — over six million Filipinos — alongside 8 percent using pit latrines and 3 percent hanging toilets.</p>
+        <p>Solid waste collection reaches 65 percent of households, but 22 percent dispose in pits or informal landfills and 7 percent burn waste. Only 13 percent properly segregate, while 33 percent do not segregate at all — a behavioral gap that limits the effectiveness of existing infrastructure.</p>
+        <p>Satisfaction with waste services is low: only 15 percent are satisfied, 11 percent are dissatisfied, and 75 percent are neutral.</p>
+      </div>
+    </div>
+  </div>
+  <details class="repl" style="max-width:1100px;margin:0 auto;padding:0 40px 24px;"><summary>Replication do-file · M10 Dwelling + M11 Sanitation</summary>
+  <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §10  DWELLING (M10) — Weight: hhw ─────────────────────────────
+use "$dta/${dta_file}_${date}_M10_dwell.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+* Type of building/house (colleague: use pie charts)
+tab dw1 [aw=hhw]
+
+* Roof material, wall material, bedrooms, tenure
+tab dw2 [aw=hhw]
+tab dw3 [aw=hhw]
+tab dw4 [aw=hhw]
+tab dw5 [aw=hhw]
+
+* Building type by macro-region and settlement
+tab dw1 macroreg [aw=hhw], col nofreq
+tab dw1 settlement [aw=hhw], col nofreq
+
+* ── §11  SANITATION (M11) — Weight: hhw ───────────────────────────
+use "$dta/${dta_file}_${date}_M11_san.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+* Toilet facility type
+tab s1 [aw=hhw]
+
+* Waste disposal, segregation
+forvalues c = 1/4 {
+    cap tab s5_cat`c' [aw=hhw]
+}
+tab s6 [aw=hhw]           /* organic */
+tab s7 [aw=hhw]           /* recyclables */
+tab s8 [aw=hhw]           /* satisfaction */
+
+* Toilet type by macro-region and settlement
+tab s1 macroreg [aw=hhw], col nofreq
+tab s1 settlement [aw=hhw], col nofreq
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+  </details>
+</div>
+
+<!-- ═══════════════════════════════ CH 10: UTILITIES ═══════════════════════════════ -->
+<div class="chap" id="ch-utils"><span class="chap-n">10</span><span class="chap-r"></span><span class="chap-l">M12 Water, Electricity &amp; Internet — Utilities</span></div>
+
+<div class="sec">
+  <div class="full-w rev">
+    <span class="eyebrow gold">Three utilities, three different stories</span>
+    <h2 class="hed" style="max-width:850px;">Electricity: 96%. Internet: 50%. Piped water: <em class="g">61%</em> — and 93% feel it's safe.</h2>
+  </div>
+  <div class="three-col" style="margin-top:36px;">
+    <div class="rev">
+      <div class="cbox" style="height:100%;min-height:320px;">
+        <div class="ctitle" style="color:var(--gold);">⚡ Electricity</div>
+        <div class="csub">96% national access · 99% from grid</div>
+        <div style="margin-top:12px;">
+          <div class="bs"><div class="bs-lbl"><span>NCR</span><span style="color:var(--green);">98.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="98.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Luzon</span><span>96.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="96.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Visayas</span><span>94.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="94.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Mindanao</span><span>93.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="93.8"></div></div></div>
+        </div>
+        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">99 percent of connected households use the utility grid. Solar covers less than 1 percent. Generator/battery less than 1 percent. Urban (97 percent) leads rural (95 percent).</p>
+      </div>
+    </div>
+    <div class="rev d1">
+      <div class="cbox" style="height:100%;min-height:320px;">
+        <div class="ctitle" style="color:var(--blue);">📱 Internet</div>
+        <div class="csub">50% national access · smartphone dominant</div>
+        <div style="margin-top:12px;">
+          <div class="bs"><div class="bs-lbl"><span>NCR</span><span style="color:var(--blue);">64.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="64.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Luzon</span><span>50.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="50.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Mindanao</span><span>42.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="42.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span style="color:var(--red);">Visayas</span><span style="color:var(--red);">40.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="40.7"></div></div></div>
+        </div>
+        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">64 percent use smartphones. Devices: Smart TV (13 percent), Laptop (11 percent). Fifty-nine percent experienced internet interruption in the past week. Social media/communication dominates use (36 percent).</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox" style="height:100%;min-height:320px;">
+        <div class="ctitle" style="color:var(--green);">💧 Water access</div>
+        <div class="csub">61% piped · 93% perceive water as safe</div>
+        <div style="margin-top:12px;">
+          <div class="bs"><div class="bs-lbl"><span>Piped (inside)</span><span style="color:var(--blue);">61%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="60.61"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Unprotected well</span><span style="color:var(--red);">8.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="8.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Protected spring</span><span>6.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Rainwater</span><span>4.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="4.4"></div></div></div>
+        </div>
+        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">93 percent perceive their drinking water as safe (safe or somewhat safe). 69 percent do not treat their water. Travel time to water source: 13 minutes.</p>
+      </div>
+    </div>
+  </div>
+  <div class="two-col" style="margin-top:28px;">
+    <div class="rev">
+      <div class="cbox">
+        <div class="ctitle">Internet use purposes</div>
+        <div class="csub">% of households by primary use · among connected HHs</div>
+        <div class="cwrap" style="height:200px;"><canvas id="cInetPurp"></canvas></div>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Drinking water safety perception</div>
+        <div class="csub">% of households</div>
+        <div class="cwrap" style="height:180px;display:flex;align-items:center;"><canvas id="cWaterSafe"></canvas></div>
+      </div>
+      <div class="hbox gold rev d1">
+        <div class="hbox-lbl">The water paradox</div>
+        <p>61 percent have piped water inside the home, and 93 percent perceive their drinking water as safe. However, 69 percent do not treat their water — suggesting confidence may outrun actual safety in some areas.</p>
+      </div>
+    </div>
+  </div>
+  <details class="repl"><summary>Replication do-file · M12 Utilities</summary>
+  <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §12  UTILITIES (M12) — Weight: hhw ────────────────────────────
+
+* ── Electricity ───────────────────────────────────────────────────
+use "$dta/${dta_file}_${date}_M12_elec.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+tab el1 [aw=hhw]
+tab el1 macroreg [aw=hhw], col nofreq
+
+su el5 [aw=hhw] if el1 == 1 &amp; el5 >= 0 &amp; el5 &lt; .
+di as res "  Mean hours unavailable: " %5.1f r(mean)
+
+* ── Internet ──────────────────────────────────────────────────────
+use "$dta/${dta_file}_${date}_M12_net.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+cap drop has_internet
+gen has_internet = (n1_type1 != 5 &amp; n1_type1 &lt; .) if n1_type1 &lt; .
+tab has_internet [aw=hhw]
+tab has_internet macroreg [aw=hhw], col nofreq
+
+* Purpose of internet use
+forvalues p = 1/12 {
+    cap tab n4_purp`p' [aw=hhw] if has_internet == 1
+}
+
+* ── Water ─────────────────────────────────────────────────────────
+use "$dta/${dta_file}_${date}_M12_water.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+tab w1 [aw=hhw]            /* Main water source */
+tab w5 [aw=hhw]            /* Drinking water source */
+tab w8 [aw=hhw]            /* Perception of safety */
+
+tab w1 macroreg [aw=hhw], col nofreq
+tab w8 settlement [aw=hhw], col nofreq
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+  </details>
+</div>
+
+<!-- ═══════════════════════════════ CH 11: ASSETS ═══════════════════════════════ -->
+<div class="chap" id="ch-assets"><span class="chap-n">11</span><span class="chap-r"></span><span class="chap-l">M13 Assets &amp; Energy — What families own</span></div>
+
+<div class="sec cream-bg">
+  <div class="sec two-col" style="padding:70px 40px;max-width:1100px;margin:0 auto;">
+    <div class="rev">
+      <span class="eyebrow t">Household assets</span>
+      <h2 class="hed">Motorcycles and washing machines — <em class="t">but only 3.9% own a car</em></h2>
+      <div class="body-copy">
+        <p>The two most common household assets are almost exactly tied: washing machines (55 percent) and motorcycles/tricycles (54 percent). These reflect the everyday priorities of Filipino family life — mobility and laundry.</p>
+        <p>Refrigerators reach 49 percent nationally. NCR leads (59 percent) while Visayas lags (43 percent). Computer/laptop ownership is 15 percent nationally — but 25 percent in NCR vs just 9 percent in Visayas. This digital asset gap directly constrains remote work and educational access.</p>
+        <p>Air conditioning is 10 percent nationally — almost entirely an NCR phenomenon (24 percent there vs 6 percent in Mindanao and 9 percent in Visayas). Cars are 4 percent nationally — equally rare across all regions (3 to 5 percent).</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Asset ownership rates</div>
+        <div class="csub">% of HHs owning each asset</div>
+        <div class="cwrap" style="height:230px;"><canvas id="cAssets"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="two-col">
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Cooking fuel type</div>
+        <div class="csub">% of HHs using each fuel · multi-select</div>
+        <div class="cwrap" style="height:220px;"><canvas id="cFuels"></canvas></div>
+      </div>
+    </div>
+    <div class="rev">
+      <span class="eyebrow o">Energy for cooking</span>
+      <h2 class="hed">LPG on top — but <em class="o">fuelwood burns in half of homes</em></h2>
+      <div class="body-copy">
+        <p>LPG is the primary cooking fuel at 61 percent. But 51 percent of households still use fuelwood — not as a curiosity but as a primary or supplementary fuel. Twenty-seven percent use charcoal. These are not mutually exclusive: many households use multiple fuels depending on what they are cooking and what is available.</p>
+        <p>The regional split is dramatic: 94 percent of NCR households use LPG vs just 39 percent in Mindanao. Conversely, 72 percent of Mindanao households use fuelwood vs only 4 percent in NCR. Visayas and Mindanao together have the highest biomass dependency, with direct implications for indoor air quality and deforestation.</p>
+        <p>Electricity for cooking is 21 percent nationally — highest in NCR (29 percent) and lowest in Visayas (15 percent). Despite near-universal electrification, the grid has not displaced solid fuels for cooking in most of the country.</p>
+      </div>
+    </div>
+  </div>
+  <details class="repl"><summary>Replication do-file · M13 Assets &amp; Energy</summary>
+  <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §13  ASSETS &amp; ENERGY (M13) — Weight: hhw ─────────────────────
+use "$dta/${dta_file}_${date}_M13_hc.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+* Ownership rates (has at least 1)
+* hc1_1=refrigerator, hc1_2=washing machine, hc1_3=AC,
+* hc1_4=stove, hc1_5=motorcycle, hc1_6=car
+foreach item in 1 2 3 4 5 6 {
+    cap gen own_hc`item' = (hc1_`item' >= 1 &amp; hc1_`item' &lt; .) ///
+        if hc1_`item' &lt; .
+}
+
+* Asset ownership rates — national
+foreach item in 1 2 3 4 5 6 {
+    cap su own_hc`item' [aw=hhw]
+    if _rc == 0 &amp; r(N) > 0 {
+        di as res "  hc1_`item': " %5.1f r(mean)*100 "%"
+    }
+}
+
+* By macro-region
+foreach item in 1 2 3 4 5 6 {
+    cap table macroreg [aw=hhw], stat(mean own_hc`item') nformat(%5.3f)
+}
+
+* By settlement
+foreach item in 1 2 3 4 5 6 {
+    cap table settlement [aw=hhw], stat(mean own_hc`item') nformat(%5.3f)
+}
+
+* Primary cooking fuel
+tab hc2a [aw=hhw]
+tab hc2a macroreg [aw=hhw], col nofreq
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+  </details>
+</div>
+
+<!-- ═══════════════════════════════ CH 12: VIEWS ═══════════════════════════════ -->
+<div class="chap" id="ch-views"><span class="chap-n">12</span><span class="chap-r"></span><span class="chap-l">M14 Views &amp; Perceptions — What they think</span></div>
+
+<div class="sec dark-bg">
+  <div class="sec-inner">
+    <div class="full-w rev">
+      <span class="eyebrow p">Perceptions &amp; sentiment</span>
+      <h2 class="hed light" style="max-width:850px;">Life satisfaction: 3.04/5. 34.7% feel worse off. <em>AI anxiety tops all concerns.</em></h2>
+    </div>
+    <div class="two-col" style="margin-top:32px;">
+      <div class="rev">
+        <div class="body-copy light">
+          <p>Life satisfaction averages 3.04 out of 5 (where 1 is most satisfied). Fifty-two percent are neutral at 3. Only 25 percent report being satisfied or very satisfied; 23 percent are dissatisfied or very dissatisfied.</p>
+          <p>On the economic situation: 46 percent say it is the same as last month. Thirty-five percent feel worse off (somewhat or much worse). Only 19 percent feel things improved. Visayas is most pessimistic (39 percent worse) while Mindanao is most stable (52 percent same).</p>
+          <p>When asked about their income group, most place themselves in the middle: 49 percent group 3, 30 percent group 2, 20 percent group 1. Only 1 percent place themselves in the top two groups — suggesting the rich are either absent from the survey population or reluctant to self-identify as wealthy.</p>
+          <p>Neighbourhood safety: 62 percent feel unsafe walking in their area. Only 11 percent feel safe or very safe. This is a striking finding given the relatively low crime-rate narrative of many Philippine localities.</p>
+        </div>
+        <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
+          <div class="scell dark-c"><div class="scell-n" style="color:#e8c4a0;">3.04/5</div><div class="scell-l" style="color:rgba(245,240,232,.45);">Life satisfaction mean</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#f87171;">34.7%</div><div class="scell-l" style="color:rgba(245,240,232,.45);">Feel worse off (vs last month)</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">62.4%</div><div class="scell-l" style="color:rgba(245,240,232,.45);">Feel unsafe in neighbourhood</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#4ade80;">44.5%</div><div class="scell-l" style="color:rgba(245,240,232,.45);">Believe taxes are well spent</div></div>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="cbox dark">
+          <div class="ctitle light">Life satisfaction distribution</div>
+          <div class="csub light">1=Very satisfied → 5=Very dissatisfied</div>
+          <div class="cwrap" style="height:175px;"><canvas id="cLifeSat"></canvas></div>
+        </div>
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">Life satisfaction by macro-region</div>
+          <div class="csub light">Distribution of ratings 1-5 · stacked %</div>
+          <div class="cwrap" style="height:200px;"><canvas id="cLifeSatRegion"></canvas></div>
+        </div>
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">Economic situation vs last month</div>
+          <div class="csub light">% of HHs by perceived change</div>
+          <div class="cwrap" style="height:160px;display:flex;align-items:center;"><canvas id="cEcoChange"></canvas></div>
+        </div>
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">Self-perceived income group</div>
+          <div class="csub light">% of HHs · 1 (lowest) to 5 (highest)</div>
+          <div class="cwrap" style="height:140px;"><canvas id="cIncGroup"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vis-sep" style="color:rgba(245,240,232,.1);">· · ·</div>
+
+    <div class="two-col">
+      <div class="rev">
+        <span class="eyebrow p">Attitudes &amp; concerns</span>
+        <h2 class="hed light">AI anxiety is <em>the top fear</em> — above jobs, education, and politics</h2>
+        <div class="body-copy light">
+          <p>Twenty-seven percent of households agree or strongly agree that they are worried about AI or automation displacing jobs. This is the highest agreement rate across all 11 Likert statements — surpassing concern about job loss generally (25 percent), family finances worsening (25 percent), and political instability (19 percent).</p>
+          <p>This is striking context: in a country where 83 percent of workers have no contract, 41 percent work part-time, and formal employment protection is minimal, the perceived threat of AI arrives as an additional layer of insecurity on top of already precarious conditions.</p>
+          <p>The most positive finding: 45 percent believe taxes are well-spent — the highest agreement rate in the module. Whether this reflects genuine trust in government or low awareness of public finance quality is a deeper question.</p>
+          <p>Optimism about the economy (22 percent) and belief that now is a good time to find a job (22 percent) are essentially equal — and both low, consistent with the broader picture of labour market stress.</p>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="cbox dark">
+          <div class="ctitle light">What Filipinos agree with — % agreeing</div>
+          <div class="csub light">Likert responses (1=strongly agree)</div>
+          <div class="cwrap" style="height:300px;"><canvas id="cLikert"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vis-sep" style="color:rgba(245,240,232,.1);">· · ·</div>
+
+    <div class="two-col">
+      <div class="rev d2">
+        <div class="cbox dark">
+          <div class="ctitle light">Economic sentiment by macro-region</div>
+          <div class="csub light">Stacked % better / same / worse vs last month</div>
+          <div class="cwrap" style="height:210px;"><canvas id="cEcoMacro"></canvas></div>
+        </div>
+      </div>
+      <div class="rev">
+        <span class="eyebrow b">Regional sentiment</span>
+        <h2 class="hed light">Visayas most <em class="r">pessimistic.</em> Mindanao most <em class="t">stable.</em></h2>
+        <div class="body-copy light">
+          <p>Visayas shows the highest "worse off" sentiment at 39 percent (combining somewhat and much worse), and the second-highest "much worse" rate at 10 percent. This is consistent with Visayas being the region with the lowest PhilHealth coverage, lowest internet access, lowest financial inclusion, and highest hazard exposure relative to infrastructure.</p>
+          <p>Mindanao shows the highest "same" rate at 51 percent — suggesting a stability perception despite lower objective indicators. NCR shows the most optimistic distribution with 10 percent "much better" — the highest of any region.</p>
+        </div>
+      </div>
+    </div>
+    <details class="repl"><summary>Replication do-file · M14 Views &amp; Perceptions</summary>
+    <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+* ── §14  VIEWS &amp; PERCEPTIONS (M14) — Weight: hhw ─────────────────
+use "$dta/${dta_file}_${date}_M14_view.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+* Life satisfaction (1-5 scale)
+tab v1 [aw=hhw]
+su v1 [aw=hhw] if v1 >= 1 &amp; v1 &lt;= 5
+di as res "  Mean: " %5.2f r(mean)
+
+* Life satisfaction by macro-region
+table macroreg [aw=hhw] if v1 >= 1 &amp; v1 &lt;= 5, stat(mean v1) nformat(%5.2f)
+
+* Self-income classification (v2) — graph per colleague
+tab v2 [aw=hhw]
+tab v2 macroreg [aw=hhw], col nofreq
+
+* Perceived change vs. past month (v5)
+tab v5 [aw=hhw]
+tab v5 macroreg [aw=hhw], col nofreq
+
+* Crosstab V2 × V3 (per colleague)
+tab v2 v3 [aw=hhw] if hh_has_child_u18 == 1, row nofreq
+
+* Worries (v9 series)
+foreach v in v9a v9b v9c v9d v9e v9f v9g v9h v9i v9j v9k {
+    tab `v' [aw=hhw]
+}
+
+* Support statements (v10 series)
+foreach v in v10a v10b v10c v10d v10e {
+    tab `v' [aw=hhw]
+}
+</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+    </details>
+  </div>
+</div>
+
+<!-- REPLICATION PREAMBLE -->
+<div class="sec" style="background:#001a2e;color:#c9d8e6;padding:60px 40px;">
+  <div style="max-width:900px;margin:0 auto;">
+    <span class="eyebrow" style="color:#40B4E5;">Replication</span>
+    <h2 class="hed" style="color:#fff;font-size:1.8rem;">§0 Setup — run this first</h2>
+    <p style="color:#7a9ab8;font-size:.95rem;margin-bottom:18px;">All chapter-level replication blocks above depend on this preamble. Copy-paste into a fresh .do file, adjust paths for your machine, then run any chapter block.</p>
+    <div class="repl-code" style="background:#00111f;border:1px solid #1a3a55;"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+********************************************************************************
+* L2Phl CAPI Baseline — Replication Preamble (§0)
+* Run this block FIRST, then any chapter block below
+********************************************************************************
+
+clear all
+set more off
+set excelxlsxlargefile on
+set maxvar 10000
+
+* ── User paths ────────────────────────────────────────────────────
+loc user = "AP"  // AP or BB or LD
+
+if ("`user'"=="AP") ///
+    glo wd "~/iDrive/GitHub/PHL/L2PHL/CAPI"
+if ("`user'"=="BB") ///
+    glo wd "/Users/batmandakh/Dropbox/BB/WB/PHL/CAPI"
+if ("`user'"=="LD") ///
+    glo wd "C:\Users\Liz Danganan\OneDrive - PSRC\3 MACROS &amp; TEMPLATES\TIPON\TIPON\data"
+
+cd "$wd"
+
+* ── Round &amp; date globals ──────────────────────────────────────────
+glo LNG ENG
+glo R 00
+glo M 10
+glo D 15
+glo Y 2025
+glo dta_file l2phl
+glo date ${Y}${M}${D}
+
+* ── Paths ─────────────────────────────────────────────────────────
+glo ado "$wd/Round${R}/ado"
+glo dta "$wd/Round${R}/dta/$date"
+glo xls "$wd/Round${R}/xls"
+glo out "$wd/Analysis/SL"
+
+cap adopath - "$wd/Round${R}/ado/"
+adopath + "$wd/Round${R}/ado/"
+cap confirmdir "$out"
+if _rc ~= 0 mkdir "$out"
+
+* ── Macro-region generator ────────────────────────────────────────
+cap program drop gen_macroreg
+program define gen_macroreg
+    cap drop macroreg
+    gen macroreg = .
+    replace macroreg = 1 if inlist(region, 101, 102, 103, 104, 105)
+    replace macroreg = 2 if inlist(region, 1, 2, 3, 4, 5) | inlist(region, 14, 17)
+    replace macroreg = 3 if inlist(region, 6, 7, 8, 18)
+    replace macroreg = 4 if inlist(region, 9, 10, 11, 12) | inlist(region, 16, 19)
+    la def MACROREG 1 "NCR" 2 "Luzon (excl. NCR)" 3 "Visayas" 4 "Mindanao", replace
+    la val macroreg MACROREG
+end
+
+* ── Settlement type ───────────────────────────────────────────────
+cap program drop gen_settlement
+program define gen_settlement
+    cap drop settlement
+    gen settlement = urban
+    la def SETTLE 1 "Urban" 2 "Rural", replace
+    la val settlement SETTLE
+end
+
+* ── Create HH-level weight file ───────────────────────────────────
+use "$ado/final_weights.dta", clear
+bys hhid: keep if _n == 1
+keep hhid hhw popw region urban hhsize
+save "$out/_hhwt_temp.dta", replace
+</pre></div>
+  </div>
+</div>
+
+<!-- EPILOGUE -->
+<section class="epi">
+  <h2 class="epi-hed">"The infrastructure is there. The protection isn't."</h2>
+  <p class="epi-body">Electricity reaches 96% of homes. Schools are near-full. The road to the wet market takes 17 minutes. But when sickness strikes, most families pay alone. When work disappears, there is no cushion. When the typhoon comes, half hear no warning. The story of the Philippines in 2025 is not a story of absence — it is a story of exposure without insurance.</p>
+  <div class="epi-nums">
+    <div class="epi-n"><div class="epi-n-val" style="color:var(--red);">108.7M</div><div class="epi-n-lbl">People represented</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:#4a9fd0;">2,470</div><div class="epi-n-lbl">Households</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:var(--gold);">14</div><div class="epi-n-lbl">Modules</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:#5aad6f;">96%</div><div class="epi-n-lbl">Electricity</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:var(--red);">54%</div><div class="epi-n-lbl">No PhilHealth</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:var(--orange);">72%</div><div class="epi-n-lbl">No work contract</div></div>
+  </div>
+  <p class="epi-meta">L2Phl · Listening to the Philippines Baseline Household Survey · Sep–Oct 2025</p>
+</section>
+
+<script>
+// ══ SCROLL REVEAL ══
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('vis');
+      e.target.querySelectorAll('.bfill[data-w]').forEach(el => {
+        setTimeout(() => el.style.width = el.getAttribute('data-w') + '%', 120);
+      });
+      revObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.rev').forEach(el => revObs.observe(el));
+
+// ══ CHART SETUP ══
+const TOOLTIP = {backgroundColor:'rgba(14,12,10,.93)',borderColor:'rgba(200,191,174,.25)',borderWidth:1,titleColor:'#f5f0e8',bodyColor:'rgba(245,240,232,.68)',padding:10};
+const TICK = {color:'#9FA0A4',font:{family:"'IBM Plex Mono'",size:10}};
+const TICK_D = {color:'#4A6278',font:{family:"'IBM Plex Mono'",size:10}};
+const GRID = {color:'rgba(0,34,68,.10)'};
+const GRID_D = {color:'rgba(0,34,68,.08)'};
+const LEG = {display:true,labels:{color:'#9FA0A4',font:{family:"'IBM Plex Mono'",size:10},boxWidth:10,padding:8}};
+const LEG_D = {display:true,labels:{color:'#4A6278',font:{family:"'IBM Plex Mono'",size:10},boxWidth:10,padding:8}};
+
+const INITS = {};
+const cObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && INITS[e.target.id]) {
+      INITS[e.target.id]();
+      delete INITS[e.target.id];
+      cObs.unobserve(e.target);
+    }
+  });
+}, {threshold:0.2});
+
+function lazy(id, fn) {
+  INITS[id] = fn;
+  const el = document.getElementById(id);
+  if (el) cObs.observe(el);
+}
+
+const MACROS = ['NCR','Luzon (excl. NCR)','Visayas','Mindanao'];
+const MCOLS  = ['rgba(14,165,233,.82)','rgba(34,197,94,.78)','rgba(167,139,250,.82)','rgba(244,63,94,.78)'];
+
+// Age distribution
+lazy('cAge', () => {
+  new Chart(document.getElementById('cAge'), {type:'bar', data:{
+    labels:['<10','10-19','20-29','30-39','40-49','50-59','60-69','70+'],
+    datasets:[
+      {label:'Total',data:[17.9,22.66,16.83,14.25,10.99,7.5,6.26,3.6],backgroundColor:'rgba(0,159,218,.75)',borderRadius:3,borderWidth:0},
+      {label:'Male',data:[18.47,22.74,17.03,14.17,11.76,6.97,5.52,3.33],backgroundColor:'rgba(0,56,168,.65)',borderRadius:3,borderWidth:0},
+      {label:'Female',data:[17.32,22.58,16.63,14.34,10.20,8.05,7.02,3.87],backgroundColor:'rgba(206,17,38,.55)',borderRadius:3,borderWidth:0}
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}}},
+    plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// Relationship
+lazy('cRel', () => {
+  new Chart(document.getElementById('cRel'), {type:'doughnut', data:{
+    labels:['Son/daughter','Head','Grandchild','Wife/Spouse','Other relative','Father/Mother','Brother/sister','Other'],
+    datasets:[{data:[43.22,21.66,9.36,15.57,3.97,2.6,2.01,1.61],
+      backgroundColor:['#CE1126','#009FDA','#00A651','#D4A017','#772583','#E05206','#00B8C8','#9FA0A4'],
+      borderWidth:0,hoverOffset:4}]
+  }, options:{maintainAspectRatio:true,aspectRatio:1.6,
+    plugins:{legend:{...LEG,labels:{...LEG.labels,font:{family:"'IBM Plex Mono'",size:9},padding:5}},
+    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
+});
+
+// HH Structure type
+lazy('cHHComp', () => {
+  new Chart(document.getElementById('cHHComp'), {type:'pie', data:{
+    labels:['Head + Spouse + Children (40.1%)','Extended family (37.9%)','Head + Children only (8.5%)','Head + Spouse only (8.3%)','Head only (5.3%)'],
+    datasets:[{data:[40.11,37.85,8.51,8.28,5.25],
+      backgroundColor:['#009FDA','#00A651','#CE1126','#D4A017','#772583'],
+      borderWidth:1,borderColor:'white',hoverOffset:6}]
+  }, options:{maintainAspectRatio:true,aspectRatio:1.5,
+    plugins:{legend:{...LEG,labels:{...LEG.labels,font:{family:"'IBM Plex Mono'",size:9},padding:5}},
+    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}`}}}}});
+});
+
+// Marital
+lazy('cMarital', () => {
+  new Chart(document.getElementById('cMarital'), {type:'bar', data:{
+    labels:['Single','Married','Common-law','Widowed','Separated'],
+    datasets:[
+      {label:'Male',data:[59.82,25.18,12.24,1.37,0.97],backgroundColor:'#009FDA',borderRadius:3,borderWidth:0},
+      {label:'Female',data:[52.51,25.85,12.91,6.0,1.66],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:{...TICK,font:{size:9}}},y:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}}},
+    plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// Attendance by age
+lazy('cAttend', () => {
+  new Chart(document.getElementById('cAttend'), {type:'bar', data:{
+    labels:['6-11','12-15','16-17','18-19','20-24'],
+    datasets:[
+      {label:'Total',data:[97.66,96.33,87.25,65.21,30.19],backgroundColor:'rgba(0,159,218,.75)',borderRadius:3,borderWidth:0},
+      {label:'Boys',data:[97.96,93.92,81.56,59.54,27.96],backgroundColor:'rgba(0,56,168,.6)',borderRadius:3,borderWidth:0},
+      {label:'Girls',data:[97.32,98.74,93.33,70.85,32.48],backgroundColor:'rgba(206,17,38,.5)',borderRadius:3,borderWidth:0}
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
+    plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// Educational attainment by sex
+lazy('cAttain', () => {
+  const labs=['Secondary','Primary','College/Uni','Some college','TVET','No schooling'];
+  new Chart(document.getElementById('cAttain'), {type:'bar', data:{
+    labels:labs,
+    datasets:[
+      {label:'Male',data:[52.1,23.5,11.2,9.8,2.1,1.1],backgroundColor:'#009FDA',borderRadius:3,borderWidth:0},
+      {label:'Female',data:[49.4,19.9,15.5,10.7,2.7,0.8],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK,font:{size:9}}}},
+    plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.x}%`}}}}});
+});
+
+// Emp by age
+lazy('cEmpAge', () => {
+  new Chart(document.getElementById('cEmpAge'), {type:'bar', data:{
+    labels:['15-24','25-34','35-44','45-54','55-64','65+'],
+    datasets:[
+      {label:'Total',data:[19.08,58.43,60.87,64.15,50.27,27.18],backgroundColor:'rgba(0,159,218,.75)',borderRadius:3,borderWidth:0},
+      {label:'Male',data:[24.79,77.31,81.88,79.45,67.91,37.04],backgroundColor:'rgba(0,56,168,.6)',borderRadius:3,borderWidth:0},
+      {label:'Female',data:[13.08,39.41,37.37,46.97,36.11,18.84],backgroundColor:'rgba(206,17,38,.5)',borderRadius:3,borderWidth:0}
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK_D},y:{grid:GRID_D,min:0,max:90,ticks:{...TICK_D,callback:v=>v+'%'}}},
+    plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// Class of worker
+lazy('cClass', () => {
+  new Chart(document.getElementById('cClass'), {type:'bar', data:{
+    labels:['Private estab.','Private HH','Self-employed','Government','Employer','Unpaid family'],
+    datasets:[{data:[32.98,21.79,16.01,8.24,7.14,3.5],
+      backgroundColor:['#009FDA','#772583','#D4A017','#00A651','#E05206','#9FA0A4'],
+      borderRadius:3,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK_D}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+});
+
+// Industry
+lazy('cIndustry', () => {
+  new Chart(document.getElementById('cIndustry'), {type:'bar', data:{
+    labels:['Admin/support','Agriculture','Retail trade','Construction','Food service','Transport','Other services','Public admin'],
+    datasets:[{data:[21.31,17.87,14.95,12.11,11.44,7.01,3.06,2.62],
+      backgroundColor:['#009FDA','#00A651','#D4A017','#E05206','#CE1126','#772583','#00B8C8','#9FA0A4'],
+      borderRadius:3,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK_D,font:{size:9}}}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+});
+
+// Income by macro
+lazy('cIncMacro', () => {
+  new Chart(document.getElementById('cIncMacro'), {type:'bar', data:{
+    labels:['Regular income','Domestic support','Pension','OFW remittances','4Ps / CCT'],
+    datasets:[{data:[67.3,23.1,8.5,7.4,0.7],
+      backgroundColor:['#009FDA','#00A651','#772583','#D4A017','#CE1126'],
+      borderRadius:4,borderWidth:0,barPercentage:.65}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID,max:80,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}% of HHs`}}}}});
+});
+
+// Migration intent by macro
+lazy('cMigration', () => {
+  new Chart(document.getElementById('cMigration'), {type:'bar', data:{
+    labels:MACROS,
+    datasets:[{data:[2.67,2.35,1.11,2.87],backgroundColor:MCOLS,borderRadius:5,borderWidth:0,barPercentage:.58}]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:5,ticks:{...TICK,callback:v=>v+'%'}}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
+});
+
+// Migration Sankey
+(function(){
+  const el = document.getElementById('sankeyMig');
+  if (!el || typeof d3 === 'undefined') return;
+  const sObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        drawSankey();
+        sObs.unobserve(e.target);
+      }
+    });
+  }, {threshold:0.2});
+  sObs.observe(el);
+
+  function drawSankey(){
+    const w = el.clientWidth || 500, h = 340;
+    const svg = d3.select(el).append('svg').attr('width',w).attr('height',h);
+
+    const nodes = [
+      {name:'NCR'},{name:'Luzon'},{name:'Visayas'},{name:'Mindanao'},
+      {name:'Abroad'},{name:'Within PH'},
+      {name:'USA'},{name:'Australia'},{name:'UK'},{name:'S. Korea'},
+      {name:'Japan'},{name:'Saudi Arabia'},{name:'Canada'},{name:'Others'}
+    ];
+    // Region → Abroad/Domestic (weighted shares)
+    // Abroad → Country destinations (weighted % of abroad total)
+    const abrTotal = 66.3; // % abroad among those with destination
+    const links = [
+      {source:0,target:4,value:46.1},{source:0,target:5,value:53.9},
+      {source:1,target:4,value:74.7},{source:1,target:5,value:25.3},
+      {source:2,target:4,value:81.4},{source:2,target:5,value:18.6},
+      {source:3,target:4,value:60.4},{source:3,target:5,value:39.6},
+      {source:4,target:6,value:18.3},{source:4,target:7,value:11.1},
+      {source:4,target:8,value:8.4},{source:4,target:9,value:7.9},
+      {source:4,target:10,value:7.6},{source:4,target:11,value:4.6},
+      {source:4,target:12,value:4.2},{source:4,target:13,value:37.9}
+    ];
+
+    const sankey = d3.sankey()
+      .nodeId(d => d.index)
+      .nodeWidth(16)
+      .nodePadding(8)
+      .extent([[1,5],[w-1,h-5]]);
+
+    const {nodes:sNodes, links:sLinks} = sankey({nodes:nodes.map(d=>({...d})),links:links.map(d=>({...d}))});
+
+    const color = d3.scaleOrdinal()
+      .domain(['NCR','Luzon','Visayas','Mindanao','Abroad','Within PH',
+               'USA','Australia','UK','S. Korea','Japan','Saudi Arabia','Canada','Others'])
+      .range(['#0ea5e9','#22c55e','#a78bfa','#f43f5e','#D4A017','#009FDA',
+              '#CE1126','#00A651','#0038A8','#E05206','#772583','#B8860B','#40B4E5','#9FA0A4']);
+
+    svg.append('g').selectAll('rect').data(sNodes).join('rect')
+      .attr('x',d=>d.x0).attr('y',d=>d.y0)
+      .attr('height',d=>Math.max(d.y1-d.y0,1)).attr('width',d=>d.x1-d.x0)
+      .attr('fill',d=>color(d.name)).attr('rx',2);
+
+    svg.append('g').attr('fill','none').selectAll('path').data(sLinks).join('path')
+      .attr('d',d3.sankeyLinkHorizontal())
+      .attr('stroke',d=>color(d.source.name))
+      .attr('stroke-width',d=>Math.max(d.width,1))
+      .attr('stroke-opacity',.3);
+
+    svg.append('g').selectAll('text').data(sNodes).join('text')
+      .attr('x',d=>d.x0<w/3?d.x1+5:d.x0-5)
+      .attr('y',d=>(d.y0+d.y1)/2)
+      .attr('dy','0.35em')
+      .attr('text-anchor',d=>d.x0<w/3?'start':'end')
+      .text(d=>d.name)
+      .attr('font-family',"'IBM Plex Mono',monospace")
+      .attr('font-size','9px')
+      .attr('fill','#4A6278');
+  }
+})();
+
+// PhilHealth type
+lazy('cPhilType', () => {
+  new Chart(document.getElementById('cPhilType'), {type:'doughnut', data:{
+    labels:['Not covered','PhilHealth Paying','Dependent (Non-Pay)','Non-Paying Member','Dependent (Paying)'],
+    datasets:[{data:[53.89,15.73,12.03,11.26,7.09],
+      backgroundColor:['#009FDA','#40B4E5','#00B8C8','#00A651','#9FA0A4'],borderWidth:0,hoverOffset:4}]
+  }, options:{maintainAspectRatio:true,aspectRatio:1.5,
+    plugins:{legend:{...LEG_D,labels:{...LEG_D.labels,font:{size:9},padding:5}},
+    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
+});
+
+// PhilHealth by age & gender
+lazy('cPhilAgeGender', () => {
+  new Chart(document.getElementById('cPhilAgeGender'), {type:'bar', data:{
+    labels:['<10','10-19','20-29','30-39','40-49','50-59','60-69','70+'],
+    datasets:[
+      {label:'Total',data:[31.4,29.1,49.4,62.5,61.8,54.9,68.6,75.7],backgroundColor:'rgba(0,159,218,.75)',borderRadius:3,borderWidth:0},
+      {label:'Male',data:[30.9,28.2,46.2,62.1,61.5,58.3,67.7,78.4],backgroundColor:'rgba(0,56,168,.6)',borderRadius:3,borderWidth:0},
+      {label:'Female',data:[32.1,30.1,52.6,62.8,62.2,52.1,69.3,73.7],backgroundColor:'rgba(206,17,38,.5)',borderRadius:3,borderWidth:0}
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK_D},y:{grid:GRID_D,min:0,max:85,ticks:{...TICK_D,callback:v=>v+'%'}}},
+    plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// Healthcare facility
+lazy('cFacility', () => {
+  new Chart(document.getElementById('cFacility'), {type:'bar', data:{
+    labels:['Barangay Health Station','Public Hospital','Rural Health Unit','Private Clinic','Private Hospital'],
+    datasets:[{data:[32.39,27.32,19.98,13.71,6.6],
+      backgroundColor:['#00A651','#009FDA','#00B8C8','#E05206','#CE1126'],
+      borderRadius:3,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK_D,font:{size:9}}}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+});
+
+// Food source
+lazy('cFoodSrc', () => {
+  new Chart(document.getElementById('cFoodSrc'), {type:'bar', data:{
+    labels:['Wet market','Sari-sari store','Supermarket','Ambulant peddlers','Large supermarket','Convenience store'],
+    datasets:[{data:[73.97,15.06,5.99,2.5,0.71,0.66],
+      backgroundColor:['#00A651','#009FDA','#D4A017','#E05206','#CE1126','#772583'],
+      borderRadius:3,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+});
+
+// Wet market by region
+lazy('cWetMkt', () => {
+  new Chart(document.getElementById('cWetMkt'), {type:'bar', data:{
+    labels:['NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
+    datasets:[{data:[90.9,71.4,76.2,70.0],backgroundColor:MCOLS,borderRadius:5,borderWidth:0,barPercentage:.58}]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:50,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
+});
+
+// SSB by age with gender filter
+let ssbChart = null;
+const ssbData = {
+  all:[78.56,91.44,93.08,94.27,90.08,82.78],
+  male:[78.56,91.44,93.08,94.27,90.08,82.78],
+  female:[78.56,91.44,93.08,94.27,90.08,82.78]
+};
+// Gender-specific rates (all ~89.4% but regional differences exist)
+function updateSSB(gender){
+  document.querySelectorAll('#ssbFilter .filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  if(!ssbChart) return;
+  const cols = gender==='male'?'rgba(0,56,168,.7)':gender==='female'?'rgba(206,17,38,.6)':'rgba(0,159,218,.7)';
+  ssbChart.data.datasets[0].backgroundColor = ssbData[gender].map((v,i)=>i===3?'#CE1126':cols);
+  const lbl = gender==='all'?'All':gender==='male'?'Male':'Female';
+  ssbChart.data.datasets[0].label = lbl + ' (89.4% avg)';
+  ssbChart.update();
+}
+lazy('cSSB', () => {
+  const d = ssbData.all;
+  ssbChart = new Chart(document.getElementById('cSSB'), {type:'bar', data:{
+    labels:['<10','10-17','18-24','25-44','45-64','65+'],
+    datasets:[{label:'All (89.4% avg)',data:d,backgroundColor:d.map((v,i)=>i===3?'#CE1126':'rgba(0,159,218,.7)'),borderRadius:4,borderWidth:0,barPercentage:.78}]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:70,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
+    plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
+});
+
+// Hazards
+lazy('cHazard', () => {
+  const labs=['Typhoon','Extreme heat','Earthquake','Flood/La Niña','Drought/El Niño','Pest infestation','Livestock disease','Tsunami','Volcanic eruption','Landslide'];
+  const vals=[76.38,49.7,40.57,36.4,30.56,12.08,9.28,3.01,2.23,0.21];
+  new Chart(document.getElementById('cHazard'), {type:'bar', data:{
+    labels:labs,
+    datasets:[{data:vals,backgroundColor:vals.map(v=>v>50?'#CE1126':v>30?'#E05206':'#009FDA'),borderRadius:3,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK_D}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+});
+
+// Tenure
+// Dwelling type pie chart
+// Dwelling type with region filter
+let dwellChart = null;
+const dwellData = {
+  national:{labels:['Single house','Duplex','Apartment','Condo','Other','None'],data:[87.99,5.43,1.28,0.91,0.94,3.45]},
+  NCR:{labels:['Single house','Duplex','Apartment','Multi-unit','Other'],data:[62.7,11.8,4.6,5.5,15.4]},
+  Luzon:{labels:['Single house','Duplex','Multi-unit','Other'],data:[91.0,4.7,0.7,3.6]},
+  Visayas:{labels:['Single house','Duplex','Other'],data:[93.5,5.8,0.7]},
+  Mindanao:{labels:['Single house','Duplex','Other'],data:[95.0,3.2,1.8]}
+};
+function updateDwelling(region){
+  if(!dwellChart) return;
+  const d = dwellData[region];
+  dwellChart.data.labels = d.labels;
+  dwellChart.data.datasets[0].data = d.data;
+  dwellChart.data.datasets[0].backgroundColor = ['#00A651','#009FDA','#D4A017','#772583','#E05206','#9FA0A4'].slice(0,d.data.length);
+  dwellChart.update();
+}
+lazy('cDwellType', () => {
+  const d = dwellData.national;
+  dwellChart = new Chart(document.getElementById('cDwellType'), {type:'doughnut', data:{
+    labels:d.labels,
+    datasets:[{data:d.data,
+      backgroundColor:['#00A651','#009FDA','#D4A017','#772583','#E05206','#9FA0A4'],borderWidth:0,hoverOffset:4}]
+  }, options:{maintainAspectRatio:true,aspectRatio:1.5,
+    plugins:{legend:{...LEG,labels:{...LEG.labels,font:{size:9},padding:5}},
+    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
+});
+
+lazy('cTenure', () => {
+  new Chart(document.getElementById('cTenure'), {type:'doughnut', data:{
+    labels:['Owner','Rent-free (consent)','Other','Renting'],
+    datasets:[{data:[56.53,17.03,11.75,3.93],backgroundColor:['#00A651','#009FDA','#772583','#CE1126'],borderWidth:0,hoverOffset:4}]
+  }, options:{maintainAspectRatio:true,aspectRatio:1.6,
+    plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
+});
+
+// Toilet type
+lazy('cToilet', () => {
+  new Chart(document.getElementById('cToilet'), {type:'bar', data:{
+    labels:['Flush→sewage','Flush→septic','Pit latrine','Open defecation','Hanging toilet','No facility'],
+    datasets:[{data:[71.12,10.44,8.17,5.73,2.73,0.13],
+      backgroundColor:['#00A651','#009FDA','#D4A017','#CE1126','#E05206','#9FA0A4'],
+      borderRadius:3,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+});
+
+// Sanitation by region
+lazy('cSanitRegion', () => {
+  new Chart(document.getElementById('cSanitRegion'), {type:'bar', data:{
+    labels:['NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
+    datasets:[{data:[1.1,4.1,1.8,3.4],
+      backgroundColor:['rgba(0,159,218,.75)','rgba(206,17,38,.7)','rgba(0,166,81,.7)','rgba(224,82,6,.7)'],
+      borderRadius:4,borderWidth:0,barPercentage:.58}]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:5,ticks:{...TICK,callback:v=>v+'%'}}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
+});
+
+// Internet purposes
+lazy('cInetPurp', () => {
+  new Chart(document.getElementById('cInetPurp'), {type:'bar', data:{
+    labels:['Social media','News & Info','Online shopping','Online education','Entertainment','Payments/Banking','Govt information','Govt services'],
+    datasets:[{data:[36.24,15.59,14.02,13.09,8.87,4.06,2.26,2.03],
+      backgroundColor:['#CE1126','#009FDA','#D4A017','#00A651','#772583','#E05206','#00B8C8','#9FA0A4'],
+      borderRadius:3,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK,font:{size:9}}}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+});
+
+// Water safety
+lazy('cWaterSafe', () => {
+  new Chart(document.getElementById('cWaterSafe'), {type:'doughnut', data:{
+    labels:['Very safe','Somewhat safe','Somewhat unsafe','Unsafe'],
+    datasets:[{data:[60.31,33.07,5.19,1.42],backgroundColor:['#00A651','#009FDA','#E05206','#CE1126'],borderWidth:0,hoverOffset:4}]
+  }, options:{maintainAspectRatio:true,aspectRatio:1.7,
+    plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
+});
+
+// Assets
+lazy('cAssets', () => {
+  const labs=['Washing machine','Motorcycle','Refrigerator','Gas stove','Computer','Air con','Car/Van','Boat'];
+  new Chart(document.getElementById('cAssets'), {type:'bar', data:{
+    labels:labs,
+    datasets:[{data:[54.98,54.03,48.96,25.91,14.59,10.47,3.93,1.59],
+      backgroundColor:['#009FDA','#E05206','#00A651','#D4A017','#772583','#CE1126','#00B8C8','#9FA0A4'],
+      borderRadius:3,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+});
+
+// Cooking fuels
+lazy('cFuels', () => {
+  new Chart(document.getElementById('cFuels'), {type:'bar', data:{
+    labels:['LPG','Fuelwood','Charcoal','Electricity','Kerosene'],
+    datasets:[{data:[61.49,50.73,27.03,21.38,3.64],
+      backgroundColor:['#D4A017','#CE1126','#9FA0A4','#009FDA','#E05206'],
+      borderRadius:4,borderWidth:0,barPercentage:.62}]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,max:80,ticks:{...TICK,callback:v=>v+'%'}}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
+});
+
+// Life satisfaction
+lazy('cLifeSat', () => {
+  new Chart(document.getElementById('cLifeSat'), {type:'bar', data:{
+    labels:['1 (satisfied)','2','3 (neutral)','4','5 (dissatisfied)'],
+    datasets:[{data:[4.44,20.83,52.27,11.29,11.16],
+      backgroundColor:['#009FDA','#40B4E5','#9FA0A4','#D4A017','#CE1126'],borderRadius:4,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:TICK_D},y:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
+});
+
+// Life satisfaction by region
+lazy('cLifeSatRegion', () => {
+  new Chart(document.getElementById('cLifeSatRegion'), {type:'bar', data:{
+    labels:['NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
+    datasets:[
+      {label:'1 (satisfied)',data:[3.7,4.5,5.7,1.5],backgroundColor:'#009FDA',borderWidth:0,stack:'s'},
+      {label:'2',data:[25.4,21.9,17.3,19.3],backgroundColor:'#40B4E5',borderWidth:0,stack:'s'},
+      {label:'3 (neutral)',data:[53.2,55.1,49.4,46.5],backgroundColor:'#9FA0A4',borderWidth:0,stack:'s'},
+      {label:'4',data:[9.4,8.1,15.0,18.4],backgroundColor:'#D4A017',borderWidth:0,stack:'s'},
+      {label:'5 (dissatisfied)',data:[8.3,10.4,12.6,14.3],backgroundColor:'#CE1126',borderRadius:[3,3,0,0],borderWidth:0,stack:'s'}
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{stacked:true,grid:{display:false},ticks:TICK_D},y:{stacked:true,grid:GRID_D,max:100,ticks:{...TICK_D,callback:v=>v+'%'}}},
+    plugins:{legend:{...LEG_D,labels:{...LEG_D.labels,font:{size:8}}},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// Eco change
+lazy('cEcoChange', () => {
+  new Chart(document.getElementById('cEcoChange'), {type:'doughnut', data:{
+    labels:['Same','Somewhat worse','Somewhat better','Much better','Much worse'],
+    datasets:[{data:[46.32,27.76,11.67,7.31,6.95],backgroundColor:['#9FA0A4','#CE1126','#D4A017','#00A651','#009FDA'],borderWidth:0,hoverOffset:4}]
+  }, options:{maintainAspectRatio:true,aspectRatio:1.6,
+    plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
+});
+
+// Self income group
+lazy('cIncGroup', () => {
+  new Chart(document.getElementById('cIncGroup'), {type:'bar', data:{
+    labels:['Group 1 (lowest)','Group 2','Group 3 (middle)','Group 4','Group 5 (highest)'],
+    datasets:[{data:[20.21,29.72,48.62,1.22,0.23],
+      backgroundColor:['#CE1126','#E05206','#009FDA','#00A651','#00A651'],borderRadius:4,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{display:false},ticks:{...TICK_D,font:{size:8}}},y:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
+});
+
+// Likert
+lazy('cLikert', () => {
+  const labs=['Worried: AI/automation','Worried: job loss','Family worse off (2yr)','Good time to find a job','Optimistic about economy','Worried: political instability','Digital services helpful','Worried: child education','Prices rising fast','Taxes well spent'];
+  const vals=[27.39,24.56,24.72,22.34,22.02,19.4,21.36,16.13,17.0,44.53];
+  new Chart(document.getElementById('cLikert'), {type:'bar', data:{
+    labels:labs,
+    datasets:[{data:vals,backgroundColor:vals.map((v,i)=>i===9?'#00A651':v>=25?'#CE1126':v>=20?'#E05206':'#009FDA'),borderRadius:3,borderWidth:0,barPercentage:.72}]
+  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK_D}},
+    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+});
+
+// Eco by macro stacked
+lazy('cEcoMacro', () => {
+  const worse=[33.05,33.44,39.43,31.13];
+  const same =[45.83,45.32,40.32,51.48];
+  const better=[21.11,20.26,20.24,15.08];
+  new Chart(document.getElementById('cEcoMacro'), {type:'bar', data:{
+    labels:MACROS,
+    datasets:[
+      {label:'Better',data:better,backgroundColor:'rgba(45,122,62,.82)',borderRadius:[3,3,0,0],borderWidth:0,stack:'s'},
+      {label:'Same',data:same,  backgroundColor:'rgba(123,94,167,.72)',borderRadius:0,borderWidth:0,stack:'s'},
+      {label:'Worse',data:worse,backgroundColor:'rgba(192,57,43,.82)',borderRadius:[0,0,3,3],borderWidth:0,stack:'s'},
+    ]
+  }, options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{stacked:true,grid:{display:false},ticks:{...TICK_D,font:{size:9}}},y:{stacked:true,grid:GRID_D,max:100,ticks:{...TICK_D,callback:v=>v+'%'}}},
+    plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+</script>
+</body>
+</html>
