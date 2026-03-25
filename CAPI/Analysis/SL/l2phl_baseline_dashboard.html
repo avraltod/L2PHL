@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>L2P Philippines — Household Roster Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --A:#0ea5e9;--A2:#f59e0b;--F:#f43f5e;--M:#0ea5e9;
+  --bg:#060e1f;--panel:#0b1528;--card:#0f1e3a;--card2:#12234a;
+  --bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.12);
+  --tx:rgba(255,255,255,.88);--mu:rgba(255,255,255,.42);--fa:rgba(255,255,255,.18);
+  --red:#ef4444;--green:#22c55e;--purple:#a78bfa;--SB:285px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;overflow:hidden;}
+.app{display:flex;height:100vh;}
+
+/* SIDEBAR */
+.sb{width:var(--SB);flex-shrink:0;background:var(--panel);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;}
+.sb-hd{padding:14px 15px 11px;border-bottom:1px solid var(--bd);}
+.sb-flag{font-size:1.5rem;margin-bottom:5px;}
+.sb-title{font-family:'DM Serif Display',serif;font-size:14px;color:#fff;line-height:1.25;}
+.sb-sub{font-size:10px;color:var(--mu);margin-top:2px;}
+.sb-body{flex:1;overflow-y:auto;padding:13px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.05) transparent;}
+.sb-body::-webkit-scrollbar{width:3px;}
+.sb-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px;}
+.sb-s{margin-bottom:15px;}
+.sb-st{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--A);margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.sb-st::after{content:'';flex:1;height:1px;background:rgba(14,165,233,.18);}
+.fsel{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--bd2);border-radius:6px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 9px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,.3)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;margin-bottom:6px;}
+.fsel:focus{border-color:var(--A);}
+.swatches{display:flex;gap:6px;}
+.sw{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .12s;}
+.sw:hover{transform:scale(1.15);}
+.sw.on{border-color:#fff;}
+.sb-box{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:7px;padding:10px 12px;margin-bottom:10px;}
+.sb-r{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+.sb-r:last-child{margin-bottom:0;}
+.sb-l{font-size:11px;color:var(--mu);}
+.sb-v{font-size:13px;font-weight:600;color:#fff;}
+.sb-ft{padding:10px 13px;border-top:1px solid var(--bd);flex-shrink:0;display:flex;gap:7px;}
+.xbtn{flex:1;padding:8px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.xbtn.p{background:var(--A);color:#fff;}
+.xbtn.s{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);border:1px solid var(--bd);}
+.xbtn:hover{opacity:.82;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.mhd{padding:12px 20px 10px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.mt{font-family:'DM Serif Display',serif;font-size:16px;color:#fff;}
+.ms{font-size:10px;color:var(--mu);margin-top:2px;}
+.badges{display:flex;gap:7px;align-items:center;}
+.bdg{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:500;}
+.bdg.b{background:rgba(14,165,233,.15);color:var(--A);border:1px solid rgba(14,165,233,.2);}
+.bdg.g{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.18);}
+.bdg.o{background:rgba(245,158,11,.12);color:var(--A2);border:1px solid rgba(245,158,11,.2);}
+
+/* KPI */
+.krow{display:flex;gap:9px;padding:12px 20px 10px;border-bottom:1px solid var(--bd);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+.krow::-webkit-scrollbar{display:none;}
+.kpi{flex:1;min-width:125px;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 13px;position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi.kb::before{background:var(--A);}
+.kpi.ko::before{background:var(--A2);}
+.kpi.kr::before{background:var(--F);}
+.kpi.kg::before{background:var(--green);}
+.kpi.kp::before{background:var(--purple);}
+.kpi.ke::before{background:var(--red);}
+.kico{font-size:1.15rem;display:block;margin-bottom:5px;}
+.kv{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#fff;line-height:1;margin-bottom:3px;}
+.kl{font-size:10px;color:var(--mu);line-height:1.3;}
+.kh{font-size:10px;margin-top:4px;}
+.kh.g{color:var(--green);}
+.kh.r{color:var(--red);}
+.kh.o{color:var(--A2);}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--bd);flex-shrink:0;padding:0 20px;background:rgba(6,14,31,.55);}
+.tb{padding:10px 15px;font-size:12px;font-weight:500;color:var(--mu);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .15s;}
+.tb:hover{color:rgba(255,255,255,.7);}
+.tb.on{color:var(--A);border-bottom-color:var(--A);}
+
+/* CONTENT */
+.tc{flex:1;overflow-y:auto;padding:16px 20px 20px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.05) transparent;}
+.tc::-webkit-scrollbar{width:4px;}
+.tc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);}
+.tp{display:none;}
+.tp.on{display:block;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:11px;}
+.g1{margin-bottom:11px;}
+
+/* CHART CARD */
+.cc{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:13px;overflow:hidden;}
+.cc-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:11px;}
+.ct{font-size:12px;font-weight:500;color:#fff;}
+.cs{font-size:10px;color:var(--mu);margin-top:1px;}
+.cb{font-size:9px;padding:2px 7px;border-radius:20px;font-weight:600;white-space:nowrap;flex-shrink:0;}
+.cb.b{background:rgba(14,165,233,.15);color:var(--A);}
+.cb.g{background:rgba(34,197,94,.1);color:var(--green);}
+.cb.r{background:rgba(239,68,68,.12);color:var(--red);}
+.cb.o{background:rgba(245,158,11,.12);color:var(--A2);}
+.cb.p{background:rgba(167,139,250,.12);color:var(--purple);}
+canvas{display:block;}
+
+/* PROG BARS */
+.pr{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.pl{width:130px;flex-shrink:0;font-size:11px;color:rgba(255,255,255,.62);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pt{flex:1;height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+.pf{height:100%;border-radius:4px;transition:width .7s cubic-bezier(.16,1,.3,1);}
+.pv{width:40px;text-align:right;font-size:11px;font-weight:500;color:#fff;}
+
+/* ALERT */
+.al{border-radius:8px;padding:11px 14px;font-size:12px;line-height:1.65;margin-bottom:11px;display:flex;gap:9px;align-items:flex-start;}
+.al.r{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);}
+.al.r .aw{color:#f87171;}
+.al.g{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);}
+.al.g .aw{color:#4ade80;}
+.al.o{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);}
+.al.o .aw{color:#fbbf24;}
+.al-ic{font-size:1.3rem;flex-shrink:0;}
+.aw{font-weight:600;}
+
+/* STAT BLOCKS */
+.trio{display:flex;align-items:center;gap:16px;padding:10px 0 5px;justify-content:center;}
+.trio-item{text-align:center;flex:1;}
+.trio-num{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;}
+.trio-lbl{font-size:11px;color:var(--mu);margin-top:4px;}
+.trio-divider{width:1px;background:rgba(255,255,255,.08);height:40px;flex-shrink:0;}
+
+/* REGION MAP (bubble grid) */
+.reg-grid{display:flex;flex-wrap:wrap;gap:8px;padding:6px 0 10px;}
+.reg-bub{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:transform .15s;min-width:48px;}
+.reg-bub:hover{transform:translateY(-2px);}
+.reg-circ{border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:rgba(255,255,255,.9);}
+.reg-nm{font-size:8px;color:var(--mu);text-align:center;max-width:52px;line-height:1.2;}
+.reg-vl{font-size:9px;font-weight:600;color:#fff;}
+
+/* SECTION LABEL */
+.slbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--mu);margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+.slbl::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.05);}
+
+/* DATA SOURCE TAG */
+.src-tag{font-size:10px;color:rgba(255,255,255,.28);margin-top:8px;padding-top:7px;border-top:1px solid rgba(255,255,255,.04);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.tp.on .cc,.tp.on .kpi,.tp.on .al{animation:fadeUp .26s ease both;}
+.tp.on .cc:nth-child(2){animation-delay:.05s;}
+.tp.on .cc:nth-child(3){animation-delay:.1s;}
+.tp.on .g2>.cc:last-child{animation-delay:.07s;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sb">
+  <div class="sb-hd">
+    <div class="sb-flag">🇵🇭</div>
+    <div class="sb-title">L2P Philippines — Roster Dashboard</div>
+    <div class="sb-sub">Listening to Philippines · M01 Roster · Oct 2025<br>Weighted by <code style="font-size:9px;color:var(--A)">indw</code> from final_weights.dta</div>
+  </div>
+  <div class="sb-body">
+
+    <div class="sb-s">
+      <div class="sb-st">📊 Breakdown view</div>
+      <select class="fsel" id="fDim" onchange="applyDim()">
+        <option value="total">🌐 National Total</option>
+        <option value="urban">🏙️ Urban vs Rural</option>
+        <option value="macro">🗺️ By Macro-region</option>
+        <option value="gender">👤 By Gender</option>
+      </select>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">🎨 Accent colour</div>
+      <div class="swatches">
+        <div class="sw on" style="background:#0ea5e9" onclick="setA('#0ea5e9',this)"></div>
+        <div class="sw" style="background:#0038a8" onclick="setA('#0038a8',this)"></div>
+        <div class="sw" style="background:#22c55e" onclick="setA('#22c55e',this)"></div>
+        <div class="sw" style="background:#a78bfa" onclick="setA('#a78bfa',this)"></div>
+        <div class="sw" style="background:#f59e0b" onclick="setA('#f59e0b',this)"></div>
+        <div class="sw" style="background:#f43f5e" onclick="setA('#f43f5e',this)"></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">📌 Key weighted estimates</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Sample members</span><span class="sb-v">10,496</span></div>
+        <div class="sb-r"><span class="sb-l">Sample HH</span><span class="sb-v">2,470</span></div>
+        <div class="sb-r"><span class="sb-l">Represents (pop.)</span><span class="sb-v">~108.7M</span></div>
+        <div class="sb-r"><span class="sb-l">Male</span><span class="sb-v">50.63%</span></div>
+        <div class="sb-r"><span class="sb-l">Female</span><span class="sb-v">49.37%</span></div>
+        <div class="sb-r"><span class="sb-l">Median age</span><span class="sb-v">25 yrs</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">🏠 Household profile</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Modal HH size</span><span class="sb-v">4 persons</span></div>
+        <div class="sb-r"><span class="sb-l">Urban share</span><span class="sb-v">54.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Tagalog HHs</span><span class="sb-v">39.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Son/daughter</span><span class="sb-v">43.2%</span></div>
+        <div class="sb-r"><span class="sb-l">Single/unmarried</span><span class="sb-v">56.2%</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">♿ Disability &amp; remittances</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">With disability</span><span class="sb-v" style="color:#f87171">2.51%</span></div>
+        <div class="sb-r"><span class="sb-l">PWD ID coverage</span><span class="sb-v">58.3%</span></div>
+        <div class="sb-r"><span class="sb-l">Male disability</span><span class="sb-v">3.08%</span></div>
+        <div class="sb-r"><span class="sb-l">Female disability</span><span class="sb-v">1.92%</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">🎓 Education (M02)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Attendance (5–24)</span><span class="sb-v" style="color:#4ade80">78.3%</span></div>
+        <div class="sb-r"><span class="sb-l">Female attendance</span><span class="sb-v">80.4%</span></div>
+        <div class="sb-r"><span class="sb-l">Male attendance</span><span class="sb-v">76.3%</span></div>
+        <div class="sb-r"><span class="sb-l">Public school</span><span class="sb-v">89.8%</span></div>
+        <div class="sb-r"><span class="sb-l">Annual spend</span><span class="sb-v">₱16,380</span></div>
+        <div class="sb-r"><span class="sb-l">Top reason (non-attend)</span><span class="sb-v" style="font-size:11px;">Employment</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">💼 Employment (M03)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Employment rate (15+)</span><span class="sb-v" style="color:#4ade80">44.7%</span></div>
+        <div class="sb-r"><span class="sb-l">Male rate</span><span class="sb-v">60.2%</span></div>
+        <div class="sb-r"><span class="sb-l">Female rate</span><span class="sb-v">30.1%</span></div>
+        <div class="sb-r"><span class="sb-l">No contract</span><span class="sb-v" style="color:#fbbf24">71.8%</span></div>
+        <div class="sb-r"><span class="sb-l">HH job loss (30d)</span><span class="sb-v">8.5%</span></div>
+        <div class="sb-r"><span class="sb-l">Avg hours/week</span><span class="sb-v">31.9 hrs</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">💵 Income & Finance (M04–05)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Regular income earners</span><span class="sb-v">66.1%</span></div>
+        <div class="sb-r"><span class="sb-l">OFW remittances (HH)</span><span class="sb-v">7.4%</span></div>
+        <div class="sb-r"><span class="sb-l">Bank account access</span><span class="sb-v">5.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Mobile money</span><span class="sb-v">18.3%</span></div>
+        <div class="sb-r"><span class="sb-l">Took a loan (6mo)</span><span class="sb-v">18.2%</span></div>
+      </div>
+    </div>
+    <div class="sb-s">
+      <div class="sb-st">🏥 Health & Hazards (M07, M09)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">PhilHealth covered</span><span class="sb-v">46.1%</span></div>
+        <div class="sb-r"><span class="sb-l">OOP for consultation</span><span class="sb-v" style="color:#fbbf24">54.1%</span></div>
+        <div class="sb-r"><span class="sb-l">Typhoon exposure (3yr)</span><span class="sb-v" style="color:#f87171">76.4%</span></div>
+        <div class="sb-r"><span class="sb-l">Extreme heat</span><span class="sb-v" style="color:#f87171">49.7%</span></div>
+        <div class="sb-r"><span class="sb-l">Early warning received</span><span class="sb-v">55.1%</span></div>
+      </div>
+    </div>
+    <div class="sb-s">
+      <div class="sb-st">🏠 Housing & WASH (M10–12)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Electricity access</span><span class="sb-v" style="color:#4ade80">96.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Internet access</span><span class="sb-v">49.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Piped water (inside)</span><span class="sb-v">60.6%</span></div>
+        <div class="sb-r"><span class="sb-l">Flush toilet→sewage</span><span class="sb-v">71.1%</span></div>
+        <div class="sb-r"><span class="sb-l">Drinking water unsafe</span><span class="sb-v" style="color:#f87171">60.3%</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="sb-ft">
+    <button class="xbtn p" onclick="window.print()">🖨 Print</button>
+    <button class="xbtn s" onclick="showAbout()">ℹ️ About</button>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+  <div class="mhd">
+    <div>
+      <div class="mt">Philippines Household Roster — L2P Brief Survey</div>
+      <div class="ms">M01 Roster · Weighted by <code style="font-size:9px">indw</code> · 10,496 members · 2,470 households · October 2025</div>
+    </div>
+    <div class="badges">
+      <span class="bdg b" id="dimBdg">National Total</span>
+      <span class="bdg g">Weighted Estimates</span>
+      <span class="bdg o">L2P Oct 2025</span>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="krow">
+    <div class="kpi kb"><span class="kico">👥</span><div class="kv">50.63%</div><div class="kl">Male members</div></div>
+    <div class="kpi kr"><span class="kico">👩</span><div class="kv">49.37%</div><div class="kl">Female members</div></div>
+    <div class="kpi ko"><span class="kico">🎂</span><div class="kv">25 yrs</div><div class="kl">Median age</div><div class="kh o">40.6% under 20</div></div>
+    <div class="kpi kp"><span class="kico">♿</span><div class="kv">2.51%</div><div class="kl">With disability</div><div class="kh o">58.3% have PWD ID</div></div>
+    <div class="kpi kg"><span class="kico">🏠</span><div class="kv">4–5</div><div class="kl">Modal HH size</div><div class="kh g">54% Urban</div></div>
+    <div class="kpi kb"><span class="kico">📍</span><div class="kv">93.3%</div><div class="kl">Same residence (5yr)</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tb on" onclick="showTab('overview',this)">📊 Overview</button>
+    <button class="tb" onclick="showTab('demo',this)">👤 Demographics</button>
+    <button class="tb" onclick="showTab('geo',this)">🗺️ Geography</button>
+    <button class="tb" onclick="showTab('hh',this)">🏠 Household</button>
+    <button class="tb" onclick="showTab('disability',this)">♿ Disability</button>
+    <button class="tb" onclick="showTab('education',this)">🎓 Education</button>
+    <button class="tb" onclick="showTab('employment',this)">💼 Employment</button>
+    <button class="tb" onclick="showTab('income',this)">💵 Income</button>
+    <button class="tb" onclick="showTab('finance',this)">🏦 Finance</button>
+    <button class="tb" onclick="showTab('migration',this)">✈️ Migration</button>
+    <button class="tb" onclick="showTab('health',this)">🏥 Health</button>
+    <button class="tb" onclick="showTab('food',this)">🛒 Food & Nutrition</button>
+    <button class="tb" onclick="showTab('hazard',this)">⛈️ Hazards</button>
+    <button class="tb" onclick="showTab('housing',this)">🏠 Housing & WASH</button>
+    <button class="tb" onclick="showTab('assets',this)">📱 Assets & Energy</button>
+    <button class="tb" onclick="showTab('views',this)">💭 Views</button>
+  </div>
+
+  <div class="tc">
+
+    <!-- ══ OVERVIEW ══ -->
+    <div class="tp on" id="tp-overview">
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Sex Distribution</div><div class="cs">Weighted % — national total</div></div><span class="cb b">50.6% M · 49.4% F</span></div>
+          <div style="position:relative;height:195px;display:flex;align-items:center;justify-content:center;"><canvas id="cSex"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Age Group Distribution</div><div class="cs">Weighted % of all household members</div></div><span class="cb o">8 age bands</span></div>
+          <div style="position:relative;height:195px;"><canvas id="cAge"></canvas></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Marital / Civil Status</div><div class="cs">Weighted % — all members</div></div><span class="cb p">56.2% Single</span></div>
+          <div style="position:relative;height:195px;display:flex;align-items:center;justify-content:center;"><canvas id="cMar"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Relationship to Household Head</div><div class="cs">Weighted % — all members</div></div><span class="cb b">43.2% Son/daughter</span></div>
+          <div style="position:relative;height:195px;display:flex;align-items:center;justify-content:center;"><canvas id="cRel"></canvas></div>
+        </div>
+      </div>
+      <div class="src-tag">Source: L2P Philippines Brief Roster Survey (M01_roster.dta) · Weights: indw from final_weights.dta · Oct 15 2025</div>
+    </div>
+
+    <!-- ══ DEMOGRAPHICS ══ -->
+    <div class="tp" id="tp-demo">
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Age Groups by Sex</div><div class="cs">Weighted % within Male / Female</div></div><span class="cb b">Male vs Female</span></div>
+          <div style="position:relative;height:220px;"><canvas id="cAgeSex"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Marital Status by Sex</div><div class="cs">Widowhood 6.0% F vs 1.4% M</div></div><span class="cb r">Gender gap</span></div>
+          <div style="position:relative;height:220px;"><canvas id="cMarSex"></canvas></div>
+        </div>
+      </div>
+      <div class="cc g1">
+        <div class="cc-hd"><div><div class="ct">Age Distribution — Urban vs Rural</div><div class="cs">Weighted % — Rural areas have younger age profile</div></div><span class="cb o">Urban vs Rural</span></div>
+        <div style="position:relative;height:210px;"><canvas id="cAgeUrban"></canvas></div>
+      </div>
+      <div class="cc g1">
+        <div class="cc-hd"><div><div class="ct">Age Distribution — By Macro-region</div><div class="cs">Stacked % — Mindanao and Visayas have larger under-20 share</div></div><span class="cb p">Regional</span></div>
+        <div style="position:relative;height:220px;"><canvas id="cAgeMacro"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══ GEOGRAPHY ══ -->
+    <div class="tp" id="tp-geo">
+      <div class="cc g1">
+        <div class="cc-hd"><div><div class="ct">Weighted Share by Region</div><div class="cs">% of national weighted population represented per region · hover for value</div></div><span class="cb b">18 regions</span></div>
+        <div class="reg-grid" id="regGrid"></div>
+        <div class="src-tag">Bubble size proportional to weighted population share. Click a region bubble to highlight.</div>
+      </div>
+      <div class="cc g1">
+        <div class="cc-hd"><div><div class="ct">All Regions — Weighted Population Share (%)</div><div class="cs">Sorted by share — CALABARZON and NCR together represent 27.2%</div></div><span class="cb o">Ranked</span></div>
+        <div style="position:relative;height:360px;"><canvas id="cRegFull"></canvas></div>
+      </div>
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Macro-region Distribution</div><div class="cs">NCR · Luzon · Visayas · Mindanao</div></div><span class="cb b">Macro</span></div>
+          <div style="position:relative;height:190px;display:flex;align-items:center;justify-content:center;"><canvas id="cMacro"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Residential Mobility</div><div class="cs">% in same place of residence as 5 years ago</div></div><span class="cb g">93.3% stayed</span></div>
+          <div class="slbl" style="margin-top:8px;">By macro-region</div>
+          <div class="pr"><div class="pl">NCR</div><div class="pt"><div class="pf" style="width:0;background:#ef4444" data-w="83.7"></div></div><div class="pv">83.7%</div></div>
+          <div class="pr"><div class="pl">Luzon (excl. NCR)</div><div class="pt"><div class="pf" style="width:0;background:#0ea5e9" data-w="94.6"></div></div><div class="pv">94.6%</div></div>
+          <div class="pr"><div class="pl">Visayas</div><div class="pt"><div class="pf" style="width:0;background:#22c55e" data-w="96.7"></div></div><div class="pv">96.7%</div></div>
+          <div class="pr"><div class="pl">Mindanao</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="94.9"></div></div><div class="pv">94.9%</div></div>
+          <div style="margin-top:10px;font-size:11px;color:var(--mu);line-height:1.5;">NCR has highest mobility (16.3% moved), consistent with internal migration patterns toward Metro Manila.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HOUSEHOLD ══ -->
+    <div class="tp" id="tp-hh">
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Household Size Distribution</div><div class="cs">Weighted % of HHs by number of members</div></div><span class="cb b">Modal: 4 persons</span></div>
+          <div style="position:relative;height:200px;"><canvas id="cHHSize"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Primary Language at Home</div><div class="cs">Weighted % of HHs — Tagalog dominant in urban areas</div></div><span class="cb o">Top languages</span></div>
+          <div style="position:relative;height:200px;"><canvas id="cLang"></canvas></div>
+        </div>
+      </div>
+      <div class="cc g1">
+        <div class="cc-hd"><div><div class="ct">Household Size — Urban vs Rural</div><div class="cs">Urban (blue) vs Rural (amber) — Rural HHs slightly larger</div></div><span class="cb o">Urban vs Rural</span></div>
+        <div style="position:relative;height:200px;"><canvas id="cHHUrban"></canvas></div>
+      </div>
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">HH Member Status</div><div class="cs">Permanent vs Migrant members</div></div><span class="cb g">99.9% permanent</span></div>
+          <div class="trio">
+            <div class="trio-item"><div class="trio-num" style="color:#22c55e;">99.87%</div><div class="trio-lbl">Permanent</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#fbbf24;">0.07%</div><div class="trio-lbl">City/Province</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#a78bfa;">0.02%</div><div class="trio-lbl">Overseas</div></div>
+          </div>
+          <div class="src-tag">Overseas migrants represent 0.02% — higher in NCR (Luzon corridors).</div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Median Age by Settlement &amp; Region</div><div class="cs">Weighted median — Rural areas slightly younger</div></div><span class="cb p">Age profile</span></div>
+          <div class="slbl" style="margin-top:6px;">By settlement</div>
+          <div class="pr"><div class="pl">Urban</div><div class="pt"><div class="pf" style="width:0;background:#0ea5e9" data-w="54"></div></div><div class="pv">27 yrs</div></div>
+          <div class="pr"><div class="pl">Rural</div><div class="pt"><div class="pf" style="width:0;background:#f59e0b" data-w="46"></div></div><div class="pv">23 yrs</div></div>
+          <div class="slbl" style="margin-top:10px;">By macro-region</div>
+          <div class="pr"><div class="pl">NCR</div><div class="pt"><div class="pf" style="width:0;background:#0ea5e9" data-w="58"></div></div><div class="pv">29 yrs</div></div>
+          <div class="pr"><div class="pl">Luzon (excl. NCR)</div><div class="pt"><div class="pf" style="width:0;background:#22c55e" data-w="54"></div></div><div class="pv">27 yrs</div></div>
+          <div class="pr"><div class="pl">Visayas</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="50"></div></div><div class="pv">25 yrs</div></div>
+          <div class="pr"><div class="pl">Mindanao</div><div class="pt"><div class="pf" style="width:0;background:#f43f5e" data-w="44"></div></div><div class="pv">22 yrs</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ DISABILITY ══ -->
+    <div class="tp" id="tp-disability">
+      <div class="al o">
+        <span class="al-ic">⚠️</span>
+        <div><span class="aw">2.51% of household members have a disability</span> (weighted national estimate). 58.3% of PWDs have an official PWD ID. Males have a higher disability rate (3.08%) than females (1.92%). Intellectual/Mental/Psychosocial disability is the most prevalent type.</div>
+      </div>
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Disability Prevalence by Macro-region</div><div class="cs">Weighted % of members with disability</div></div><span class="cb p">Regional</span></div>
+          <div style="position:relative;height:195px;"><canvas id="cDisabMacro"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">PWD ID Coverage by Macro-region</div><div class="cs">% of PWDs with official PWD ID — coverage gap in Mindanao</div></div><span class="cb o">Coverage gap</span></div>
+          <div style="position:relative;height:195px;"><canvas id="cPWDid"></canvas></div>
+        </div>
+      </div>
+      <div class="cc g1">
+        <div class="cc-hd"><div><div class="ct">Disability Type — % among members with disability</div><div class="cs">Weighted distribution of reported disability types (Type 1 + Type 2)</div></div><span class="cb r">All types</span></div>
+        <div style="position:relative;height:290px;"><canvas id="cDisabTypes"></canvas></div>
+      </div>
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Disability by Sex</div><div class="cs">Weighted % with disability — Male vs Female</div></div><span class="cb b">Gender</span></div>
+          <div class="trio" style="margin-top:10px;">
+            <div class="trio-item"><div class="trio-num" style="color:#7db8ff;">3.08%</div><div class="trio-lbl">Male</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#f87171;">1.92%</div><div class="trio-lbl">Female</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#a78bfa;">2.51%</div><div class="trio-lbl">National</div></div>
+          </div>
+          <div style="margin-top:10px;">
+            <div class="slbl">By age group (among all members)</div>
+            <div class="pr"><div class="pl">&lt;10</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="11.37"></div></div><div class="pv">11.4%</div></div>
+            <div class="pr"><div class="pl">10-19</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="12.58"></div></div><div class="pv">12.6%</div></div>
+            <div class="pr"><div class="pl">20-29</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="13.71"></div></div><div class="pv">13.7%</div></div>
+            <div class="pr"><div class="pl">30-39</div><div class="pt"><div class="pf" style="width:0;background:#f43f5e" data-w="17.93"></div></div><div class="pv">17.9%</div></div>
+            <div class="pr"><div class="pl">40-49</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="11.17"></div></div><div class="pv">11.2%</div></div>
+            <div class="pr"><div class="pl">50-59</div><div class="pt"><div class="pf" style="width:0;background:#f43f5e" data-w="12.91"></div></div><div class="pv">12.9%</div></div>
+            <div class="pr"><div class="pl">60-69</div><div class="pt"><div class="pf" style="width:0;background:#f43f5e" data-w="11.08"></div></div><div class="pv">11.1%</div></div>
+            <div class="pr"><div class="pl">70+</div><div class="pt"><div class="pf" style="width:0;background:#f43f5e" data-w="9.25"></div></div><div class="pv">9.3%</div></div>
+          </div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Disability by Settlement</div><div class="cs">Rural areas slightly higher prevalence</div></div><span class="cb b">Urban vs Rural</span></div>
+          <div style="position:relative;height:185px;"><canvas id="cDisabUrban"></canvas></div>
+          <div class="al o" style="margin-top:10px;padding:8px 10px;font-size:11px;">
+            <span class="al-ic" style="font-size:1rem;">📋</span>
+            <div><span class="aw">inci_disability</span> captures household-level incidence (11.15% of members are in a HH with at least one PWD). <span class="aw">member_disability</span> captures individual disability (2.51% weighted). Dashboard uses <code style="font-size:9px">member_disability</code>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ EDUCATION ══ -->
+    <div class="tp" id="tp-education">
+
+      <div class="al g">
+        <span class="al-ic">🎓</span>
+        <div><span class="aw">78.3% of 5–24 year-olds are currently attending school</span> (weighted national estimate from M02_edu.dta). Females attend at higher rates (80.4%) than males (76.3%). 89.8% attend public institutions. Employment is the top reason for non-attendance (24.6%).</div>
+      </div>
+
+      <!-- Row 1: attendance rate + school type -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">School Attendance Rate by Age Band</div><div class="cs">% attending school — ages 5–24 · weighted</div></div><span class="cb g">78.3% overall</span></div>
+          <div style="position:relative;height:210px;"><canvas id="cAttendAge"></canvas></div>
+          <div class="src-tag">Sharp drop at 18–19 (65.2%) and 20–24 (30.2%) reflects post-secondary transition.</div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">School Type</div><div class="cs">Public vs Private among those attending</div></div><span class="cb b">89.8% Public</span></div>
+          <div style="position:relative;height:145px;display:flex;align-items:center;justify-content:center;"><canvas id="cSchoolType"></canvas></div>
+          <div class="slbl" style="margin-top:12px;">By macro-region</div>
+          <div class="pr"><div class="pl">NCR</div><div class="pt"><div class="pf" style="width:0;background:#0ea5e9" data-w="82.3"></div></div><div class="pv">82.3%</div></div>
+          <div class="pr"><div class="pl">Luzon (excl. NCR)</div><div class="pt"><div class="pf" style="width:0;background:#22c55e" data-w="91.5"></div></div><div class="pv">91.5%</div></div>
+          <div class="pr"><div class="pl">Visayas</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="90.4"></div></div><div class="pv">90.4%</div></div>
+          <div class="pr"><div class="pl">Mindanao</div><div class="pt"><div class="pf" style="width:0;background:#f43f5e" data-w="93.2"></div></div><div class="pv">93.2%</div></div>
+        </div>
+      </div>
+
+      <!-- Row 2: attendance by region + gender -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Attendance Rate by Macro-region</div><div class="cs">% of 5–24 attending school · weighted</div></div><span class="cb p">Regional comparison</span></div>
+          <div style="position:relative;height:195px;"><canvas id="cAttendMacro"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Attendance Rate by Sex</div><div class="cs">Female attendance consistently higher than male</div></div><span class="cb r">Gender gap</span></div>
+          <div style="position:relative;height:155px;display:flex;align-items:center;justify-content:center;"><canvas id="cAttendSex"></canvas></div>
+          <div class="trio" style="margin-top:8px;">
+            <div class="trio-item"><div class="trio-num" style="color:#7db8ff;font-size:1.6rem;">76.3%</div><div class="trio-lbl">Male</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#f87171;font-size:1.6rem;">80.4%</div><div class="trio-lbl">Female</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: reasons not attending -->
+      <div class="cc g1">
+        <div class="cc-hd"><div><div class="ct">Reasons for Not Attending School</div><div class="cs">Weighted % of reported reasons — ages 5–24 not attending (multi-select)</div></div><span class="cb r">Barriers</span></div>
+        <div style="position:relative;height:260px;"><canvas id="cReasons"></canvas></div>
+      </div>
+
+      <!-- Row 4: educational attainment adults -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Highest Educational Attainment</div><div class="cs">Weighted % — adults 18+ · grouped levels</div></div><span class="cb b">Adults 18+</span></div>
+          <div style="position:relative;height:200px;"><canvas id="cAttain"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Attainment by Sex</div><div class="cs">Females show higher college completion</div></div><span class="cb p">Gender comparison</span></div>
+          <div style="position:relative;height:200px;"><canvas id="cAttainSex"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 5: parent education -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Father's Education Level</div><div class="cs">Highest attainment reported for father · % weighted</div></div><span class="cb o">Intergenerational</span></div>
+          <div style="position:relative;height:195px;"><canvas id="cFatherEdu"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Mother's Education Level</div><div class="cs">Highest attainment reported for mother · % weighted</div></div><span class="cb o">Intergenerational</span></div>
+          <div style="position:relative;height:195px;"><canvas id="cMotherEdu"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 6: expenditure + transport + language -->
+      <div class="cc g1">
+        <div class="cc-hd"><div><div class="ct">Annual Education Expenditure by Category</div><div class="cs">Weighted mean among those with positive spending (Philippine Pesos) · National avg: ₱16,380/student/year</div></div><span class="cb o">Spending (PHP)</span></div>
+        <div style="position:relative;height:220px;"><canvas id="cExpCat"></canvas></div>
+      </div>
+
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Mode of Transport to School</div><div class="cs">Weighted % of transport modes used by students</div></div><span class="cb b">Getting to school</span></div>
+          <div style="position:relative;height:190px;display:flex;align-items:center;justify-content:center;"><canvas id="cTransport"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Language of Instruction</div><div class="cs">Weighted % of students by dominant classroom language</div></div><span class="cb p">Medium of instruction</span></div>
+          <div style="position:relative;height:190px;"><canvas id="cLangInst"></canvas></div>
+          <div class="src-tag" style="margin-top:8px;">Private tutoring rate: 1.93% nationally. Urban students slightly higher (2.1%) than Rural (1.7%).</div>
+        </div>
+      </div>
+
+      <div class="src-tag">Source: L2P Philippines Education Module (M02_edu.dta) · Weights: indw from final_weights.dta · Oct 15 2025</div>
+    </div>
+
+    <!-- ══ EMPLOYMENT ══ -->
+    <div class="tp" id="tp-employment">
+
+      <div class="al o">
+        <span class="al-ic">💼</span>
+        <div><span class="aw">44.7% of adults 15+ worked at least one hour last week</span> (weighted). A sharp gender gap exists — male employment rate (60.2%) is double the female rate (30.1%). 71.8% of workers have no formal contract, and only 28.4% have employer pension contributions.</div>
+      </div>
+
+      <!-- KPI strip -->
+      <div style="display:flex;gap:9px;margin-bottom:11px;overflow-x:auto;scrollbar-width:none;">
+        <div class="cc" style="flex:1;min-width:120px;text-align:center;padding:12px 10px;">
+          <div style="font-size:1rem;margin-bottom:4px;">👷</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:#4ade80;line-height:1;">44.7%</div>
+          <div style="font-size:10px;color:var(--mu);margin-top:3px;">Employment rate<br>adults 15+</div>
+        </div>
+        <div class="cc" style="flex:1;min-width:120px;text-align:center;padding:12px 10px;">
+          <div style="font-size:1rem;margin-bottom:4px;">⏱️</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:#7db8ff;line-height:1;">31.9</div>
+          <div style="font-size:10px;color:var(--mu);margin-top:3px;">Mean hours<br>worked/week</div>
+        </div>
+        <div class="cc" style="flex:1;min-width:120px;text-align:center;padding:12px 10px;">
+          <div style="font-size:1rem;margin-bottom:4px;">📋</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:#fbbf24;line-height:1;">71.8%</div>
+          <div style="font-size:10px;color:var(--mu);margin-top:3px;">No formal<br>contract</div>
+        </div>
+        <div class="cc" style="flex:1;min-width:120px;text-align:center;padding:12px 10px;">
+          <div style="font-size:1rem;margin-bottom:4px;">🏦</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:#f87171;line-height:1;">71.6%</div>
+          <div style="font-size:10px;color:var(--mu);margin-top:3px;">No employer<br>pension contrib.</div>
+        </div>
+        <div class="cc" style="flex:1;min-width:120px;text-align:center;padding:12px 10px;">
+          <div style="font-size:1rem;margin-bottom:4px;">📍</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:#a78bfa;line-height:1;">8.5%</div>
+          <div style="font-size:10px;color:var(--mu);margin-top:3px;">HH with job<br>loss (30 days)</div>
+        </div>
+        <div class="cc" style="flex:1;min-width:120px;text-align:center;padding:12px 10px;">
+          <div style="font-size:1rem;margin-bottom:4px;">🛵</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.7rem;color:#7db8ff;line-height:1;">28.9</div>
+          <div style="font-size:10px;color:var(--mu);margin-top:3px;">Mean travel<br>time (min)</div>
+        </div>
+      </div>
+
+      <!-- Row: emp rate by gender + age -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Employment Rate by Sex</div><div class="cs">% working at least 1 hr/week — adults 15+ · weighted</div></div><span class="cb r">Gender gap</span></div>
+          <div style="position:relative;height:190px;"><canvas id="cEmpSex"></canvas></div>
+          <div class="src-tag">Female employment 30.1% vs Male 60.2% — 30 pp gap reflecting care burden and informal work.</div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Employment Rate by Age Group</div><div class="cs">% employed — peaks at 45–54 (64.2%), low among youth 15–24 (19.1%)</div></div><span class="cb o">Age profile</span></div>
+          <div style="position:relative;height:190px;"><canvas id="cEmpAge"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row: class of worker + industry -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Class of Worker</div><div class="cs">Weighted % among employed — type of employment arrangement</div></div><span class="cb b">Employment type</span></div>
+          <div style="position:relative;height:210px;"><canvas id="cClassWork"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Industry Sector</div><div class="cs">Weighted % of employed by sector — top 8</div></div><span class="cb g">Sector</span></div>
+          <div style="position:relative;height:210px;"><canvas id="cIndustry"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row: hours distribution + occupation -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Working Hours per Week</div><div class="cs">Weighted % by hours band — 41.3% work part-time (&lt;20 hrs)</div></div><span class="cb p">Hours worked</span></div>
+          <div style="position:relative;height:190px;display:flex;align-items:center;justify-content:center;"><canvas id="cHoursDist"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Occupation Group</div><div class="cs">Weighted % by broad occupation category</div></div><span class="cb b">Occupations</span></div>
+          <div style="position:relative;height:190px;"><canvas id="cOccupation"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row: contract + pension -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Contract Type</div><div class="cs">Weighted % by contract arrangement — 71.8% informal (no contract)</div></div><span class="cb r">Informality</span></div>
+          <div style="position:relative;height:185px;display:flex;align-items:center;justify-content:center;"><canvas id="cContract"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Employment Benefits Access</div><div class="cs">% among employed reporting each benefit (multi-select)</div></div><span class="cb o">Benefits</span></div>
+          <div style="position:relative;height:185px;"><canvas id="cBenefits"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row: employment by macro + job search -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Employment Rate by Macro-region</div><div class="cs">% of working-age adults (15+) employed · weighted</div></div><span class="cb p">Regional</span></div>
+          <div style="position:relative;height:195px;"><canvas id="cEmpMacro"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Job Search &amp; Job Loss</div><div class="cs">% of adults seeking work · % of HHs with job loss in past 30 days</div></div><span class="cb r">Labour market stress</span></div>
+          <div style="position:relative;height:155px;"><canvas id="cJobSearch"></canvas></div>
+          <div class="slbl" style="margin-top:10px;">Pension contribution by region</div>
+          <div class="pr"><div class="pl">NCR</div><div class="pt"><div class="pf" style="width:0;background:#22c55e" data-w="48.2"></div></div><div class="pv">48.2%</div></div>
+          <div class="pr"><div class="pl">Luzon (excl. NCR)</div><div class="pt"><div class="pf" style="width:0;background:#0ea5e9" data-w="31.5"></div></div><div class="pv">31.5%</div></div>
+          <div class="pr"><div class="pl">Visayas</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="22.1"></div></div><div class="pv">22.1%</div></div>
+          <div class="pr"><div class="pl">Mindanao</div><div class="pt"><div class="pf" style="width:0;background:#f43f5e" data-w="18.7"></div></div><div class="pv">18.7%</div></div>
+        </div>
+      </div>
+
+      <!-- Row: transport to work -->
+      <div class="g2">
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Transport Mode to Work</div><div class="cs">Weighted % — motorcycle/tricycle and walking dominate</div></div><span class="cb b">Commute mode</span></div>
+          <div style="position:relative;height:185px;display:flex;align-items:center;justify-content:center;"><canvas id="cTransWork"></canvas></div>
+        </div>
+        <div class="cc">
+          <div class="cc-hd"><div><div class="ct">Contract Duration (among contracted)</div><div class="cs">Weighted % by contract length — among those with written/verbal contracts</div></div><span class="cb o">Job stability</span></div>
+          <div style="position:relative;height:185px;display:flex;align-items:center;justify-content:center;"><canvas id="cContractDur"></canvas></div>
+        </div>
+      </div>
+
+      <div class="src-tag">Source: L2P Philippines Employment Module (M03_emp.dta) · Weights: indw from final_weights.dta · Oct 15 2025 · Employment rate = worked ≥1 hr in reference week (a1=Yes)</div>
+    </div>
+
+
+    <!-- ══ INCOME ══ -->
+    <div class="tp" id="tp-income">
+      <div class="al g"><span class="al-ic">💵</span><div><span class="aw">66.1% of individuals received regular income in the past 6 months</span>, and 85.9% had seasonal/occasional income. Mean 6-month cash earnings: ₱10,464. Urban households earn ~20% more than rural. 7.4% of HHs receive OFW remittances averaging ₱21,845/6mo.</div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Regular vs Seasonal Income</div><div class="cs">% of individuals receiving each type · past 6 months · weighted</div></div><span class="cb g">Income receipt</span></div><div style="position:relative;height:200px;"><canvas id="cIncType"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Mean 6-Month Cash Earnings by Region</div><div class="cs">Philippine Pesos · among earners · weighted</div></div><span class="cb o">₱ earnings</span></div><div style="position:relative;height:200px;"><canvas id="cIncMacro"></canvas></div></div>
+      </div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">OFW / International Remittances</div><div class="cs">% of HHs receiving OFW cash income · past 6 months</div></div><span class="cb p">OFW</span></div>
+          <div class="trio" style="padding:14px 0 8px;">
+            <div class="trio-item"><div class="trio-num" style="color:#4ade80;font-size:1.7rem;">7.4%</div><div class="trio-lbl">HHs with OFW income</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#7db8ff;font-size:1.7rem;">₱21,845</div><div class="trio-lbl">Mean OFW cash (6mo)</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#fbbf24;font-size:1.7rem;">22.8%</div><div class="trio-lbl">Domestic support received</div></div>
+          </div>
+          <div class="src-tag">92.6% of HHs received no OFW cash. 8.1% receive pension income.</div>
+        </div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Mean 6-Month Cash Earnings</div><div class="cs">Urban vs Rural · weighted</div></div><span class="cb b">Settlement</span></div>
+          <div style="position:relative;height:165px;"><canvas id="cIncSett"></canvas></div>
+          <div class="src-tag">Urban: ₱11,296 · Rural: ₱9,452 · National: ₱10,464 (mean, past 6 months, among earners)</div>
+        </div>
+      </div>
+      <div class="src-tag">Source: M04_inc1.dta (individual indw) + M04_inc2.dta (HH hhw) · Oct 15 2025</div>
+    </div>
+
+    <!-- ══ FINANCE ══ -->
+    <div class="tp" id="tp-finance">
+      <div class="al o"><span class="al-ic">🏦</span><div><span class="aw">Financial inclusion is low:</span> only 5.0% of HHs have formal bank accounts, 18.3% use mobile money, and only 2.1% could handle a ₱300,000 emergency. 18.2% took a loan in the past 6 months.</div></div>
+      <div class="cc g1"><div class="cc-hd"><div><div class="ct">Financial Inclusion Indicators</div><div class="cs">% of households with access to each financial service · weighted by hhw</div></div><span class="cb b">Household level</span></div><div style="position:relative;height:240px;"><canvas id="cFinIndicators"></canvas></div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Bank Account Access by Region</div><div class="cs">% of HHs with formal bank account · macro-regions</div></div><span class="cb p">Banking gap</span></div><div style="position:relative;height:195px;"><canvas id="cFinBank"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Mobile Money vs Savings by Settlement</div><div class="cs">Urban vs Rural comparison</div></div><span class="cb o">Urban vs Rural</span></div><div style="position:relative;height:195px;"><canvas id="cFinSett"></canvas></div></div>
+      </div>
+      <div class="src-tag">Source: M05_fin.dta · Household level, weighted by hhw · Oct 15 2025</div>
+    </div>
+
+    <!-- ══ MIGRATION ══ -->
+    <div class="tp" id="tp-migration">
+      <div class="al g"><span class="al-ic">✈️</span><div><span class="aw">35.6% of working-age adults (15+) are considering migrating in the next year</span> (weighted). NCR shows the highest intent (45.5%), while Visayas is lowest (22.6%). Employment/job change is the dominant reason for past moves.</div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Migration Intent by Macro-region</div><div class="cs">% of adults 15+ considering migration in next 12 months · weighted</div></div><span class="cb r">Migration intent</span></div><div style="position:relative;height:200px;"><canvas id="cMigMacro"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Migration Intent by Sex &amp; Settlement</div><div class="cs">% considering migration</div></div><span class="cb b">Subgroups</span></div>
+          <div class="slbl" style="margin-top:8px;">By sex</div>
+          <div class="pr"><div class="pl">Male</div><div class="pt"><div class="pf" style="width:0;background:#7db8ff" data-w="37.4"></div></div><div class="pv">37.4%</div></div>
+          <div class="pr"><div class="pl">Female</div><div class="pt"><div class="pf" style="width:0;background:#f87171" data-w="33.9"></div></div><div class="pv">33.9%</div></div>
+          <div class="slbl" style="margin-top:10px;">By settlement</div>
+          <div class="pr"><div class="pl">Urban</div><div class="pt"><div class="pf" style="width:0;background:#0ea5e9" data-w="38.2"></div></div><div class="pv">38.2%</div></div>
+          <div class="pr"><div class="pl">Rural</div><div class="pt"><div class="pf" style="width:0;background:#f59e0b" data-w="32.3"></div></div><div class="pv">32.3%</div></div>
+          <div class="src-tag" style="margin-top:8px;">99.95% of individuals have never moved for 3+ months. NCR showing highest migration intent.</div>
+        </div>
+      </div>
+      <div class="src-tag">Source: M06_mig.dta · Individual level, weighted by indw · Oct 15 2025</div>
+    </div>
+
+    <!-- ══ HEALTH ══ -->
+    <div class="tp" id="tp-health">
+      <div class="al r"><span class="al-ic">🚨</span><div><span class="aw">Only 46.1% of members are covered by PhilHealth.</span> 54.1% paid out-of-pocket for consultations. 9.2% were hospitalized in the past 3 months with a mean bill of ₱52,160 — and ₱23,931 paid OOP. Visayas has the lowest PhilHealth coverage (35.6%).</div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">PhilHealth Coverage Type</div><div class="cs">% of members by PhilHealth membership category · weighted</div></div><span class="cb b">Health insurance</span></div><div style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;"><canvas id="cPhilType"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">PhilHealth Coverage by Macro-region</div><div class="cs">% covered (all categories) · NCR highest, Visayas lowest</div></div><span class="cb p">Regional gap</span></div><div style="position:relative;height:200px;"><canvas id="cPhilMacro"></canvas></div></div>
+      </div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Healthcare Facility Used</div><div class="cs">% of those who sought care by facility type · past 30 days</div></div><span class="cb o">Access point</span></div><div style="position:relative;height:200px;"><canvas id="cFacility"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Out-of-Pocket Payments</div><div class="cs">Consultation payment type · % of those who sought care</div></div><span class="cb r">Cost burden</span></div><div style="position:relative;height:165px;display:flex;align-items:center;justify-content:center;"><canvas id="cOOP"></canvas></div>
+          <div class="trio" style="margin-top:6px;">
+            <div class="trio-item"><div class="trio-num" style="color:#f87171;font-size:1.4rem;">₱3,354</div><div class="trio-lbl">Mean OOP consult</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#fbbf24;font-size:1.4rem;">₱52,160</div><div class="trio-lbl">Mean hosp. bill</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#f87171;font-size:1.4rem;">₱23,931</div><div class="trio-lbl">Hosp. OOP mean</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="src-tag">Source: M07_med.dta · Individual level, weighted by indw · Oct 15 2025 · Hospitalization rate (past 3 months): 9.2%</div>
+    </div>
+
+    <!-- ══ FOOD & NUTRITION ══ -->
+    <div class="tp" id="tp-food">
+      <div class="al o"><span class="al-ic">🛒</span><div><span class="aw">73.97% of households buy most food from wet markets</span>, and 99.6% pay in cash. Average travel time to food source: 17.6 minutes. Meanwhile, <span class="aw">89.4% of individuals consume sugary beverages</span> — averaging 6.9 servings per day.</div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Primary Food Source</div><div class="cs">% of HHs by main food purchase location · weighted by hhw</div></div><span class="cb g">Food access</span></div><div style="position:relative;height:210px;"><canvas id="cFoodSrc"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Food Purchase Frequency</div><div class="cs">How often HHs buy from main food source</div></div><span class="cb b">Frequency</span></div><div style="position:relative;height:180px;display:flex;align-items:center;justify-content:center;"><canvas id="cFoodFreq"></canvas></div>
+          <div class="slbl" style="margin-top:8px;">Payment method</div>
+          <div class="pr"><div class="pl">Cash</div><div class="pt"><div class="pf" style="width:0;background:#22c55e" data-w="99.6"></div></div><div class="pv">99.6%</div></div>
+          <div class="pr"><div class="pl">Card</div><div class="pt"><div class="pf" style="width:0;background:#0ea5e9" data-w="0.15"></div></div><div class="pv">0.15%</div></div>
+          <div class="pr"><div class="pl">Digital payment</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="0.13"></div></div><div class="pv">0.13%</div></div>
+        </div>
+      </div>
+      <div class="cc g1"><div class="cc-hd"><div><div class="ct">Sugary Beverage (SSB) Consumption</div><div class="cs">% consuming sweetened beverages by age group · weighted by indw</div></div><span class="cb r">89.4% overall consume SSBs · 6.9 mean servings/day</span></div><div style="position:relative;height:195px;"><canvas id="cSSB"></canvas></div><div class="src-tag">Source: M08_ssb.dta · Individual level · 89.9% of HHs have at least one SSB consumer</div></div>
+      <div class="src-tag">Source: M08_food.dta (HH level, hhw) + M08_ssb.dta (individual, indw) · Oct 15 2025</div>
+    </div>
+
+    <!-- ══ HAZARDS ══ -->
+    <div class="tp" id="tp-hazard">
+      <div class="al r"><span class="al-ic">⛈️</span><div><span class="aw">76.4% of households experienced a typhoon in the past 3 years</span>. Extreme heat affects 49.7%, earthquakes 40.6%, and flooding 36.4%. However, <span class="aw">only 55.1% received early warning</span> before a hazard event, and only 45.8% understood the warning message.</div></div>
+      <div class="cc g1"><div class="cc-hd"><div><div class="ct">Hazard Exposure Rate (Past 3 Years)</div><div class="cs">% of households that experienced each hazard type · weighted by hhw</div></div><span class="cb r">Multi-hazard exposure</span></div><div style="position:relative;height:270px;"><canvas id="cHazard"></canvas></div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Early Warning &amp; Response</div><div class="cs">% receiving warning · % understanding message</div></div><span class="cb o">Preparedness</span></div>
+          <div class="trio" style="padding:12px 0 8px;">
+            <div class="trio-item"><div class="trio-num" style="color:#fbbf24;font-size:1.8rem;">55.1%</div><div class="trio-lbl">Received early warning</div></div>
+            <div class="trio-divider"></div>
+            <div class="trio-item"><div class="trio-num" style="color:#f87171;font-size:1.8rem;">44.9%</div><div class="trio-lbl">No warning received</div></div>
+          </div>
+          <div class="slbl">Warning understanding (among those who received it)</div>
+          <div class="pr"><div class="pl">Understood message</div><div class="pt"><div class="pf" style="width:0;background:#22c55e" data-w="45.8"></div></div><div class="pv">45.8%</div></div>
+          <div class="pr"><div class="pl">Did not understand</div><div class="pt"><div class="pf" style="width:0;background:#ef4444" data-w="54.2"></div></div><div class="pv">54.2%</div></div>
+        </div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Top 5 Hazard Exposures</div><div class="cs">% of HHs exposed nationally</div></div><span class="cb p">Exposure ranking</span></div>
+          <div style="margin-top:8px;">
+            <div class="pr"><div class="pl">Typhoon</div><div class="pt"><div class="pf" style="width:0;background:#ef4444" data-w="76.4"></div></div><div class="pv">76.4%</div></div>
+            <div class="pr"><div class="pl">Extreme heat</div><div class="pt"><div class="pf" style="width:0;background:#f59e0b" data-w="49.7"></div></div><div class="pv">49.7%</div></div>
+            <div class="pr"><div class="pl">Earthquake</div><div class="pt"><div class="pf" style="width:0;background:#a78bfa" data-w="40.6"></div></div><div class="pv">40.6%</div></div>
+            <div class="pr"><div class="pl">Flood/La Niña</div><div class="pt"><div class="pf" style="width:0;background:#0ea5e9" data-w="36.4"></div></div><div class="pv">36.4%</div></div>
+            <div class="pr"><div class="pl">Drought/El Niño</div><div class="pt"><div class="pf" style="width:0;background:#f59e0b" data-w="30.6"></div></div><div class="pv">30.6%</div></div>
+            <div class="pr"><div class="pl">Pest infestation</div><div class="pt"><div class="pf" style="width:0;background:#22c55e" data-w="12.1"></div></div><div class="pv">12.1%</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="src-tag">Source: M09_nh.dta · HH level (10 hazard types × 2,470 HHs = 24,700 rows), weighted by hhw · Oct 15 2025</div>
+    </div>
+
+    <!-- ══ HOUSING & WASH ══ -->
+    <div class="tp" id="tp-housing">
+      <div class="al o"><span class="al-ic">🏠</span><div><span class="aw">56.5% of HHs own their dwelling</span>. 60.6% have piped water inside the home, but <span class="aw">60.3% rate their drinking water as unsafe</span>. Electricity access is 96%. Internet access is 49% nationally but only 40.7% in Visayas. 71.1% have flush toilets connected to sewage.</div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Housing Tenure</div><div class="cs">% of HHs by land/dwelling tenure status · weighted by hhw</div></div><span class="cb b">Tenure</span></div><div style="position:relative;height:195px;display:flex;align-items:center;justify-content:center;"><canvas id="cTenure"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Toilet Facility Type</div><div class="cs">% of HHs by sanitation infrastructure</div></div><span class="cb g">Sanitation</span></div><div style="position:relative;height:195px;"><canvas id="cToilet"></canvas></div></div>
+      </div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Main Water Source</div><div class="cs">% of HHs by primary water supply · hhw weighted</div></div><span class="cb b">Water access</span></div><div style="position:relative;height:195px;"><canvas id="cWaterSrc"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Drinking Water Safety Perception</div><div class="cs">% rating drinking water safety · 60.3% feel unsafe</div></div><span class="cb r">Safety concern</span></div><div style="position:relative;height:195px;display:flex;align-items:center;justify-content:center;"><canvas id="cWaterSafe"></canvas></div></div>
+      </div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Electricity Access by Region</div><div class="cs">% of HHs with electricity · NCR 98.4%, Mindanao 93.8%</div></div><span class="cb g">Electrification</span></div><div style="position:relative;height:195px;"><canvas id="cElec"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Internet Access by Region</div><div class="cs">% of HHs with internet at home · NCR 64.1%, Visayas 40.7%</div></div><span class="cb b">Connectivity</span></div><div style="position:relative;height:195px;"><canvas id="cInet"></canvas></div></div>
+      </div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Internet Connection Type</div><div class="cs">% of internet connections by type · among HHs with internet</div></div><span class="cb p">Connection type</span></div><div style="position:relative;height:185px;display:flex;align-items:center;justify-content:center;"><canvas id="cInetType"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Internet Purposes</div><div class="cs">% of households by primary internet use purpose</div></div><span class="cb o">Usage</span></div><div style="position:relative;height:185px;"><canvas id="cInetPurp"></canvas></div></div>
+      </div>
+      <div class="src-tag">Source: M10_dwell, M11_san, M12_elec, M12_net, M12_water — all HH level, weighted by hhw · Oct 15 2025</div>
+    </div>
+
+    <!-- ══ ASSETS & ENERGY ══ -->
+    <div class="tp" id="tp-assets">
+      <div class="al g"><span class="al-ic">📱</span><div><span class="aw">Washing machines (55%) and motorcycles (54%) are the most common HH assets</span>, while only 3.9% own a car. LPG is the primary cooking fuel (61.5%) — but 50.7% still use fuelwood. Charcoal use is significant at 27%.</div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Household Asset Ownership</div><div class="cs">% of HHs owning each asset · weighted by hhw</div></div><span class="cb b">Asset index</span></div><div style="position:relative;height:230px;"><canvas id="cAssets"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Cooking Fuel Type</div><div class="cs">% of HHs using each fuel (multiple answers allowed) · hhw weighted</div></div><span class="cb r">Energy mix</span></div><div style="position:relative;height:230px;"><canvas id="cFuels"></canvas></div></div>
+      </div>
+      <div class="cc g1"><div class="cc-hd"><div><div class="ct">Smartphone &amp; Refrigerator Ownership by Region</div><div class="cs">Key asset ownership gaps across macro-regions</div></div><span class="cb p">Regional inequality</span></div><div style="position:relative;height:210px;"><canvas id="cAssetMacro"></canvas></div></div>
+      <div class="src-tag">Source: M13_hc.dta · HH level, weighted by hhw · Oct 15 2025</div>
+    </div>
+
+    <!-- ══ VIEWS ══ -->
+    <div class="tp" id="tp-views">
+      <div class="al o"><span class="al-ic">💭</span><div><span class="aw">Life satisfaction mean: 3.04/5</span> (scale 1=most satisfied). 52.3% are neutral (score 3). 46.3% say their economic situation is the same as last month; 34.7% feel worse. Notably, <span class="aw">44.5% believe taxes are well spent</span> — the highest agreement rate among all statements.</div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Life Satisfaction Distribution</div><div class="cs">1=Very satisfied → 5=Very dissatisfied · hhw weighted</div></div><span class="cb b">Wellbeing</span></div><div style="position:relative;height:195px;"><canvas id="cLifeSat"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Economic Situation vs Last Month</div><div class="cs">% of HHs by perceived economic change · hhw weighted</div></div><span class="cb o">Economic sentiment</span></div><div style="position:relative;height:195px;display:flex;align-items:center;justify-content:center;"><canvas id="cEcoChange"></canvas></div></div>
+      </div>
+      <div class="cc g1"><div class="cc-hd"><div><div class="ct">Attitudes &amp; Concerns — % Agree or Strongly Agree</div><div class="cs">Likert scale responses (1–5) · % selecting 1 or 2 · hhw weighted</div></div><span class="cb p">Perceptions</span></div><div style="position:relative;height:280px;"><canvas id="cLikert"></canvas></div></div>
+      <div class="g2">
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Economic Change by Macro-region</div><div class="cs">% feeling worse-off vs same/better · regional variation</div></div><span class="cb r">Regional sentiment</span></div><div style="position:relative;height:200px;"><canvas id="cEcoMacro"></canvas></div></div>
+        <div class="cc"><div class="cc-hd"><div><div class="ct">Feeling Safe in Neighbourhood</div><div class="cs">% by safety perception rating · hhw weighted</div></div><span class="cb g">Safety</span></div><div style="position:relative;height:200px;display:flex;align-items:center;justify-content:center;"><canvas id="cSafety"></canvas></div></div>
+      </div>
+      <div class="src-tag">Source: M14_view.dta · HH level, weighted by hhw · Oct 15 2025 · Likert: 1=Strongly agree → 5=Strongly disagree</div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// REAL WEIGHTED DATA (from M01 + final_weights)
+// ══════════════════════════════════════════
+const D = {
+  gender:           {'Male':50.63,'Female':49.37},
+  gender_settlement:{'Urban':{'Male':50.04,'Female':49.96},'Rural':{'Male':51.35,'Female':48.65}},
+  gender_macro:     {'NCR':{'Male':49.58,'Female':50.42},'Luzon (excl. NCR)':{'Male':50.76,'Female':49.24},'Visayas':{'Male':51.13,'Female':48.87},'Mindanao':{'Male':51.1,'Female':48.9}},
+  age:              {'<10':17.9,'10-19':22.66,'20-29':16.83,'30-39':14.25,'40-49':10.99,'50-59':7.5,'60-69':6.26,'70+':3.6},
+  age_settlement:   {
+    'Urban': {'<10':16.73,'10-19':22.13,'20-29':17.49,'30-39':15.35,'40-49':11.48,'50-59':7.52,'60-69':5.81,'70+':3.49},
+    'Rural': {'<10':19.38,'10-19':23.38,'20-29':15.95,'30-39':12.83,'40-49':10.39,'50-59':7.47,'60-69':6.88,'70+':3.73}
+  },
+  age_macro: {
+    'NCR':                {'<10':14.67,'10-19':21.55,'20-29':18.26,'30-39':16.7,'40-49':11.83,'50-59':7.22,'60-69':6.62,'70+':3.13},
+    'Luzon (excl. NCR)':  {'<10':17.49,'10-19':22.26,'20-29':17.1,'30-39':14.0,'40-49':11.0,'50-59':7.87,'60-69':6.44,'70+':3.84},
+    'Visayas':            {'<10':18.79,'10-19':22.34,'20-29':15.5,'30-39':13.61,'40-49':11.1,'50-59':7.59,'60-69':7.37,'70+':3.7},
+    'Mindanao':           {'<10':19.66,'10-19':24.12,'20-29':16.56,'30-39':13.78,'40-49':10.81,'50-59':6.9,'60-69':4.82,'70+':3.36}
+  },
+  age_gender: {
+    'Male':   {'<10':18.59,'10-19':22.77,'20-29':17.04,'30-39':14.24,'40-49':11.73,'50-59':6.93,'60-69':5.43,'70+':3.27},
+    'Female': {'<10':17.18,'10-19':22.54,'20-29':16.62,'30-39':14.26,'40-49':10.22,'50-59':8.09,'60-69':7.12,'70+':3.97}
+  },
+  relationship: {'Head':21.66,'Wife/Spouse':15.57,'Son/daughter':43.22,'Grandson/granddaughter':9.36,'Other Relative':3.97,'Father/Mother':2.6,'Brother/sister':2.01,'Son-in-law/daughter-in-law':1.05,'Non-relative':0.56,'Domestic helper':0.02},
+  marital: {'Single or unmarried':56.23,'Married':25.51,'Common-law/Live-in':12.57,'Widowed':3.65,'Separated':1.31,'Not reported':0.54,'Annulled':0.15,'Divorced':0.04},
+  marital_gender: {
+    'Male':   {'Single or unmarried':59.82,'Married':25.18,'Common-law/Live-in':12.24,'Widowed':1.37,'Separated':0.97,'Not reported':0.42},
+    'Female': {'Single or unmarried':52.51,'Married':25.85,'Common-law/Live-in':12.91,'Widowed':6.0,'Separated':1.66,'Not reported':0.68}
+  },
+  marital_settlement: {
+    'Urban': {'Single or unmarried':57.61,'Married':23.27,'Common-law/Live-in':14.1,'Widowed':3.51,'Separated':1.47},
+    'Rural': {'Single or unmarried':54.5,'Married':28.16,'Common-law/Live-in':10.72,'Widowed':3.82,'Separated':1.1}
+  },
+  disability_member:    {'Yes':2.51,'No':97.49},
+  disability_gender:    {'Male':3.08,'Female':1.92},
+  disability_settlement:{'Urban':2.41,'Rural':2.65},
+  disability_macro:     {'NCR':2.93,'Luzon (excl. NCR)':2.47,'Visayas':1.82,'Mindanao':2.09},
+  pwdid:                {'Yes':58.3,'No':41.7},
+  pwdid_macro:          {'NCR':{'Yes':65.4,'No':34.6},'Luzon (excl. NCR)':{'Yes':62.1,'No':37.9},'Visayas':{'Yes':57.8,'No':42.2},'Mindanao':{'Yes':48.2,'No':51.8}},
+  disability_types: {
+    'Intellectual/Mental/Psychosocial':26.41,'Visual Disability':11.75,'Speech & Language':9.92,
+    'Perforated eardrum':7.37,'Difficulty walking':5.71,'Leg disability':4.95,
+    'Mild stroke/stroke':4.07,'Rare Disease':2.77,'Scoliosis':1.86,'Physical disability':1.85,
+    'Hand amputation':1.78,'Autism Spectrum Disorder':1.62
+  },
+  hhsize: {'1':4.96,'2':13.91,'3':18.34,'4':23.19,'5':17.1,'6':11.51,'7':4.91,'8':3.33,'9':1.43,'10+':1.22},
+  hhsize_settlement: {
+    'Urban':{'1':5.51,'2':14.32,'3':19.09,'4':22.64,'5':17.77,'6':11.27,'7':4.63,'8':3.32,'9':1.45,'10+':0.87},
+    'Rural':{'1':4.22,'2':13.35,'3':17.37,'4':23.91,'5':16.21,'6':11.84,'7':5.28,'8':3.34,'9':1.4,'10+':1.7}
+  },
+  language: {'Tagalog':38.98,'Bisaya/Binisaya':17.97,'Hiligaynon/Ilonggo':8.49,'Ilocano':8.27,'Cebuano':7.09,'Bikol/Bicol':4.17,'Waray':2.96,'Kapampangan':2.3,'Pangasinan':0.94,'Maguindanao':0.9,'Other':7.93},
+  region: {
+    'IV-A CALABARZON':14.85,'NCR':12.33,'III Central Luzon':11.4,'VII Central Visayas':6.09,
+    'V Bicol':5.58,'I Ilocos':4.87,'XI Davao':4.81,'X N. Mindanao':4.61,'BARMM':4.54,
+    'VI W. Visayas':4.34,'NIR':4.27,'VIII E. Visayas':4.17,'XII SOCCSKSARGEN':4.0,
+    'IX Zamboanga':3.55,'II Cagayan':3.39,'IV-B MIMAROPA':2.96,'XIII Caraga':2.57,'CAR':1.65
+  },
+  macro: {'Luzon (excl. NCR)':44.7,'Mindanao':28.37,'Visayas':14.6,'NCR':12.33},
+};
+
+// Region colors
+const REG_COLORS = {
+  'NCR':'#0ea5e9','IV-A CALABARZON':'#22c55e','III Central Luzon':'#22c55e',
+  'VII Central Visayas':'#a78bfa','VIII E. Visayas':'#a78bfa','VI W. Visayas':'#a78bfa','NIR':'#a78bfa',
+  'XI Davao':'#f43f5e','X N. Mindanao':'#f43f5e','BARMM':'#f43f5e','XII SOCCSKSARGEN':'#f43f5e',
+  'IX Zamboanga':'#f43f5e','XIII Caraga':'#f43f5e',
+  'V Bicol':'#22c55e','I Ilocos':'#22c55e','II Cagayan':'#22c55e','IV-B MIMAROPA':'#22c55e','CAR':'#22c55e',
+};
+
+// ══════════════════════════════════════════
+// CHART ENGINE
+// ══════════════════════════════════════════
+const CHARTS = {};
+const BASE_OPTS = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{
+    legend:{display:false},
+    tooltip:{backgroundColor:'rgba(6,14,31,.95)',borderColor:'rgba(255,255,255,.15)',borderWidth:1,titleColor:'#fff',bodyColor:'rgba(255,255,255,.7)',padding:10}
+  },
+  scales:{
+    x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.45)',font:{family:'DM Sans',size:10}}},
+    y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.45)',font:{family:'DM Sans',size:10},callback:v=>v+'%'}}
+  }
+};
+
+function mkChart(id, type, data, extra={}) {
+  const ctx = document.getElementById(id); if(!ctx) return;
+  if(CHARTS[id]) CHARTS[id].destroy();
+  const opts = JSON.parse(JSON.stringify(BASE_OPTS));
+  // Deep merge extra
+  if(extra.scales) Object.assign(opts.scales, extra.scales);
+  if(extra.plugins) Object.assign(opts.plugins, extra.plugins);
+  Object.keys(extra).forEach(k=>{ if(k!=='scales'&&k!=='plugins') opts[k]=extra[k]; });
+  CHARTS[id] = new Chart(ctx, {type, data, options: opts});
+}
+
+const AGS = ['<10','10-19','20-29','30-39','40-49','50-59','60-69','70+'];
+const MACROS = ['NCR','Luzon (excl. NCR)','Visayas','Mindanao'];
+function A() { return getComputedStyle(document.documentElement).getPropertyValue('--A').trim()||'#0ea5e9'; }
+
+const LEGEND_OPTS = {display:true, labels:{color:'rgba(255,255,255,.62)',font:{family:'DM Sans',size:11},boxWidth:10,padding:8}};
+
+function renderAll() {
+  const acc = A();
+
+  // ── Sex donut ──
+  mkChart('cSex','doughnut',{
+    labels:['Male','Female'],
+    datasets:[{data:[50.63,49.37],backgroundColor:['rgba(14,165,233,.85)','rgba(244,63,94,.85)'],borderWidth:0,hoverOffset:5}]
+  },{maintainAspectRatio:true,aspectRatio:1.65,plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+
+  // ── Age bar ──
+  mkChart('cAge','bar',{
+    labels:AGS,
+    datasets:[{label:'% of members',data:AGS.map(g=>D.age[g]),
+      backgroundColor:AGS.map((_,i)=>`hsla(${210+i*14},74%,${58-i*2}%,.82)`),borderRadius:5,borderWidth:0}]
+  },{scales:{x:{grid:{display:false}},y:BASE_OPTS.scales.y},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // ── Marital donut ──
+  const marK = ['Single or unmarried','Married','Common-law/Live-in','Widowed','Separated','Not reported'];
+  const marC = ['rgba(14,165,233,.82)','rgba(34,197,94,.82)','rgba(245,158,11,.82)','rgba(167,139,250,.82)','rgba(244,63,94,.75)','rgba(99,102,241,.7)'];
+  mkChart('cMar','doughnut',{
+    labels:marK,
+    datasets:[{data:marK.map(k=>D.marital[k]||0),backgroundColor:marC,borderWidth:0,hoverOffset:5}]
+  },{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10}}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+
+  // ── Relationship donut ──
+  const relK = Object.keys(D.relationship);
+  const relC = ['rgba(245,158,11,.85)','rgba(14,165,233,.85)','rgba(34,197,94,.85)','rgba(244,63,94,.8)','rgba(167,139,250,.8)','rgba(99,102,241,.8)','rgba(251,191,36,.7)','rgba(239,68,68,.65)','rgba(20,184,166,.7)','rgba(180,83,9,.65)'];
+  mkChart('cRel','doughnut',{
+    labels:relK,
+    datasets:[{data:relK.map(k=>D.relationship[k]),backgroundColor:relC,borderWidth:0,hoverOffset:4}]
+  },{maintainAspectRatio:true,aspectRatio:1.45,plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:5}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+
+  // ── Age by sex ──
+  mkChart('cAgeSex','bar',{
+    labels:AGS,
+    datasets:[
+      {label:'Male',data:AGS.map(g=>D.age_gender['Male'][g]),backgroundColor:'rgba(14,165,233,.8)',borderRadius:4,borderWidth:0},
+      {label:'Female',data:AGS.map(g=>D.age_gender['Female'][g]),backgroundColor:'rgba(244,63,94,.75)',borderRadius:4,borderWidth:0}
+    ]
+  },{scales:{x:{grid:{display:false}},y:BASE_OPTS.scales.y},plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}});
+
+  // ── Marital by sex ──
+  const marSexK = Object.keys(D.marital_gender['Male']).filter(k=>k!='Not reported');
+  mkChart('cMarSex','bar',{
+    labels:marSexK.map(l=>l.length>15?l.substring(0,15)+'…':l),
+    datasets:[
+      {label:'Male',data:marSexK.map(k=>D.marital_gender['Male'][k]||0),backgroundColor:'rgba(14,165,233,.8)',borderRadius:4,borderWidth:0},
+      {label:'Female',data:marSexK.map(k=>D.marital_gender['Female'][k]||0),backgroundColor:'rgba(244,63,94,.75)',borderRadius:4,borderWidth:0}
+    ]
+  },{scales:{x:{grid:{display:false},ticks:{maxRotation:30}},y:BASE_OPTS.scales.y},plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}});
+
+  // ── Age Urban vs Rural ──
+  mkChart('cAgeUrban','bar',{
+    labels:AGS,
+    datasets:[
+      {label:'Urban',data:AGS.map(g=>D.age_settlement['Urban'][g]),backgroundColor:'rgba(14,165,233,.75)',borderRadius:4,borderWidth:0},
+      {label:'Rural',data:AGS.map(g=>D.age_settlement['Rural'][g]),backgroundColor:'rgba(245,158,11,.75)',borderRadius:4,borderWidth:0}
+    ]
+  },{scales:{x:{grid:{display:false}},y:BASE_OPTS.scales.y},plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}});
+
+  // ── Age by macro-region stacked ──
+  const ageCols = AGS.map((_,i)=>`hsla(${200+i*14},72%,${58-i*2}%,.8)`);
+  mkChart('cAgeMacro','bar',{
+    labels:MACROS,
+    datasets:AGS.map((ag,i)=>({label:ag,data:MACROS.map(r=>D.age_macro[r][ag]),backgroundColor:ageCols[i],borderWidth:0,stack:'s'}))
+  },{scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,...BASE_OPTS.scales.y,max:100}},plugins:{legend:{display:true,labels:{color:'rgba(255,255,255,.55)',font:{family:'DM Sans',size:10},boxWidth:10,padding:5}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}});
+
+  // ── Geography: region bubbles ──
+  const regMax = Math.max(...Object.values(D.region));
+  const regGrid = document.getElementById('regGrid');
+  if(regGrid) {
+    const sorted = Object.entries(D.region).sort((a,b)=>b[1]-a[1]);
+    regGrid.innerHTML = sorted.map(([name,pct])=>{
+      const sz = Math.max(28, Math.min(60, 20 + pct/regMax*40));
+      const col = REG_COLORS[name]||acc;
+      return `<div class="reg-bub" title="${name}: ${pct}%">
+        <div class="reg-circ" style="width:${sz}px;height:${sz}px;background:${col}99;border:1.5px solid ${col};font-size:${sz>38?'.65':'.55'}rem;">${pct}%</div>
+        <span class="reg-nm">${name}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Region full bar ──
+  const regSorted = Object.entries(D.region).sort((a,b)=>b[1]-a[1]);
+  mkChart('cRegFull','bar',{
+    labels:regSorted.map(([k])=>k),
+    datasets:[{label:'% share',data:regSorted.map(([,v])=>v),
+      backgroundColor:regSorted.map(([k])=>(REG_COLORS[k]||acc)+'cc'),borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // ── Macro donut ──
+  const macCols=['rgba(14,165,233,.85)','rgba(34,197,94,.82)','rgba(167,139,250,.82)','rgba(244,63,94,.8)'];
+  mkChart('cMacro','doughnut',{
+    labels:MACROS,
+    datasets:[{data:MACROS.map(r=>D.macro[r]),backgroundColor:macCols,borderWidth:0,hoverOffset:5}]
+  },{maintainAspectRatio:true,aspectRatio:1.6,plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+
+  // ── HH size ──
+  const szKeys = Object.keys(D.hhsize);
+  mkChart('cHHSize','bar',{
+    labels:szKeys.map(s=>s+(s==='10+'?'':(parseInt(s)===1?' mem.':' mem.'))),
+    datasets:[{label:'% of HHs',data:Object.values(D.hhsize),backgroundColor:acc+'bb',borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{scales:{x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0}},y:BASE_OPTS.scales.y},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // ── Language bar ──
+  const langKeys = Object.keys(D.language);
+  const langCols = langKeys.map((_,i)=>`hsla(${30+i*20},72%,${62-i*2}%,.82)`);
+  mkChart('cLang','bar',{
+    labels:langKeys,
+    datasets:[{label:'% of HHs',data:Object.values(D.language),backgroundColor:langCols,borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%',font:{size:10}}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // ── HH size urban vs rural ──
+  const szK2 = Object.keys(D.hhsize_settlement['Urban']);
+  mkChart('cHHUrban','bar',{
+    labels:szK2.map(s=>s+' mem.'),
+    datasets:[
+      {label:'Urban',data:szK2.map(k=>D.hhsize_settlement['Urban'][k]),backgroundColor:'rgba(14,165,233,.75)',borderRadius:4,borderWidth:0},
+      {label:'Rural',data:szK2.map(k=>D.hhsize_settlement['Rural'][k]),backgroundColor:'rgba(245,158,11,.75)',borderRadius:4,borderWidth:0}
+    ]
+  },{scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:BASE_OPTS.scales.y},plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}});
+
+  // ── Disability by macro ──
+  mkChart('cDisabMacro','bar',{
+    labels:MACROS,
+    datasets:[{label:'% with disability',data:MACROS.map(r=>D.disability_macro[r]),
+      backgroundColor:MACROS.map((_,i)=>`hsla(${270+i*15},65%,63%,.82)`),borderRadius:6,borderWidth:0,barPercentage:.55}]
+  },{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:1,max:3.5}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // ── PWD ID by macro ──
+  mkChart('cPWDid','bar',{
+    labels:MACROS,
+    datasets:[{label:'% with PWD ID',data:MACROS.map(r=>D.pwdid_macro[r]['Yes']),
+      backgroundColor:MACROS.map((_,i)=>`hsla(${35+i*10},80%,${58-i*4}%,.82)`),borderRadius:6,borderWidth:0,barPercentage:.55}]
+  },{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:40,max:70}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // ── Disability types horizontal bar ──
+  const dtK = Object.keys(D.disability_types);
+  mkChart('cDisabTypes','bar',{
+    labels:dtK,
+    datasets:[{label:'% among PWDs',data:Object.values(D.disability_types),
+      backgroundColor:dtK.map((_,i)=>`hsla(${0+i*22},65%,${60-i*2}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // ── Disability urban vs rural bar ──
+  mkChart('cDisabUrban','bar',{
+    labels:['Urban','Rural'],
+    datasets:[{label:'% with disability',data:[D.disability_settlement['Urban'],D.disability_settlement['Rural']],
+      backgroundColor:['rgba(14,165,233,.8)','rgba(245,158,11,.8)'],borderRadius:6,borderWidth:0,barPercentage:.45}]
+  },{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:2,max:3}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // Animate progress bars
+  document.querySelectorAll('.pf[data-w]').forEach(el=>{
+    el.style.width='0';
+    setTimeout(()=>el.style.width=el.getAttribute('data-w')+'%',80);
+  });
+}
+
+// ══════════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════════
+function showTab(id, btn) {
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tp-'+id)?.classList.add('on');
+  btn.classList.add('on');
+  setTimeout(()=>{ renderAll(); if(id==='education') renderEducation(); if(id==='employment') renderEmployment(); if(id==='income') renderIncome(); if(id==='finance') renderFinance(); if(id==='migration') renderMigration(); if(id==='health') renderHealth(); if(id==='food') renderFood(); if(id==='hazard') renderHazard(); if(id==='housing') renderHousing(); if(id==='assets') renderAssets(); if(id==='views') renderViews(); }, 50);
+}
+
+// ══════════════════════════════════════════
+// DIM BADGE
+// ══════════════════════════════════════════
+function applyDim() {
+  const labels={total:'National Total',urban:'Urban vs Rural',macro:'By Macro-region',gender:'By Gender'};
+  document.getElementById('dimBdg').textContent = labels[document.getElementById('fDim').value];
+}
+
+// ══════════════════════════════════════════
+// ACCENT COLOR
+// ══════════════════════════════════════════
+function setA(c, el) {
+  document.documentElement.style.setProperty('--A', c);
+  document.querySelectorAll('.sw').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');
+  setTimeout(renderAll, 30);
+}
+
+// ══════════════════════════════════════════
+// EDUCATION DATA (from M02_edu.dta + indw)
+// ══════════════════════════════════════════
+const EDU = {
+  attend_by_age:     {'5':93.85,'6-11':97.66,'12-15':96.33,'16-17':87.25,'18-19':65.21,'20-24':30.19},
+  attend_by_macro:   {'NCR':79.05,'Luzon (excl. NCR)':76.94,'Visayas':77.38,'Mindanao':80.57},
+  attend_by_sett:    {'Urban':78.52,'Rural':78.1},
+  attend_gender:     {'Male':76.32,'Female':80.41},
+  school_type:       {'Yes, public':89.81,'Yes, private':10.19},
+  school_type_macro: {
+    'NCR':               {'Yes, public':82.3,'Yes, private':17.7},
+    'Luzon (excl. NCR)': {'Yes, public':91.5,'Yes, private':8.5},
+    'Visayas':           {'Yes, public':90.4,'Yes, private':9.6},
+    'Mindanao':          {'Yes, public':93.2,'Yes, private':6.8},
+  },
+  reasons_not_attend: {
+    'Employment':24.62,'High cost / Financial':15.73,'Finished schooling':14.85,
+    'Family matters':10.42,'Lack of interest':7.24,'Looking for work':6.83,
+    'Marriage':6.06,'Illness/disability':3.28,'Pregnancy':2.75,'Too young':2.51
+  },
+  attainment: {
+    'Secondary':50.73,'Primary':21.71,'College/University':13.36,
+    'Some college':10.26,'Post-secondary/TVET':2.42,'No schooling':0.96,
+    'Post-graduate':0.45,'Pre-school/Daycare':0.11
+  },
+  attainment_gender: {
+    'Male':   {'Secondary':52.1,'Primary':23.5,'College/University':11.2,'Some college':9.8,'Post-secondary/TVET':2.1,'No schooling':1.1,'Post-graduate':0.3},
+    'Female': {'Secondary':49.4,'Primary':19.9,'College/University':15.5,'Some college':10.7,'Post-secondary/TVET':2.7,'No schooling':0.8,'Post-graduate':0.6}
+  },
+  father_edu: {'Primary':55.92,'Completed HS':17.16,'None':9.32,'Secondary':7.46,'Some college':5.57,'College+':4.57},
+  mother_edu: {'Primary':53.26,'Completed HS':19.31,'Secondary':9.27,'None':8.36,'College+':5.11,'Some college':4.69},
+  exp_by_category: {
+    'School fees & tuition':7891,'Meals & lodging':10310,'Transportation':6040,
+    'Uniforms & footwear':1516,'Textbooks & materials':1857,
+    'Educational supplies':1023,'Building/equipment':1253,'Gifts to teachers':339
+  },
+  exp_total_mean: 16380,
+  exp_by_sett:  {'Urban':17500,'Rural':15555},
+  exp_by_macro: {'NCR':15065,'Luzon (excl. NCR)':15966,'Visayas':17431,'Mindanao':17650},
+  transport: {'By foot':43.1,'Motorcycle/Tricycle':42.77,'Jeepney/Bus':11.28,'Bicycle':1.61,'Car/Taxi':0.49,'Train':0.13},
+  lang_instruction: {'Tagalog':56.15,'English':12.48,'Bisaya/Binisaya':12.33,'Hiligaynon/Ilonggo':7.12,'Cebuano':4.5,'Bikol/Bicol':2.28,'Ilocano':1.54,'Waray':1.43,'Others':2.27},
+  tutoring: {'Yes':1.93,'No':98.07},
+};
+
+function renderEducation() {
+  const acc = A();
+  const MACROS4 = ['NCR','Luzon (excl. NCR)','Visayas','Mindanao'];
+
+  // Attendance by age band
+  const ageBands = Object.keys(EDU.attend_by_age);
+  const attRates  = Object.values(EDU.attend_by_age);
+  mkChart('cAttendAge','bar',{
+    labels: ageBands,
+    datasets:[{label:'% attending',data:attRates,
+      backgroundColor:attRates.map(v=>v>=90?'rgba(34,197,94,.82)':v>=70?'rgba(14,165,233,.82)':'rgba(245,158,11,.82)'),
+      borderRadius:5,borderWidth:0,barPercentage:.7}]
+  },{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:0,max:100}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // School type donut
+  mkChart('cSchoolType','doughnut',{
+    labels:['Public','Private'],
+    datasets:[{data:[89.81,10.19],backgroundColor:['rgba(14,165,233,.82)','rgba(245,158,11,.82)'],borderWidth:0,hoverOffset:4}]
+  },{maintainAspectRatio:true,aspectRatio:1.6,plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+
+  // Attendance by macro-region
+  mkChart('cAttendMacro','bar',{
+    labels:MACROS4,
+    datasets:[{label:'% attending',data:MACROS4.map(r=>EDU.attend_by_macro[r]),
+      backgroundColor:MACROS4.map((_,i)=>`hsla(${150+i*30},65%,55%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.55}]
+  },{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:74,max:82}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // Attendance by sex bar
+  mkChart('cAttendSex','bar',{
+    labels:['Male','Female'],
+    datasets:[{label:'% attending',data:[76.32,80.41],
+      backgroundColor:['rgba(14,165,233,.8)','rgba(244,63,94,.8)'],borderRadius:6,borderWidth:0,barPercentage:.5}]
+  },{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:70,max:85}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // Reasons not attending (horizontal)
+  const rK = Object.keys(EDU.reasons_not_attend);
+  const rV = Object.values(EDU.reasons_not_attend);
+  mkChart('cReasons','bar',{
+    labels:rK,
+    datasets:[{label:'% of reasons',data:rV,
+      backgroundColor:rK.map((_,i)=>`hsla(${10+i*18},65%,${60-i*2}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // Educational attainment bar (adults)
+  const attK = ['Secondary','Primary','College/University','Some college','Post-secondary/TVET','No schooling','Post-graduate'];
+  const attColors = ['rgba(14,165,233,.82)','rgba(34,197,94,.78)','rgba(167,139,250,.82)','rgba(245,158,11,.78)','rgba(244,63,94,.75)','rgba(239,68,68,.7)','rgba(99,102,241,.8)'];
+  mkChart('cAttain','bar',{
+    labels:attK,
+    datasets:[{label:'% of adults 18+',data:attK.map(k=>EDU.attainment[k]||0),
+      backgroundColor:attColors,borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // Attainment by sex grouped
+  mkChart('cAttainSex','bar',{
+    labels:attK,
+    datasets:[
+      {label:'Male',  data:attK.map(k=>EDU.attainment_gender['Male'][k]||0),  backgroundColor:'rgba(14,165,233,.8)',borderRadius:4,borderWidth:0},
+      {label:'Female',data:attK.map(k=>EDU.attainment_gender['Female'][k]||0),backgroundColor:'rgba(244,63,94,.75)',borderRadius:4,borderWidth:0}
+    ]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%',font:{size:10}}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.x}%`}}}});
+
+  // Father education
+  const fK = Object.keys(EDU.father_edu);
+  const parCols=['rgba(245,158,11,.82)','rgba(14,165,233,.78)','rgba(34,197,94,.78)','rgba(167,139,250,.78)','rgba(244,63,94,.75)','rgba(99,102,241,.72)'];
+  mkChart('cFatherEdu','bar',{
+    labels:fK,
+    datasets:[{label:"% (father's education)",data:Object.values(EDU.father_edu),
+      backgroundColor:parCols,borderRadius:5,borderWidth:0,barPercentage:.7}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // Mother education
+  const mK = Object.keys(EDU.mother_edu);
+  mkChart('cMotherEdu','bar',{
+    labels:mK,
+    datasets:[{label:"% (mother's education)",data:Object.values(EDU.mother_edu),
+      backgroundColor:parCols,borderRadius:5,borderWidth:0,barPercentage:.7}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // Expenditure by category
+  const expK = Object.keys(EDU.exp_by_category);
+  const expV = Object.values(EDU.exp_by_category);
+  mkChart('cExpCat','bar',{
+    labels:expK,
+    datasets:[{label:'Mean PHP (among those spending)',data:expV,
+      backgroundColor:expK.map((_,i)=>`hsla(${38+i*14},72%,${58-i*2}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>'₱'+v.toLocaleString()}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ₱${c.parsed.x.toLocaleString()}`}}}});
+
+  // Transport donut
+  const tK=Object.keys(EDU.transport); const tV=Object.values(EDU.transport);
+  const tCols=['rgba(14,165,233,.82)','rgba(245,158,11,.82)','rgba(34,197,94,.78)','rgba(167,139,250,.78)','rgba(244,63,94,.75)','rgba(99,102,241,.72)'];
+  mkChart('cTransport','doughnut',{
+    labels:tK,datasets:[{data:tV,backgroundColor:tCols,borderWidth:0,hoverOffset:4}]
+  },{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:6}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+
+  // Language of instruction
+  const liK=Object.keys(EDU.lang_instruction).slice(0,8);
+  const liV=liK.map(k=>EDU.lang_instruction[k]);
+  mkChart('cLangInst','bar',{
+    labels:liK,
+    datasets:[{label:'% of students',data:liV,
+      backgroundColor:liK.map((_,i)=>`hsla(${200+i*20},65%,${60-i*2}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+}
+
+// ══════════════════════════════════════════
+// EMPLOYMENT DATA (from M03_emp.dta + indw)
+// ══════════════════════════════════════════
+const EMP = {
+  emp_rate:       {'Yes':44.7,'No':55.3},
+  emp_gender:     {'Male':{'Yes':60.2,'No':39.8},'Female':{'Yes':30.1,'No':69.9}},
+  emp_macro:      {'NCR':50.3,'Luzon (excl. NCR)':45.8,'Visayas':41.2,'Mindanao':42.6},
+  emp_sett:       {'Urban':46.1,'Rural':42.7},
+  emp_age:        {'15-24':19.08,'25-34':58.43,'35-44':60.87,'45-54':64.15,'55-64':50.27,'65+':27.18},
+  class_work:     {'Private establishment':32.98,'Private household':21.79,'Self-employed, no employee':16.01,'Government':8.24,'Employer in business/farm':7.14,'Worked with pay in family business/farm':2.21,'Unpaid in family business/farm':3.5},
+  class_gender: {
+    'Male':   {'Private establishment':35.1,'Self-employed, no employee':19.4,'Private household':14.2,'Government':8.8,'Employer in business/farm':9.1,'Unpaid in family business/farm':4.1},
+    'Female': {'Private establishment':29.4,'Private household':33.8,'Self-employed, no employee':11.1,'Government':7.4,'Employer in business/farm':4.1,'Unpaid in family business/farm':2.5},
+  },
+  industry: {
+    'Admin/support services':21.31,'Agriculture/Forestry/Fishing':17.87,
+    'Wholesale/retail trade':14.95,'Construction':12.11,
+    'Accommodation/food service':11.44,'Transportation & Storage':7.01,
+    'Other Service Activities':3.06,'Public Administration':2.62,
+    'Manufacturing':2.41,'Education':2.1,
+  },
+  occupation: {'Clerical/Office':25.9,'Sales & Service':23.61,'Plant/Machine Operators':17.88,'Agricultural':8.98,'Managerial':4.44,'Elementary/Unskilled':2.79},
+  hours_mean: 31.9,
+  days_mean: 5.6,
+  hours_dist: {'<20 hrs (part-time)':41.26,'20–34 hrs':8.01,'35–48 hrs (full-time)':32.31,'>48 hrs (overtime)':18.41},
+  contract:     {'No contract':71.75,'Written':17.83,'Verbal':4.31,"Don't know":6.11},
+  contract_gender: {
+    'Male':   {'No contract':68.2,'Written':20.1,'Verbal':5.4},
+    'Female': {'No contract':76.9,'Written':14.1,'Verbal':2.8},
+  },
+  contract_dur: {'≥1 year':30.23,'No duration':32.12,'6–<12 months':14.15,'1–<6 months':11.31,'<1 month':1.84},
+  pension:      {'Yes':28.38,'No':71.51},
+  pension_macro:{'NCR':48.2,'Luzon (excl. NCR)':31.5,'Visayas':22.1,'Mindanao':18.7},
+  benefits: {
+    'None of the above':42.85,'PhilHealth':23.56,'SSS/GSIS':22.32,
+    'Paid leave':5.41,'Private HMO':2.27,'Pag-ibig':2.13,'Workplace pension':1.32
+  },
+  gig_work:    {'No':91.41,'Yes':5.88},
+  job_loss:    {'No':91.55,'Yes':8.45},
+  job_search:  {'No':79.54,'Yes, new job':17.61,'Yes, more work':2.85},
+  transport_work: {'Motorcycle/Tricycle':42.35,'By foot':28.61,'Jeepney/Bus':15.71,'Bicycle':3.2,'Work from home':1.93,'Boat':1.64},
+  travel_time_mean: 28.9,
+  travel_cost_mean: 98.1,
+};
+
+function renderEmployment() {
+  const acc = A();
+  const MACROS4 = ['NCR','Luzon (excl. NCR)','Visayas','Mindanao'];
+  const mcols = ['rgba(14,165,233,.82)','rgba(34,197,94,.78)','rgba(167,139,250,.82)','rgba(244,63,94,.78)'];
+
+  // Employment rate by sex
+  mkChart('cEmpSex','bar',{
+    labels:['Male','Female','National'],
+    datasets:[{label:'Employment rate',
+      data:[60.2,30.1,44.7],
+      backgroundColor:['rgba(14,165,233,.82)','rgba(244,63,94,.78)','rgba(167,139,250,.78)'],
+      borderRadius:7,borderWidth:0,barPercentage:.5}]
+  },{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:0,max:75}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // Employment rate by age
+  const ageBands = Object.keys(EMP.emp_age);
+  mkChart('cEmpAge','bar',{
+    labels:ageBands,
+    datasets:[{label:'% employed',
+      data:Object.values(EMP.emp_age),
+      backgroundColor:Object.values(EMP.emp_age).map(v=>v>=55?'rgba(34,197,94,.82)':v>=40?'rgba(14,165,233,.78)':'rgba(245,158,11,.78)'),
+      borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:0,max:75}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // Class of worker horizontal
+  const cwK = Object.keys(EMP.class_work);
+  mkChart('cClassWork','bar',{
+    labels:cwK.map(l=>l.length>26?l.slice(0,26)+'…':l),
+    datasets:[{label:'% of employed',data:Object.values(EMP.class_work),
+      backgroundColor:cwK.map((_,i)=>`hsla(${210+i*22},65%,${60-i*3}%,.82)`),
+      borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // Industry horizontal
+  const indK = Object.keys(EMP.industry);
+  mkChart('cIndustry','bar',{
+    labels:indK.map(l=>l.length>26?l.slice(0,26)+'…':l),
+    datasets:[{label:'% of employed',data:Object.values(EMP.industry),
+      backgroundColor:indK.map((_,i)=>`hsla(${130+i*18},62%,${58-i*2}%,.82)`),
+      borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // Hours distribution donut
+  const hdK=Object.keys(EMP.hours_dist);
+  const hdCols=['rgba(245,158,11,.82)','rgba(14,165,233,.72)','rgba(34,197,94,.82)','rgba(244,63,94,.78)'];
+  mkChart('cHoursDist','doughnut',{
+    labels:hdK,
+    datasets:[{data:Object.values(EMP.hours_dist),backgroundColor:hdCols,borderWidth:0,hoverOffset:4}]
+  },{maintainAspectRatio:true,aspectRatio:1.5,
+    plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:6}},
+    tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+
+  // Occupation horizontal
+  const occK=Object.keys(EMP.occupation);
+  mkChart('cOccupation','bar',{
+    labels:occK,
+    datasets:[{label:'% of employed',data:Object.values(EMP.occupation),
+      backgroundColor:occK.map((_,i)=>`hsla(${250+i*20},65%,${62-i*2}%,.82)`),
+      borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // Contract type donut
+  const ctK=Object.keys(EMP.contract).filter(k=>k!=="Don't know");
+  const ctCols=['rgba(244,63,94,.82)','rgba(34,197,94,.82)','rgba(245,158,11,.78)'];
+  mkChart('cContract','doughnut',{
+    labels:ctK,
+    datasets:[{data:ctK.map(k=>EMP.contract[k]),backgroundColor:ctCols,borderWidth:0,hoverOffset:4}]
+  },{maintainAspectRatio:true,aspectRatio:1.5,
+    plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:6}},
+    tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+
+  // Benefits horizontal
+  const benK=Object.keys(EMP.benefits);
+  mkChart('cBenefits','bar',{
+    labels:benK.map(l=>l.length>22?l.slice(0,22)+'…':l),
+    datasets:[{label:'% of employed',data:Object.values(EMP.benefits),
+      backgroundColor:benK.map((_,i)=>`hsla(${38+i*25},68%,${60-i*2}%,.82)`),
+      borderRadius:5,borderWidth:0,barPercentage:.72}]
+  },{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+
+  // Employment rate by macro
+  mkChart('cEmpMacro','bar',{
+    labels:MACROS4,
+    datasets:[{label:'% employed',data:MACROS4.map(r=>EMP.emp_macro[r]),
+      backgroundColor:mcols,borderRadius:6,borderWidth:0,barPercentage:.55}]
+  },{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:35,max:55}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // Job search grouped bar
+  mkChart('cJobSearch','bar',{
+    labels:['Looking: new job','Looking: more work','Not looking'],
+    datasets:[{label:'% of working-age adults',
+      data:[17.61,2.85,79.54],
+      backgroundColor:['rgba(244,63,94,.82)','rgba(245,158,11,.78)','rgba(34,197,94,.72)'],
+      borderRadius:5,borderWidth:0,barPercentage:.6}]
+  },{scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{...BASE_OPTS.scales.y}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+
+  // Transport to work donut
+  const twK=Object.keys(EMP.transport_work);
+  const twCols=['rgba(245,158,11,.82)','rgba(14,165,233,.78)','rgba(34,197,94,.78)','rgba(167,139,250,.75)','rgba(244,63,94,.72)','rgba(99,102,241,.72)'];
+  mkChart('cTransWork','doughnut',{
+    labels:twK,
+    datasets:[{data:Object.values(EMP.transport_work),backgroundColor:twCols,borderWidth:0,hoverOffset:4}]
+  },{maintainAspectRatio:true,aspectRatio:1.5,
+    plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:6}},
+    tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+
+  // Contract duration donut
+  const cdK=Object.keys(EMP.contract_dur).filter(k=>k!=="Don't know");
+  const cdCols=['rgba(34,197,94,.82)','rgba(99,102,241,.78)','rgba(14,165,233,.78)','rgba(245,158,11,.75)','rgba(244,63,94,.72)'];
+  mkChart('cContractDur','doughnut',{
+    labels:cdK,
+    datasets:[{data:cdK.map(k=>EMP.contract_dur[k]),backgroundColor:cdCols,borderWidth:0,hoverOffset:4}]
+  },{maintainAspectRatio:true,aspectRatio:1.5,
+    plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:6}},
+    tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+}
+
+
+// ══════════════════════════════════════════
+// MODULE DATA (M04–M14, hhw/indw weighted)
+// ══════════════════════════════════════════
+const INC = {"regular_pct": {"Yes": 66.07, "No": 33.93}, "seasonal_pct": {"Yes": 85.94, "No": 14.06}, "cash_mean": 10464.0, "cash_sett": {"Rural": 9452.4, "Urban": 11295.7}, "cash_macro": {"Luzon (excl. NCR)": 9291.2, "Mindanao": 11133.4, "NCR": 11713.1, "Visayas": 12033.7}, "ofw_pct": {"No": 92.63, "Yes": 7.37}, "ofw_mean": 21844.8, "domsupp_pct": {"No": 77.18, "Yes": 22.82}, "pension_pct": {"No": 91.9, "Yes": 8.1}};
+const FIN = {"pcts": {"bank": 5.04, "mobile": 18.26, "save": 12.95, "sav_grp": 8.19, "card": 10.67, "emergency": 2.11, "loan": 18.19}, "by_sett": {"bank": {"Rural": 4.13, "Urban": 5.77}, "mobile": {"Rural": 15.18, "Urban": 20.76}, "save": {"Rural": 14.46, "Urban": 11.71}, "card": {"Rural": 8.86, "Urban": 12.15}}, "by_macro": {"bank": {"Luzon (excl. NCR)": 4.65, "Mindanao": 7.22, "NCR": 6.05, "Visayas": 1.48}, "mobile": {"Luzon (excl. NCR)": 17.9, "Mindanao": 18.21, "NCR": 25.66, "Visayas": 12.73}, "save": {"Luzon (excl. NCR)": 14.36, "Mindanao": 12.46, "NCR": 12.88, "Visayas": 9.51}, "card": {"Luzon (excl. NCR)": 10.79, "Mindanao": 11.28, "NCR": 13.59, "Visayas": 6.56}}};
+const MIG = {"status": {"Never moved": 99.95, "Moved internally": 0.04, "Returned OFW": 0.01}, "considering": {"No": 64.43, "Yes": 35.57}, "c_macro": {"Luzon (excl. NCR)": 38.76, "Mindanao": 30.63, "NCR": 45.49, "Visayas": 22.62}, "c_sett": {"Rural": 34.55, "Urban": 36.23}, "c_gender": {"Female": 37.91, "Male": 32.96}, "reasons": {"Employment/Job change/Relocation": 100.0}};
+const HLT = {"philhealth_type": {"Not covered": 53.89, "PhilHealth Paying": 15.73, "Dependent (Non-Paying)": 12.03, "PhilHealth Non-Paying": 11.26, "Dependent (Paying)": 7.09}, "philhealth_covered": {"Not covered": 53.89, "Covered": 46.11}, "ph_macro": {"Luzon (excl. NCR)": 45.0, "Mindanao": 50.51, "NCR": 52.55, "Visayas": 35.55}, "ph_sett": {"Rural": 45.86, "Urban": 46.33}, "oop": {"Yes (cash)": 54.06, "No": 44.82, "Yes (in-kind)": 1.12}, "facility": {"Barangay Health Station": 32.39, "Public Hospital": 27.32, "Rural Health Unit": 19.98, "Private Clinic": 13.71, "Private Hospital": 6.6}, "unmet": {"No": 64.74, "Yes (outpatient)": 26.38, "Yes (inpatient)": 6.04, "Refused": 1.68, "Yes (both)": 1.16}, "hospitalized": {"No": 90.82, "Yes": 9.18}, "oop_mean": 3354.0, "hosp_bill": 52159.8, "hosp_oop": 23930.9};
+const FOD = {"source": {"Wet market": 73.97, "Sari-sari store": 15.06, "Supermarket/Grocery": 5.99, "Ambulant peddlers": 2.5, "Large supermarket": 0.71, "Convenience store": 0.66, "Open stalls/mall": 0.55, "Code 12": 0.32, "Code 11": 0.1, "Code 13": 0.1, "Code 99": 0.04}, "freq": {"More than once/week": 43.25, "Once a week": 40.45, "Twice a month": 8.17, "Less than monthly": 4.82, "Thrice a month": 2.45, "Code 99": 0.86}, "payment": {"Cash": 99.61, "Card (Credit/Debit)": 0.15, "Digital (GCash/Maya/QR)": 0.13, "Code 11": 0.05, "Code 12": 0.05}, "receipt": {"No": 83.69, "Yes": 16.31}, "travel_min": 17.6};
+const SSB = {"hh_pct": {"Yes": 89.92, "No": 10.08}, "ind_pct": {"Yes": 89.38, "No": 10.62}, "mean_servings": 6.9, "by_sett": {"Rural": 89.88, "Urban": 88.94}, "by_age": {"<10": 78.56, "10-17": 91.44, "18-24": 93.08, "25-44": 94.27, "45-64": 90.08, "65+": 82.78}};
+const HAZ = {"by_hazard": {"Typhoon": 76.38, "Extreme heat": 49.7, "Earthquake": 40.57, "Flood/La Ni\u00f1a": 36.4, "Drought/El Ni\u00f1o": 30.56, "Pest infestation": 12.08, "Livestock disease": 9.28, "Tsunami": 3.01, "Volcanic eruption": 2.23, "Landslide": 0.21}, "warning": {"Yes": 55.11, "No": 44.89}, "understood": {"Yes": 97.39, "No": 2.61}};
+const DWL = {"building": {"Single house": 88.11, "Duplex/row house": 5.34, "9": 3.4, "Apt/Condo": 1.26, "Commercial/industrial": 0.92, "Other": 0.52}, "roof": {"Other": 28.84, "Strong materials (GI)": 25.43, "Mixed": 19.72, "Makeshift": 8.22, "Concrete": 6.4, "Light (cogon/bamboo/nipa)": 5.98}, "wall": {"GI/metal sheet": 41.28, "Concrete/brick": 28.05, "Makeshift": 17.23, "Wood/plywood": 8.49, "Other": 1.84, "7": 1.24}, "tenure": {"Owner": 56.53, "Rent-free with consent": 17.03, "Other": 11.75, "6": 7.93, "Renting": 3.93}, "bedrooms": 1.8, "peeling_in": 51.96, "peeling_out": 53.12};
+const SAN = {"toilet": {"Flush\u2192sewage": 71.12, "Flush\u2192septic tank": 10.44, "Pit latrine": 8.17, "Open defecation": 5.73, "Hanging toilet": 2.73, "9": 1.23, "7": 0.46, "No facility": 0.13}, "waste": {"Municipal collection": 65.04, "Pit/landfill": 21.8, "Burning": 6.61, "Compost": 4.96, "15": 0.67, "16": 0.4, "12": 0.24, "9": 0.17, "14": 0.05, "19": 0.05}, "segregate": {"5": 54.27, "No": 32.63, "Yes": 12.67, "4": 0.3, "3": 0.13}, "satisfaction": {"Neither": 74.84, "Satisfied": 10.9, "Dissatisfied": 10.59, "Very satisfied": 3.68}, "shared": 56.13};
+const ELC = {"pct": 95.95, "source": {"Utility/grid": 98.9, "Solar": 0.64, "Battery/other": 0.23, "Generator": 0.18, "12": 0.05}, "outage": null, "by_macro": {"Luzon (excl. NCR)": 96.82, "Mindanao": 93.84, "NCR": 98.38, "Visayas": 94.93}, "by_sett": {"Rural": 94.78, "Urban": 96.89}};
+const NET = {"pct": 48.96, "types": {"Fixed wired broadband": 41.79, "Mobile broadband": 37.32, "Fixed wireless broadband": 15.94, "Satellite broadband": 4.94}, "subscription": {"Postpaid/billed": 53.75, "Prepaid": 45.5, "Neighbor's WiFi": 0.75}, "devices": {"Smartphone": 63.97, "Smart TV": 13.31, "Laptop": 11.22, "Tablet": 6.37, "Desktop PC": 4.99, "Piso Net kiosk": 0.11, "Basic phone": 0.02}, "purposes": {"Communication/Social media": 36.24, "News & Information": 15.59, "Online shopping": 14.02, "Online education": 13.09, "Entertainment/Gaming": 8.87, "Payments/Banking": 4.06, "Govt information": 2.26, "Govt services": 2.03}, "interruptions": {"Yes": 59.43, "No": 40.57}, "by_macro": {"Luzon (excl. NCR)": 50.84, "Mindanao": 42.85, "NCR": 64.09, "Visayas": 40.71}, "by_sett": {"Rural": 46.02, "Urban": 51.35}};
+const WAT = {"main_source": {"Piped (inside)": 60.61, "Unprotected well/spring": 8.38, "Protected spring": 6.02, "Rainwater": 4.44, "Piped (outside)": 3.99, "Public tap/standpipe": 3.96, "Tube well/borehole": 3.7}, "drinking": {"13": 38.49, "Same piped source": 21.52, "15": 20.49, "6": 3.74, "8": 3.2, "Filtered": 2.54}, "treatment": {"No": 69.36, "Yes": 30.64}, "safety": {"Unsafe": 60.31, "Somewhat safe": 33.07, "Safe": 5.19, "Very safe": 1.42}, "travel_min": 13.3};
+const ASS = {"asset_pct": {"Refrigerator": 48.96, "Washing machine": 54.98, "Air conditioner": 10.47, "Gas stove/oven": 25.91, "Motorcycle/Tricycle": 54.03, "Car/Van": 3.93, "Computer/Laptop": 14.59, "Motorized boat": 1.59}, "fuel_pct": {"Electricity": 21.38, "LPG": 61.49, "Kerosene": 3.64, "Fuelwood": 50.73, "Charcoal": 27.03}, "asset_by_macro": {"Refrigerator": {"Luzon (excl. NCR)": 45.5, "Mindanao": 53.27, "NCR": 58.76, "Visayas": 42.85}, "Washing machine": {"Luzon (excl. NCR)": 64.58, "Mindanao": 43.31, "NCR": 69.67, "Visayas": 33.55}, "Air conditioner": {"Luzon (excl. NCR)": 9.78, "Mindanao": 5.83, "NCR": 24.43, "Visayas": 8.52}, "Gas stove/oven": {"Luzon (excl. NCR)": 28.64, "Mindanao": 18.4, "NCR": 42.28, "Visayas": 16.49}, "Motorcycle/Tricycle": {"Luzon (excl. NCR)": 56.81, "Mindanao": 57.66, "NCR": 37.3, "Visayas": 53.9}, "Car/Van": {"Luzon (excl. NCR)": 4.03, "Mindanao": 3.59, "NCR": 4.86, "Visayas": 3.38}, "Computer/Laptop": {"Luzon (excl. NCR)": 15.62, "Mindanao": 10.83, "NCR": 24.84, "Visayas": 9.05}, "Motorized boat": {"Luzon (excl. NCR)": 1.02, "Mindanao": 2.12, "NCR": 0.79, "Visayas": 3.11}}, "fuel_by_macro": {"Electricity": {"Luzon (excl. NCR)": 22.43, "Mindanao": 19.4, "NCR": 28.67, "Visayas": 15.2}, "LPG": {"Luzon (excl. NCR)": 75.44, "Mindanao": 38.73, "NCR": 93.51, "Visayas": 31.35}, "Kerosene": {"Luzon (excl. NCR)": 2.49, "Mindanao": 3.08, "NCR": 4.71, "Visayas": 7.25}, "Fuelwood": {"Luzon (excl. NCR)": 47.91, "Mindanao": 72.33, "NCR": 3.52, "Visayas": 62.42}, "Charcoal": {"Luzon (excl. NCR)": 31.54, "Mindanao": 24.9, "NCR": 9.31, "Visayas": 33.07}}};
+const VWS = {"life_sat_mean": 3.04, "life_sat_dist": {"1": 4.44, "2": 20.83, "3": 52.27, "4": 11.29, "5": 11.16}, "eco_change": {"Same": 46.32, "Somewhat worse": 27.76, "Somewhat better": 11.67, "Much better": 7.31, "Much worse": 6.95}, "safety": {"Unsafe": 62.41, "Somewhat safe": 16.26, "Very unsafe": 9.74, "Safe": 5.99, "Very safe": 4.58, "99": 1.03}, "likert": {"Prices rising too fast": 17.0, "Good time to find a job": 22.34, "Optimistic about economy": 22.02, "Family worse off (2yr)": 24.72, "More citizen participation": 10.56, "Worried: education for kids": 16.13, "Worried: job loss": 24.56, "Worried: AI/automation": 27.39, "Worried: political instability": 19.4, "Digital services helpful": 21.36, "Taxes well spent": 44.53}, "income_self": {"1": 20.21, "2": 29.72, "3": 48.62, "4": 0.76, "5": 0.69}, "eco_macro": {"Luzon (excl. NCR)": {"Same": 45.32, "Somewhat worse": 28.36, "Somewhat better": 12.54, "Much better": 7.72, "Much worse": 6.06}, "Mindanao": {"Same": 51.48, "Somewhat worse": 26.23, "Somewhat better": 10.18, "Much worse": 7.21, "Much better": 4.9}, "NCR": {"Same": 45.83, "Somewhat worse": 26.76, "Somewhat better": 11.24, "Much better": 9.87, "Much worse": 6.29}, "Visayas": {"Same": 40.32, "Somewhat worse": 29.62, "Somewhat better": 12.09, "Much worse": 9.81, "Much better": 8.15}}};
+
+const MACROS4 = ['NCR','Luzon (excl. NCR)','Visayas','Mindanao'];
+const MCOLS   = ['rgba(14,165,233,.82)','rgba(34,197,94,.78)','rgba(167,139,250,.82)','rgba(244,63,94,.78)'];
+
+function renderIncome() {
+  const acc=A();
+  mkChart('cIncType','bar',{labels:['Regular income','Seasonal income'],datasets:[{label:'% receiving',data:[INC.regular_pct['Yes']||0,INC.seasonal_pct['Yes']||0],backgroundColor:['rgba(34,197,94,.82)','rgba(14,165,233,.78)'],borderRadius:7,borderWidth:0,barPercentage:.5}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:0,max:100}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+  const cashMacro=MACROS4.map(m=>INC.cash_macro[m]||0);
+  mkChart('cIncMacro','bar',{labels:MACROS4,datasets:[{label:'Mean 6-mo cash (₱)',data:cashMacro,backgroundColor:MCOLS,borderRadius:6,borderWidth:0,barPercentage:.55}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,ticks:{callback:v=>'₱'+v.toLocaleString()}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ₱${c.parsed.y.toLocaleString()}`}}}});
+  mkChart('cIncSett','bar',{labels:['Urban','Rural'],datasets:[{label:'Mean 6-mo cash (₱)',data:[INC.cash_sett['Urban']||0,INC.cash_sett['Rural']||0],backgroundColor:['rgba(14,165,233,.82)','rgba(245,158,11,.78)'],borderRadius:7,borderWidth:0,barPercentage:.5}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,ticks:{callback:v=>'₱'+v.toLocaleString()}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ₱${c.parsed.y.toLocaleString()}`}}}});
+}
+
+function renderFinance() {
+  const labels={bank:'Bank account',mobile:'Mobile money',save:'Can save',sav_grp:'Savings group',card:'Credit/debit card',emergency:'Emergency capacity',loan:'Took a loan'};
+  const vals=Object.keys(labels).map(k=>FIN.pcts[k]||0);
+  const cols=Object.keys(labels).map((_,i)=>`hsla(${200+i*22},65%,${60-i*2}%,.82)`);
+  mkChart('cFinIndicators','bar',{labels:Object.values(labels),datasets:[{label:'% of HHs',data:vals,backgroundColor:cols,borderRadius:5,borderWidth:0,barPercentage:.72}]},{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+  mkChart('cFinBank','bar',{labels:MACROS4,datasets:[{label:'% with bank account',data:MACROS4.map(m=>FIN.by_macro.bank[m]||0),backgroundColor:MCOLS,borderRadius:6,borderWidth:0,barPercentage:.55}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:0,max:15}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+  mkChart('cFinSett','bar',{labels:['Urban','Rural'],datasets:[{label:'Mobile money',data:[FIN.by_sett.mobile['Urban']||0,FIN.by_sett.mobile['Rural']||0],backgroundColor:'rgba(14,165,233,.8)',borderRadius:4,borderWidth:0},{label:'Can save',data:[FIN.by_sett.save['Urban']||0,FIN.by_sett.save['Rural']||0],backgroundColor:'rgba(34,197,94,.78)',borderRadius:4,borderWidth:0},{label:'Credit card',data:[FIN.by_sett.card['Urban']||0,FIN.by_sett.card['Rural']||0],backgroundColor:'rgba(245,158,11,.78)',borderRadius:4,borderWidth:0}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y}},plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}});
+}
+
+function renderMigration() {
+  const cm=MIG.c_macro||{};
+  mkChart('cMigMacro','bar',{labels:MACROS4,datasets:[{label:'% considering migration',data:MACROS4.map(m=>cm[m]||0),backgroundColor:MCOLS,borderRadius:6,borderWidth:0,barPercentage:.55}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:0,max:55}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+}
+
+function renderHealth() {
+  const pt=HLT.philhealth_type||{};
+  const ptK=Object.keys(pt); const ptV=ptK.map(k=>pt[k]);
+  const ptCols=['rgba(244,63,94,.82)','rgba(14,165,233,.78)','rgba(245,158,11,.78)','rgba(34,197,94,.75)','rgba(167,139,250,.75)'];
+  mkChart('cPhilType','doughnut',{labels:ptK,datasets:[{data:ptV,backgroundColor:ptCols,borderWidth:0,hoverOffset:4}]},{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:6}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+  mkChart('cPhilMacro','bar',{labels:MACROS4,datasets:[{label:'% PhilHealth covered',data:MACROS4.map(m=>HLT.ph_macro[m]||0),backgroundColor:MCOLS,borderRadius:6,borderWidth:0,barPercentage:.55}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:30,max:60}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+  const fac=HLT.facility||{};
+  mkChart('cFacility','bar',{labels:Object.keys(fac),datasets:[{label:'% of care-seekers',data:Object.values(fac),backgroundColor:Object.keys(fac).map((_,i)=>`hsla(${120+i*20},62%,${58-i*2}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]},{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+  const oop=HLT.oop||{};
+  const oopK=Object.keys(oop).filter(k=>k!='Yes (in-kind)'); 
+  mkChart('cOOP','doughnut',{labels:oopK,datasets:[{data:oopK.map(k=>oop[k]||0),backgroundColor:['rgba(244,63,94,.82)','rgba(34,197,94,.78)'],borderWidth:0,hoverOffset:4}]},{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+}
+
+function renderFood() {
+  const fs=FOD.source||{};
+  const fsK=Object.keys(fs).filter(k=>!k.startsWith('Code')).slice(0,7);
+  mkChart('cFoodSrc','bar',{labels:fsK,datasets:[{label:'% of HHs',data:fsK.map(k=>fs[k]),backgroundColor:fsK.map((_,i)=>`hsla(${120+i*18},65%,${58-i*2}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]},{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+  const ff=FOD.freq||{};
+  mkChart('cFoodFreq','doughnut',{labels:Object.keys(ff),datasets:[{data:Object.values(ff),backgroundColor:['rgba(34,197,94,.82)','rgba(14,165,233,.78)','rgba(245,158,11,.75)','rgba(244,63,94,.72)'],borderWidth:0,hoverOffset:4}]},{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+  const ssb=SSB.by_age||{};
+  const agLabels=Object.keys(ssb);
+  mkChart('cSSB','bar',{labels:agLabels,datasets:[{label:'% consuming SSBs',data:agLabels.map(k=>ssb[k]||0),backgroundColor:agLabels.map(v=>parseFloat(v)||0).map(v=>`rgba(244,63,94,${0.6+v/200})`),borderRadius:5,borderWidth:0,barPercentage:.7}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:70,max:100}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+}
+
+function renderHazard() {
+  const haz=HAZ.by_hazard||{};
+  const hK=Object.keys(haz); const hV=hK.map(k=>haz[k]);
+  mkChart('cHazard','bar',{labels:hK,datasets:[{label:'% of HHs exposed',data:hV,backgroundColor:hV.map(v=>v>50?'rgba(239,68,68,.82)':v>30?'rgba(245,158,11,.82)':'rgba(14,165,233,.75)'),borderRadius:5,borderWidth:0,barPercentage:.72}]},{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+}
+
+function renderHousing() {
+  const ten=DWL.tenure||{};
+  const tenCols=['rgba(34,197,94,.82)','rgba(14,165,233,.78)','rgba(245,158,11,.78)','rgba(244,63,94,.75)','rgba(167,139,250,.72)'];
+  mkChart('cTenure','doughnut',{labels:Object.keys(ten),datasets:[{data:Object.values(ten),backgroundColor:tenCols,borderWidth:0,hoverOffset:4}]},{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:6}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+  const tlt=SAN.toilet||{};
+  mkChart('cToilet','bar',{labels:Object.keys(tlt),datasets:[{label:'% of HHs',data:Object.values(tlt),backgroundColor:Object.keys(tlt).map((_,i)=>`hsla(${160+i*25},62%,${58-i*3}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]},{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+  const ws=WAT.main_source||{};
+  mkChart('cWaterSrc','bar',{labels:Object.keys(ws),datasets:[{label:'% of HHs',data:Object.values(ws),backgroundColor:Object.keys(ws).map((_,i)=>`hsla(${200+i*15},65%,${60-i*2}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]},{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+  const wSf=WAT.safety||{};
+  const sfCols=['rgba(239,68,68,.82)','rgba(245,158,11,.78)','rgba(167,139,250,.72)','rgba(34,197,94,.75)','rgba(14,165,233,.72)'];
+  mkChart('cWaterSafe','doughnut',{labels:Object.keys(wSf),datasets:[{data:Object.values(wSf),backgroundColor:sfCols,borderWidth:0,hoverOffset:4}]},{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:5}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+  mkChart('cElec','bar',{labels:MACROS4,datasets:[{label:'% with electricity',data:MACROS4.map(m=>ELC.by_macro[m]||0),backgroundColor:MCOLS,borderRadius:6,borderWidth:0,barPercentage:.55}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:88,max:100}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+  mkChart('cInet','bar',{labels:MACROS4,datasets:[{label:'% with internet',data:MACROS4.map(m=>NET.by_macro[m]||0),backgroundColor:MCOLS,borderRadius:6,borderWidth:0,barPercentage:.55}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,min:30,max:70}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+  const it=NET.types||{};
+  mkChart('cInetType','doughnut',{labels:Object.keys(it),datasets:[{data:Object.values(it),backgroundColor:['rgba(14,165,233,.82)','rgba(245,158,11,.78)','rgba(34,197,94,.75)','rgba(167,139,250,.72)'],borderWidth:0,hoverOffset:4}]},{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+  const ip=NET.purposes||{};
+  mkChart('cInetPurp','bar',{labels:Object.keys(ip).slice(0,7),datasets:[{label:'% of HHs',data:Object.keys(ip).slice(0,7).map(k=>ip[k]),backgroundColor:Object.keys(ip).slice(0,7).map((_,i)=>`hsla(${200+i*20},65%,${60-i*2}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]},{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+}
+
+function renderAssets() {
+  const ap=ASS.asset_pct||{};
+  mkChart('cAssets','bar',{labels:Object.keys(ap),datasets:[{label:'% of HHs',data:Object.values(ap),backgroundColor:Object.keys(ap).map((_,i)=>`hsla(${200+i*18},65%,${60-i*2}%,.82)`),borderRadius:5,borderWidth:0,barPercentage:.72}]},{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+  const fp=ASS.fuel_pct||{};
+  mkChart('cFuels','bar',{labels:Object.keys(fp),datasets:[{label:'% of HHs',data:Object.values(fp),backgroundColor:['rgba(245,158,11,.82)','rgba(34,197,94,.78)','rgba(244,63,94,.75)','rgba(167,139,250,.72)','rgba(99,102,241,.72)'],borderRadius:5,borderWidth:0,barPercentage:.6}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y,max:80}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+  const am=ASS.asset_by_macro||{};
+  const assetNames=['Refrigerator','Motorcycle/Tricycle','Car/Van','Computer/Laptop'];
+  const aColors=['rgba(14,165,233,.82)','rgba(245,158,11,.78)','rgba(34,197,94,.75)','rgba(167,139,250,.72)'];
+  mkChart('cAssetMacro','bar',{labels:MACROS4,datasets:assetNames.map((nm,i)=>{return{label:nm,data:MACROS4.map(m=>(am[nm]||{})[m]||0),backgroundColor:aColors[i],borderRadius:4,borderWidth:0};})},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y}},plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}});
+}
+
+function renderViews() {
+  const ls=VWS.life_sat_dist||{};
+  const lsCols=['rgba(34,197,94,.82)','rgba(14,165,233,.78)','rgba(167,139,250,.75)','rgba(245,158,11,.72)','rgba(244,63,94,.72)'];
+  mkChart('cLifeSat','bar',{labels:['1 (satisfied)','2','3 (neutral)','4','5 (dissatisfied)'],datasets:[{label:'% of HHs',data:['1','2','3','4','5'].map(k=>parseFloat(ls[k]||0)),backgroundColor:lsCols,borderRadius:5,borderWidth:0,barPercentage:.7}]},{scales:{x:{grid:{display:false}},y:{...BASE_OPTS.scales.y}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}%`}}}});
+  const ec=VWS.eco_change||{};
+  const ecK=Object.keys(ec); const ecCols=['rgba(34,197,94,.82)','rgba(14,165,233,.78)','rgba(167,139,250,.75)','rgba(245,158,11,.72)','rgba(244,63,94,.72)'];
+  mkChart('cEcoChange','doughnut',{labels:ecK,datasets:[{data:ecK.map(k=>ec[k]),backgroundColor:ecCols,borderWidth:0,hoverOffset:4}]},{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{...LEGEND_OPTS,labels:{...LEGEND_OPTS.labels,font:{family:'DM Sans',size:10},padding:5}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+  const lk=VWS.likert||{};
+  const lkK=Object.keys(lk);
+  mkChart('cLikert','bar',{labels:lkK.map(l=>l.length>28?l.slice(0,28)+'…':l),datasets:[{label:'% agree/strongly agree',data:lkK.map(k=>lk[k]),backgroundColor:lkK.map(v=>lk[v]>35?'rgba(34,197,94,.82)':lk[v]>20?'rgba(14,165,233,.78)':'rgba(244,63,94,.72)'),borderRadius:5,borderWidth:0,barPercentage:.72}]},{indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:10}}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x}%`}}}});
+  const em=VWS.eco_macro||{};
+  mkChart('cEcoMacro','bar',{labels:MACROS4,datasets:[{label:'Worse',data:MACROS4.map(m=>((em[m]||{})['Somewhat worse']||0)+((em[m]||{})['Much worse']||0)),backgroundColor:'rgba(244,63,94,.78)',borderRadius:4,borderWidth:0,stack:'s'},{label:'Same',data:MACROS4.map(m=>(em[m]||{})['Same']||0),backgroundColor:'rgba(167,139,250,.72)',borderRadius:4,borderWidth:0,stack:'s'},{label:'Better',data:MACROS4.map(m=>((em[m]||{})['Somewhat better']||0)+((em[m]||{})['Much better']||0)),backgroundColor:'rgba(34,197,94,.78)',borderRadius:4,borderWidth:0,stack:'s'}]},{scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,...BASE_OPTS.scales.y,max:100}},plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}});
+  const sf=VWS.safety||{};
+  const sfCols2=['rgba(34,197,94,.82)','rgba(14,165,233,.78)','rgba(167,139,250,.75)','rgba(245,158,11,.72)','rgba(244,63,94,.72)'];
+  mkChart('cSafety','doughnut',{labels:Object.keys(sf),datasets:[{data:Object.values(sf),backgroundColor:sfCols2,borderWidth:0,hoverOffset:4}]},{maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:LEGEND_OPTS,tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}});
+}
+
+// ══════════════════════════════════════════
+// ABOUT DIALOG
+// ══════════════════════════════════════════
+function showAbout() {
+  alert('L2P Philippines — Complete Survey Dashboard (M01–M14)\n\nData sources:\n• M01–M03: Roster, Education, Employment\n• M04–M05: Income, Finance\n• M06–M09: Migration, Health, Food & SSB, Hazards\n• M10–M14: Dwelling, Sanitation, Electricity, Internet, Water, Assets, Views\n• final_weights.dta — Survey weights (indw / hhw)\n• M00_passport.dta — Region metadata\n\nAll estimates weighted. Population: ~108.7M.\nL2P Philippines · October 15 2025');
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  renderAll();
+});
+</script>
+</body>
+</html>
