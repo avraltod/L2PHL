@@ -617,8 +617,8 @@ use `_roster', clear
         <p>Among adults 18 and older, 51 percent have secondary as their highest attainment. Only 13 percent have completed college — though women (16 percent) outperform men (11 percent) at that level. Less than 1 percent hold postgraduate degrees.</p>
         <p>Intergenerational mobility is limited: 65 percent of fathers and 61 percent of mothers attained only primary education. The path from primary-educated parents to college-educated children is the central educational mobility challenge.</p>
       </div>
-      <div class="pull b rev d1">
-        <p>Annual education spend per student: mean <strong>₱15,261</strong> (median ₱8,600). Urban families spend more — mean ₱15,742 (median ₱8,900) versus rural ₱14,731 (median ₱8,500). School fees show the biggest urban-rural gap: ₱3,034 vs ₱2,059 — reflecting higher private school enrolment in cities. <em style="font-size:0.85em;color:var(--navy);opacity:0.7;">Top 1% of each component excluded.</em></p>
+      <div class="body-copy">
+        <p>Annual education spend per student averages <strong>₱15,261</strong> (median ₱8,600). Urban families spend more — mean ₱15,742 (median ₱8,900) versus rural ₱14,731 (median ₱8,500). School fees show the biggest urban-rural gap: ₱3,034 vs ₱2,059 — reflecting higher private school enrolment in cities. <span style="font-size:0.85em;color:var(--navy);opacity:0.7;">(Top 1% of each component excluded.)</span></p>
       </div>
     </div>
     <div class="rev d2">
@@ -769,7 +769,17 @@ tab ed3 [aw=indw] if ed1 == 1 &amp; age &lt;= 4
           <div class="csub light">% among employed</div>
           <div class="cwrap" style="height:215px;"><canvas id="cClass"></canvas></div>
         </div>
-        <div class="callout rev d1" style="margin-top:20px;">
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">Contract type among employed</div>
+          <div class="csub light">% · formal vs informal</div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>No contract</span><span style="color:#CE1126;">71.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="71.7"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Written contract</span><span style="color:#00A651;">17.8%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="17.8"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Verbal agreement</span><span style="color:#D4A017;">4.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="4.3"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Don't know</span><span>6.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="6.1"></div></div></div>
+          </div>
+        </div>
+        <div class="callout rev d1" style="margin-top:12px;">
           <div class="callout-lbl">Job loss &amp; search</div>
           <p><strong>10 percent</strong> of households had a member lose a job in the past 30 days. <strong>3 percent</strong> of working-age adults are actively looking for a new job, and another 1 percent want more work.</p>
         </div>
@@ -852,7 +862,7 @@ su a23 [aw=indw] if employed==1 &amp; a23>0 &amp; a23&lt;.
         <div class="cwrap" style="height:200px;"><canvas id="cIncMacro"></canvas></div>
       </div>
       <div class="sgrid sgrid-3 rev d1" style="margin-top:12px;">
-        <div class="scell"><div class="scell-n">9%</div><div class="scell-l">HHs receive OFW</div></div>
+        <div class="scell"><div class="scell-n">₱19,497</div><div class="scell-l">Mean OFW Remittance</div></div>
         <div class="scell"><div class="scell-n">23%</div><div class="scell-l">Domestic support</div></div>
         <div class="scell"><div class="scell-n">7%</div><div class="scell-l">Pension income</div></div>
       </div>
@@ -895,8 +905,37 @@ su a23 [aw=indw] if employed==1 &amp; a23>0 &amp; a23&lt;.
         <p>Mobile money (18 percent) has outpaced banking significantly, but even this is uneven. NCR reaches 26 percent mobile money penetration; Visayas trails at just 12 percent.</p>
         <p>Rural households save at slightly higher rates (14 percent) than urban (12 percent) — likely through informal mechanisms like paluwagan savings groups (8 percent nationally). The financial system has not yet caught up with how ordinary Filipinos actually manage money.</p>
       </div>
-      <div class="pull b rev d1">
-        <p>Borrowing (18 percent) outpaces saving (13 percent) by 5 percentage points. Many households are <strong>net borrowers</strong> — managing cash flow through debt rather than savings buffers.</p>
+      <div class="body-copy">
+        <p>Borrowing (18 percent) outpaces saving (13 percent) by 5 percentage points. Many households are <strong>net borrowers</strong> — managing cash flow through debt rather than savings buffers. Of borrowers, 94 percent use formal sources; only 6 percent borrow informally.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sec two-col" style="padding:0 40px 40px;max-width:1100px;margin:0 auto;">
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Loan source (% of borrower HHs)</div>
+        <div class="csub">Among HHs that borrowed in past 6 months</div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Formal financial institution</span><span style="color:var(--green);">43.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="43.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Private individual</span><span>30.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="30.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Informal lender (5-6)</span><span style="color:var(--red);">14.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="14.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Mobile lending app</span><span>5.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="5.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Government programme</span><span>2.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="2.2"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Loan purpose (% of borrower HHs)</div>
+        <div class="csub">Primary reason for borrowing</div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Business / livelihood</span><span style="color:var(--green);">27.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="27.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Food / daily needs</span><span style="color:var(--red);">24.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="24.7"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Housing / construction</span><span>12.3%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="12.3"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Education</span><span>11.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="11.7"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Other consumption</span><span>8.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="8.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Health / medical</span><span>5.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="5.6"></div></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1031,20 +1070,20 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
   <div class="sec-inner">
     <div class="full-w rev">
       <span class="eyebrow r">Health system</span>
-      <h2 class="hed light" style="max-width:780px;">54% have no PhilHealth. When hospitalization hits, a ₱46,834 bill arrives — <em>more than half paid out-of-pocket.</em></h2>
+      <h2 class="hed light" style="max-width:780px;">54% have no PhilHealth. When hospitalization hits, a ₱46,834 bill arrives — <em>18.5% paid out-of-pocket.</em></h2>
     </div>
     <div class="two-col" style="margin-top:32px;">
       <div class="rev">
         <div class="body-copy light">
           <p>The health service access gap has a financial explanation. Fifty-four percent of household members have no PhilHealth coverage — and of the 46 percent who do, most are non-paying members or dependents. Only 17 percent are contributing members.</p>
           <p>The regional pattern echoes what we saw on access: the Visayas trails at 36 percent coverage against NCR's 53 percent. Notably, rural and urban rates are nearly identical at 46 percent each.</p>
-          <p>When hospitalization does happen, the cost lands hard. Nine percent reported they were hospitalized in the past twelve months with an average bill of ₱46,834 — more than half paid directly out-of-pocket.</p>
+          <p>When hospitalization does happen, the cost lands hard. Nine percent reported they were hospitalized in the past twelve months with an average bill of ₱46,834 — with 18.5 percent of hospital costs paid directly out-of-pocket.</p>
         </div>
         <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
           <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">54%</div><div class="scell-l" style="color:#4a6278;">No PhilHealth at all</div></div>
           <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">46%</div><div class="scell-l" style="color:#4a6278;">With coverage</div></div>
           <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;font-size:1.3rem;">₱46,834</div><div class="scell-l" style="color:#4a6278;">Mean hospital bill</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;font-size:1.2rem;">57%</div><div class="scell-l" style="color:#4a6278;">Out-of-pocket share</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;font-size:1.2rem;">18.5%</div><div class="scell-l" style="color:#4a6278;">Out-of-pocket share</div></div>
         </div>
       </div>
       <div class="rev d2">
@@ -1083,11 +1122,11 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
           <div class="ctitle light">Reasons for not accessing health care</div>
           <div class="csub light">% of those who could not get care</div>
           <div style="margin-top:8px;">
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Cannot afford</span><span style="color:#CE1126;">49.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="49.3"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Not yet needed</span><span>4.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="4.7"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Not able to avail</span><span>1.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="1.2"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Afraid</span><span>1.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="1.0"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>No medical personnel</span><span>0.8%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="0.8"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Cannot afford</span><span style="color:#CE1126;">41.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="41.1"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Not yet needed</span><span>3.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="3.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Not able to avail</span><span>1.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="1.0"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Afraid</span><span>0.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="0.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>No medical personnel</span><span>0.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="0.7"></div></div></div>
           </div>
         </div>
         <div class="cbox dark" style="margin-top:12px;">
@@ -1107,7 +1146,7 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
         <h2 class="hed light">1 in 3 needed health care — but only <em>77% got it.</em></h2>
         <div class="body-copy light">
           <p>Thirty-four percent of household members needed health services in the past 30 days. Of those, 77 percent were able to access care — leaving a 23 percent unmet need rate. NCR fares best (88 percent access) while Visayas struggles most (63 percent).</p>
-          <p>The top reason for not accessing care is cost: 49 percent cite inability to afford it.</p>
+          <p>The top reason for not accessing care is cost: 41 percent cite inability to afford it. In the Visayas, the rate is 70 percent — more than double NCR's 33 percent.</p>
           <p>Among children under 5, malnutrition remains widespread: 27 percent are stunted (low height-for-age), 18 percent are underweight, and 18 percent are wasted. Boys show slightly higher stunting (30 percent) than girls (23 percent). Visayas has the highest stunting rate (32 percent) and severe stunting (18 percent).</p>
         </div>
         <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
