@@ -2512,7 +2512,7 @@ lazy('cFuels', () => {
 // Life satisfaction
 lazy('cLifeSat', () => {
   new Chart(document.getElementById('cLifeSat'), {type:'bar', data:{
-    labels:['1 (Not satisfied)','2','3 (Satisfied)','4 (More than)','5 (Completely)'],
+    labels:['1 (Not at all)','2 (Not satisfied)','3 (Neutral)','4 (Satisfied)','5 (Completely)'],
     datasets:[{data:[3.89,20.89,51.92,11.83,11.47],
       backgroundColor:['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'],borderRadius:4,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,
@@ -2525,10 +2525,10 @@ lazy('cLifeSatRegion', () => {
   new Chart(document.getElementById('cLifeSatRegion'), {type:'bar', data:{
     labels:['NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
     datasets:[
-      {label:'1 (Not satisfied)',data:[3.7,4.4,6.0,1.5],backgroundColor:'#CE1126',borderWidth:0,stack:'s'},
-      {label:'2',data:[24.9,22.1,17.7,18.9],backgroundColor:'#E05206',borderWidth:0,stack:'s'},
-      {label:'3 (Satisfied)',data:[54.2,55.2,50.3,45.8],backgroundColor:'#9FA0A4',borderWidth:0,stack:'s'},
-      {label:'4 (More than)',data:[9.1,7.7,14.3,19.2],backgroundColor:'#40B4E5',borderWidth:0,stack:'s'},
+      {label:'1 (Not at all)',data:[3.7,4.4,6.0,1.5],backgroundColor:'#CE1126',borderWidth:0,stack:'s'},
+      {label:'2 (Not satisfied)',data:[24.9,22.1,17.7,18.9],backgroundColor:'#E05206',borderWidth:0,stack:'s'},
+      {label:'3 (Neutral)',data:[54.2,55.2,50.3,45.8],backgroundColor:'#9FA0A4',borderWidth:0,stack:'s'},
+      {label:'4 (Satisfied)',data:[9.1,7.7,14.3,19.2],backgroundColor:'#40B4E5',borderWidth:0,stack:'s'},
       {label:'5 (Completely)',data:[8.1,10.6,11.7,14.6],backgroundColor:'#009FDA',borderRadius:[3,3,0,0],borderWidth:0,stack:'s'}
     ]
   }, options:{responsive:true,maintainAspectRatio:false,
