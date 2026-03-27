@@ -754,16 +754,17 @@ di as text "Migration consideration by gender:"
 tab m7 gender [aw=indw], col nofreq
 
 * DESTINATION BREAKDOWN
-* m8: 1=Within PH, 2=Abroad
-di as text "Destination type:"
-tab m8 [aw=indw] if m7 == 1
+* m8: 1="Country" (has stated destination), 4="Undecided"
+* m8a: destination country code — 4=Philippines (domestic), else=abroad
+di as text "Destination type (abroad vs domestic, using m8a):"
+gen _abroad = (m8a != 4) if m8a &lt; . &amp; m7 == 1
+su _abroad [aw=indw] if m7 == 1 &amp; m8a &lt; .
+di as res "  Abroad: " %4.0f r(mean)*100 "%  Domestic: " %4.0f (1-r(mean))*100 "%"
+drop _abroad
 
-* m8_country (or similar country variable)
-* Countries: US, Australia, UK, S. Korea, Japan, Saudi Arabia, Canada
-di as text "Destination country breakdown (among abroad-bound):"
-if (c(version) &gt;= 18) {
-    cap tab m8_country [aw=indw] if m7 == 1 &amp; m8 == 2
-}
+* Destination country breakdown (among abroad-bound)
+di as text "Destination country (among m8a != 4, i.e. abroad):"
+tab m8a [aw=indw] if m7 == 1 &amp; m8a &lt; . &amp; m8a != 4
 
 * Restore roster
 use `_roster', clear
@@ -821,7 +822,7 @@ use `_roster', clear
       </div>
       <div class="body-copy">
         <p>Annual education spend per student averages <strong>₱16,973</strong> — urban families spend ₱18,005 versus rural ₱15,834. School fees show the biggest urban-rural gap, reflecting higher private school enrolment in cities.</p>
-        <!-- SFAP #61: Updated to Stata-verified E02_MEAN_EXP (indw). Previous figure ₱15,261 used per-component P99 exclusion. -->
+        <!-- SFAP #61: ₱16,973 = weighted mean, all spenders, no P99 exclusion. Component chart uses per-component P99. -->
       </div>
     </div>
     <div class="rev d2">
@@ -1084,64 +1085,59 @@ di as text ""
 di as text "Education expenditure analysis (students only):"
 
 * Create total expenditure variable
-* Components: meals (ed5a), fees (ed5b), transport (ed5c), books (ed5d),
-*             uniforms (ed5e), other
-cap drop ed_total_exp
-egen ed_total_exp = rowtotal(ed5a ed5b ed5c ed5d ed5e ed5f ed5g ed5h ed5i) ///
-    if ed1 == 1
-
-* Outlier treatment: set top 1% of each component to missing
-foreach v of varlist ed5a ed5b ed5c ed5d ed5e ed5f ed5g ed5h ed5i {
-    qui _pctile `v' [aw=indw] if `v' &gt; 0 &amp; `v' &lt; . &amp; ed1 == 1, p(99)
-    qui replace `v' = . if `v' &gt; r(r1) &amp; `v' &lt; . &amp; ed1 == 1
-}
-
-* Recompute total after outlier removal
+* Components per questionnaire:
+*   ed5a = School fees &amp; tuition
+*   ed5b = Uniforms &amp; footwear
+*   ed5c = Textbooks &amp; other instruction materials
+*   ed5d = Educational supplies (pens, notebooks)
+*   ed5e = Meals and/or lodging
+*   ed5f = Building repair, educational equipment
+*   ed5g = Gifts to teachers &amp; administrators
+*   ed5h = Transportation expenses
+*   ed5i = Other expenses (excl. tutoring)
 cap drop ed_total_exp
 egen ed_total_exp = rowtotal(ed5a ed5b ed5c ed5d ed5e ed5f ed5g ed5h ed5i) ///
     if ed1 == 1
 replace ed_total_exp = . if ed_total_exp == 0
 
-* Mean &amp; median total expenditure (among spenders)
-di as text "Total annual education expenditure (among spenders):"
+* HEADLINE TOTAL: no outlier exclusion (all spenders)
+* Mean &amp; median total expenditure
+di as text "Total annual education expenditure (among spenders, no exclusion):"
 su ed_total_exp [aw=indw] if ed_total_exp &gt; 0 &amp; ed_total_exp &lt; .
 _pctile ed_total_exp [aw=indw] if ed_total_exp &gt; 0 &amp; ed_total_exp &lt; ., p(50)
 di as res "  Mean: ₱" %10.0f r(mean) "  Median: ₱" %10.0f r(r1)
 
-* By settlement
+* By settlement (no exclusion)
 di as text ""
-di as text "Expenditure by settlement:"
+di as text "Expenditure by settlement (no exclusion):"
 table settlement [aw=indw] if ed_total_exp &gt; 0 &amp; ed_total_exp &lt; ., ///
     stat(mean median ed_total_exp) nformat(%10.0f)
 
-* By macro-region
+* By macro-region (no exclusion)
 di as text ""
-di as text "Expenditure by macro-region:"
+di as text "Expenditure by macro-region (no exclusion):"
 table macroreg [aw=indw] if ed_total_exp &gt; 0 &amp; ed_total_exp &lt; ., ///
     stat(mean median ed_total_exp) nformat(%10.0f)
 
-* COMPONENT BREAKDOWN — mean among spenders of each component
+* COMPONENT BREAKDOWN — per-component P99 exclusion, then mean
 di as text ""
-di as text "Expenditure components (mean, among spenders of each):"
+di as text "Expenditure components (per-component P99, mean among spenders):"
 
-local components fees uniforms textbooks supplies meals
-local varnames ed5a ed5b ed5c ed5d ed5e
+* All 9 components per questionnaire — each has its top 1% excluded
+local comp_names `" "School fees" "Uniforms" "Textbooks" "Supplies" "Meals/lodging" "Building repair" "Gifts to teachers" "Transportation" "Other" "'
+local comp_vars ed5a ed5b ed5c ed5d ed5e ed5f ed5g ed5h ed5i
 
-local i = 1
-foreach comp of local components {
-    local var: word `i' of `varnames'
+forvalues k = 1/9 {
+    local var: word `k' of `comp_vars'
+    local lab: word `k' of `comp_names'
+    * Per-component P99 exclusion
+    _pctile `var' [aw=indw] if `var' &gt; 0 &amp; `var' &lt; . &amp; ed1 == 1, p(99)
+    local _p99 = r(r1)
+    qui replace `var' = . if `var' &gt; `_p99' &amp; `var' &lt; . &amp; ed1 == 1
+    * Mean after exclusion
     su `var' [aw=indw] if `var' &gt; 0 &amp; `var' &lt; . &amp; ed1 == 1
     if r(N) &gt; 0 {
-        di as res "  `comp' (ed5`i'): ₱" %10.0f r(mean)
-    }
-    local i = `i' + 1
-}
-
-* Full list if 6-9 exist
-forvalues j = 6/9 {
-    su ed5`j' [aw=indw] if ed5`j' &gt; 0 &amp; ed5`j' &lt; . &amp; ed1 == 1
-    if r(N) &gt; 0 {
-        di as res "  Component ed5`j': ₱" %10.0f r(mean)
+        di as res "  `lab' (`var'): ₱" %10.0f r(mean) "  (P99=" %10.0f `_p99' ")"
     }
 }
 
@@ -1276,7 +1272,7 @@ replace a11 = . if a11 &gt; r(r1) &amp; a11&lt;. &amp; a1==1
 * EMPLOYMENT STATUS (narrow definition: a1==1, worked ≥1hr last week)
 * ══════════════════════════════════════════════════════════════════════
 
-gen employed = (a1 == 1) if age &gt;= 15
+gen employed = (a1 == 1) if age &gt;= 15 &amp; age &lt; .
 
 di as text "EMPLOYMENT STATUS (ages 15+)"
 di "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -1399,47 +1395,25 @@ restore
 * ══════════════════════════════════════════════════════════════════════
 
 di as text ""
-di as text "Benefits received (a19_ben1 through a19_ben7):"
+di as text "Benefits received (parsed from a19_txt):"
 
-* Loop through benefit flags
-* Typical: a19_ben1=PhilHealth, a19_ben2=SSS, a19_ben3=GSIS, etc.
-* a19_ben99=None, a19_ben98=DK
+* Benefits are multi-select, stored in a19_txt as ";code;" delimiters
+* Codes: 1=Workplace pension, 2=Paid leave, 3=SSS/GSIS,
+*        4=PhilHealth, 5=Private HMO, 7=None
+local ben_labels `" "Workplace pension" "Paid leave" "SSS/GSIS" "PhilHealth" "Private HMO" "None" "'
+local ben_codes "1 2 3 4 5 7"
 
-forvalues b = 1/7 {
-    cap su a19_ben`b' [aw=indw] if employed == 1
-    if _rc == 0 {
-        di as res "  a19_ben`b': " %5.1f r(mean)*100 "%"
-    }
+local k = 1
+foreach code in 1 2 3 4 5 7 {
+    local lbl: word `k' of `ben_labels'
+    cap drop _ben_`code'
+    gen _ben_`code' = (strpos(a19_txt, ";`code';") &gt; 0) ///
+        if employed == 1 &amp; !missing(a19_txt)
+    su _ben_`code' [aw=indw]
+    di as res "  `lbl' (code `code'): " %5.1f r(mean)*100 "%"
+    drop _ben_`code'
+    local k = `k' + 1
 }
-
-* Summary of main benefits
-preserve
-    keep if employed == 1
-
-    * PhilHealth (often ben1)
-    cap su a19_ben1 [aw=indw]
-    if _rc == 0 {
-        di as res "  PhilHealth: " %5.1f r(mean)*100 "%"
-    }
-
-    * SSS (often ben2)
-    cap su a19_ben2 [aw=indw]
-    if _rc == 0 {
-        di as res "  SSS: " %5.1f r(mean)*100 "%"
-    }
-
-    * GSIS (often ben3)
-    cap su a19_ben3 [aw=indw]
-    if _rc == 0 {
-        di as res "  GSIS: " %5.1f r(mean)*100 "%"
-    }
-
-    * None (often ben99)
-    cap su a19_ben99 [aw=indw]
-    if _rc == 0 {
-        di as res "  None: " %5.1f r(mean)*100 "%"
-    }
-restore
 
 * ══════════════════════════════════════════════════════════════════════
 * WORKING HOURS
@@ -1712,13 +1686,19 @@ su _domsup [aw=hhw]
 
 * Support sources (% of recipients, hhw)
 * Govt inst 34.4%, CCT/4Ps 18.1%, Other social 16.5%
-* Family 15.8%, AKAP 14.4%, AICS 7.6%, Rice/agri 3.3%, Scholarships 2.3%
-foreach code in 1 3 4 5 6 7 9 11 {
+* Support source codes:
+* 1=Family, 2=Other relatives/friends, 3=Govt institutions,
+* 4=CCT/Pantawid/4Ps, 5=AICS, 6=AKAP, 7=Rice/agri support,
+* 8=Walang Gutom, 9=Scholarships/educ, 11=Other social programmes,
+* 12=Private institutions (church/NGO), 15=Political parties,
+* 23=Govt candidates, 96=Other
+foreach code in 1 2 3 4 5 6 7 8 9 11 12 15 23 96 {
     gen _s`code' = 0 if ic3 == 1
     forvalues j = 1/4 {
         replace _s`code' = 1 if ic3 == 1 &amp; ic4_src`j' == `code'
     }
     su _s`code' [aw=hhw] if ic3 == 1
+    drop _s`code'
 }
 
 * Pension → 8.1% hhw / 6.9% popw
@@ -1874,10 +1854,12 @@ merge m:1 hhid fmid using "$ado/final_weights.dta", ///
 gen_macroreg
 gen_settlement
 
-* Outlier cleaning: cap top 1% of cost variables
-_pctile h8a if h8a &gt; 0 &amp; h8a &lt; ., p(99)
+* Outlier cleaning: cap top 1% of cost/duration variables
+* Key variables: h8a (OOP cost), h14 (hospital bill)
+* Full do-file also cleans: h6 (visits), h7 (travel), h11aa/ab/ac (family OOP), h15 (duration)
+_pctile h8a [aw=indw] if h8a &gt; 0 &amp; h8a &lt; ., p(99)
 replace h8a = . if h8a &gt; r(r1) &amp; h8a &lt; .
-_pctile h14 if h14 &gt; 0 &amp; h14 &lt; ., p(99)
+_pctile h14 [aw=indw] if h14 &gt; 0 &amp; h14 &lt; ., p(99)
 replace h14 = . if h14 &gt; r(r1) &amp; h14 &lt; .
 
 * Need for health care (past 30 days)
@@ -2153,7 +2135,7 @@ tab _stunted macroreg [aw=indw] if age &lt; 5, col nofreq
     </div>
     <details class="repl"><summary>Replication do-file · M09 Natural Hazards</summary>
     <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
-* ── §9  NATURAL HAZARDS (M09) — Weight: hhw ──────────────────────
+* ── §9  NATURAL HAZARDS (M09) — Weight: popw ──────────────────────
 * Data at hazard level (multiple rows per HH)
 
 use "$dta/${dta_file}_${date}_M09_nh.dta", clear
@@ -2162,48 +2144,48 @@ gen_macroreg
 gen_settlement
 
 * Hazard incidence by type
-tab hazard nh1 [aw=hhw], row nofreq
+tab hazard nh1 [aw=popw], row nofreq
 
 * Any hazard experienced (HH-level)
 preserve
     bys hhid: egen any_hazard = max(nh1 == 1)
     bys hhid: keep if _n == 1
-    tab any_hazard [aw=hhw]
+    tab any_hazard [aw=popw]
 restore
 
 * Early warning received (among affected)
-tab nh2 [aw=hhw] if nh1 == 1
+tab nh2 [aw=popw] if nh1 == 1
 
 * Understood warning
-tab nh6 [aw=hhw] if nh2 == 1
+tab nh6 [aw=popw] if nh2 == 1
 
 * Damages/impact (multi-select)
 forvalues i = 1/7 {
-    cap tab nh3_imp`i' [aw=hhw] if nh1 == 1
+    cap tab nh3_imp`i' [aw=popw] if nh1 == 1
 }
 
 * Received assistance
-tab nh4 [aw=hhw] if nh1 == 1
+tab nh4 [aw=popw] if nh1 == 1
 
 * Awareness of hazard maps
-cap tab nh11 [aw=hhw]
+cap tab nh11 [aw=popw]
 
 * Early warning by region
-tab nh2 macroreg [aw=hhw] if nh1 == 1, col nofreq
+tab nh2 macroreg [aw=popw] if nh1 == 1, col nofreq
 
 * Any hazard by region
 preserve
     bys hhid: egen any_hazard = max(nh1 == 1)
     bys hhid: keep if _n == 1
-    tab any_hazard macroreg [aw=hhw], col nofreq
+    tab any_hazard macroreg [aw=popw], col nofreq
 restore
 
 * Preparedness measures and emergency planning
 * Note: these need to be computed from household-level hazard module variables
 * Check for variables like nh5 (preparedness), nh7 (emergency plan), nh10 (assistance type)
-tab nh5 [aw=hhw] if nh1 == 1        /* Preparedness measures taken */
-tab nh7 [aw=hhw] if nh1 == 1        /* Emergency plan */
-tab nh10 [aw=hhw] if nh1 == 1       /* Received assistance type */
+tab nh5 [aw=popw] if nh1 == 1        /* Preparedness measures taken */
+tab nh7 [aw=popw] if nh1 == 1        /* Emergency plan */
+tab nh10 [aw=popw] if nh1 == 1       /* Received assistance type */
 </pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
     </details>
   </div>
@@ -2303,7 +2285,7 @@ tab nh10 [aw=hhw] if nh1 == 1       /* Received assistance type */
 * Replication do-file for L2PHL Baseline Storyline
 * ═════════════════════════════════════════════════════════════════════════════
 
-* ── §10  DWELLING (M10) — Weight: hhw ──────────────────────────────────────────
+* ── §10  DWELLING (M10) — Weight: popw ──────────────────────────────────────────
 use "$dta/${dta_file}_${date}_M10_dwell.dta", clear
 merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
 gen_macroreg
@@ -2311,31 +2293,31 @@ gen_settlement
 
 * Type of building/house
 * Expected result: 89% single house
-tab dw1 [aw=hhw]
+tab dw1 [aw=popw]
 
 * Tenure status
 * Expected results: Own 56%, Rent-free with consent 18%, Rent 4%
-tab dw5 [aw=hhw]
+tab dw5 [aw=popw]
 
 * Roof material
 * Expected results: Asbestos 29.5%, Concrete 25.2%, Half concrete/GI 19.1%,
 *                  Cogon/nipa/anahaw 8.6%, Wood/bamboo 6.6%, Makeshift 5.6%, Metal/GI 5.5%
-tab dw2 [aw=hhw]
+tab dw2 [aw=popw]
 
 * Wall material
 * Expected results: Half concrete/wood 42.1%, Concrete/brick 27.2%, Cogon/nipa 17.6%,
 *                  Wood/bamboo 8.3%, Makeshift 1.7%, Other 2.5%
-tab dw3 [aw=hhw]
+tab dw3 [aw=popw]
 
 * Number of bedrooms (dw4)
-tab dw4 [aw=hhw]
+tab dw4 [aw=popw]
 
 * Building type by macro-region and settlement
-tab dw1 macroreg [aw=hhw], col nofreq
-tab dw1 settlement [aw=hhw], col nofreq
+tab dw1 macroreg [aw=popw], col nofreq
+tab dw1 settlement [aw=popw], col nofreq
 
 
-* ── §11  SANITATION (M11) — Weight: hhw ───────────────────────────────────────
+* ── §11  SANITATION (M11) — Weight: popw ───────────────────────────────────────
 use "$dta/${dta_file}_${date}_M11_san.dta", clear
 merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
 gen_macroreg
@@ -2343,27 +2325,27 @@ gen_settlement
 
 * Toilet facility type
 * Expected results: Flush sewage 71%, Flush septic 10%, Pit 8%, Open defecation 6%, Hanging 3%, Other 2%
-tab s1 [aw=hhw]
+tab s1 [aw=popw]
 
 * Waste disposal methods (multi-select; s5_cat1 through s5_cat4)
 * Expected results: Municipal collection 65%, Pit/landfill 21.8%, Burning 6.6%, Compost 5%
 forvalues c = 1/4 {
-    cap tab s5_cat`c' [aw=hhw]
+    cap tab s5_cat`c' [aw=popw]
 }
 
 * Organic waste segregation (s6)
-tab s6 [aw=hhw]
+tab s6 [aw=popw]
 
 * Recyclables segregation (s7)
-tab s7 [aw=hhw]
+tab s7 [aw=popw]
 
 * Satisfaction with waste disposal services (s8)
 * Expected: 15% satisfied, 11% dissatisfied, 75% neutral
-tab s8 [aw=hhw]
+tab s8 [aw=popw]
 
 * Toilet type by macro-region and settlement
-tab s1 macroreg [aw=hhw], col nofreq
-tab s1 settlement [aw=hhw], col nofreq
+tab s1 macroreg [aw=popw], col nofreq
+tab s1 settlement [aw=popw], col nofreq
 
 di "═══════════════════════════════════════════════════════════════════════════"
 di "CH08 Dwelling &amp; Sanitation Replication Complete"
@@ -2473,7 +2455,7 @@ di "═════════════════════════�
 * Replication do-file for L2PHL Baseline Storyline
 * ═════════════════════════════════════════════════════════════════════════════
 
-* ── UTILITIES (M12) — Weight: hhw ──────────────────────────────────────────────
+* ── UTILITIES (M12) — Weight: popw ──────────────────────────────────────────────
 
 * ── Electricity ────────────────────────────────────────────────────────────────
 use "$dta/${dta_file}_${date}_M12_elec.dta", clear
@@ -2483,14 +2465,14 @@ gen_settlement
 
 * Electricity access
 * Expected: 96% national access; 99% from grid
-tab el1 [aw=hhw]
+tab el1 [aw=popw]
 
 * Electricity access by macro-region
 * Expected: NCR 98.4%, Luzon 96.8%, Visayas 94.9%, Mindanao 93.8%
-tab el1 macroreg [aw=hhw], col nofreq
+tab el1 macroreg [aw=popw], col nofreq
 
 * Hours of electricity unavailability (el5)
-su el5 [aw=hhw] if el1 == 1 &amp; el5 &gt;= 0 &amp; el5 &lt; .
+su el5 [aw=popw] if el1 == 1 &amp; el5 &gt;= 0 &amp; el5 &lt; .
 di as res "  Mean hours unavailable: " %5.1f r(mean)
 
 
@@ -2502,29 +2484,29 @@ gen_settlement
 
 * Main water source (w1)
 * Expected: Piped (inside) 61%, Unprotected well 8.4%, Protected spring 6%, Rainwater 4.4%
-tab w1 [aw=hhw]
+tab w1 [aw=popw]
 
 * Drinking water source (w5)
-tab w5 [aw=hhw]
+tab w5 [aw=popw]
 
 * Perception of drinking water safety (w8)
 * Expected: 93% perceive water as safe
-tab w8 [aw=hhw]
+tab w8 [aw=popw]
 
 * Water treatment (w10)
 * Expected: 69% do not treat their water
-tab w10 [aw=hhw]
+tab w10 [aw=popw]
 
 * Travel time to water source (w11)
 * Expected: 13 minutes average
-su w11 [aw=hhw] if w11 &gt;= 0 &amp; w11 &lt; .
+su w11 [aw=popw] if w11 &gt;= 0 &amp; w11 &lt; .
 di as res "  Mean travel time to water (minutes): " %5.1f r(mean)
 
 * Water access by macro-region
-tab w1 macroreg [aw=hhw], col nofreq
+tab w1 macroreg [aw=popw], col nofreq
 
 * Water safety perception by settlement
-tab w8 settlement [aw=hhw], col nofreq
+tab w8 settlement [aw=popw], col nofreq
 
 
 * ── Internet ───────────────────────────────────────────────────────────────────
@@ -2537,27 +2519,27 @@ gen_settlement
 * Expected: 50% national access
 cap drop has_internet
 gen has_internet = (n1_type1 != 5 &amp; n1_type1 &lt; .) if n1_type1 &lt; .
-tab has_internet [aw=hhw]
+tab has_internet [aw=popw]
 
 * Internet access by macro-region
 * Expected: NCR 64.1%, Luzon 50.8%, Mindanao 42.9%, Visayas 40.7%
-tab has_internet macroreg [aw=hhw], col nofreq
+tab has_internet macroreg [aw=popw], col nofreq
 
 * Device types (n1_type1 through n1_type5)
 * Expected: Smartphone 64%, TV 13%, Laptop 11%
 foreach dtype in 1 2 3 4 5 {
-    cap tab n1_type`dtype' [aw=hhw] if n1_type`dtype' &lt; .
+    cap tab n1_type`dtype' [aw=popw] if n1_type`dtype' &lt; .
 }
 
 * Primary purpose of internet use (n4_purp1 through n4_purp12)
 * Expected: Social media/communication 36%, Information/news, Work, Learning, Shopping, etc.
 forvalues p = 1/12 {
-    cap tab n4_purp`p' [aw=hhw] if has_internet == 1
+    cap tab n4_purp`p' [aw=popw] if has_internet == 1
 }
 
 * Internet outages (n5)
 * Expected: 59% had outage last week
-tab n5 [aw=hhw] if has_internet == 1
+tab n5 [aw=popw] if has_internet == 1
 
 
 * ── ASSETS &amp; ENERGY (M13) — Weight: hhw ───────────────────────────────────────
@@ -2584,7 +2566,7 @@ foreach item in 1 2 3 4 5 6 7 8 {
 * Expected: Washing machine 55%, Motorcycle 54%, Refrigerator 49%, Gas stove 26%,
 *          Computer/laptop 15%, Air conditioning 10%, Car/van 4%, Boat 1.6%
 foreach item in 1 2 3 4 5 6 7 8 {
-    cap su own_hc`item' [aw=hhw]
+    cap su own_hc`item' [aw=popw]
     if _rc == 0 &amp; r(N) &gt; 0 {
         di as res "  hc1_`item' ownership: " %5.1f r(mean)*100 "%"
     }
@@ -2592,26 +2574,26 @@ foreach item in 1 2 3 4 5 6 7 8 {
 
 * Asset ownership by macro-region
 foreach item in 1 2 3 4 5 6 7 8 {
-    cap table macroreg [aw=hhw], stat(mean own_hc`item') nformat(%5.3f)
+    cap table macroreg [aw=popw], stat(mean own_hc`item') nformat(%5.3f)
 }
 
 * Asset ownership by settlement (urban/rural)
 foreach item in 1 2 3 4 5 6 7 8 {
-    cap table settlement [aw=hhw], stat(mean own_hc`item') nformat(%5.3f)
+    cap table settlement [aw=popw], stat(mean own_hc`item') nformat(%5.3f)
 }
 
 * Cooking fuel types (hc2a = primary, hc2b_1 through hc2b_7 = secondary uses)
 * Multi-select question
 * Expected: LPG 61.49%, Fuelwood 50.73%, Charcoal 27%, Electricity 21%
-tab hc2a [aw=hhw]
+tab hc2a [aw=popw]
 
 forvalues s = 1/7 {
-    cap tab hc2b_`s' [aw=hhw]
+    cap tab hc2b_`s' [aw=popw]
 }
 
 * Primary cooking fuel by macro-region
 * Expected: NCR LPG 94%, Mindanao fuelwood 72%
-tab hc2a macroreg [aw=hhw], col nofreq
+tab hc2a macroreg [aw=popw], col nofreq
 
 di "═══════════════════════════════════════════════════════════════════════════"
 di "CH09 Assets &amp; Utilities Replication Complete"
@@ -2731,22 +2713,22 @@ di "═════════════════════════�
           <div class="ctitle light">Life satisfaction distribution</div>
           <div class="csub light">1=Not satisfied at all · 2=Partly · 3=Satisfied · 4=More than · 5=Completely</div>
           <div style="margin-top:8px;">
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>3 — Satisfied</span><span style="color:#D4A017;">51.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="51.9"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>2 — Partly</span><span style="color:#F05023;">20.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#F05023;" data-w="20.9"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>4 — More than satisfied</span><span style="color:#40B4E5;">11.8%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="11.8"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>5 — Completely</span><span style="color:#009FDA;">11.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="11.5"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>1 — Not at all</span><span style="color:#CE1126;">3.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="3.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>1 — Not at all</span><span>3.9%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="3.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>2 — Partly satisfied</span><span>20.9%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="20.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>3 — Satisfied</span><span>51.9%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="51.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>4 — More than satisfied</span><span>11.8%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="11.8"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>5 — Completely satisfied</span><span>11.5%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="11.5"></div></div></div>
           </div>
         </div>
         <div class="cbox dark" style="margin-top:12px;">
           <div class="ctitle light">Economic situation vs last month</div>
           <div class="csub light">% of HHs by perceived change</div>
           <div style="margin-top:8px;">
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Same</span><span style="color:#9FA0A4;">45.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#9FA0A4;" data-w="45.5"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Somewhat improved</span><span style="color:#00A651;">28.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="28.7"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Somewhat worsened</span><span style="color:#F05023;">11.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#F05023;" data-w="11.7"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Much improved</span><span style="color:#009FDA;">7.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="7.2"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Much worsened</span><span style="color:#CE1126;">6.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="6.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>Much worsened</span><span>6.9%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="6.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>Somewhat worsened</span><span>11.7%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="11.7"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>Same</span><span>45.5%</span></div><div class="btrack"><div class="bfill" style="background:#9FA0A4;" data-w="45.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>Somewhat improved</span><span>28.7%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="28.7"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#00A651;"><span>Much improved</span><span>7.2%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="7.2"></div></div></div>
           </div>
         </div>
       </div>
@@ -2756,40 +2738,54 @@ di "═════════════════════════�
 
     <span class="eyebrow p">Attitudes &amp; concerns</span>
     <h2 class="hed light">Prices and governance <em>top all concerns</em> — AI anxiety ranks lower than expected</h2>
-    <div class="two-col" style="margin-top:18px;">
-      <div class="rev">
-        <div class="body-copy light">
-          <p>Seventy-seven percent of households want more say in government, 76 percent agree prices are rising too quickly, and 71 percent worry about their children's education. Political instability concerns 64 percent. AI or automation displacing jobs — at 52 percent — ranks well below these bread-and-butter anxieties.</p>
-          <p>This is striking context: in a country where 72 percent of workers have no contract and formal employment protection is minimal, the perceived threat of AI arrives as an additional layer of insecurity on top of already precarious conditions — but it is not the dominant worry.</p>
-          <p>The most cautious finding: only 37 percent believe taxes are well-spent — the lowest agreement rate among the 11 Likert statements. Whether this reflects genuine distrust in government or informed awareness of public finance quality is a deeper question.</p>
-          <p>Optimism about the economy (55 percent) and belief that now is a good time to find a job (56 percent) are essentially equal — suggesting moderate confidence, consistent with the broader picture of a labour market that is active but precarious.</p>
-        </div>
+
+    <!-- Shared legend -->
+    <div style="margin:18px 0 14px;display:flex;gap:10px;flex-wrap:wrap;font-family:var(--mono);font-size:9px;color:#4A6278;">
+      <span><span style="display:inline-block;width:11px;height:11px;background:#CE1126;border-radius:2px;vertical-align:middle;margin-right:2px;"></span> Strongly disagree</span>
+      <span><span style="display:inline-block;width:11px;height:11px;background:#F05023;border-radius:2px;vertical-align:middle;margin-right:2px;"></span> Disagree</span>
+      <span><span style="display:inline-block;width:11px;height:11px;background:#9FA0A4;border-radius:2px;vertical-align:middle;margin-right:2px;"></span> Neither</span>
+      <span><span style="display:inline-block;width:11px;height:11px;background:#00A651;border-radius:2px;vertical-align:middle;margin-right:2px;"></span> Agree</span>
+      <span><span style="display:inline-block;width:11px;height:11px;background:#006837;border-radius:2px;vertical-align:middle;margin-right:2px;"></span> Strongly agree</span>
+    </div>
+
+    <!-- CHART 1: WORRIES & CONCERNS -->
+    <div class="cbox dark rev" style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="background:#CE1126;color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;">Worries</span>
+        <span class="ctitle light" style="margin:0;">Worries &amp; Concerns</span>
       </div>
-      <div class="rev d2">
-        <div class="cbox dark">
-          <div class="ctitle light">Attitudes & concerns — full response distribution</div>
-          <div class="csub light">% agree (agree + strongly agree) · all 5 Likert categories shown · sorted by total agree</div>
-          <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:8px;color:#5a7389;margin-bottom:8px;">
-            <span><span style="display:inline-block;width:10px;height:10px;background:#CE1126;border-radius:2px;vertical-align:middle;"></span> Strongly disagree</span>
-            <span><span style="display:inline-block;width:10px;height:10px;background:#F05023;border-radius:2px;vertical-align:middle;"></span> Disagree</span>
-            <span><span style="display:inline-block;width:10px;height:10px;background:#9FA0A4;border-radius:2px;vertical-align:middle;"></span> Neither</span>
-            <span><span style="display:inline-block;width:10px;height:10px;background:#00A651;border-radius:2px;vertical-align:middle;"></span> Agree</span>
-            <span><span style="display:inline-block;width:10px;height:10px;background:#009FDA;border-radius:2px;vertical-align:middle;"></span> Strongly agree</span>
-          </div>
-          <div style="margin-top:4px;">
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">More say in govt <span style="float:right;color:#0038A8;font-weight:700;">77%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:3.7%;background:#CE1126;"></div><div style="width:6.8%;background:#F05023;"></div><div style="width:12.3%;background:#9FA0A4;"></div><div style="width:47.4%;background:#00A651;"></div><div style="width:29.7%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Prices rising too quickly <span style="float:right;color:#CE1126;font-weight:700;">76%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:5.2%;background:#CE1126;"></div><div style="width:11.8%;background:#F05023;"></div><div style="width:7.5%;background:#9FA0A4;"></div><div style="width:39.4%;background:#00A651;"></div><div style="width:36.1%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Children's education <span style="float:right;color:#009FDA;font-weight:700;">71%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:4.7%;background:#CE1126;"></div><div style="width:11.4%;background:#F05023;"></div><div style="width:13.0%;background:#9FA0A4;"></div><div style="width:48.5%;background:#00A651;"></div><div style="width:22.3%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Political instability <span style="float:right;color:#F05023;font-weight:700;">64%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:6.0%;background:#CE1126;"></div><div style="width:13.4%;background:#F05023;"></div><div style="width:16.9%;background:#9FA0A4;"></div><div style="width:39.4%;background:#00A651;"></div><div style="width:24.3%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Digital services saved time <span style="float:right;color:#00A651;font-weight:700;">60%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.3%;background:#CE1126;"></div><div style="width:14.0%;background:#F05023;"></div><div style="width:18.8%;background:#9FA0A4;"></div><div style="width:45.5%;background:#00A651;"></div><div style="width:14.4%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Financial situation worse <span style="float:right;color:#D4A017;font-weight:700;">58%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:6.0%;background:#CE1126;"></div><div style="width:18.8%;background:#F05023;"></div><div style="width:17.1%;background:#9FA0A4;"></div><div style="width:39.9%;background:#00A651;"></div><div style="width:18.3%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Worried about losing job <span style="float:right;color:#0038A8;font-weight:700;">57%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.2%;background:#CE1126;"></div><div style="width:17.4%;background:#F05023;"></div><div style="width:18.6%;background:#9FA0A4;"></div><div style="width:38.7%;background:#00A651;"></div><div style="width:18.1%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Good time to find a job <span style="float:right;color:#00B8C8;font-weight:700;">56%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.2%;background:#CE1126;"></div><div style="width:15.2%;background:#F05023;"></div><div style="width:21.2%;background:#9FA0A4;"></div><div style="width:43.8%;background:#00A651;"></div><div style="width:12.6%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Optimistic about economy <span style="float:right;color:#009FDA;font-weight:700;">55%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.4%;background:#CE1126;"></div><div style="width:14.6%;background:#F05023;"></div><div style="width:22.6%;background:#9FA0A4;"></div><div style="width:42.5%;background:#00A651;"></div><div style="width:12.9%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">AI/tech job displacement <span style="float:right;color:#9FA0A4;font-weight:700;">52%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:8.1%;background:#CE1126;"></div><div style="width:19.3%;background:#F05023;"></div><div style="width:20.2%;background:#9FA0A4;"></div><div style="width:35.6%;background:#00A651;"></div><div style="width:16.8%;background:#009FDA;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Taxes well spent <span style="float:right;color:#CE1126;font-weight:700;">37%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:20.7%;background:#CE1126;"></div><div style="width:23.9%;background:#F05023;"></div><div style="width:18.9%;background:#9FA0A4;"></div><div style="width:27.2%;background:#00A651;"></div><div style="width:9.4%;background:#009FDA;"></div></div></div>
-          </div>
-        </div>
+      <div class="csub light" style="margin-bottom:10px;">% agree (agree + strongly agree) · sorted high → low</div>
+      <div style="margin-top:8px;">
+        <div class="bs"><div class="bs-lbl" style="color:#009FDA;"><span>Prices for the things I buy are rising too quickly</span><span>75%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:5.2%;background:#CE1126;overflow:hidden;"></div><div style="width:12.0%;background:#F05023;overflow:hidden;">12</div><div style="width:7.8%;background:#9FA0A4;overflow:hidden;">8</div><div style="width:38.3%;background:#00A651;overflow:hidden;">38</div><div style="width:36.7%;background:#006837;overflow:hidden;">37</div></div></div>
+        <div class="bs"><div class="bs-lbl" style="color:#F05023;"><span>I am worried about being able to give my children a good education</span><span>70%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:4.8%;background:#CE1126;overflow:hidden;"></div><div style="width:11.7%;background:#F05023;overflow:hidden;">12</div><div style="width:13.2%;background:#9FA0A4;overflow:hidden;">13</div><div style="width:48.7%;background:#00A651;overflow:hidden;">49</div><div style="width:21.5%;background:#006837;overflow:hidden;">22</div></div></div>
+        <div class="bs"><div class="bs-lbl" style="color:#D4A017;"><span>I am worried about political instability in my country</span><span>64%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:5.7%;background:#CE1126;overflow:hidden;">6</div><div style="width:13.8%;background:#F05023;overflow:hidden;">14</div><div style="width:17.0%;background:#9FA0A4;overflow:hidden;">17</div><div style="width:39.3%;background:#00A651;overflow:hidden;">39</div><div style="width:24.2%;background:#006837;overflow:hidden;">24</div></div></div>
+        <div class="bs"><div class="bs-lbl" style="color:#40B4E5;"><span>I am worried about losing my job (or not finding a job)</span><span>58%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:6.4%;background:#CE1126;overflow:hidden;">6</div><div style="width:17.2%;background:#F05023;overflow:hidden;">17</div><div style="width:18.6%;background:#9FA0A4;overflow:hidden;">19</div><div style="width:39.7%;background:#00A651;overflow:hidden;">40</div><div style="width:18.1%;background:#006837;overflow:hidden;">18</div></div></div>
+        <div class="bs"><div class="bs-lbl" style="color:#CE1126;"><span>My family's financial situation is worse now than two years ago</span><span>57%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:6.1%;background:#CE1126;overflow:hidden;">6</div><div style="width:18.5%;background:#F05023;overflow:hidden;">19</div><div style="width:17.9%;background:#9FA0A4;overflow:hidden;">18</div><div style="width:39.8%;background:#00A651;overflow:hidden;">40</div><div style="width:17.6%;background:#006837;overflow:hidden;">18</div></div></div>
+      </div>
+    </div>
+
+    <div class="body-copy light rev" style="margin-bottom:20px;">
+      <p>Seventy-six percent agree prices are rising too quickly, and 70 percent of parents worry about their children's education. Political instability concerns 64 percent. Job loss anxiety (58 percent) and worsening finances (57 percent) round out the top worries.</p>
+      <p>On the confidence side, 78 percent want more say in government decisions — the highest agreement rate. Digital services earn moderate trust (59–60 percent), while optimism about jobs and the economy hovers around 55–56 percent.</p>
+      <p>The most cautious findings: only 36 percent believe taxes are well-spent, and just 32 percent support tax increases for better services — the lowest agreement rates among all statements, suggesting deep ambivalence about the fiscal compact.</p>
+    </div>
+
+    <!-- CHART 2: CONFIDENCE & ASSURANCE -->
+    <div class="cbox dark rev">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="background:#00A651;color:#fff;font-size:9px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;">Confidence</span>
+        <span class="ctitle light" style="margin:0;">Confidence &amp; Assurance</span>
+      </div>
+      <div class="csub light" style="margin-bottom:10px;">% agree/support · sorted high → low</div>
+      <div style="margin-top:8px;">
+        <div class="bs"><div class="bs-lbl"><span>Citizens should have more say in important government decisions</span><span style="color:#009FDA;">78%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:3.5%;background:#CE1126;overflow:hidden;"></div><div style="width:7.0%;background:#F05023;overflow:hidden;">7</div><div style="width:11.9%;background:#9FA0A4;overflow:hidden;">12</div><div style="width:47.6%;background:#00A651;overflow:hidden;">48</div><div style="width:29.9%;background:#006837;overflow:hidden;">30</div></div></div>
+        <div class="bs"><div class="bs-lbl"><span>The government provides useful digital services</span><span style="color:#00A651;">59%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:7.5%;background:#CE1126;overflow:hidden;">8</div><div style="width:10.9%;background:#F05023;overflow:hidden;">11</div><div style="width:22.3%;background:#9FA0A4;overflow:hidden;">22</div><div style="width:39.3%;background:#00A651;overflow:hidden;">39</div><div style="width:20.1%;background:#006837;overflow:hidden;">20</div></div></div>
+        <div class="bs"><div class="bs-lbl"><span>Digital public services helped me save time or cost</span><span style="color:#40B4E5;">59%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:7.4%;background:#CE1126;overflow:hidden;">7</div><div style="width:14.5%;background:#F05023;overflow:hidden;">15</div><div style="width:18.6%;background:#9FA0A4;overflow:hidden;">19</div><div style="width:45.9%;background:#00A651;overflow:hidden;">46</div><div style="width:13.6%;background:#006837;overflow:hidden;">14</div></div></div>
+        <div class="bs"><div class="bs-lbl"><span>Now is a good time to find a job where I live</span><span style="color:#D4A017;">56%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:6.8%;background:#CE1126;overflow:hidden;">7</div><div style="width:15.8%;background:#F05023;overflow:hidden;">16</div><div style="width:21.2%;background:#9FA0A4;overflow:hidden;">21</div><div style="width:44.3%;background:#00A651;overflow:hidden;">44</div><div style="width:11.9%;background:#006837;overflow:hidden;">12</div></div></div>
+        <div class="bs"><div class="bs-lbl"><span>I am optimistic about the economic future of the country</span><span style="color:#F05023;">55%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:7.3%;background:#CE1126;overflow:hidden;">7</div><div style="width:15.0%;background:#F05023;overflow:hidden;">15</div><div style="width:22.7%;background:#9FA0A4;overflow:hidden;">23</div><div style="width:42.4%;background:#00A651;overflow:hidden;">42</div><div style="width:12.7%;background:#006837;overflow:hidden;">13</div></div></div>
+        <div class="bs"><div class="bs-lbl"><span>The government directing the economy</span><span style="color:#0038A8;">55%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:7.9%;background:#CE1126;overflow:hidden;">8</div><div style="width:14.0%;background:#F05023;overflow:hidden;">14</div><div style="width:23.5%;background:#9FA0A4;overflow:hidden;">24</div><div style="width:35.0%;background:#00A651;overflow:hidden;">35</div><div style="width:19.6%;background:#006837;overflow:hidden;">20</div></div></div>
+        <div class="bs"><div class="bs-lbl"><span>The taxes that I pay are being well spent on priorities to help the country</span><span style="color:#CE1126;">36%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:20.9%;background:#CE1126;overflow:hidden;">21</div><div style="width:24.3%;background:#F05023;overflow:hidden;">24</div><div style="width:19.0%;background:#9FA0A4;overflow:hidden;">19</div><div style="width:27.1%;background:#00A651;overflow:hidden;">27</div><div style="width:8.6%;background:#006837;overflow:hidden;">9</div></div></div>
+        <div class="bs"><div class="bs-lbl"><span>Taxes should be increased to pay for better public services, like education and roads</span><span style="color:#9FA0A4;">32%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:35.4%;background:#CE1126;overflow:hidden;">35</div><div style="width:18.3%;background:#F05023;overflow:hidden;">18</div><div style="width:13.9%;background:#9FA0A4;overflow:hidden;">14</div><div style="width:18.8%;background:#00A651;overflow:hidden;">19</div><div style="width:13.7%;background:#006837;overflow:hidden;">14</div></div></div>
       </div>
     </div>
 
@@ -2802,17 +2798,17 @@ di "═════════════════════════�
         <div class="cbox dark">
           <div class="ctitle light">Economic sentiment by macro-region</div>
           <div class="csub light">Stacked % better / same / worse vs last month</div>
-          <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:8px;color:#c9d8e6;margin-bottom:6px;">
+          <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:9px;color:#4A6278;margin-bottom:6px;">
             <span><span style="display:inline-block;width:10px;height:10px;background:#00A651;border-radius:2px;vertical-align:middle;"></span> Better</span>
             <span><span style="display:inline-block;width:10px;height:10px;background:#D4A017;border-radius:2px;vertical-align:middle;"></span> Same</span>
             <span><span style="display:inline-block;width:10px;height:10px;background:#CE1126;border-radius:2px;vertical-align:middle;"></span> Worse</span>
           </div>
-          <div style="margin-top:4px;">
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;"><span style="font-weight:700;">National</span><span style="float:right;"><span style="color:#00A651;">36%</span> / <span style="color:#D4A017;">46%</span> / <span style="color:#CE1126;">19%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:35.9%;background:#00A651;"></div><div style="width:45.5%;background:#D4A017;"></div><div style="width:18.6%;background:#CE1126;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;">NCR<span style="float:right;"><span style="color:#00A651;">33%</span> / <span style="color:#D4A017;">48%</span> / <span style="color:#CE1126;">20%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:32.5%;background:#00A651;"></div><div style="width:47.7%;background:#D4A017;"></div><div style="width:19.8%;background:#CE1126;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;">Luzon (excl. NCR)<span style="float:right;"><span style="color:#00A651;">36%</span> / <span style="color:#D4A017;">44%</span> / <span style="color:#CE1126;">20%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:36.3%;background:#00A651;"></div><div style="width:43.9%;background:#D4A017;"></div><div style="width:19.9%;background:#CE1126;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;">Visayas<span style="float:right;"><span style="color:#00A651;">39%</span> / <span style="color:#D4A017;">41%</span> / <span style="color:#CE1126;">20%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:38.9%;background:#00A651;"></div><div style="width:41.3%;background:#D4A017;"></div><div style="width:19.8%;background:#CE1126;"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;">Mindanao<span style="float:right;"><span style="color:#00A651;">35%</span> / <span style="color:#D4A017;">51%</span> / <span style="color:#CE1126;">15%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:34.7%;background:#00A651;"></div><div style="width:50.7%;background:#D4A017;"></div><div style="width:14.6%;background:#CE1126;"></div></div></div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl"><span style="font-weight:700;">National</span><span><span style="color:#00A651;">36%</span> / <span style="color:#D4A017;">46%</span> / <span style="color:#CE1126;">19%</span></span></div><div class="btrack" style="display:flex;"><div style="width:35.9%;background:#00A651;"></div><div style="width:45.5%;background:#D4A017;"></div><div style="width:18.6%;background:#CE1126;"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>NCR</span><span><span style="color:#00A651;">33%</span> / <span style="color:#D4A017;">48%</span> / <span style="color:#CE1126;">20%</span></span></div><div class="btrack" style="display:flex;"><div style="width:32.5%;background:#00A651;"></div><div style="width:47.7%;background:#D4A017;"></div><div style="width:19.8%;background:#CE1126;"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Luzon (excl. NCR)</span><span><span style="color:#00A651;">36%</span> / <span style="color:#D4A017;">44%</span> / <span style="color:#CE1126;">20%</span></span></div><div class="btrack" style="display:flex;"><div style="width:36.3%;background:#00A651;"></div><div style="width:43.9%;background:#D4A017;"></div><div style="width:19.9%;background:#CE1126;"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Visayas</span><span><span style="color:#00A651;">39%</span> / <span style="color:#D4A017;">41%</span> / <span style="color:#CE1126;">20%</span></span></div><div class="btrack" style="display:flex;"><div style="width:38.9%;background:#00A651;"></div><div style="width:41.3%;background:#D4A017;"></div><div style="width:19.8%;background:#CE1126;"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Mindanao</span><span><span style="color:#00A651;">35%</span> / <span style="color:#D4A017;">51%</span> / <span style="color:#CE1126;">15%</span></span></div><div class="btrack" style="display:flex;"><div style="width:34.7%;background:#00A651;"></div><div style="width:50.7%;background:#D4A017;"></div><div style="width:14.6%;background:#CE1126;"></div></div></div>
           </div>
         </div>
       </div>
@@ -2894,8 +2890,8 @@ tab v2 macroreg [aw=hhw], col nofreq
 * ── EXPECTED CHILDREN'S INCOME CLASS ───────────────────────────────────────────
 
 * Expected income class for children (v3): codes 1-5
-* This is measured among households with children under 18
-tab v3 [aw=hhw] if hh_has_child_u18 == 1
+* Filter to valid 1-5 responses
+tab v3 [aw=hhw] if v3 &gt;= 1 &amp; v3 &lt;= 5
 
 
 * ── ECONOMIC SENTIMENT (Change vs. last month) ─────────────────────────────────
@@ -2919,9 +2915,9 @@ tab v4 [aw=hhw]
 * ── INCOME MOBILITY: v2 × v3 CROSSTAB ──────────────────────────────────────────
 
 * Crosstab: self-income class (v2) vs expected children's income class (v3)
-* Among households with children under 18
-tab v2 v3 [aw=hhw] if hh_has_child_u18 == 1, row nofreq
-tab v2 v3 [aw=hhw] if hh_has_child_u18 == 1, col nofreq
+* Filter to valid 1-5 responses on both variables
+tab v2 v3 [aw=hhw] if v2 &gt;= 1 &amp; v2 &lt;= 5 &amp; v3 &gt;= 1 &amp; v3 &lt;= 5, row nofreq
+tab v2 v3 [aw=hhw] if v2 &gt;= 1 &amp; v2 &lt;= 5 &amp; v3 &gt;= 1 &amp; v3 &lt;= 5, col nofreq
 
 
 * ── LIKERT SCALE ITEMS (v9a - v9k) ────────────────────────────────────────────
