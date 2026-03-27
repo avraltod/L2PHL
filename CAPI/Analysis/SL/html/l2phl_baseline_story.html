@@ -33,7 +33,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 .mast-logo{font-family:var(--serif);font-size:16px;font-weight:700;display:flex;align-items:center;gap:16px;}
 .mast-sub{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;opacity:.5;}
 .mast-nav{display:flex;gap:6px;flex-wrap:wrap;}
-.mast-nav a{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.9);text-decoration:none;padding:3px 7px;border:1px solid rgba(255,255,255,.5);border-radius:2px;transition:all .2s;}
+.mast-nav a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.9);text-decoration:none;padding:4px 10px;border:1px solid rgba(255,255,255,.5);border-radius:2px;transition:all .2s;}
 .mast-nav a:hover{color:#FFFFFF;border-color:#009FDA;background:rgba(0,159,218,.15);}
 @media(max-width:720px){.mast-nav{display:none;}}
 
@@ -255,19 +255,20 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 <header class="mast">
   <div>
     <div class="mast-logo" style="display:flex;align-items:center;gap:16px;">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 40" width="180" height="33" role="img" aria-label="World Bank Group">
-  <!-- Simplified WB globe — clean, professional -->
-  <g transform="translate(0,0)">
-    <circle cx="20" cy="20" r="17" fill="none" stroke="#009FDA" stroke-width="2.5"/>
-    <ellipse cx="20" cy="20" rx="7" ry="17" fill="none" stroke="#009FDA" stroke-width="1.5"/>
-    <line x1="3" y1="20" x2="37" y2="20" stroke="#009FDA" stroke-width="1.3"/>
-    <path d="M5,12 Q20,15 35,12" fill="none" stroke="#009FDA" stroke-width="1"/>
-    <path d="M5,28 Q20,25 35,28" fill="none" stroke="#009FDA" stroke-width="1"/>
-  </g>
-  <text x="46" y="16" font-family="Arial,Helvetica,sans-serif" font-size="13.5" font-weight="700" letter-spacing="1" fill="#FFFFFF">WORLD BANK</text>
-  <text x="46" y="30" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="400" letter-spacing="3" fill="#40B4E5">GROUP</text>
-</svg>
+      <img src="WBG_white_transparent.png" alt="World Bank Group" height="36">
       <span style="width:1px;height:28px;background:rgba(64,180,229,.35);display:inline-block;"></span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 180" width="32" height="16" role="img" aria-label="Philippines Flag" style="flex-shrink:0;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.15);">
+        <rect width="360" height="90" fill="#0038A8"/>
+        <rect y="90" width="360" height="90" fill="#CE1126"/>
+        <polygon points="0,0 170,90 0,180" fill="#FFF"/>
+        <circle cx="58" cy="90" r="18" fill="none" stroke="#FCD116" stroke-width="3"/>
+        <g fill="#FCD116">
+          <polygon points="58,68 60,75 67,75 61,79 63,86 58,82 53,86 55,79 49,75 56,75" transform="translate(-52,0) scale(.5) translate(104,0)"/>
+          <polygon points="10,163 12,170 19,170 13,174 15,181 10,177 5,181 7,174 1,170 8,170" transform="translate(0,0)"/>
+          <polygon points="10,163 12,170 19,170 13,174 15,181 10,177 5,181 7,174 1,170 8,170" transform="translate(96,0)"/>
+          <polygon points="10,163 12,170 19,170 13,174 15,181 10,177 5,181 7,174 1,170 8,170" transform="translate(48,-80)"/>
+        </g>
+      </svg>
       <span>Listening to the Philippines</span>
     </div>
   </div>
@@ -291,7 +292,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
     <div>
       <p class="hero-eye">Philippines 2025</p>
       <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#FFFFFF;margin-bottom:18px;border:1px solid rgba(255,255,255,.7);display:inline-block;padding:6px 16px;border-radius:4px;background:rgba(0,159,218,.25);font-weight:600;">L2Phl Baseline Household Survey · Sep–Oct 2025</div>
-      <h1 class="hero-hed">Listening to the Philippines: <em>Baseline Household Survey</em></h1>
+      <h1 class="hero-hed">Listening to the Philippines:<br><em>Baseline Household Survey</em></h1>
       <p class="hero-deck">A nationally representative look at Filipino households covering education, livelihoods, food security, technology, and more. What the data reveals is both a snapshot of where the Philippines stands today and a foundation for evidence-based action tomorrow.</p>
       <p class="hero-src">Listening to the Philippines (L2Phl) · Sep–Oct 2025</p>
     </div>
@@ -336,17 +337,17 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
         <p>The Philippines is a young country. The largest single age cohort is 10–19 year-olds at 23 percent, followed by children under 10 at 18 percent while only 4 percent of the population is over 70. With a median age of 25, the demographic dividend is real — but realizing it depends on delivering education, jobs, and social infrastructure to translate into broad-based prosperity.</p>
         <p>This is not uniform across the country. Mindanao is the youngest, with 20 percent of its population under 10, while NCR has the smallest share in that bracket at 15 percent – a gap consistent with long-standing patterns of internal migration toward urban centers, which tend to skew slightly older.</p>
       </div>
-      <div class="sgrid sgrid-3 rev d1" style="margin-top:20px;">
-        <div class="scell ink-c"><div class="scell-n" style="color:#FCD116;">25</div><div class="scell-l">MEDIAN AGE (M: 24 · F: 25)</div></div>
-        <div class="scell"><div class="scell-n">41%</div><div class="scell-l">UNDER 20</div></div>
-        <div class="scell ink-c"><div class="scell-n" style="color:#FCD116;">51% | 49%</div><div class="scell-l">MALE | FEMALE</div></div>
-      </div>
     </div>
     <div class="rev d2">
       <div class="cbox">
         <div class="ctitle">Age group distribution</div>
         <div class="csub">% within each group (total / male / female)</div>
         <div class="cwrap" style="height:220px;"><canvas id="cAge"></canvas></div>
+      </div>
+      <div class="sgrid sgrid-3 rev d1" style="margin-top:12px;">
+        <div class="scell ink-c"><div class="scell-n" style="color:#FCD116;">25</div><div class="scell-l">MEDIAN AGE (M: 24 · F: 25)</div></div>
+        <div class="scell"><div class="scell-n">41%</div><div class="scell-l">UNDER 20</div></div>
+        <div class="scell ink-c"><div class="scell-n" style="color:#FCD116;">51% | 49%</div><div class="scell-l">MALE | FEMALE</div></div>
       </div>
     </div>
   </div>
