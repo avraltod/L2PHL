@@ -1085,6 +1085,19 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
           <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;font-size:1.3rem;">₱46,834</div><div class="scell-l" style="color:#4a6278;">Mean hospital bill</div></div>
           <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;font-size:1.2rem;">18.5%</div><div class="scell-l" style="color:#4a6278;">Out-of-pocket share</div></div>
         </div>
+        <!-- SFAP #34: OOP cost distribution -->
+        <div class="cbox dark" style="margin-top:16px;">
+          <div class="ctitle light">OOP cost distribution (₱, among cash payers)</div>
+          <div class="csub light">Percentile breakdown · 56.1% paid cash out-of-pocket</div>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:60px;text-align:center;padding:8px 4px;background:rgba(0,159,218,.12);border-radius:6px;"><div style="font-family:var(--serif);font-size:1.1rem;color:#009FDA;">₱200</div><div style="font-family:var(--mono);font-size:9px;color:#7A8FA0;">P10</div></div>
+            <div style="flex:1;min-width:60px;text-align:center;padding:8px 4px;background:rgba(0,159,218,.18);border-radius:6px;"><div style="font-family:var(--serif);font-size:1.1rem;color:#009FDA;">₱500</div><div style="font-family:var(--mono);font-size:9px;color:#7A8FA0;">P25</div></div>
+            <div style="flex:1;min-width:60px;text-align:center;padding:8px 4px;background:rgba(0,166,81,.2);border-radius:6px;"><div style="font-family:var(--serif);font-size:1.2rem;color:#00A651;font-weight:700;">₱1,000</div><div style="font-family:var(--mono);font-size:9px;color:#7A8FA0;">MEDIAN</div></div>
+            <div style="flex:1;min-width:60px;text-align:center;padding:8px 4px;background:rgba(212,160,23,.15);border-radius:6px;"><div style="font-family:var(--serif);font-size:1.1rem;color:#D4A017;">₱2,000</div><div style="font-family:var(--mono);font-size:9px;color:#7A8FA0;">P75</div></div>
+            <div style="flex:1;min-width:60px;text-align:center;padding:8px 4px;background:rgba(206,17,38,.15);border-radius:6px;"><div style="font-family:var(--serif);font-size:1.1rem;color:#CE1126;">₱4,300</div><div style="font-family:var(--mono);font-size:9px;color:#7A8FA0;">P90</div></div>
+          </div>
+          <p style="font-family:var(--mono);font-size:9px;color:#7A8FA0;margin-top:6px;">Mean ₱2,282 · Top 1% outliers (>₱80,000) excluded</p>
+        </div>
       </div>
       <div class="rev d2">
         <div class="cbox dark">
@@ -1129,29 +1142,19 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
             <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>No medical personnel</span><span>0.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="0.7"></div></div></div>
           </div>
         </div>
-        <div class="cbox dark" style="margin-top:12px;">
-          <div class="ctitle light">Under-5 nutritional status</div>
-          <div class="csub light">% of children under 5 · z-score measures</div>
-          <div style="margin-top:8px;">
-            <p style="font-family:var(--mono);font-size:10px;color:#7A8FA0;margin-bottom:8px;">Under-5 = age &lt; 5 years (0–59 months, UNICEF definition) · N = 739 (393 boys, 346 girls)</p>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Stunted (low height-for-age)</span><span style="color:#CE1126;">26.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="26.6"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Underweight (low weight-for-age)</span><span style="color:#E05206;">18.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#E05206;" data-w="18.2"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Wasted (low weight-for-height)</span><span style="color:#D4A017;">18.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="18.0"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Severely stunted</span><span>11.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#772583;" data-w="11.1"></div></div></div>
-          </div>
-        </div>
+        <!-- Nutrition moved to Ch6 per SFAP #28/#41 -->
       </div>
       <div class="rev">
-        <span class="eyebrow r">Health access &amp; child nutrition</span>
+        <span class="eyebrow r">Health access &amp; barriers</span>
         <h2 class="hed light">1 in 3 needed health care — but only <em>77% got it.</em></h2>
         <div class="body-copy light">
           <p>Thirty-four percent of household members needed health services in the past 30 days. Of those, 77 percent were able to access care — leaving a 23 percent unmet need rate. NCR fares best (88 percent access) while Visayas struggles most (63 percent).</p>
           <p>The top reason for not accessing care is cost: 41 percent cite inability to afford it. In the Visayas, the rate is 70 percent — more than double NCR's 33 percent.</p>
-          <p>Among children under 5, malnutrition remains widespread: 27 percent are stunted (low height-for-age), 18 percent are underweight, and 18 percent are wasted. Boys show slightly higher stunting (30 percent) than girls (23 percent). Visayas has the highest stunting rate (32 percent) and severe stunting (18 percent).</p>
+          <p>Among those who sought care, 56 percent paid cash out-of-pocket, with a median cost of ₱1,000. The distribution is skewed: the 90th percentile reaches ₱4,300 — more than four times the median.</p>
         </div>
         <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
           <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">23%</div><div class="scell-l" style="color:#4a6278;">Unmet health care need</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#E05206;">26.6%</div><div class="scell-l" style="color:#4a6278;">Under-5 stunting rate</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#E05206;">₱1,000</div><div class="scell-l" style="color:#4a6278;">Median OOP cost</div></div>
         </div>
       </div>
     </div>
@@ -1222,7 +1225,7 @@ tab h17 settlement [aw=indw], col nofreq
         <div class="cwrap" style="height:195px;"><canvas id="cFoodSrc"></canvas></div>
       </div>
       <div class="sgrid sgrid-3 rev d1" style="margin-top:12px;">
-        <div class="scell g-c"><div class="scell-n" style="color:var(--green);">74%</div><div class="scell-l">Shop at wet market</div></div>
+        <div class="scell g-c"><div class="scell-n" style="color:var(--green);">74%</div><div class="scell-l">Shop at Wet Market</div></div>
         <div class="scell"><div class="scell-n">99.6%</div><div class="scell-l">Pay in cash</div></div>
         <div class="scell"><div class="scell-n">17.6</div><div class="scell-l">Min travel to food</div></div>
       </div>
@@ -1263,6 +1266,34 @@ tab h17 settlement [aw=indw], col nofreq
       </div>
       <div class="bnum r rev d1">89.9<span style="font-size:2rem;">%</span></div>
       <p class="bnum-cap">consume sugary beverages · mean 6.8 servings/day · near-universal across all age groups</p>
+    </div>
+  </div>
+  <!-- SFAP #28/#41: Child nutrition moved from Ch5 Health -->
+  <div class="sec two-col" style="padding:40px 40px 70px;max-width:1100px;margin:0 auto;">
+    <div class="rev">
+      <span class="eyebrow r">Child nutrition</span>
+      <h2 class="hed">1 in 4 children under 5 is <em class="r">stunted.</em></h2>
+      <div class="body-copy">
+        <p>Among children under 5, malnutrition remains widespread: 27 percent are stunted (low height-for-age), 18 percent are underweight, and 18 percent are wasted. Boys show slightly higher stunting (30 percent) than girls (23 percent). Visayas has the highest stunting rate (32 percent) and severe stunting (18 percent).</p>
+        <p>Chronic malnutrition limits cognitive development and lifelong earning potential. Combined with near-universal SSB consumption starting from adolescence, the nutrition picture spans both undernutrition in early childhood and diet-related NCD risk across the life cycle.</p>
+      </div>
+    </div>
+    <div class="rev d2">
+      <div class="cbox">
+        <div class="ctitle">Under-5 nutritional status</div>
+        <div class="csub">% of children under 5 · z-score measures</div>
+        <div style="margin-top:8px;">
+          <p style="font-family:var(--mono);font-size:10px;color:#7A8FA0;margin-bottom:8px;">Under-5 = age &lt; 5 years (0–59 months, UNICEF definition) · N = 739</p>
+          <div class="bs"><div class="bs-lbl"><span>Stunted (low height-for-age)</span><span style="color:#CE1126;">26.6%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="26.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Underweight (low weight-for-age)</span><span style="color:#E05206;">18.2%</span></div><div class="btrack"><div class="bfill" style="background:#E05206;" data-w="18.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Wasted (low weight-for-height)</span><span style="color:#D4A017;">18.0%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="18.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Severely stunted</span><span>11.1%</span></div><div class="btrack"><div class="bfill" style="background:#772583;" data-w="11.1"></div></div></div>
+        </div>
+      </div>
+      <div class="sgrid sgrid-2 rev d1" style="margin-top:12px;">
+        <div class="scell r-c"><div class="scell-n" style="color:#CE1126;">26.6%</div><div class="scell-l">Under-5 stunting rate</div></div>
+        <div class="scell"><div class="scell-n" style="color:#E05206;">18.2%</div><div class="scell-l">Underweight</div></div>
+      </div>
     </div>
   </div>
   <details class="repl" style="max-width:1100px;margin:0 auto;padding:0 40px 24px;"><summary>Replication do-file · M08 Food &amp; SSB</summary>
@@ -1328,10 +1359,25 @@ tab ssb1 macroreg [aw=indw], col nofreq
         </div>
       </div>
       <div class="rev d2">
-        <div class="cbox dark">
-          <div class="ctitle light">Hazard exposure rate (past 3 years)</div>
-          <div class="csub light">% of HHs experiencing each hazard</div>
-          <div class="cwrap" style="height:280px;"><canvas id="cHazard"></canvas></div>
+        <!-- SFAP #44: Infographic-style hazard tiles instead of bar chart -->
+        <div class="sgrid sgrid-2 rev d1" style="gap:8px;">
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#CE1126;font-size:1.6rem;">76.5%</div><div class="scell-l" style="color:#7A8FA0;">Typhoon</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#E05206;font-size:1.6rem;">50.2%</div><div class="scell-l" style="color:#7A8FA0;">Extreme heat</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#D4A017;font-size:1.4rem;">41.2%</div><div class="scell-l" style="color:#7A8FA0;">Earthquake</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#D4A017;font-size:1.4rem;">36.1%</div><div class="scell-l" style="color:#7A8FA0;">Drought / El Niño</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#009FDA;font-size:1.3rem;">31.6%</div><div class="scell-l" style="color:#7A8FA0;">Flood / La Niña</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#009FDA;font-size:1.3rem;">12.2%</div><div class="scell-l" style="color:#7A8FA0;">Pest infestation</div></div>
+        </div>
+        <p style="font-family:var(--mono);font-size:9px;color:#7A8FA0;margin-top:6px;text-align:center;">Also: Livestock disease 9.3% · Volcanic 3.1% · Landslide 2.3% · Tsunami 0.2%</p>
+        <div class="cbox dark" style="margin-top:16px;">
+          <div class="ctitle light">Early warning received</div>
+          <div class="csub light">% of affected HHs that received advance warning</div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>NCR</span><span style="color:#00A651;">70.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="70.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Luzon</span><span>59.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="59.2"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Visayas</span><span>49.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="49.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span style="color:#CE1126;">Mindanao</span><span style="color:#CE1126;">41.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="41.3"></div></div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1342,21 +1388,26 @@ tab ssb1 macroreg [aw=indw], col nofreq
           <div class="ctitle light">Hazard exposure by macro-region</div>
           <div class="csub light">% of HHs affected by any hazard (past 3 years)</div>
           <div style="margin-top:8px;">
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon (excl. NCR)</span><span style="color:#CE1126;">96.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="96.9"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#E05206;">93.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#E05206;" data-w="93.1"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Visayas</span><span>87.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="87.3"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Mindanao</span><span>82.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="82.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Luzon (excl. NCR)</span><span style="color:#CE1126;">96.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="96.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>NCR</span><span style="color:#E05206;">93.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#E05206;" data-w="93.1"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Visayas</span><span>87.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="87.3"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Mindanao</span><span>82.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="82.5"></div></div></div>
           </div>
         </div>
-        <div class="cbox dark" style="margin-top:12px;">
-          <div class="ctitle light">Early warning received</div>
-          <div class="csub light">% of affected HHs that received advance warning</div>
-          <div style="margin-top:8px;">
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#00A651;">70.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="70.6"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon</span><span>59.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="59.2"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Visayas</span><span>49.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="49.6"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span style="color:#CE1126;">Mindanao</span><span style="color:#CE1126;">41.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="41.3"></div></div></div>
-          </div>
+      </div>
+      <!-- SFAP #45: Coping & preparedness section -->
+      <div class="rev">
+        <span class="eyebrow r" style="color:#D4A017;">Coping &amp; preparedness</span>
+        <h2 class="hed light"><em>97%</em> took preparedness measures — <em>87%</em> have an emergency plan</h2>
+        <div class="body-copy light">
+          <p>Despite limited early warning coverage, Filipino households demonstrate strong preparedness instincts. Ninety-seven percent of affected households took some form of preparedness measures before hazard events. Eighty-seven percent report having a household emergency plan.</p>
+          <p>Only 17 percent received external assistance during or after a hazard event. Eighty-four percent are aware of hazard maps for their area — a critical tool for risk-informed planning and community-level resilience.</p>
+        </div>
+        <div class="sgrid sgrid-2 rev d1" style="margin-top:16px;">
+          <div class="scell dark-c"><div class="scell-n" style="color:#00A651;">97.4%</div><div class="scell-l" style="color:#7A8FA0;">Took preparedness measures</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#009FDA;">86.8%</div><div class="scell-l" style="color:#7A8FA0;">Have emergency plan</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">17.4%</div><div class="scell-l" style="color:#7A8FA0;">Received assistance</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#40B4E5;">83.9%</div><div class="scell-l" style="color:#7A8FA0;">Aware of hazard maps</div></div>
         </div>
       </div>
     </div>
@@ -1408,40 +1459,45 @@ cap tab nh11 [aw=hhw]
   <div class="two-col">
     <div class="rev">
       <span class="eyebrow p">Dwelling</span>
-      <h2 class="hed">88% live in a <em class="p">single house</em> — but half have peeling paint</h2>
+      <h2 class="hed">89% live in a <em class="p">single house</em> — asbestos roofs dominate at 30%</h2>
       <div class="body-copy">
-        <p>Eighty-eight percent of households live in standalone single houses. Condos and apartments account for just 1 percent. Fifty-seven percent own their dwelling. Seventeen percent live rent-free with consent (often extended family), and 4 percent rent.</p>
-        <p>Roofing materials: 25 percent use strong galvanised iron materials, but 8 percent live under makeshift roofing — vulnerable in a typhoon-prone country. Wall materials: 41 percent are GI/metal sheet, 28 percent concrete/brick, 17 percent makeshift.</p>
-        <p>The average home has 1.8 bedrooms. Fifty-two percent have peeling paint inside, and 53 percent outside — a potential lead paint exposure concern given the survey module's focus on this risk factor.</p>
+        <p>Eighty-nine percent of households live in standalone single houses. Fifty-six percent own their dwelling, 18 percent live rent-free with consent (often extended family), and 4 percent rent.</p>
+        <p>Roofing materials: asbestos is the most common at 30 percent, followed by concrete at 25 percent and half concrete/half GI at 19 percent. Only 6 percent use metal/GI sheet alone, while 9 percent rely on cogon/nipa/anahaw (thatch) and 6 percent on makeshift/salvaged materials — both vulnerable in a typhoon-prone country.</p>
+        <p>Wall materials: the dominant type is half concrete/half wood at 42 percent, followed by concrete/brick at 27 percent. Cogon/nipa/anahaw walls are found in 18 percent of homes, and wood/bamboo in 8 percent.</p>
       </div>
     </div>
     <div class="rev d2">
+      <!-- SFAP #49: Tenure as pie chart -->
       <div class="cbox">
-        <div class="ctitle">Type of building/house</div>
-        <div class="csub">% of HHs</div>
-        <select class="region-select" id="dwellRegionSelect" onchange="updateDwelling(this.value)">
-          <option value="national">National</option>
-          <option value="NCR">NCR</option>
-          <option value="Luzon">Luzon (excl. NCR)</option>
-          <option value="Visayas">Visayas</option>
-          <option value="Mindanao">Mindanao</option>
-        </select>
-        <div class="cwrap" style="height:170px;display:flex;align-items:center;"><canvas id="cDwellType"></canvas></div>
-      </div>
-      <div class="cbox" style="margin-top:12px;">
         <div class="ctitle">Housing tenure status</div>
         <div class="csub">% of HHs</div>
-        <div class="cwrap" style="height:160px;display:flex;align-items:center;"><canvas id="cTenure"></canvas></div>
+        <div class="cwrap" style="height:170px;display:flex;align-items:center;"><canvas id="cTenure"></canvas></div>
       </div>
+      <!-- SFAP #50: Full roof distribution from Stata -->
       <div class="cbox" style="margin-top:12px;">
-        <div class="ctitle">Roof construction materials</div>
-        <div class="csub">% of HHs</div>
+        <div class="ctitle">Roof material</div>
+        <div class="csub">% of HHs · all categories sum to 100%</div>
         <div style="margin-top:8px;">
-          <div class="bs"><div class="bs-lbl"><span>Strong (GI sheet/tile)</span><span>25.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="25.4"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Mixed materials</span><span>19.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="19.7"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Concrete</span><span>6.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.4"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Light (cogon/bamboo/nipa)</span><span>6.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="6.0"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span style="color:var(--red);">Makeshift</span><span style="color:var(--red);">8.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="8.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Asbestos</span><span style="color:#CE1126;">29.5%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="29.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Concrete</span><span>25.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="25.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Half concrete / half GI</span><span>19.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="19.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Cogon/nipa/anahaw</span><span>8.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="8.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Wood/bamboo</span><span>6.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Makeshift/salvaged</span><span style="color:var(--red);">5.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="5.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Metal/GI sheet</span><span>5.5%</span></div><div class="btrack"><div class="bfill" style="background:#40B4E5;" data-w="5.5"></div></div></div>
+        </div>
+      </div>
+      <!-- SFAP #47: Full wall distribution from Stata -->
+      <div class="cbox" style="margin-top:12px;">
+        <div class="ctitle">Wall material</div>
+        <div class="csub">% of HHs · all categories</div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Half concrete / half wood</span><span style="color:var(--blue);">42.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="42.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Concrete/brick/stone</span><span>27.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="27.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Cogon/nipa/anahaw</span><span>17.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="17.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Wood/bamboo</span><span>8.3%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="8.3"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Makeshift/salvaged</span><span style="color:var(--red);">1.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="1.7"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Other (glass, no wall, metal)</span><span>2.5%</span></div><div class="btrack"><div class="bfill" style="background:#9FA0A4;" data-w="2.5"></div></div></div>
         </div>
       </div>
     </div>
@@ -2248,7 +2304,7 @@ lazy('cMigration', () => {
 
 // PhilHealth type
 lazy('cPhilType', () => {
-  new Chart(document.getElementById('cPhilType'), {type:'doughnut', data:{
+  new Chart(document.getElementById('cPhilType'), {type:'pie', data:{
     labels:['Not covered','PhilHealth Paying','Dependent (Non-Pay)','Non-Paying Member','Dependent (Paying)'],
     datasets:[{data:[53.89,15.73,12.03,11.26,7.09],
       backgroundColor:['#009FDA','#40B4E5','#00B8C8','#00A651','#9FA0A4'],borderWidth:0,hoverOffset:4}]
@@ -2329,7 +2385,7 @@ lazy('cSSB', () => {
     labels:['<10','10-17','18-24','25-44','45-64','65+'],
     datasets:[{label:'All (89.9% avg)',data:d,backgroundColor:d.map((v,i)=>i===3?'#CE1126':'rgba(0,159,218,.7)'),borderRadius:4,borderWidth:0,barPercentage:.78}]
   }, options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:70,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
+    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
     plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
 });
 
@@ -2376,7 +2432,7 @@ lazy('cDwellType', () => {
 });
 
 lazy('cTenure', () => {
-  new Chart(document.getElementById('cTenure'), {type:'doughnut', data:{
+  new Chart(document.getElementById('cTenure'), {type:'pie', data:{
     labels:['Owner','Rent-free (consent)','Other','Renting'],
     datasets:[{data:[56.53,17.03,11.75,3.93],backgroundColor:['#00A651','#009FDA','#772583','#CE1126'],borderWidth:0,hoverOffset:4}]
   }, options:{maintainAspectRatio:true,aspectRatio:1.6,
@@ -2482,7 +2538,7 @@ lazy('cLifeSatRegion', () => {
 
 // Eco change
 lazy('cEcoChange', () => {
-  new Chart(document.getElementById('cEcoChange'), {type:'doughnut', data:{
+  new Chart(document.getElementById('cEcoChange'), {type:'pie', data:{
     labels:['Same','Somewhat improved','Somewhat worsened','Much worsened','Much improved'],
     datasets:[{data:[45.51,28.74,11.68,6.90,7.16],backgroundColor:['#9FA0A4','#00A651','#E05206','#CE1126','#009FDA'],borderWidth:0,hoverOffset:4}]
   }, options:{maintainAspectRatio:true,aspectRatio:1.6,
