@@ -1116,11 +1116,6 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
           </div>
         </div>
         <div class="cbox dark" style="margin-top:12px;">
-          <div class="ctitle light">PhilHealth coverage by age & gender</div>
-          <div class="csub light">% covered · grouped by age band</div>
-          <div class="cwrap" style="height:220px;"><canvas id="cPhilAgeGender"></canvas></div>
-        </div>
-        <div class="cbox dark" style="margin-top:12px;">
           <div class="ctitle light">Healthcare facility used (past 30 days)</div>
           <div class="csub light">% of those who sought care</div>
           <div class="cwrap" style="height:175px;"><canvas id="cFacility"></canvas></div>
@@ -1513,11 +1508,6 @@ cap tab nh11 [aw=hhw]
         <div class="cwrap" style="height:200px;"><canvas id="cToilet"></canvas></div>
       </div>
       <div class="cbox" style="margin-top:12px;">
-        <div class="ctitle">Open defecation rate by macro-region</div>
-        <div class="csub">% of HHs practicing open defecation</div>
-        <div class="cwrap" style="height:160px;"><canvas id="cSanitRegion"></canvas></div>
-      </div>
-      <div class="cbox" style="margin-top:12px;">
         <div class="ctitle">Solid waste disposal method</div>
         <div class="csub">% of HHs</div>
         <div style="margin-top:8px;">
@@ -1583,15 +1573,17 @@ tab s1 settlement [aw=hhw], col nofreq
   </details>
 </div>
 
-<!-- ═══════ UTILITIES (M12) — merged into Ch08 Dwelling ═══════ -->
+<!-- ═══════ UTILITIES (M12) — split per SFAP NEW-4 ═══════ -->
+
+<!-- ── Section A: Electricity & Water ── -->
 <div class="div-rule"></div>
 
 <div class="sec">
   <div class="full-w rev">
-    <span class="eyebrow gold">Three utilities, three different stories</span>
-    <h2 class="hed" style="max-width:850px;">Electricity: 96%. Internet: 50%. Piped water: <em class="g">61%</em> — and 93% feel it's safe.</h2>
+    <span class="eyebrow gold">Electricity & water</span>
+    <h2 class="hed" style="max-width:850px;">Electricity: 96%. Piped water: <em class="g">61%</em> — but 69% don't treat it.</h2>
   </div>
-  <div class="three-col" style="margin-top:36px;">
+  <div class="two-col" style="margin-top:36px;">
     <div class="rev">
       <div class="cbox" style="height:100%;min-height:320px;">
         <div class="ctitle" style="color:var(--gold);">⚡ Electricity</div>
@@ -1606,19 +1598,6 @@ tab s1 settlement [aw=hhw], col nofreq
       </div>
     </div>
     <div class="rev d1">
-      <div class="cbox" style="height:100%;min-height:320px;">
-        <div class="ctitle" style="color:var(--blue);">📱 Internet</div>
-        <div class="csub">50% national access · smartphone dominant</div>
-        <div style="margin-top:12px;">
-          <div class="bs"><div class="bs-lbl"><span>NCR</span><span style="color:var(--blue);">64.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="64.1"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Luzon</span><span>50.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="50.8"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Mindanao</span><span>42.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="42.9"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span style="color:var(--red);">Visayas</span><span style="color:var(--red);">40.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="40.7"></div></div></div>
-        </div>
-        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">64 percent use smartphones. Devices: Smart TV (13 percent), Laptop (11 percent). Fifty-nine percent experienced internet interruption in the past week. Social media/communication dominates use (36 percent).</p>
-      </div>
-    </div>
-    <div class="rev d2">
       <div class="cbox" style="height:100%;min-height:320px;">
         <div class="ctitle" style="color:var(--green);">💧 Water access</div>
         <div class="csub">61% piped · 93% perceive water as safe</div>
@@ -1635,13 +1614,6 @@ tab s1 settlement [aw=hhw], col nofreq
   <div class="two-col" style="margin-top:28px;">
     <div class="rev">
       <div class="cbox">
-        <div class="ctitle">Internet use purposes</div>
-        <div class="csub">% of households by primary use · among connected HHs</div>
-        <div class="cwrap" style="height:200px;"><canvas id="cInetPurp"></canvas></div>
-      </div>
-    </div>
-    <div class="rev d2">
-      <div class="cbox">
         <div class="ctitle">Drinking water safety perception</div>
         <div class="csub">% of households</div>
         <div class="cwrap" style="height:180px;display:flex;align-items:center;"><canvas id="cWaterSafe"></canvas></div>
@@ -1649,6 +1621,40 @@ tab s1 settlement [aw=hhw], col nofreq
       <div class="hbox gold rev d1">
         <div class="hbox-lbl">The water paradox</div>
         <p>61 percent have piped water inside the home, and 93 percent perceive their drinking water as safe. However, 69 percent do not treat their water — suggesting confidence may outrun actual safety in some areas.</p>
+      </div>
+    </div>
+    <div class="rev d2">
+    </div>
+  </div>
+</div>
+
+<!-- ── Section B: Internet ── -->
+<div class="div-rule"></div>
+
+<div class="sec">
+  <div class="full-w rev">
+    <span class="eyebrow" style="color:var(--blue);">Internet access</span>
+    <h2 class="hed" style="max-width:850px;">Half the country is online — but <em style="color:var(--blue);">59% had an outage</em> last week.</h2>
+  </div>
+  <div class="two-col" style="margin-top:36px;">
+    <div class="rev">
+      <div class="cbox" style="min-height:280px;">
+        <div class="ctitle" style="color:var(--blue);">📱 Internet access by region</div>
+        <div class="csub">50% national access · smartphone dominant</div>
+        <div style="margin-top:12px;">
+          <div class="bs"><div class="bs-lbl"><span>NCR</span><span style="color:var(--blue);">64.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="64.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Luzon</span><span>50.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="50.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Mindanao</span><span>42.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="42.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span style="color:var(--red);">Visayas</span><span style="color:var(--red);">40.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="40.7"></div></div></div>
+        </div>
+        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">64 percent use smartphones. Devices: Smart TV (13 percent), Laptop (11 percent). Social media/communication dominates use (36 percent).</p>
+      </div>
+    </div>
+    <div class="rev d1">
+      <div class="cbox">
+        <div class="ctitle">Internet use purposes</div>
+        <div class="csub">% of households by primary use · among connected HHs</div>
+        <div class="cwrap" style="height:200px;"><canvas id="cInetPurp"></canvas></div>
       </div>
     </div>
   </div>
@@ -1791,7 +1797,7 @@ tab hc2a macroreg [aw=hhw], col nofreq
   <div class="sec-inner">
     <div class="full-w rev">
       <span class="eyebrow p">Perceptions &amp; sentiment</span>
-      <h2 class="hed light" style="max-width:850px;">Life satisfaction: 3.04/5. 19% feel worse off. <em>AI anxiety tops all concerns.</em></h2>
+      <h2 class="hed light" style="max-width:850px;">Life satisfaction: 3.04/5. 19% feel worse off. <em>Prices and governance top all concerns.</em></h2>
     </div>
     <div class="two-col" style="margin-top:32px;">
       <div class="rev">
@@ -1837,19 +1843,19 @@ tab hc2a macroreg [aw=hhw], col nofreq
     <div class="two-col">
       <div class="rev">
         <span class="eyebrow p">Attitudes &amp; concerns</span>
-        <h2 class="hed light">AI anxiety is <em>the top fear</em> — above jobs, education, and politics</h2>
+        <h2 class="hed light">Prices and governance <em>top all concerns</em> — AI anxiety ranks lower than expected</h2>
         <div class="body-copy light">
-          <p>Fifty-three percent of households agree or strongly agree that they are worried about AI or automation displacing jobs. But this is not the top concern: political instability leads at 64 percent, followed by prices rising too quickly (75 percent agree) and citizen participation (78 percent want more say in government). Family finances worsening worries 57 percent, and job loss generally 58 percent.</p>
-          <p>This is striking context: in a country where 72 percent of workers have no contract and formal employment protection is minimal, the perceived threat of AI arrives as an additional layer of insecurity on top of already precarious conditions.</p>
-          <p>The most cautious finding: only 36 percent believe taxes are well-spent — the lowest agreement rate among the 11 Likert statements. Whether this reflects genuine distrust in government or informed awareness of public finance quality is a deeper question.</p>
-          <p>Optimism about the economy (55 percent) and belief that now is a good time to find a job (57 percent) are essentially equal — suggesting moderate confidence, consistent with the broader picture of a labour market that is active but precarious.</p>
+          <p>Seventy-seven percent of households want more say in government, 76 percent agree prices are rising too quickly, and 71 percent worry about their children's education. Political instability concerns 64 percent. AI or automation displacing jobs — at 52 percent — ranks well below these bread-and-butter anxieties.</p>
+          <p>This is striking context: in a country where 72 percent of workers have no contract and formal employment protection is minimal, the perceived threat of AI arrives as an additional layer of insecurity on top of already precarious conditions — but it is not the dominant worry.</p>
+          <p>The most cautious finding: only 37 percent believe taxes are well-spent — the lowest agreement rate among the 11 Likert statements. Whether this reflects genuine distrust in government or informed awareness of public finance quality is a deeper question.</p>
+          <p>Optimism about the economy (55 percent) and belief that now is a good time to find a job (56 percent) are essentially equal — suggesting moderate confidence, consistent with the broader picture of a labour market that is active but precarious.</p>
         </div>
       </div>
       <div class="rev d2">
         <div class="cbox dark">
-          <div class="ctitle light">What Filipinos agree with — % agreeing</div>
-          <div class="csub light">% agreeing or strongly agreeing (codes 4-5)</div>
-          <div class="cwrap" style="height:300px;"><canvas id="cLikert"></canvas></div>
+          <div class="ctitle light">Attitudes & concerns — full response distribution</div>
+          <div class="csub light">Horizontal stacked bar · all 5 Likert categories · sorted by total agree</div>
+          <div class="cwrap" style="height:340px;"><canvas id="cLikert"></canvas></div>
         </div>
       </div>
     </div>
@@ -1876,21 +1882,21 @@ tab hc2a macroreg [aw=hhw], col nofreq
 
     <div class="vis-sep" style="color:rgba(245,240,232,.1);">· · ·</div>
 
-    <!-- SFAP #55: Satisfaction × Economic outlook Sankey diagram -->
+    <!-- SFAP NEW-7: Income mobility Sankey — v2 (self) × v3 (expected children) -->
     <div class="sec two-col" style="padding:40px 40px 70px;max-width:1100px;margin:0 auto;">
       <div class="rev">
-        <span class="eyebrow" style="color:#D4A017;">Satisfaction → outlook</span>
-        <h2 class="hed light">How life satisfaction <em>maps to</em> economic outlook</h2>
+        <span class="eyebrow" style="color:#D4A017;">Income mobility aspirations</span>
+        <h2 class="hed light">Where families are <em>vs. where they want their children to be</em></h2>
         <div class="body-copy light">
-          <p>The Sankey diagram shows the flow between life satisfaction (left) and perceived economic change (right). Each band's width is proportional to the share of households in that combination.</p>
-          <p>The dominant flow is from "Neutral" satisfaction (52%) to "Same" economic outlook (26% of all HHs) — a massive middle ground of people who are neither satisfied nor dissatisfied, and see no change in the economy.</p>
-          <p>Dissatisfied households (scores 1–2) are more likely to report worsening conditions, while satisfied households (4–5) lean toward improvement — but even among the satisfied, "same" is the most common economic assessment.</p>
+          <p>The Sankey diagram shows the flow between self-assessed income class (left) and expected income class for one's children (right). Each band's width is proportional to the share of households in that combination.</p>
+          <p>The dominant flow is from "Middle" self-classification (48%) staying at "Middle" for children (36% of all HHs). But there is clear upward aspiration: families in groups 1 and 2 overwhelmingly expect their children to land in group 3 or higher.</p>
+          <p>Almost no one places themselves in the top two groups (1.5% combined), while 19% expect their children to reach group 4 or 5 — revealing a strong upward mobility aspiration even among the poorest families.</p>
         </div>
       </div>
       <div class="rev d2">
         <div class="cbox dark" style="padding:16px;">
-          <div class="ctitle light">Life satisfaction → Economic outlook</div>
-          <div class="csub light">Band width = % of all households in that combination</div>
+          <div class="ctitle light">Self-income class → Expected children's income class</div>
+          <div class="csub light">Band width = % of all households · v2 (left) → v3 (right)</div>
           <div id="sankeySatEco" class="sankey-wrap" style="height:420px;"></div>
         </div>
       </div>
@@ -2336,19 +2342,7 @@ lazy('cPhilType', () => {
     tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
 });
 
-// PhilHealth by age & gender
-lazy('cPhilAgeGender', () => {
-  new Chart(document.getElementById('cPhilAgeGender'), {type:'bar', data:{
-    labels:['<10','10-19','20-29','30-39','40-49','50-59','60-69','70+'],
-    datasets:[
-      {label:'Total',data:[31.4,29.1,49.4,62.5,61.8,54.9,68.6,75.7],backgroundColor:'rgba(0,159,218,.75)',borderRadius:3,borderWidth:0},
-      {label:'Male',data:[30.9,28.2,46.2,62.1,61.5,58.3,67.7,78.4],backgroundColor:'rgba(0,56,168,.6)',borderRadius:3,borderWidth:0},
-      {label:'Female',data:[32.1,30.1,52.6,62.8,62.2,52.1,69.3,73.7],backgroundColor:'rgba(206,17,38,.5)',borderRadius:3,borderWidth:0}
-    ]
-  }, options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{grid:{display:false},ticks:TICK_D},y:{grid:GRID_D,min:0,max:85,ticks:{...TICK_D,callback:v=>v+'%'}}},
-    plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
-});
+// [REMOVED per SFAP NEW-1: cPhilAgeGender chart dropped]
 
 // Healthcare facility
 lazy('cFacility', () => {
@@ -2412,17 +2406,7 @@ lazy('cSSB', () => {
     plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
 });
 
-// Hazards
-lazy('cHazard', () => {
-  const labs=['Typhoon','Extreme heat','Earthquake','Drought/El Niño','Flood/La Niña','Pest infestation','Livestock disease','Volcanic eruption','Landslide','Tsunami'];
-  const vals=[76.5,50.2,41.2,36.1,31.6,12.2,9.3,3.1,2.3,0.2];
-  new Chart(document.getElementById('cHazard'), {type:'bar', data:{
-    labels:labs,
-    datasets:[{data:vals,backgroundColor:vals.map(v=>v>50?'#CE1126':v>30?'#E05206':'#009FDA'),borderRadius:3,borderWidth:0,barPercentage:.72}]
-  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK_D}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
-});
+// [REMOVED per SFAP NEW-2: orphan cHazard JS cleaned up — canvas already removed]
 
 // Tenure
 // Dwelling type pie chart
@@ -2474,17 +2458,7 @@ lazy('cToilet', () => {
     plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
 });
 
-// Sanitation by region
-lazy('cSanitRegion', () => {
-  new Chart(document.getElementById('cSanitRegion'), {type:'bar', data:{
-    labels:['NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
-    datasets:[{data:[1.1,4.1,1.8,3.4],
-      backgroundColor:['rgba(0,159,218,.75)','rgba(206,17,38,.7)','rgba(0,166,81,.7)','rgba(224,82,6,.7)'],
-      borderRadius:4,borderWidth:0,barPercentage:.58}]
-  }, options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:5,ticks:{...TICK,callback:v=>v+'%'}}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
-});
+// [REMOVED per SFAP NEW-3: cSanitRegion chart dropped]
 
 // Internet purposes
 lazy('cInetPurp', () => {
@@ -2579,16 +2553,31 @@ lazy('cIncGroup', () => {
     plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
 });
 
-// Likert
+// Likert — SFAP NEW-6: full 5-category horizontal stacked bar (Stata-verified)
 lazy('cLikert', () => {
   const labs=['Citizens should have more say','Prices rising too quickly','Worried: child education','Worried: political instability','Digital services helpful','Family finances worse (2yr)','Worried: job loss','Good time to find a job','Optimistic about economy','Worried: AI/automation','Taxes well spent'];
-  const vals=[77.6,75.3,70.4,63.3,59.5,57.4,57.7,56.5,54.9,53.2,35.8];
+  // Stata-verified: [StrDisagree, Disagree, Neither, Agree, StrAgree]
+  const sd = [3.7, 5.2, 4.7, 6.0, 7.3, 6.0, 7.2, 7.2, 7.4, 8.1,20.7];
+  const da = [6.8,11.8,11.4,13.4,14.0,18.8,17.4,15.2,14.6,19.3,23.9];
+  const ne = [12.3, 7.5,13.0,16.9,18.8,17.1,18.6,21.2,22.6,20.2,18.9];
+  const ag = [47.4,39.4,48.5,39.4,45.5,39.9,38.7,43.8,42.5,35.6,27.2];
+  const sa = [29.7,36.1,22.3,24.3,14.4,18.3,18.1,12.6,12.9,16.8, 9.4];
   new Chart(document.getElementById('cLikert'), {type:'bar', data:{
     labels:labs,
-    datasets:[{data:vals,backgroundColor:vals.map((v,i)=>i===10?'#00A651':v>=70?'#CE1126':v>=55?'#E05206':'#009FDA'),borderRadius:3,borderWidth:0,barPercentage:.72}]
+    datasets:[
+      {label:'Str. disagree',data:sd,backgroundColor:'rgba(206,17,38,.8)',borderWidth:0,stack:'s',barPercentage:.78},
+      {label:'Disagree',data:da,backgroundColor:'rgba(224,82,6,.65)',borderWidth:0,stack:'s',barPercentage:.78},
+      {label:'Neither',data:ne,backgroundColor:'rgba(159,160,164,.55)',borderWidth:0,stack:'s',barPercentage:.78},
+      {label:'Agree',data:ag,backgroundColor:'rgba(64,180,229,.7)',borderWidth:0,stack:'s',barPercentage:.78},
+      {label:'Str. agree',data:sa,backgroundColor:'rgba(0,159,218,.9)',borderWidth:0,stack:'s',barPercentage:.78}
+    ]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    scales:{x:{grid:GRID_D,max:85,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK_D}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+    scales:{
+      x:{stacked:true,grid:GRID_D,max:100,ticks:{...TICK_D,callback:v=>v+'%'}},
+      y:{stacked:true,grid:{display:false},ticks:{...TICK_D,font:{size:8.5}}}
+    },
+    plugins:{legend:{...LEG_D,labels:{...LEG_D.labels,font:{size:8},padding:4,boxWidth:10}},
+    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.x}%`}}}}});
 });
 
 // Eco by macro stacked
@@ -2608,31 +2597,31 @@ lazy('cEcoMacro', () => {
     plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
 });
 
-// SFAP #55: Satisfaction × Economic outlook Sankey
+// SFAP NEW-7: Income mobility Sankey — v2 (self) × v3 (expected children)
 lazy('sankeySatEco', () => {
   const el = document.getElementById('sankeySatEco');
   if (!el) return;
 
-  // Stata-verified v1×v5 cross-tab (% of total, from Ch10_Views.docx)
-  const satLabels = ['1 Not at all','2 Not satisfied','3 Neutral','4 Satisfied','5 Completely'];
-  const ecoLabels = ['Sig. worse','Sl. worse','Same','Sl. better','Sig. better'];
-  // flow[i][j] = % of all HHs with v1=i+1 AND v5=j+1
+  // Stata-verified v2×v3 cross-tab (% of total, from Ch10_Views.docx)
+  const selfLabels = ['1 Poorest','2nd','3 Middle','4th','5 Richest'];
+  const childLabels = ['1 Poorest','2nd','3 Middle','4th','5 Richest'];
+  // flow[i][j] = % of all HHs with v2=i+1 AND v3=j+1
   const flow = [
-    [1.2, 0.8, 1.7, 0.6, 0.1],  // v1=1
-    [1.6, 3.5, 9.7, 5.1, 1.0],  // v1=2
-    [3.1, 5.3,26.2,14.5, 3.0],  // v1=3
-    [0.7, 0.9, 4.7, 3.7, 1.4],  // v1=4
-    [0.7, 1.1, 4.1, 4.0, 1.4]   // v1=5
+    [4.5, 3.9, 8.2, 1.5, 1.3],  // v2=1 (Poorest)
+    [0.5, 9.5,16.4, 2.9, 1.9],  // v2=2
+    [0.1, 1.6,35.8, 6.9, 3.5],  // v2=3 (Middle)
+    [0.0, 0.0, 0.3, 0.5, 0.1],  // v2=4
+    [0.0, 0.0, 0.0, 0.1, 0.4]   // v2=5 (Richest)
   ];
 
-  // Colors: red→grey→blue gradient for satisfaction; red→grey→green for economic
-  const satColors = ['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'];
-  const ecoColors = ['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'];
+  // Colors: warm red→orange→grey→teal→blue for income quintiles
+  const selfColors  = ['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'];
+  const childColors = ['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'];
 
-  // Build nodes: 0-4 = satisfaction (left), 5-9 = economic (right)
+  // Build nodes: 0-4 = self-income (left), 5-9 = children-income (right)
   const nodes = [
-    ...satLabels.map((n,i) => ({name:n, color:satColors[i]})),
-    ...ecoLabels.map((n,i) => ({name:n, color:ecoColors[i]}))
+    ...selfLabels.map((n,i) => ({name:'Self: '+n, color:selfColors[i]})),
+    ...childLabels.map((n,i) => ({name:'Child: '+n, color:childColors[i]}))
   ];
   const links = [];
   for (let i=0; i<5; i++) {
