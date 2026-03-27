@@ -370,7 +370,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
       <span class="eyebrow r">Household composition</span>
       <h2 class="hed">Modal household: a <em class="r">head, spouse, and children</em></h2>
       <div class="body-copy">
-        <p>Four in ten Filipino households (40 percent) follow the classic nuclear pattern: a head, spouse, and children. But nearly as many (39 percent) are extended families — households that include grandchildren, siblings, parents, or other relatives alongside the nuclear core. The average household has 4 members.</p>
+        <p>Four in ten Filipino households (40 percent) follow the classic nuclear pattern: a head, spouse, and children. But nearly as many (39 percent) are extended families — households that include grandchildren, siblings, parents, or other relatives alongside the nuclear core. The average household has 4.3 members.</p>
         <p>Single-parent households — a head with children but no spouse — account for 8 percent, while couples without children make up 8 percent. Just 5 percent of households are single-person.</p>
         <p>Marital status mirrors the country's young age structure. Over half of all household members are single or unmarried. Women are far more likely to be widowed than men — 6 percent versus 1 percent — pointing to longer female life expectancy and the disproportionate care burdens that older women bear.</p>
       </div>
@@ -788,7 +788,7 @@ use `_roster', clear
         <p>Ninety percent of students attend public schools. Private school attendance is highest in NCR at 14 percent, and lowest in Visayas at 9 percent — reflecting urban wealth concentration.</p>
       </div>
       <div class="body-copy" style="margin-top:18px;">
-        <p><strong>Why do young people leave school?</strong> Employment is the top reason (26 percent), followed by financial constraints (15 percent), having finished schooling (16 percent), family matters (11 percent), and distance to school (10 percent). Taken together, cost and domestic burden — not academic failure — are the dominant drivers of dropout.</p>
+        <p><strong>Why do young people leave school?</strong> Employment is the top reason (26 percent), followed by financial constraints (15 percent), having finished schooling (16 percent), family matters (11 percent), and distance to school (1 percent). Taken together, cost and domestic burden — not academic failure — are the dominant drivers of dropout.</p>
       </div>
     </div>
     <div class="rev d2">
@@ -805,6 +805,7 @@ use `_roster', clear
           <div class="bs"><div class="bs-lbl"><span>Financial constraints</span><span style="color:#F05023">15%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="30"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Finished schooling</span><span style="color:#009FDA">16%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="32"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Family matters</span><span style="color:#0038A8">11%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="22"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Distance to school</span><span style="color:#D4A017">1%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="2"></div></div></div>
         </div>
       </div>
     </div>
@@ -822,6 +823,7 @@ use `_roster', clear
       </div>
       <div class="body-copy">
         <p>Annual education spend per student averages <strong>₱16,973</strong> — urban families spend ₱18,005 versus rural ₱15,834. School fees show the biggest urban-rural gap, reflecting higher private school enrolment in cities.</p>
+        <p style="font-family:var(--mono);font-size:10px;color:#5a7389;margin-top:6px;">Note: Headline total includes all spenders. Component chart excludes the top 1% of each component separately, so components do not sum to the headline.</p>
         <!-- SFAP #61: ₱16,973 = weighted mean, all spenders, no P99 exclusion. Component chart uses per-component P99. -->
       </div>
     </div>
@@ -833,7 +835,7 @@ use `_roster', clear
       </div>
       <div class="cbox" style="margin-top:12px;">
         <div class="ctitle">Annual education expenditure by category</div>
-        <div class="csub">Mean PHP among spenders · top 1% excluded</div>
+        <div class="csub">Mean PHP among spenders · top 1% of each component excluded</div>
         <div style="margin-top:8px;">
           <div class="bs"><div class="bs-lbl"><span>Meals &amp; lodging</span><span style="color:#CE1126">₱9,461</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="100"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>School fees &amp; tuition</span><span style="color:#F05023">₱6,651</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="70.3"></div></div></div>
@@ -1037,22 +1039,23 @@ restore
 di as text ""
 di as text "Reasons for non-attendance (ages 5-24, multiple response):"
 
-* Assume ed8_* variables contain reason codes
-* Common codes: 1=Employment, 2=Financial, 3=Finished, 4=Family, 5=Distance, etc.
-* Count mentions of each reason among non-attending (ed1==2)
+* ed4_reason1/2/3 are multiple-response slots (codes 1-13)
+* 1=Difficulty getting to school, 2=Illness/disability, 3=Pregnancy,
+* 4=Marriage, 5=High cost/financial, 6=Employment, 7=Finished schooling,
+* 8=Looking for work, 9=Lack of interest, 10=Too young, 11=Bullying,
+* 12=Family matters, 13=School is pointless
 
-if "`r(width)'" != "" {
-    foreach var of varlist ed8_* {
-        qui su `var' [aw=indw] if age &gt;= 5 &amp; age &lt;= 24 &amp; ed1 == 2
-        local pct = r(mean) * 100 if r(N) &gt; 0
-        if r(N) &gt; 0 {
-            di as res "  `var': " %5.1f `pct' "%"
-        }
-    }
+forvalues k = 1/13 {
+    cap gen ed4_r`k' = 0
+    cap replace ed4_r`k' = (ed4_reason1 == `k' | ed4_reason2 == `k' ///
+        | ed4_reason3 == `k') if ed1 == 2
 }
 
-* Fallback: manual coding if multi-select
-* (adjust based on actual variable structure)
+* Weighted shares among non-attenders (all ages with ed1==2)
+forvalues k = 1/13 {
+    qui su ed4_r`k' [aw=indw] if ed1 == 2
+    di as res "  Reason `k': " %5.1f r(mean)*100 "%"
+}
 
 * ══════════════════════════════════════════════════════════════════════
 * EARLY CHILDHOOD DEVELOPMENT (ECD) — ages 0-4
@@ -1580,7 +1583,7 @@ di as text "Completion: CH03 Employment replication code executed."
         <p>Rural households save at slightly higher rates (14 percent) than urban (12 percent) — likely through informal mechanisms like paluwagan savings groups (8 percent nationally). The financial system has not yet caught up with how ordinary Filipinos actually manage money.</p>
       </div>
       <div class="body-copy">
-        <p>Borrowing (18 percent) outpaces saving (13 percent) by 5 percentage points. Many households are <strong>net borrowers</strong> — managing cash flow through debt rather than savings buffers. Of borrowers, 94 percent use formal sources; only 6 percent borrow informally.</p>
+        <p>Borrowing (18 percent) outpaces saving (13 percent) by 5 percentage points. Many households are <strong>net borrowers</strong> — managing cash flow through debt rather than savings buffers. Among borrowers, 43 percent use a formal financial institution, 31 percent borrow from private individuals, and 15 percent from informal lenders (5-6). Mobile lending apps account for 6 percent.</p>
       </div>
     </div>
   </div>
@@ -1970,6 +1973,7 @@ tab h17 settlement [aw=indw], col nofreq
       <h2 class="hed">1 in 4 children under 5 is <em class="r">stunted.</em></h2>
       <div class="body-copy">
         <p>Among children under 5, malnutrition remains widespread: 27 percent are stunted (low height-for-age), 18 percent are underweight, and 18 percent are wasted. Boys show slightly higher stunting (30 percent) than girls (23 percent). Visayas has the highest stunting rate (32 percent) and severe stunting (18 percent).</p>
+        <p style="font-family:var(--mono);font-size:10px;color:#5a7389;margin-top:4px;">Note: Text rounds to nearest integer. Precise values: stunting 26.6%, underweight 18.2%, wasting 18.0%.</p>
         <p>Chronic malnutrition limits cognitive development and lifelong earning potential. Combined with near-universal SSB consumption starting from adolescence, the nutrition picture spans both undernutrition in early childhood and diet-related NCD risk across the life cycle.</p>
       </div>
     </div>
@@ -2606,7 +2610,7 @@ di "═════════════════════════�
 <div class="chap" id="ch-assets"><span class="chap-n">09</span><span class="chap-r"></span><span class="chap-l">M13 Assets &amp; Energy — What families own</span></div>
 
 <div class="sec cream-bg">
-  <div class="sec" style="padding:70px 40px;max-width:1100px;margin:0 auto;">
+  <div class="sec" style="padding:70px 40px 30px;max-width:1100px;margin:0 auto;">
     <span class="eyebrow t">Household assets</span>
     <h2 class="hed">Motorcycles and washing machines — <em class="t">but only 3.9% own a car</em></h2>
     <div class="sgrid rev d1" style="display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:20px;margin-bottom:24px;">
@@ -2761,11 +2765,12 @@ di "═════════════════════════�
         <div class="bs"><div class="bs-lbl"><span>I am worried about political instability in my country</span><span style="color:#D4A017;">64%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:5.7%;background:#CE1126;overflow:hidden;">6</div><div style="width:13.8%;background:#F05023;overflow:hidden;">14</div><div style="width:17.0%;background:#9FA0A4;overflow:hidden;">17</div><div style="width:39.3%;background:#00A651;overflow:hidden;">39</div><div style="width:24.2%;background:#006837;overflow:hidden;">24</div></div></div>
         <div class="bs"><div class="bs-lbl"><span>I am worried about losing my job (or not finding a job)</span><span style="color:#40B4E5;">58%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:6.4%;background:#CE1126;overflow:hidden;">6</div><div style="width:17.2%;background:#F05023;overflow:hidden;">17</div><div style="width:18.6%;background:#9FA0A4;overflow:hidden;">19</div><div style="width:39.7%;background:#00A651;overflow:hidden;">40</div><div style="width:18.1%;background:#006837;overflow:hidden;">18</div></div></div>
         <div class="bs"><div class="bs-lbl"><span>My family's financial situation is worse now than two years ago</span><span style="color:#CE1126;">57%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:6.1%;background:#CE1126;overflow:hidden;">6</div><div style="width:18.5%;background:#F05023;overflow:hidden;">19</div><div style="width:17.9%;background:#9FA0A4;overflow:hidden;">18</div><div style="width:39.8%;background:#00A651;overflow:hidden;">40</div><div style="width:17.6%;background:#006837;overflow:hidden;">18</div></div></div>
+        <div class="bs"><div class="bs-lbl"><span>I am worried about AI/automation replacing jobs</span><span style="color:#9FA0A4;">52%</span></div><div class="btrack dark-t" style="height:22px;display:flex;font-family:var(--mono);font-size:8px;color:#fff;line-height:22px;text-align:center;border-radius:3px;overflow:hidden;"><div style="width:8.1%;background:#CE1126;overflow:hidden;">8</div><div style="width:19.3%;background:#F05023;overflow:hidden;">19</div><div style="width:20.2%;background:#9FA0A4;overflow:hidden;">20</div><div style="width:35.6%;background:#00A651;overflow:hidden;">36</div><div style="width:16.8%;background:#006837;overflow:hidden;">17</div></div></div>
       </div>
     </div>
 
     <div class="body-copy light rev" style="margin-bottom:20px;">
-      <p>Seventy-six percent agree prices are rising too quickly, and 70 percent of parents worry about their children's education. Political instability concerns 64 percent. Job loss anxiety (58 percent) and worsening finances (57 percent) round out the top worries.</p>
+      <p>Seventy-five percent agree prices are rising too quickly, and 70 percent of parents worry about their children's education. Political instability concerns 64 percent. Job loss anxiety (58 percent), worsening finances (57 percent), and AI/automation anxiety (52 percent) round out the top worries.</p>
       <p>On the confidence side, 78 percent want more say in government decisions — the highest agreement rate. Digital services earn moderate trust (59–60 percent), while optimism about jobs and the economy hovers around 55–56 percent.</p>
       <p>The most cautious findings: only 36 percent believe taxes are well-spent, and just 32 percent support tax increases for better services — the lowest agreement rates among all statements, suggesting deep ambivalence about the fiscal compact.</p>
     </div>
