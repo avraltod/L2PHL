@@ -1873,6 +1873,29 @@ tab hc2a macroreg [aw=hhw], col nofreq
         </div>
       </div>
     </div>
+
+    <div class="vis-sep" style="color:rgba(245,240,232,.1);">· · ·</div>
+
+    <!-- SFAP #55: Satisfaction × Economic outlook Sankey diagram -->
+    <div class="sec two-col" style="padding:40px 40px 70px;max-width:1100px;margin:0 auto;">
+      <div class="rev">
+        <span class="eyebrow" style="color:#D4A017;">Satisfaction → outlook</span>
+        <h2 class="hed light">How life satisfaction <em>maps to</em> economic outlook</h2>
+        <div class="body-copy light">
+          <p>The Sankey diagram shows the flow between life satisfaction (left) and perceived economic change (right). Each band's width is proportional to the share of households in that combination.</p>
+          <p>The dominant flow is from "Neutral" satisfaction (52%) to "Same" economic outlook (26% of all HHs) — a massive middle ground of people who are neither satisfied nor dissatisfied, and see no change in the economy.</p>
+          <p>Dissatisfied households (scores 1–2) are more likely to report worsening conditions, while satisfied households (4–5) lean toward improvement — but even among the satisfied, "same" is the most common economic assessment.</p>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="cbox dark" style="padding:16px;">
+          <div class="ctitle light">Life satisfaction → Economic outlook</div>
+          <div class="csub light">Band width = % of all households in that combination</div>
+          <div id="sankeySatEco" class="sankey-wrap" style="height:420px;"></div>
+        </div>
+      </div>
+    </div>
+
     <details class="repl"><summary>Replication do-file · M14 Views &amp; Perceptions</summary>
     <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
 * ── §14  VIEWS &amp; PERCEPTIONS (M14) — Weight: hhw ─────────────────
@@ -2583,6 +2606,99 @@ lazy('cEcoMacro', () => {
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{stacked:true,grid:{display:false},ticks:{...TICK_D,font:{size:9}}},y:{stacked:true,grid:GRID_D,max:100,ticks:{...TICK_D,callback:v=>v+'%'}}},
     plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+});
+
+// SFAP #55: Satisfaction × Economic outlook Sankey
+lazy('sankeySatEco', () => {
+  const el = document.getElementById('sankeySatEco');
+  if (!el) return;
+
+  // Stata-verified v1×v5 cross-tab (% of total, from Ch10_Views.docx)
+  const satLabels = ['1 Not at all','2 Not satisfied','3 Neutral','4 Satisfied','5 Completely'];
+  const ecoLabels = ['Sig. worse','Sl. worse','Same','Sl. better','Sig. better'];
+  // flow[i][j] = % of all HHs with v1=i+1 AND v5=j+1
+  const flow = [
+    [1.2, 0.8, 1.7, 0.6, 0.1],  // v1=1
+    [1.6, 3.5, 9.7, 5.1, 1.0],  // v1=2
+    [3.1, 5.3,26.2,14.5, 3.0],  // v1=3
+    [0.7, 0.9, 4.7, 3.7, 1.4],  // v1=4
+    [0.7, 1.1, 4.1, 4.0, 1.4]   // v1=5
+  ];
+
+  // Colors: red→grey→blue gradient for satisfaction; red→grey→green for economic
+  const satColors = ['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'];
+  const ecoColors = ['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'];
+
+  // Build nodes: 0-4 = satisfaction (left), 5-9 = economic (right)
+  const nodes = [
+    ...satLabels.map((n,i) => ({name:n, color:satColors[i]})),
+    ...ecoLabels.map((n,i) => ({name:n, color:ecoColors[i]}))
+  ];
+  const links = [];
+  for (let i=0; i<5; i++) {
+    for (let j=0; j<5; j++) {
+      if (flow[i][j] > 0.05) {
+        links.push({source:i, target:5+j, value:flow[i][j]});
+      }
+    }
+  }
+
+  const rect = el.getBoundingClientRect();
+  const W = rect.width || 500, H = rect.height || 420;
+  const svg = d3.select(el).append('svg')
+    .attr('viewBox',`0 0 ${W} ${H}`)
+    .attr('preserveAspectRatio','xMidYMid meet');
+
+  const sankey = d3.sankey()
+    .nodeId(d=>d.index)
+    .nodeWidth(18)
+    .nodePadding(10)
+    .nodeAlign(d3.sankeyJustify)
+    .extent([[1,30],[W-1,H-10]]);
+
+  const {nodes:sNodes, links:sLinks} = sankey({
+    nodes: nodes.map(d=>({...d})),
+    links: links.map(d=>({...d}))
+  });
+
+  // Links
+  svg.append('g').attr('fill','none').attr('stroke-opacity',0.35)
+    .selectAll('path')
+    .data(sLinks).join('path')
+    .attr('d', d3.sankeyLinkHorizontal())
+    .attr('stroke', d => nodes[d.source.index].color)
+    .attr('stroke-width', d => Math.max(1, d.width))
+    .append('title')
+    .text(d => `${d.source.name} → ${d.target.name}: ${d.value}%`);
+
+  // Nodes
+  svg.append('g')
+    .selectAll('rect')
+    .data(sNodes).join('rect')
+    .attr('x',d=>d.x0).attr('y',d=>d.y0)
+    .attr('height',d=>Math.max(1,d.y1-d.y0))
+    .attr('width',d=>d.x1-d.x0)
+    .attr('fill',d=>d.color || '#009FDA')
+    .attr('rx',3)
+    .append('title')
+    .text(d => `${d.name}: ${d3.format('.1f')(d.value)}%`);
+
+  // Labels
+  svg.append('g').style('font-family','var(--mono,monospace)').style('font-size','9px')
+    .selectAll('text')
+    .data(sNodes).join('text')
+    .attr('x', d => d.x0 < W/2 ? d.x0-4 : d.x1+4)
+    .attr('y', d => (d.y0+d.y1)/2)
+    .attr('dy','0.35em')
+    .attr('text-anchor', d => d.x0 < W/2 ? 'end' : 'start')
+    .attr('fill','#c9d8e6')
+    .text(d => `${d.name} ${d3.format('.1f')(d.value)}%`);
+
+  function drawSankey(){ /* already drawn inline */ }
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) { obs.disconnect(); }
+  }, {threshold:0.1});
+  obs.observe(el);
 });
 </script>
 </body>
