@@ -444,6 +444,77 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 <div class="sec">
   <details class="repl"><summary>Replication do-file · M01 Roster + M06 Migration</summary>
   <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+********************************************************************************
+* L2Phl CAPI Baseline — Replication Preamble (§0)
+* Run this block FIRST, then any chapter block below
+********************************************************************************
+
+clear all
+set more off
+set excelxlsxlargefile on
+set maxvar 10000
+
+* ── User paths ────────────────────────────────────────────────────
+loc user = "AP"  // AP or BB or LD
+
+if ("`user'"=="AP") ///
+    glo wd "~/iDrive/GitHub/PHL/L2PHL/CAPI"
+if ("`user'"=="BB") ///
+    glo wd "/Users/batmandakh/Dropbox/BB/WB/PHL/CAPI"
+if ("`user'"=="LD") ///
+    glo wd "C:\Users\Liz Danganan\OneDrive - PSRC\3 MACROS &amp; TEMPLATES\TIPON\TIPON\data"
+
+cd "$wd"
+
+* ── Round &amp; date globals ──────────────────────────────────────────
+glo LNG ENG
+glo R 00
+glo M 10
+glo D 15
+glo Y 2025
+glo dta_file l2phl
+glo date ${Y}${M}${D}
+
+* ── Paths ─────────────────────────────────────────────────────────
+glo ado "$wd/Round${R}/ado"
+glo dta "$wd/Round${R}/dta/$date"
+glo xls "$wd/Round${R}/xls"
+glo out "$wd/Analysis/SL"
+
+cap adopath - "$wd/Round${R}/ado/"
+adopath + "$wd/Round${R}/ado/"
+cap confirmdir "$out"
+if _rc ~= 0 mkdir "$out"
+
+* ── Macro-region generator ────────────────────────────────────────
+cap program drop gen_macroreg
+program define gen_macroreg
+    cap drop macroreg
+    gen macroreg = .
+    replace macroreg = 1 if inlist(region, 101, 102, 103, 104, 105)
+    replace macroreg = 2 if inlist(region, 1, 2, 3, 4, 5) | inlist(region, 14, 17)
+    replace macroreg = 3 if inlist(region, 6, 7, 8, 18)
+    replace macroreg = 4 if inlist(region, 9, 10, 11, 12) | inlist(region, 16, 19)
+    la def MACROREG 1 "NCR" 2 "Luzon (excl. NCR)" 3 "Visayas" 4 "Mindanao", replace
+    la val macroreg MACROREG
+end
+
+* ── Settlement type ───────────────────────────────────────────────
+cap program drop gen_settlement
+program define gen_settlement
+    cap drop settlement
+    gen settlement = urban
+    la def SETTLE 1 "Urban" 2 "Rural", replace
+    la val settlement SETTLE
+end
+
+* ── Create HH-level weight file ───────────────────────────────────
+use "$ado/final_weights.dta", clear
+bys hhid: keep if _n == 1
+keep hhid hhw popw region urban hhsize
+save "$out/_hhwt_temp.dta", replace
+
+
 * ── §1  ROSTER (M01) — Demographics, age, sex, disability ──────────
 * Weight: indw (individual level)
 
