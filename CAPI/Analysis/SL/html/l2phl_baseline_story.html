@@ -2300,9 +2300,12 @@ lazy('cMigration', () => {
     const w = el.clientWidth || 500, h = 400;
     const svg = d3.select(el).append('svg').attr('width',w).attr('height',h);
 
-    // Left: source macro-regions (each normalised to 100, total = 400)
-    // Right: abroad country destinations + domestic region destinations
-    // Direct flows = region abroad% × country share + region domestic% × dest share
+    // Left: source macro-regions, weighted by share of potential migrants
+    // Weight = migration_intent_rate × population_share (proportional)
+    // NCR: 3%×13%=0.39, Luzon: 2%×38%=0.76, Visayas: 1%×22%=0.22, Mindanao: 3%×27%=0.81
+    // Normalized: NCR=18%, Luzon=35%, Visayas=10%, Mindanao=37%
+    const regionWeight = [0.18, 0.35, 0.10, 0.37]; // share of all potential migrants
+
     const nodes = [
       {name:'NCR'},           // 0
       {name:'Luzon'},         // 1
@@ -2322,7 +2325,9 @@ lazy('cMigration', () => {
       {name:'Within Mindanao'}   // 15
     ];
 
-    const links = [
+    // Raw per-region destination distributions (each sums to ~100)
+    // Weighted by regionWeight to make bands proportional to actual migrant volume
+    const rawLinks = [
       // NCR (abroad=46.1) → countries
       {source:0,target:4,value:8.4},{source:0,target:5,value:5.1},
       {source:0,target:6,value:3.9},{source:0,target:7,value:3.6},
@@ -2357,6 +2362,9 @@ lazy('cMigration', () => {
       {source:3,target:14,value:7.1},{source:3,target:15,value:6.7}
     ];
 
+    // Scale each link by its source region's weight
+    const links = rawLinks.map(l => ({...l, value: +(l.value * regionWeight[l.source]).toFixed(2)}));
+
     // Leave margin for labels: left 90px, right 100px
     const ml = 90, mr = 100;
     const sankey = d3.sankey()
@@ -2370,7 +2378,8 @@ lazy('cMigration', () => {
     const color = d3.scaleOrdinal()
       .domain(nodes.map(n=>n.name))
       .range(['#009FDA','#00A651','#0038A8','#CE1126',
-              '#D4A017','#40B4E5','#F05023','#0038A8','#9FA0A4','#00B8C8']);
+              '#D4A017','#40B4E5','#F05023','#0038A8','#9FA0A4','#00B8C8',
+              '#009FDA','#CE1126','#D4A017','#00A651','#0038A8','#00B8C8']);
 
     svg.append('g').selectAll('rect').data(sNodes).join('rect')
       .attr('x',d=>d.x0).attr('y',d=>d.y0)
@@ -2381,7 +2390,7 @@ lazy('cMigration', () => {
       .attr('d',d3.sankeyLinkHorizontal())
       .attr('stroke',d=>color(d.source.name))
       .attr('stroke-width',d=>Math.max(d.width,0.5))
-      .attr('stroke-opacity',.22);
+      .attr('stroke-opacity',.30);
 
     // Labels: left col → left of bar, right col → right of bar
     svg.append('g').selectAll('text').data(sNodes).join('text')
