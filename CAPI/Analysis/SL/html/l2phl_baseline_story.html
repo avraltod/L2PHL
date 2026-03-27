@@ -235,8 +235,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 .region-select{font-family:var(--mono);font-size:11px;padding:4px 8px;border:1px solid var(--rule);border-radius:3px;background:white;color:var(--ink);margin:8px 0;}
 
 /* SANKEY */
-.sankey-wrap{width:100%;min-height:300px;position:relative;}
-.sankey-wrap svg{width:100%;height:100%;}
+.sankey-wrap{width:100%;min-height:300px;position:relative;overflow:visible;}
+.sankey-wrap svg{width:100%;height:100%;overflow:visible;}
 
 /* SVG MAP */
 .map-wrap{position:relative;width:100%;max-width:400px;margin:0 auto;}
@@ -2633,7 +2633,8 @@ lazy('sankeySatEco', () => {
   }
 
   const rect = el.getBoundingClientRect();
-  const W = rect.width || 500, H = rect.height || 420;
+  const W = (rect.width || 500) + 200, H = rect.height || 420;
+  const ml = 110, mr = 110; // margins for labels
   const svg = d3.select(el).append('svg')
     .attr('viewBox',`0 0 ${W} ${H}`)
     .attr('preserveAspectRatio','xMidYMid meet');
@@ -2643,7 +2644,7 @@ lazy('sankeySatEco', () => {
     .nodeWidth(18)
     .nodePadding(10)
     .nodeAlign(d3.sankeyJustify)
-    .extent([[1,30],[W-1,H-10]]);
+    .extent([[ml,30],[W-mr,H-10]]);
 
   const {nodes:sNodes, links:sLinks} = sankey({
     nodes: nodes.map(d=>({...d})),
