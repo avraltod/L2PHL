@@ -38,7 +38,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 @media(max-width:720px){.mast-nav{display:none;}}
 
 /* HERO */
-.hero{min-height:100vh;background:var(--ink);color:var(--paper);display:grid;place-items:center;padding:80px 40px 60px;position:relative;overflow:hidden;}
+.hero{min-height:100vh;background:var(--ink);color:var(--paper);display:grid;place-items:center;padding:100px 40px 80px;position:relative;overflow:hidden;}
 .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 65% 35%,#001a3a 0%,transparent 65%),radial-gradient(ellipse 45% 75% at 15% 85%,#001230 0%,transparent 55%);}
 .hero-inner{position:relative;max-width:1020px;width:100%;display:grid;grid-template-columns:1.2fr 1fr;gap:70px;align-items:center;}
 .hero-flag{font-size:52px;line-height:1;margin-bottom:14px;}
@@ -53,7 +53,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 .hkpi.b{border-color:#009FDA;}
 .hkpi.g{border-color:#D4A017;}
 .hkpi.o{border-color:#009FDA;}
-.hkpi-n{font-family:var(--serif);font-size:2.2rem;font-weight:900;line-height:1;color:var(--paper);}
+.hkpi-n{font-family:var(--serif);font-size:2.8rem;font-weight:900;line-height:1;color:var(--paper);}
 .hkpi-n span{font-size:1.4rem;font-weight:400;opacity:.55;}
 .hkpi-l{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-top:2px;}
 .scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;opacity:.35;color:var(--paper);animation:bob 2s infinite;}
@@ -320,17 +320,17 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 <div class="toc">
   <div class="toc-inner">
     <div class="toc-title">Contents — 10 chapters · 14 survey modules</div>
-    <div class="toc-grid">
-      <a href="#ch-roster" class="toc-item"><span class="toc-num">01</span>People — M01 Roster · M06 Migration</a>
+    <div class="toc-grid" style="grid-template-columns:repeat(5,1fr);">
+      <a href="#ch-roster" class="toc-item"><span class="toc-num">01</span>People — Roster &amp; Migration</a>
       <a href="#ch-edu" class="toc-item"><span class="toc-num">02</span>Learning — Education</a>
       <a href="#ch-work" class="toc-item"><span class="toc-num">03</span>Working — Employment</a>
       <a href="#ch-money" class="toc-item"><span class="toc-num">04</span>Money — Income &amp; Finance</a>
       <a href="#ch-health" class="toc-item"><span class="toc-num">05</span>Getting sick — Health</a>
       <a href="#ch-food" class="toc-item"><span class="toc-num">06</span>Eating — Food &amp; Nutrition</a>
-      <a href="#ch-hazard" class="toc-item"><span class="toc-num">07</span>When disasters strike — Hazards</a>
-      <a href="#ch-home" class="toc-item"><span class="toc-num">08</span>Where families live — Dwelling &amp; Utilities</a>
-      <a href="#ch-assets" class="toc-item"><span class="toc-num">09</span>What families own — Household Assets &amp; Energy</a>
-      <a href="#ch-views" class="toc-item"><span class="toc-num">10</span>What they think — Voices &amp; Perceptions</a>
+      <a href="#ch-hazard" class="toc-item"><span class="toc-num">07</span>Disasters — Hazards</a>
+      <a href="#ch-home" class="toc-item"><span class="toc-num">08</span>Home — Dwelling &amp; Utilities</a>
+      <a href="#ch-assets" class="toc-item"><span class="toc-num">09</span>Assets — Energy &amp; Ownership</a>
+      <a href="#ch-views" class="toc-item"><span class="toc-num">10</span>Voices — Views &amp; Perceptions</a>
     </div>
   </div>
 </div>
@@ -343,22 +343,22 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
   <div class="two-col">
     <div class="rev">
       <span class="eyebrow b">Population structure</span>
-      <h2 class="hed">A young, growing nation — with <em class="b">41% under 20</em></h2>
+      <h2 class="hed">A young, growing nation — with <em class="r">41% under 20</em></h2>
       <div class="body-copy">
         <p>The Philippines is a young country. The largest single age cohort is 10–19 year-olds at 23 percent, followed by children under 10 at 18 percent while only 4 percent of the population is over 70. With a median age of 25, the demographic dividend is real — but realizing it depends on delivering education, jobs, and social infrastructure to translate into broad-based prosperity.</p>
         <p>This is not uniform across the country. Mindanao is the youngest, with 20 percent of its population under 10, while NCR has the smallest share in that bracket at 15 percent – a gap consistent with long-standing patterns of internal migration toward urban centers, which tend to skew slightly older.</p>
       </div>
     </div>
     <div class="rev d2">
+      <div class="sgrid sgrid-3 rev d1" style="margin-bottom:14px;">
+        <div class="scell"><div class="scell-n" style="color:#00A651;">25</div><div class="scell-l">MEDIAN AGE (M: 24 · F: 25)</div></div>
+        <div class="scell"><div class="scell-n" style="color:#CE1126;">41%</div><div class="scell-l">UNDER 20</div></div>
+        <div class="scell"><div class="scell-n"><span style="color:#0038A8;">51%</span> | <span style="color:#CE1126;">49%</span></div><div class="scell-l">MALE | FEMALE</div></div>
+      </div>
       <div class="cbox">
         <div class="ctitle">Age group distribution</div>
-        <div class="csub">% within each group (total / male / female)</div>
+        <div class="csub">% within each group (national / male / female)</div>
         <div class="cwrap" style="height:220px;"><canvas id="cAge"></canvas></div>
-      </div>
-      <div class="sgrid sgrid-3 rev d1" style="margin-top:12px;">
-        <div class="scell ink-c"><div class="scell-n" style="color:#FCD116;">25</div><div class="scell-l">MEDIAN AGE (M: 24 · F: 25)</div></div>
-        <div class="scell"><div class="scell-n">41%</div><div class="scell-l">UNDER 20</div></div>
-        <div class="scell ink-c"><div class="scell-n" style="color:#FCD116;">51% | 49%</div><div class="scell-l">MALE | FEMALE</div></div>
       </div>
     </div>
   </div>
@@ -379,7 +379,13 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
       <div class="cbox" style="margin-top:12px;">
         <div class="ctitle">Household structure type</div>
         <div class="csub">% of households (N=2,470 · mean size 4.3)</div>
-        <div class="cwrap" style="height:220px;display:flex;align-items:center;"><canvas id="cHHComp"></canvas></div>
+        <div style="margin-top:6px;">
+          <div class="bs"><div class="bs-lbl"><span>Nuclear (Head + Spouse + Children)</span><span style="color:#009FDA">40%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="80"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Extended family</span><span style="color:#00A651">39%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="78"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Head + Children only</span><span style="color:#CE1126">8%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="16"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Couple only</span><span style="color:#D4A017">8%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="16"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Solo</span><span style="color:#0038A8">5%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="10"></div></div></div>
+        </div>
       </div>
       <div class="cbox" style="margin-top:12px;">
         <div class="ctitle">Marital status by sex</div>
@@ -432,6 +438,11 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
     <div class="rev">
       <span class="eyebrow o">Migration</span>
       <h2 class="hed">2% of households have someone <em class="o">thinking about leaving</em> — but among them, intent is strong</h2>
+      <div class="sgrid sgrid-3 rev d1" style="margin-top:16px;margin-bottom:16px;">
+        <div class="scell"><div class="scell-n" style="color:#002244;">2%</div><div class="scell-l">HH WITH MIGRATION INTENT</div></div>
+        <div class="scell"><div class="scell-n" style="color:#00A651;">33%</div><div class="scell-l">DOMESTIC DESTINATION</div></div>
+        <div class="scell"><div class="scell-n" style="color:#CE1126;">67%</div><div class="scell-l">ABROAD DESTINATION</div></div>
+      </div>
       <div class="body-copy">
         <p>Migration intent is narrow but concentrated. Only 2 percent of households report at least one member aged 15 or older considering migration within the next year, translating to about 1 percent of the adult population. The overwhelmingly dominant reason for past moves: employment and job relocation.</p>
         <p>Within those households, 36 percent of individual members are the ones actively considering the move.</p>
@@ -441,15 +452,22 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
     <div class="rev d2">
       <div class="cbox">
         <div class="ctitle">HHs with migration intent by macro-region</div>
-        <div class="csub">% of households with at least one member 15+ considering (m6==1)</div>
-        <div class="cwrap" style="height:200px;"><canvas id="cMigration"></canvas></div>
-      </div>
-      <div class="cbox" style="margin-top:12px;">
-        <div class="ctitle">Migration destination: domestic vs. abroad</div>
-        <div class="csub">% of those with stated destination · source macro-region → destination countries &amp; regions</div>
-        <div id="sankeyMig" class="sankey-wrap" style="height:420px;"></div>
+        <div class="csub">% of households with at least one member 15+ considering</div>
+        <div style="margin-top:6px;">
+          <div class="bs"><div class="bs-lbl"><span style="font-weight:700;">National</span><span style="font-weight:700;color:#002244;">2%</span></div><div class="btrack"><div class="bfill" style="background:#002244;" data-w="40"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>NCR</span><span style="color:#0038A8;">3%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="60"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Luzon (excl. NCR)</span><span style="color:#00A651;">2%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="40"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Visayas</span><span style="color:#D4A017;">1%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="20"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Mindanao</span><span style="color:#CE1126;">3%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="60"></div></div></div>
+        </div>
       </div>
     </div>
+  </div>
+  <!-- Sankey full-width below the two-col -->
+  <div class="cbox" style="margin-top:24px;">
+    <div class="ctitle">Migration destination: domestic vs. abroad</div>
+    <div class="csub">% of those with stated destination · source macro-region → destination countries &amp; regions</div>
+    <div id="sankeyMig" class="sankey-wrap" style="height:460px;"></div>
   </div>
 </div>
 
@@ -782,10 +800,10 @@ use `_roster', clear
         <div class="ctitle">Reasons for not attending (ages 5–24)</div>
         <div class="csub">% of reported reasons · multi-select</div>
         <div style="margin-top:6px;">
-          <div class="bs"><div class="bs-lbl"><span>Employment</span><span>26%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="52"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Financial constraints</span><span>15%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="30"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Finished schooling</span><span>16%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="32"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Family matters</span><span>11%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="22"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Employment</span><span style="color:#CE1126">26%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="52"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Financial constraints</span><span style="color:#F05023">15%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="30"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Finished schooling</span><span style="color:#009FDA">16%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="32"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Family matters</span><span style="color:#0038A8">11%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="22"></div></div></div>
         </div>
       </div>
     </div>
@@ -816,11 +834,11 @@ use `_roster', clear
         <div class="ctitle">Annual education expenditure by category</div>
         <div class="csub">Mean PHP among spenders · top 1% excluded</div>
         <div style="margin-top:8px;">
-          <div class="bs"><div class="bs-lbl"><span>Meals &amp; lodging</span><span>₱9,461</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="100"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>School fees &amp; tuition</span><span>₱6,651</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="70.3"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Transportation</span><span>₱5,653</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="59.8"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Textbooks &amp; materials</span><span>₱1,729</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="18.3"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Uniforms &amp; footwear</span><span>₱1,423</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="15.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Meals &amp; lodging</span><span style="color:#CE1126">₱9,461</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="100"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>School fees &amp; tuition</span><span style="color:#F05023">₱6,651</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="70.3"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Transportation</span><span style="color:#009FDA">₱5,653</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="59.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Textbooks &amp; materials</span><span style="color:#00A651">₱1,729</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="18.3"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Uniforms &amp; footwear</span><span style="color:#0038A8">₱1,423</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="15.0"></div></div></div>
         </div>
       </div>
     </div>
@@ -836,17 +854,16 @@ use `_roster', clear
         <div class="ctitle">ECD attendance by age</div>
         <div class="csub">% attending · ages 0–4</div>
         <div style="margin-top:8px;">
-          <div class="bs"><div class="bs-lbl"><span>Ages 0–2</span><span style="color:#CE1126;">3%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="4"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Age 3</span><span style="color:#D4A017;">31%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="45"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Age 4</span><span style="color:#00A651;">69%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="100"></div></div></div>
+          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Ages 0–2</span><span style="color:#CE1126;">3%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="3"></div></div></div>
+          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Ages 3–4</span><span style="color:#00A651;">50%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="50"></div></div></div>
         </div>
       </div>
       <div class="cbox" style="flex:1;min-width:200px;">
         <div class="ctitle">Type of early education</div>
         <div class="csub">% of attending children 0–4</div>
         <div style="margin-top:8px;">
-          <div class="bs"><div class="bs-lbl"><span>Daycare / Nursery</span><span style="color:#F05023;">66%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="100"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Kindergarten</span><span style="color:#009FDA;">34%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="52"></div></div></div>
+          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Daycare / Nursery</span><span style="color:#F05023;">66%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="66"></div></div></div>
+          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Kindergarten</span><span style="color:#009FDA;">34%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="34"></div></div></div>
         </div>
       </div>
     </div>
@@ -1176,7 +1193,16 @@ di as text "Completion: CH02 Education replication code executed."
         <div class="cbox dark" style="margin-top:12px;">
           <div class="ctitle light">Industry sector (top 8)</div>
           <div class="csub light">% of employed by sector</div>
-          <div class="cwrap" style="height:215px;"><canvas id="cIndustry"></canvas></div>
+          <div style="margin-top:6px;">
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Admin / support</span><span style="color:#009FDA;">21.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="100"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Agriculture</span><span style="color:#00A651;">17.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="83.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Retail trade</span><span style="color:#D4A017;">15.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="70.2"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Construction</span><span style="color:#F05023;">12.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#F05023;" data-w="56.8"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Food service</span><span style="color:#CE1126;">11.4%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="53.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Transport</span><span style="color:#0038A8;">7.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#0038A8;" data-w="32.8"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Other services</span><span style="color:#00B8C8;">3.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00B8C8;" data-w="14.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Public admin</span><span style="color:#9FA0A4;">2.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#9FA0A4;" data-w="12.2"></div></div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1197,7 +1223,7 @@ di as text "Completion: CH02 Education replication code executed."
             <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>No contract</span><span style="color:#CE1126;">71.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="71.7"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Written contract</span><span style="color:#00A651;">17.8%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="17.8"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Verbal agreement</span><span style="color:#D4A017;">4.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="4.3"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Don't know</span><span>6.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="6.1"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Don't know</span><span style="color:#40B4E5">6.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="6.1"></div></div></div>
           </div>
         </div>
         <div class="callout rev d1" style="margin-top:12px;">
@@ -1553,9 +1579,9 @@ di as text "Completion: CH03 Employment replication code executed."
           <div class="bs"><div class="bs-lbl"><span>Mobile money (GCash/Maya)</span><span style="color:var(--blue);">18.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="18.0"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Took a loan (past 6 months)</span><span style="color:var(--red);">18.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="18.1"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Credit / debit card</span><span style="color:var(--teal);">10.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--teal);" data-w="10.5"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Managed to save money</span><span>12.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="12.9"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Savings group / paluwagan</span><span>8.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="8.1"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Formal bank account</span><span>4.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="4.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Managed to save money</span><span style="color:#00A651">12.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="12.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Savings group / paluwagan</span><span style="color:#0038A8">8.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="8.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Formal bank account</span><span style="color:#D4A017">4.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="4.9"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span style="color:var(--red);">Could cover ₱300k emergency</span><span style="color:var(--red);">2.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="2.1"></div></div></div>
         </div>
       </div>
@@ -1590,10 +1616,10 @@ di as text "Completion: CH03 Employment replication code executed."
         <div class="csub">Among HHs that borrowed in past 6 months</div>
         <div style="margin-top:8px;">
           <div class="bs"><div class="bs-lbl"><span>Formal financial institution</span><span style="color:var(--green);">43.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="43.4"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Private individual</span><span>30.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="30.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Private individual</span><span style="color:#009FDA">30.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="30.5"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Informal lender (5-6)</span><span style="color:var(--red);">14.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="14.6"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Mobile lending app</span><span>5.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="5.9"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Government programme</span><span>2.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="2.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Mobile lending app</span><span style="color:#F05023">5.9%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="5.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Government programme</span><span style="color:#0038A8">2.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="2.2"></div></div></div>
         </div>
       </div>
     </div>
@@ -1604,10 +1630,9 @@ di as text "Completion: CH03 Employment replication code executed."
         <div style="margin-top:8px;">
           <div class="bs"><div class="bs-lbl"><span>Business / livelihood</span><span style="color:var(--green);">27.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="27.1"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Food / daily needs</span><span style="color:var(--red);">24.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="24.7"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Housing / construction</span><span>12.3%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="12.3"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Education</span><span>11.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="11.7"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Other consumption</span><span>8.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="8.5"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Health / medical</span><span>5.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="5.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Housing / construction</span><span style="color:#009FDA">12.3%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="12.3"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Education</span><span style="color:#0038A8">11.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="11.7"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Health / medical</span><span style="color:#D4A017">5.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="5.6"></div></div></div>
         </div>
       </div>
     </div>
@@ -1628,9 +1653,9 @@ di as text "Completion: CH03 Employment replication code executed."
         <div style="margin-top:8px;">
           <div class="bs"><div class="bs-lbl"><span>Government institutions</span><span style="color:var(--green);">34.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="34.4"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>CCT / Pantawid / 4Ps</span><span style="color:var(--blue);">18.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="18.1"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Other social programmes</span><span>16.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="16.5"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Family members</span><span>15.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="15.8"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>AKAP</span><span>14.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="14.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Other social programmes</span><span style="color:#0038A8">16.5%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="16.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Family members</span><span style="color:#F05023">15.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="15.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>AKAP</span><span style="color:#D4A017">14.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="14.4"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>AICS</span><span style="color:#00B8C8;">7.6%</span></div><div class="btrack"><div class="bfill" style="background:#00B8C8;" data-w="7.6"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Rice/agri support</span><span style="color:#D4A017;">3.3%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="3.3"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Scholarships/education</span><span style="color:#CE1126;">2.3%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="2.3"></div></div></div>
@@ -1784,16 +1809,16 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
       <div class="rev">
         <span class="eyebrow r">Health insurance</span>
         <h2 class="hed light">54% have no PhilHealth. When hospitalization hits, a ₱46,834 bill arrives.</h2>
-        <div class="body-copy light">
-          <p>The health service access gap has a financial explanation. Fifty-four percent of household members have no PhilHealth coverage — and of the 46 percent who do, most are non-paying members or dependents. Only 17 percent are contributing members.</p>
-          <p>The regional pattern echoes what we saw on access: the Visayas trails at 36 percent coverage against NCR's 53 percent. Notably, rural and urban rates are nearly identical at 46 percent each.</p>
-          <p>When hospitalization does happen, the cost lands hard. Nine percent reported they were hospitalized in the past twelve months with an average bill of ₱46,834 — with 18.5 percent of hospital costs paid directly out-of-pocket.</p>
-        </div>
-        <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
+        <div class="sgrid sgrid-2 rev d1" style="margin-top:16px;margin-bottom:16px;">
           <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">54%</div><div class="scell-l" style="color:#4a6278;">No PhilHealth at all</div></div>
           <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">46%</div><div class="scell-l" style="color:#4a6278;">With coverage</div></div>
           <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;font-size:1.3rem;">₱46,834</div><div class="scell-l" style="color:#4a6278;">Mean hospital bill</div></div>
           <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;font-size:1.2rem;">18.5%</div><div class="scell-l" style="color:#4a6278;">Out-of-pocket share</div></div>
+        </div>
+        <div class="body-copy light">
+          <p>The health service access gap has a financial explanation. Fifty-four percent of household members have no PhilHealth coverage — and of the 46 percent who do, most are non-paying members or dependents. Only 17 percent are contributing members.</p>
+          <p>The regional pattern echoes what we saw on access: the Visayas trails at 36 percent coverage against NCR's 53 percent. Notably, rural and urban rates are nearly identical at 46 percent each.</p>
+          <p>When hospitalization does happen, the cost lands hard. Nine percent reported they were hospitalized in the past twelve months with an average bill of ₱46,834 — with 18.5 percent of hospital costs paid directly out-of-pocket.</p>
         </div>
         <!-- SFAP #34: OOP cost distribution -->
         <div class="cbox dark" style="margin-top:16px;">
@@ -1813,16 +1838,24 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
         <div class="cbox dark">
           <div class="ctitle light">PhilHealth coverage type</div>
           <div class="csub light">% of members</div>
-          <div class="cwrap" style="height:185px;display:flex;align-items:center;"><canvas id="cPhilType"></canvas></div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span style="font-weight:700;">Not covered</span><span style="font-weight:700;color:#002244;">53.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#002244;" data-w="53.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Paying member</span><span style="color:#009FDA;">15.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="15.7"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Dependent (Non-Pay)</span><span style="color:#00B8C8;">12.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00B8C8;" data-w="12.0"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Non-Paying member</span><span style="color:#00A651;">11.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="11.3"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Dependent (Paying)</span><span style="color:#9FA0A4;">7.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#9FA0A4;" data-w="7.1"></div></div></div>
+          </div>
         </div>
         <div class="cbox dark" style="margin-top:12px;">
           <div class="ctitle light">PhilHealth coverage by macro-region</div>
           <div class="csub light">% covered · all categories</div>
           <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span style="font-weight:700;">National</span><span style="font-weight:700;color:#002244;">46.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#002244;" data-w="46.1"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#0038A8;">52.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#0038A8;" data-w="52.6"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Mindanao</span><span style="color:#CE1126;">52.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="52.7"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon (excl. NCR)</span><span style="color:#00A651;">45.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="45.0"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span style="color:#D4A017;">Visayas</span><span style="color:#D4A017;">36.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="36.2"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Visayas</span><span style="color:#D4A017;">36.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="36.2"></div></div></div>
+            <div class="bs" style="margin-top:6px;"><div class="bs-lbl" style="color:#002244;"><span style="font-style:italic;">Not covered</span><span style="color:#9FA0A4;">53.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#9FA0A4;" data-w="53.9"></div></div></div>
           </div>
         </div>
       </div>
@@ -1886,7 +1919,12 @@ tab h17 settlement [aw=indw], col nofreq
   <div class="two-col">
     <div class="rev">
       <span class="eyebrow g">Food access</span>
-      <h2 class="hed">The wet market rules. <em class="g">99.6% pay in cash.</em></h2>
+      <h2 class="hed">The wet market rules. <em class="gold">99.6% pay in cash.</em></h2>
+      <div class="sgrid sgrid-3 rev d1" style="margin-top:16px;margin-bottom:16px;">
+        <div class="scell g-c"><div class="scell-n" style="color:var(--green);">74%</div><div class="scell-l">Shop at Wet Market</div></div>
+        <div class="scell"><div class="scell-n" style="color:#D4A017;">99.6%</div><div class="scell-l">Pay in cash</div></div>
+        <div class="scell"><div class="scell-n" style="color:#009FDA;">17.6</div><div class="scell-l">Min travel to food</div></div>
+      </div>
       <div class="body-copy">
         <p>The Philippine food system is profoundly local and informal. Nearly three in four households buy most of their food from wet markets, with sari-sari stores a distant second at 15 percent. Modern retail — supermarkets and large chains combined — accounts for just 7 percent.</p>
         <p>The transactions that happen in these markets leave almost no trace. Eighty-four percent of shoppers receive no receipt, and nearly 100 percent pay in cash. Digital payments — GCash, Maya, QR codes — account for less than 1 percent of food purchases. This is an economy that runs on physical money and personal trust, not platforms.</p>
@@ -1899,15 +1937,16 @@ tab h17 settlement [aw=indw], col nofreq
         <div class="csub">% of households</div>
         <div class="cwrap" style="height:195px;"><canvas id="cFoodSrc"></canvas></div>
       </div>
-      <div class="sgrid sgrid-3 rev d1" style="margin-top:12px;">
-        <div class="scell g-c"><div class="scell-n" style="color:var(--green);">74%</div><div class="scell-l">Shop at Wet Market</div></div>
-        <div class="scell"><div class="scell-n" style="color:#D4A017;">99.6%</div><div class="scell-l">Pay in cash</div></div>
-        <div class="scell"><div class="scell-n" style="color:#009FDA;">17.6</div><div class="scell-l">Min travel to food</div></div>
-      </div>
       <div class="cbox rev d2" style="margin-top:14px;">
         <div class="ctitle">Wet market usage by macro-region</div>
         <div class="csub">% of HHs buying food mainly from wet markets</div>
-        <div class="cwrap" style="height:170px;"><canvas id="cWetMkt"></canvas></div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span style="font-weight:700;">National</span><span style="font-weight:700;color:#002244;">74.0%</span></div><div class="btrack"><div class="bfill" style="background:#002244;" data-w="74.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>NCR</span><span style="color:#0038A8;">90.9%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="90.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Luzon (excl. NCR)</span><span style="color:#00A651;">71.4%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="71.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Visayas</span><span style="color:#D4A017;">76.2%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="76.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Mindanao</span><span style="color:#CE1126;">70.0%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="70.0"></div></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1963,7 +2002,7 @@ tab h17 settlement [aw=indw], col nofreq
           <div class="bs"><div class="bs-lbl"><span>Stunted (low height-for-age)</span><span style="color:#CE1126;">26.6%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="26.6"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Underweight (low weight-for-age)</span><span style="color:#F05023;">18.2%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="18.2"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Wasted (low weight-for-height)</span><span style="color:#D4A017;">18.0%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="18.0"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Severely stunted</span><span>11.1%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="11.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Severely stunted</span><span style="color:#0038A8">11.1%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="11.1"></div></div></div>
         </div>
       </div>
       <div class="sgrid sgrid-2 rev d1" style="margin-top:12px;">
@@ -2049,7 +2088,7 @@ tab _stunted macroreg [aw=indw] if age &lt; 5, col nofreq
   <div class="sec-inner">
     <div class="full-w rev">
       <span class="eyebrow r">Climate &amp; disasters</span>
-      <h2 class="hed light" style="max-width:800px;"><em class="r">76%</em> hit by typhoon. <em class="o">50%</em> by extreme heat. <em class="gold">40%</em> by earthquake. Half got <em class="b">no warning.</em></h2>
+      <h2 class="hed light" style="max-width:800px;"><em class="r">76%</em> hit by typhoon. <em class="o">50%</em> by extreme heat. <em class="gold">41%</em> by earthquake. Half got <em class="b">no warning.</em></h2>
     </div>
     <div class="two-col" style="margin-top:32px;">
       <div class="rev">
@@ -2062,22 +2101,23 @@ tab _stunted macroreg [aw=indw] if age &lt; 5, col nofreq
       <div class="rev d2">
         <!-- SFAP #44: Infographic-style hazard tiles instead of bar chart -->
         <div class="sgrid sgrid-2 rev d1" style="gap:8px;">
-          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#CE1126;font-size:1.6rem;">76.5%</div><div class="scell-l" style="color:#4a6278;">Typhoon</div></div>
-          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#F05023;font-size:1.6rem;">50.2%</div><div class="scell-l" style="color:#4a6278;">Extreme heat</div></div>
-          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#D4A017;font-size:1.4rem;">41.2%</div><div class="scell-l" style="color:#4a6278;">Earthquake</div></div>
-          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#D4A017;font-size:1.4rem;">36.1%</div><div class="scell-l" style="color:#4a6278;">Drought / El Niño</div></div>
-          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#0038A8;font-size:1.3rem;">31.6%</div><div class="scell-l" style="color:#4a6278;">Flood / La Niña</div></div>
-          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#0038A8;font-size:1.3rem;">12.2%</div><div class="scell-l" style="color:#4a6278;">Pest infestation</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#CE1126;font-size:1.5rem;">76%</div><div class="scell-l" style="color:#4a6278;">Typhoon</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#F05023;font-size:1.5rem;">50%</div><div class="scell-l" style="color:#4a6278;">Extreme heat</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#D4A017;font-size:1.5rem;">41%</div><div class="scell-l" style="color:#4a6278;">Earthquake</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#009FDA;font-size:1.5rem;">36%</div><div class="scell-l" style="color:#4a6278;">Drought / El Niño</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#0038A8;font-size:1.5rem;">32%</div><div class="scell-l" style="color:#4a6278;">Flood / La Niña</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#9FA0A4;font-size:1.5rem;">12%</div><div class="scell-l" style="color:#4a6278;">Pest infestation</div></div>
         </div>
         <p style="font-family:var(--mono);font-size:9px;color:#5a7389;margin-top:6px;text-align:center;">Also: Livestock disease 9.3% · Volcanic 3.1% · Landslide 2.3% · Tsunami 0.2%</p>
         <div class="cbox dark" style="margin-top:16px;">
           <div class="ctitle light">Early warning received</div>
           <div class="csub light">% of affected HHs that received advance warning</div>
           <div style="margin-top:8px;">
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#00A651;">70.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="70.6"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon</span><span>59.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="59.2"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Visayas</span><span>49.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="49.6"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span style="color:#CE1126;">Mindanao</span><span style="color:#CE1126;">41.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="41.3"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span style="font-weight:700;">National</span><span style="font-weight:700;color:#002244;">55.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#002244;" data-w="55.1"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#0038A8;">70.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#0038A8;" data-w="70.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon</span><span style="color:#00A651;">59.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="59.2"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Visayas</span><span style="color:#D4A017;">49.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="49.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Mindanao</span><span style="color:#CE1126;">41.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="41.3"></div></div></div>
           </div>
         </div>
       </div>
@@ -2089,26 +2129,27 @@ tab _stunted macroreg [aw=indw] if age &lt; 5, col nofreq
           <div class="ctitle light">Hazard exposure by macro-region</div>
           <div class="csub light">% of HHs affected by any hazard (past 3 years)</div>
           <div style="margin-top:8px;">
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon (excl. NCR)</span><span style="color:#CE1126;">96.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="96.9"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#F05023;">93.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#F05023;" data-w="93.1"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span style="font-weight:700;">National</span><span style="font-weight:700;color:#002244;">91.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#002244;" data-w="91.0"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon (excl. NCR)</span><span style="color:#00A651;">96.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="96.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#0038A8;">93.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#0038A8;" data-w="93.1"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Visayas</span><span style="color:#D4A017;">87.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="87.3"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Mindanao</span><span style="color:#0038A8;">82.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#0038A8;" data-w="82.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Mindanao</span><span style="color:#CE1126;">82.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="82.5"></div></div></div>
           </div>
         </div>
       </div>
       <!-- SFAP #45: Coping & preparedness section -->
       <div class="rev">
         <span class="eyebrow r" style="color:#D4A017;">Coping &amp; preparedness</span>
-        <h2 class="hed light"><em class="g">97%</em> took preparedness measures — <em class="b">87%</em> have an emergency plan</h2>
+        <h2 class="hed light"><em class="g">97%</em> took preparedness measures — <em style="color:#0038A8;font-style:italic;">87%</em> have an emergency plan</h2>
+        <div class="sgrid sgrid-2 rev d1" style="margin-top:16px;margin-bottom:16px;">
+          <div class="scell dark-c"><div class="scell-n" style="color:#00A651;">97%</div><div class="scell-l" style="color:#4a6278;">Took preparedness measures</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#0038A8;">87%</div><div class="scell-l" style="color:#4a6278;">Have emergency plan</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">17%</div><div class="scell-l" style="color:#4a6278;">Received assistance</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#0038A8;">84%</div><div class="scell-l" style="color:#4a6278;">Aware of hazard maps</div></div>
+        </div>
         <div class="body-copy light">
           <p>Despite limited early warning coverage, Filipino households demonstrate strong preparedness instincts. Ninety-seven percent of affected households took some form of preparedness measures before hazard events. Eighty-seven percent report having a household emergency plan.</p>
           <p>Only 17 percent received external assistance during or after a hazard event. Eighty-four percent are aware of hazard maps for their area — a critical tool for risk-informed planning and community-level resilience.</p>
-        </div>
-        <div class="sgrid sgrid-2 rev d1" style="margin-top:16px;">
-          <div class="scell dark-c"><div class="scell-n" style="color:#00A651;">97.4%</div><div class="scell-l" style="color:#4a6278;">Took preparedness measures</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#0038A8;">86.8%</div><div class="scell-l" style="color:#4a6278;">Have emergency plan</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">17.4%</div><div class="scell-l" style="color:#4a6278;">Received assistance</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#0038A8;">83.9%</div><div class="scell-l" style="color:#4a6278;">Aware of hazard maps</div></div>
         </div>
       </div>
     </div>
@@ -2177,7 +2218,7 @@ tab nh10 [aw=hhw] if nh1 == 1       /* Received assistance type */
   <div class="two-col">
     <div class="rev">
       <span class="eyebrow p">Dwelling</span>
-      <h2 class="hed">89% live in a <em class="p">single house</em> — asbestos roofs dominate at 30%</h2>
+      <h2 class="hed"><em class="p">89%</em> live in a <em class="p">single house</em> — asbestos roofs dominate at <em class="r">30%</em></h2>
       <div class="body-copy">
         <p>Eighty-nine percent of households live in standalone single houses. Fifty-six percent own their dwelling, 18 percent live rent-free with consent (often extended family), and 4 percent rent.</p>
         <p>Roofing materials: asbestos is the most common at 30 percent, followed by concrete at 25 percent and half concrete/half GI at 19 percent. Only 6 percent use metal/GI sheet alone, while 9 percent rely on cogon/nipa/anahaw (thatch) and 6 percent on makeshift/salvaged materials — both vulnerable in a typhoon-prone country.</p>
@@ -2185,25 +2226,30 @@ tab nh10 [aw=hhw] if nh1 == 1       /* Received assistance type */
       </div>
     </div>
     <div class="rev d2">
-      <!-- SFAP #49: Tenure as pie chart -->
+      <!-- SFAP #49: Tenure as bar strips (was pie chart) -->
       <div class="cbox">
         <div class="ctitle">Housing tenure status</div>
         <div class="csub">% of HHs</div>
-        <div class="cwrap" style="height:170px;display:flex;align-items:center;"><canvas id="cTenure"></canvas></div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Owner</span><span style="color:#00A651;">56.5%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="56.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Rent-free (consent)</span><span style="color:#009FDA;">17.0%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="17.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Other</span><span style="color:#0038A8;">11.8%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="11.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Renting</span><span style="color:#CE1126;">3.9%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="3.9"></div></div></div>
+        </div>
       </div>
       <!-- Roof + Wall side by side -->
-      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;">
+      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;align-items:stretch;">
       <div class="cbox" style="flex:1;min-width:200px;">
         <div class="ctitle">Roof material</div>
         <div class="csub">% of HHs</div>
         <div style="margin-top:8px;">
           <div class="bs"><div class="bs-lbl"><span>Asbestos</span><span style="color:#CE1126;">29.5%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="29.5"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Concrete</span><span>25.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="25.2"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Half concrete/GI</span><span>19.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="19.1"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Cogon/nipa</span><span>8.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="8.6"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Wood/bamboo</span><span>6.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Concrete</span><span style="color:#009FDA">25.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="25.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Half concrete/GI</span><span style="color:#0038A8">19.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="19.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Cogon/nipa</span><span style="color:#D4A017">8.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="8.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Wood/bamboo</span><span style="color:#00A651">6.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.6"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Makeshift</span><span style="color:var(--red);">5.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="5.6"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Metal/GI</span><span>5.5%</span></div><div class="btrack"><div class="bfill" style="background:#40B4E5;" data-w="5.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Metal/GI</span><span style="color:#40B4E5">5.5%</span></div><div class="btrack"><div class="bfill" style="background:#40B4E5;" data-w="5.5"></div></div></div>
         </div>
       </div>
       <div class="cbox" style="flex:1;min-width:200px;">
@@ -2211,11 +2257,11 @@ tab nh10 [aw=hhw] if nh1 == 1       /* Received assistance type */
         <div class="csub">% of HHs</div>
         <div style="margin-top:8px;">
           <div class="bs"><div class="bs-lbl"><span>Half concrete/wood</span><span style="color:var(--blue);">42.1%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="42.1"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Concrete/brick</span><span>27.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="27.2"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Cogon/nipa</span><span>17.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="17.6"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Wood/bamboo</span><span>8.3%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="8.3"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Concrete/brick</span><span style="color:#00A651">27.2%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="27.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Cogon/nipa</span><span style="color:#D4A017">17.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--gold);" data-w="17.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Wood/bamboo</span><span style="color:#0038A8">8.3%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="8.3"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Makeshift</span><span style="color:var(--red);">1.7%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="1.7"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Other</span><span>2.5%</span></div><div class="btrack"><div class="bfill" style="background:#9FA0A4;" data-w="2.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Other</span><span style="color:#9FA0A4">2.5%</span></div><div class="btrack"><div class="bfill" style="background:#9FA0A4;" data-w="2.5"></div></div></div>
         </div>
       </div>
       </div>
@@ -2236,9 +2282,9 @@ tab nh10 [aw=hhw] if nh1 == 1       /* Received assistance type */
         <div class="csub">% of HHs</div>
         <div style="margin-top:8px;">
           <div class="bs"><div class="bs-lbl"><span>Municipal collection</span><span style="color:var(--green);">65.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="65.0"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Pit / landfill</span><span>21.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="21.8"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Pit / landfill</span><span style="color:#F05023">21.8%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="21.8"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Burning</span><span style="color:var(--red);">6.6%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="6.6"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Compost</span><span>5.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="5.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Compost</span><span style="color:#00A651">5.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="5.0"></div></div></div>
         </div>
       </div>
     </div>
@@ -2338,9 +2384,9 @@ di "═════════════════════════�
     <span class="eyebrow gold">Electricity & water</span>
     <h2 class="hed" style="max-width:850px;">Electricity: <em class="gold">96%</em>. Piped water: <em class="g">61%</em> — but <em class="r">69%</em> don't treat it.</h2>
   </div>
-  <div class="two-col" style="margin-top:36px;">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:36px;">
     <div class="rev">
-      <div class="cbox" style="height:100%;min-height:320px;">
+      <div class="cbox" style="height:100%;">
         <div class="ctitle" style="color:var(--gold);">⚡ Electricity</div>
         <div class="csub">96% national access · 99% from grid</div>
         <div style="margin-top:12px;">
@@ -2354,32 +2400,35 @@ di "═════════════════════════�
       </div>
     </div>
     <div class="rev d1">
-      <div class="cbox" style="height:100%;min-height:320px;">
+      <div class="cbox" style="height:100%;">
         <div class="ctitle" style="color:var(--green);">💧 Water access</div>
         <div class="csub">61% piped · 93% perceive water as safe</div>
         <div style="margin-top:12px;">
           <div class="bs"><div class="bs-lbl"><span>Piped (inside)</span><span style="color:#009FDA;">61%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="60.61"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Unprotected well</span><span style="color:var(--red);">8.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="8.4"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Protected spring</span><span>6.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.0"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Rainwater</span><span>4.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="4.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Protected spring</span><span style="color:#00A651">6.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Rainwater</span><span style="color:#0038A8">4.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="4.4"></div></div></div>
         </div>
         <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">93 percent perceive their drinking water as safe (safe or somewhat safe). 69 percent do not treat their water. Travel time to water source: 13 minutes.</p>
       </div>
     </div>
-  </div>
-  <div class="two-col" style="margin-top:28px;">
-    <div class="rev">
-      <div class="cbox">
-        <div class="ctitle">Drinking water safety perception</div>
+    <div class="rev d2">
+      <div class="cbox" style="height:100%;">
+        <div class="ctitle">Drinking water safety</div>
         <div class="csub">% of households</div>
-        <div class="cwrap" style="height:180px;display:flex;align-items:center;"><canvas id="cWaterSafe"></canvas></div>
-      </div>
-      <div class="hbox gold rev d1">
-        <div class="hbox-lbl">The water paradox</div>
-        <p>61 percent have piped water inside the home, and 93 percent perceive their drinking water as safe. However, 69 percent do not treat their water — suggesting confidence may outrun actual safety in some areas.</p>
+        <div style="margin-top:12px;">
+          <div class="bs"><div class="bs-lbl"><span>Very safe</span><span style="color:#00A651;">60.3%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="60.3"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Somewhat safe</span><span style="color:#009FDA;">33.1%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="33.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Somewhat unsafe</span><span style="color:#F05023;">5.2%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="5.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Unsafe</span><span style="color:#CE1126;">1.4%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="1.4"></div></div></div>
+        </div>
       </div>
     </div>
-    <div class="rev d2">
+  </div>
+  <div class="full-w rev" style="margin-top:24px;">
+    <div class="hbox gold">
+      <div class="hbox-lbl">The water paradox</div>
+      <p>61 percent have piped water inside the home, and 93 percent perceive their drinking water as safe. However, 69 percent do not treat their water — suggesting confidence may outrun actual safety in some areas.</p>
     </div>
   </div>
 </div>
@@ -2411,7 +2460,16 @@ di "═════════════════════════�
       <div class="cbox">
         <div class="ctitle">Internet use purposes</div>
         <div class="csub">% of households by primary use · among connected HHs</div>
-        <div class="cwrap" style="height:200px;"><canvas id="cInetPurp"></canvas></div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Social media</span><span style="color:#CE1126;">36.2%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="36.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>News & Info</span><span style="color:#009FDA;">15.6%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="15.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Online shopping</span><span style="color:#D4A017;">14.0%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="14.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Online education</span><span style="color:#00A651;">13.1%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="13.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Entertainment</span><span style="color:#0038A8;">8.9%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="8.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Payments/Banking</span><span style="color:#F05023;">4.1%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="4.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Govt information</span><span style="color:#00B8C8;">2.3%</span></div><div class="btrack"><div class="bfill" style="background:#00B8C8;" data-w="2.3"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Govt services</span><span style="color:#9FA0A4;">2.0%</span></div><div class="btrack"><div class="bfill" style="background:#9FA0A4;" data-w="2.0"></div></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -2599,7 +2657,16 @@ di "═════════════════════════�
       <div class="cbox">
         <div class="ctitle">Asset ownership rates</div>
         <div class="csub">% of HHs owning each asset</div>
-        <div class="cwrap" style="height:230px;"><canvas id="cAssets"></canvas></div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>Washing machine</span><span style="color:#009FDA;">55.0%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="55.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Motorcycle</span><span style="color:#F05023;">54.0%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="54.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Refrigerator</span><span style="color:#00A651;">49.0%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="49.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Gas stove</span><span style="color:#D4A017;">25.9%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="25.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Computer</span><span style="color:#0038A8;">14.6%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="14.6"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Air con</span><span style="color:#CE1126;">10.5%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="10.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Car/Van</span><span style="color:#00B8C8;">3.9%</span></div><div class="btrack"><div class="bfill" style="background:#00B8C8;" data-w="3.9"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Boat</span><span style="color:#9FA0A4;">1.6%</span></div><div class="btrack"><div class="bfill" style="background:#9FA0A4;" data-w="1.6"></div></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -2611,7 +2678,13 @@ di "═════════════════════════�
       <div class="cbox">
         <div class="ctitle">Cooking fuel type</div>
         <div class="csub">% of HHs using each fuel · multi-select</div>
-        <div class="cwrap" style="height:220px;"><canvas id="cFuels"></canvas></div>
+        <div style="margin-top:8px;">
+          <div class="bs"><div class="bs-lbl"><span>LPG</span><span style="color:#D4A017;">61.5%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="61.5"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Fuelwood</span><span style="color:#CE1126;">50.7%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="50.7"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Charcoal</span><span style="color:#9FA0A4;">27.0%</span></div><div class="btrack"><div class="bfill" style="background:#9FA0A4;" data-w="27.0"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Electricity</span><span style="color:#009FDA;">21.4%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="21.4"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Kerosene</span><span style="color:#F05023;">3.6%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="3.6"></div></div></div>
+        </div>
       </div>
     </div>
     <div class="rev">
@@ -2644,6 +2717,12 @@ di "═════════════════════════�
     <div class="full-w rev">
       <span class="eyebrow p">Perceptions &amp; sentiment</span>
       <h2 class="hed light" style="max-width:850px;">Life satisfaction: 3.04/5. 19% feel worse off. <em>Prices and governance top all concerns.</em></h2>
+      <div class="sgrid sgrid-2 rev d1" style="margin-top:16px;margin-bottom:16px;max-width:600px;">
+        <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">3.04/5</div><div class="scell-l" style="color:#4a6278;">Life satisfaction mean</div></div>
+        <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">19%</div><div class="scell-l" style="color:#4a6278;">Feel worse off (vs last month)</div></div>
+        <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">11%</div><div class="scell-l" style="color:#4a6278;">Feel unsafe in neighbourhood</div></div>
+        <div class="scell dark-c"><div class="scell-n" style="color:#00A651;">37%</div><div class="scell-l" style="color:#4a6278;">Believe taxes are well spent</div></div>
+      </div>
     </div>
     <div class="two-col" style="margin-top:32px;">
       <div class="rev">
@@ -2653,28 +2732,29 @@ di "═════════════════════════�
           <p>When asked about their income group, most place themselves in the middle: 49 percent group 3, 30 percent group 2, 20 percent group 1. Only 1 percent place themselves in the top two groups — suggesting the rich are either absent from the survey population or reluctant to self-identify as wealthy.</p>
           <p>Neighbourhood safety: 11 percent feel unsafe walking in their area. Eighty percent feel safe or very safe — though the remaining 10 percent report being afraid to walk alone, a distinct dimension beyond the safe/unsafe binary.</p>
         </div>
-        <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
-          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">3.04/5</div><div class="scell-l" style="color:#4a6278;">Life satisfaction mean</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">19.0%</div><div class="scell-l" style="color:#4a6278;">Feel worse off (vs last month)</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">10.7%</div><div class="scell-l" style="color:#4a6278;">Feel unsafe in neighbourhood</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#00A651;">36.6%</div><div class="scell-l" style="color:#4a6278;">Believe taxes are well spent</div></div>
-        </div>
       </div>
       <div class="rev d2">
         <div class="cbox dark">
           <div class="ctitle light">Life satisfaction distribution</div>
           <div class="csub light">1=Not satisfied at all · 2=Partly · 3=Satisfied · 4=More than · 5=Completely</div>
-          <div class="cwrap" style="height:175px;"><canvas id="cLifeSat"></canvas></div>
-        </div>
-        <div class="cbox dark" style="margin-top:12px;">
-          <div class="ctitle light">Life satisfaction by macro-region</div>
-          <div class="csub light">Distribution of ratings 1-5 · stacked %</div>
-          <div class="cwrap" style="height:200px;"><canvas id="cLifeSatRegion"></canvas></div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>3 — Satisfied</span><span style="color:#D4A017;">51.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#D4A017;" data-w="51.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>2 — Partly</span><span style="color:#F05023;">20.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#F05023;" data-w="20.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>4 — More than satisfied</span><span style="color:#40B4E5;">11.8%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="11.8"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>5 — Completely</span><span style="color:#009FDA;">11.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="11.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>1 — Not at all</span><span style="color:#CE1126;">3.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="3.9"></div></div></div>
+          </div>
         </div>
         <div class="cbox dark" style="margin-top:12px;">
           <div class="ctitle light">Economic situation vs last month</div>
           <div class="csub light">% of HHs by perceived change</div>
-          <div class="cwrap" style="height:220px;display:flex;align-items:center;"><canvas id="cEcoChange"></canvas></div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Same</span><span style="color:#9FA0A4;">45.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#9FA0A4;" data-w="45.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Somewhat improved</span><span style="color:#00A651;">28.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#00A651;" data-w="28.7"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Somewhat worsened</span><span style="color:#F05023;">11.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#F05023;" data-w="11.7"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Much improved</span><span style="color:#009FDA;">7.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="7.2"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Much worsened</span><span style="color:#CE1126;">6.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="6.9"></div></div></div>
+          </div>
         </div>
         <div class="cbox dark" style="margin-top:12px;">
           <div class="ctitle light">Self-perceived income group</div>
@@ -2700,8 +2780,27 @@ di "═════════════════════════�
       <div class="rev d2">
         <div class="cbox dark">
           <div class="ctitle light">Attitudes & concerns — full response distribution</div>
-          <div class="csub light">Horizontal stacked bar · all 5 Likert categories · sorted by total agree</div>
-          <div class="cwrap" style="height:380px;"><canvas id="cLikert"></canvas></div>
+          <div class="csub light">% agree (agree + strongly agree) · all 5 Likert categories shown · sorted by total agree</div>
+          <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:8px;color:#5a7389;margin-bottom:8px;">
+            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(206,17,38,.8);border-radius:2px;vertical-align:middle;"></span> Str.disagree</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(240,80,35,.65);border-radius:2px;vertical-align:middle;"></span> Disagree</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(159,160,164,.7);border-radius:2px;vertical-align:middle;"></span> Neither</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(64,180,229,.7);border-radius:2px;vertical-align:middle;"></span> Agree</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(0,159,218,.9);border-radius:2px;vertical-align:middle;"></span> Str.agree</span>
+          </div>
+          <div style="margin-top:4px;">
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">More say in govt <span style="float:right;color:#40B4E5;">77%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:3.7%;background:rgba(206,17,38,.8);"></div><div style="width:6.8%;background:rgba(240,80,35,.65);"></div><div style="width:12.3%;background:rgba(159,160,164,.7);"></div><div style="width:47.4%;background:rgba(64,180,229,.7);"></div><div style="width:29.7%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Prices rising too quickly <span style="float:right;color:#40B4E5;">76%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:5.2%;background:rgba(206,17,38,.8);"></div><div style="width:11.8%;background:rgba(240,80,35,.65);"></div><div style="width:7.5%;background:rgba(159,160,164,.7);"></div><div style="width:39.4%;background:rgba(64,180,229,.7);"></div><div style="width:36.1%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Children's education <span style="float:right;color:#40B4E5;">71%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:4.7%;background:rgba(206,17,38,.8);"></div><div style="width:11.4%;background:rgba(240,80,35,.65);"></div><div style="width:13.0%;background:rgba(159,160,164,.7);"></div><div style="width:48.5%;background:rgba(64,180,229,.7);"></div><div style="width:22.3%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Political instability <span style="float:right;color:#40B4E5;">64%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:6.0%;background:rgba(206,17,38,.8);"></div><div style="width:13.4%;background:rgba(240,80,35,.65);"></div><div style="width:16.9%;background:rgba(159,160,164,.7);"></div><div style="width:39.4%;background:rgba(64,180,229,.7);"></div><div style="width:24.3%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Digital services saved time <span style="float:right;color:#40B4E5;">60%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.3%;background:rgba(206,17,38,.8);"></div><div style="width:14.0%;background:rgba(240,80,35,.65);"></div><div style="width:18.8%;background:rgba(159,160,164,.7);"></div><div style="width:45.5%;background:rgba(64,180,229,.7);"></div><div style="width:14.4%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Financial situation worse <span style="float:right;color:#40B4E5;">58%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:6.0%;background:rgba(206,17,38,.8);"></div><div style="width:18.8%;background:rgba(240,80,35,.65);"></div><div style="width:17.1%;background:rgba(159,160,164,.7);"></div><div style="width:39.9%;background:rgba(64,180,229,.7);"></div><div style="width:18.3%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Worried about losing job <span style="float:right;color:#40B4E5;">57%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.2%;background:rgba(206,17,38,.8);"></div><div style="width:17.4%;background:rgba(240,80,35,.65);"></div><div style="width:18.6%;background:rgba(159,160,164,.7);"></div><div style="width:38.7%;background:rgba(64,180,229,.7);"></div><div style="width:18.1%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Good time to find a job <span style="float:right;color:#40B4E5;">56%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.2%;background:rgba(206,17,38,.8);"></div><div style="width:15.2%;background:rgba(240,80,35,.65);"></div><div style="width:21.2%;background:rgba(159,160,164,.7);"></div><div style="width:43.8%;background:rgba(64,180,229,.7);"></div><div style="width:12.6%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Optimistic about economy <span style="float:right;color:#40B4E5;">55%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.4%;background:rgba(206,17,38,.8);"></div><div style="width:14.6%;background:rgba(240,80,35,.65);"></div><div style="width:22.6%;background:rgba(159,160,164,.7);"></div><div style="width:42.5%;background:rgba(64,180,229,.7);"></div><div style="width:12.9%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">AI/tech job displacement <span style="float:right;color:#40B4E5;">52%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:8.1%;background:rgba(206,17,38,.8);"></div><div style="width:19.3%;background:rgba(240,80,35,.65);"></div><div style="width:20.2%;background:rgba(159,160,164,.7);"></div><div style="width:35.6%;background:rgba(64,180,229,.7);"></div><div style="width:16.8%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Taxes well spent <span style="float:right;color:#40B4E5;">37%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:20.7%;background:rgba(206,17,38,.8);"></div><div style="width:23.9%;background:rgba(240,80,35,.65);"></div><div style="width:18.9%;background:rgba(159,160,164,.7);"></div><div style="width:27.2%;background:rgba(64,180,229,.7);"></div><div style="width:9.4%;background:rgba(0,159,218,.9);"></div></div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -2713,7 +2812,18 @@ di "═════════════════════════�
         <div class="cbox dark">
           <div class="ctitle light">Economic sentiment by macro-region</div>
           <div class="csub light">Stacked % better / same / worse vs last month</div>
-          <div class="cwrap" style="height:210px;"><canvas id="cEcoMacro"></canvas></div>
+          <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:8px;color:#5a7389;margin-bottom:6px;">
+            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(0,166,81,.82);border-radius:2px;vertical-align:middle;"></span> Better</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(159,160,164,.72);border-radius:2px;vertical-align:middle;"></span> Same</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(206,17,38,.82);border-radius:2px;vertical-align:middle;"></span> Worse</span>
+          </div>
+          <div style="margin-top:4px;">
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;"><span style="font-weight:700;">National</span><span style="float:right;">36% / 46% / 19%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:35.9%;background:rgba(0,166,81,.82);"></div><div style="width:45.5%;background:rgba(159,160,164,.72);"></div><div style="width:18.6%;background:rgba(206,17,38,.82);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">NCR<span style="float:right;">33% / 48% / 20%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:32.5%;background:rgba(0,166,81,.82);"></div><div style="width:47.7%;background:rgba(159,160,164,.72);"></div><div style="width:19.8%;background:rgba(206,17,38,.82);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Luzon (excl. NCR)<span style="float:right;">36% / 44% / 20%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:36.3%;background:rgba(0,166,81,.82);"></div><div style="width:43.9%;background:rgba(159,160,164,.72);"></div><div style="width:19.9%;background:rgba(206,17,38,.82);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Visayas<span style="float:right;">39% / 41% / 20%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:38.9%;background:rgba(0,166,81,.82);"></div><div style="width:41.3%;background:rgba(159,160,164,.72);"></div><div style="width:19.8%;background:rgba(206,17,38,.82);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Mindanao<span style="float:right;">35% / 51% / 15%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:34.7%;background:rgba(0,166,81,.82);"></div><div style="width:50.7%;background:rgba(159,160,164,.72);"></div><div style="width:14.6%;background:rgba(206,17,38,.82);"></div></div></div>
+          </div>
         </div>
       </div>
       <div class="rev">
@@ -2729,8 +2839,8 @@ di "═════════════════════════�
     <div class="vis-sep" style="color:rgba(245,240,232,.1);">· · ·</div>
 
     <!-- SFAP NEW-7: Income mobility Sankey — v2 (self) × v3 (expected children) -->
-    <div class="sec two-col" style="padding:40px 40px 70px;max-width:1100px;margin:0 auto;">
-      <div class="rev">
+    <div style="padding:40px 40px 70px;max-width:1100px;margin:0 auto;">
+      <div class="rev" style="max-width:700px;">
         <span class="eyebrow" style="color:#D4A017;">Income mobility aspirations</span>
         <h2 class="hed light">Where families are <em>vs. where they want their children to be</em></h2>
         <div class="body-copy light">
@@ -2739,11 +2849,11 @@ di "═════════════════════════�
           <p>Almost no one places themselves in the top two groups (1.5% combined), while 19% expect their children to reach group 4 or 5 — revealing a strong upward mobility aspiration even among the poorest families.</p>
         </div>
       </div>
-      <div class="rev d2">
+      <div class="rev d2" style="margin-top:24px;">
         <div class="cbox dark" style="padding:16px;">
           <div class="ctitle light">Self-income class → Expected children's income class</div>
           <div class="csub light">Band width = % of all households · v2 (left) → v3 (right)</div>
-          <div id="sankeySatEco" class="sankey-wrap" style="height:420px;"></div>
+          <div id="sankeySatEco" class="sankey-wrap" style="height:480px;min-height:480px;"></div>
         </div>
       </div>
     </div>
@@ -2980,47 +3090,32 @@ function lazy(id, fn) {
   if (el) cObs.observe(el);
 }
 
-const MACROS = ['NCR','Luzon (excl. NCR)','Visayas','Mindanao'];
-const MCOLS  = ['rgba(0,56,168,.82)','rgba(0,166,81,.78)','rgba(212,160,23,.82)','rgba(206,17,38,.78)'];
+const MACROS = ['NCR',['Luzon','(excl. NCR)'],'Visayas','Mindanao'];
+const MCOLS  = ['#0038A8','#00A651','#D4A017','#CE1126'];
 
 // Age distribution
 lazy('cAge', () => {
   new Chart(document.getElementById('cAge'), {type:'bar', data:{
     labels:['<10','10-19','20-29','30-39','40-49','50-59','60-69','70+'],
     datasets:[
-      {label:'Total',data:[18,23,17,14,11,8,6,4],backgroundColor:'rgba(0,159,218,.75)',borderRadius:3,borderWidth:0},
-      {label:'Male',data:[19,23,17,14,12,7,6,3],backgroundColor:'rgba(0,56,168,.65)',borderRadius:3,borderWidth:0},
-      {label:'Female',data:[17,23,17,14,10,8,7,4],backgroundColor:'rgba(206,17,38,.55)',borderRadius:3,borderWidth:0}
+      {label:'National',data:[18,23,17,14,11,8,6,4],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+      {label:'Male',data:[19,23,17,14,12,7,6,3],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+      {label:'Female',data:[17,23,17,14,10,8,7,4],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
     ]
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}}},
     plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
 });
 
-// HH Structure type — labels beside slices, no legend
-lazy('cHHComp', () => {
-  const sLbl = ['Nuclear (40%)','Extended (39%)','Head+Child (8%)','Couple (8%)','Solo (5%)'];
-  new Chart(document.getElementById('cHHComp'), {type:'pie', data:{
-    labels:['Head + Spouse + Children','Extended family','Head + Children only','Head + Spouse only','Head only'],
-    datasets:[{data:[40,39,8,8,5],
-      backgroundColor:['#009FDA','#00A651','#CE1126','#D4A017','#0038A8'],
-      borderWidth:2,borderColor:'white',hoverOffset:6}]
-  }, plugins:[ChartDataLabels], options:{responsive:true,maintainAspectRatio:false,
-    layout:{padding:{left:100,right:100,top:20,bottom:20}},
-    plugins:{legend:{display:false},
-    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.raw}%`}},
-    datalabels:{color:'#333',font:{family:"'IBM Plex Mono'",size:9,weight:'600'},
-      anchor:'end',align:'end',offset:10,clamp:true,
-      formatter:(v,ctx)=>sLbl[ctx.dataIndex],
-      textAlign:'center'}}}});
-});
+// HH Structure type — now rendered as HTML bar strips (no Chart.js)
 
 // Marital
 lazy('cMarital', () => {
   new Chart(document.getElementById('cMarital'), {type:'bar', data:{
     labels:['Single','Married','Common-law','Widowed','Separated'],
     datasets:[
-      {label:'Male',data:[60,25,12,1,2],backgroundColor:'#009FDA',borderRadius:3,borderWidth:0},
+      {label:'National',data:[56,26,12,4,2],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+      {label:'Male',data:[60,25,12,1,2],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
       {label:'Female',data:[53,26,13,6,2],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
     ]
   }, options:{responsive:true,maintainAspectRatio:false,
@@ -3033,9 +3128,9 @@ lazy('cAttend', () => {
   new Chart(document.getElementById('cAttend'), {type:'bar', data:{
     labels:['6-11','12-15','16-17','18-19','20-24'],
     datasets:[
-      {label:'Total',data:[97.66,96.33,87.25,65.21,30.19],backgroundColor:'rgba(0,159,218,.75)',borderRadius:3,borderWidth:0},
-      {label:'Boys',data:[97.96,93.92,81.56,59.54,27.96],backgroundColor:'rgba(0,56,168,.6)',borderRadius:3,borderWidth:0},
-      {label:'Girls',data:[97.32,98.74,93.33,70.85,32.48],backgroundColor:'rgba(206,17,38,.5)',borderRadius:3,borderWidth:0}
+      {label:'National',data:[97.66,96.33,87.25,65.21,30.19],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+      {label:'Boys',data:[97.96,93.92,81.56,59.54,27.96],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+      {label:'Girls',data:[97.32,98.74,93.33,70.85,32.48],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
     ]
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
@@ -3048,7 +3143,8 @@ lazy('cAttain', () => {
   new Chart(document.getElementById('cAttain'), {type:'bar', data:{
     labels:labs,
     datasets:[
-      {label:'Male',data:[52.1,23.5,11.2,9.8,2.1,1.1],backgroundColor:'#009FDA',borderRadius:3,borderWidth:0},
+      {label:'National',data:[50.8,21.7,13.4,10.3,2.4,1.0],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+      {label:'Male',data:[52.1,23.5,11.2,9.8,2.1,1.1],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
       {label:'Female',data:[49.4,19.9,15.5,10.7,2.7,0.8],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
     ]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
@@ -3061,9 +3157,9 @@ lazy('cEmpAge', () => {
   new Chart(document.getElementById('cEmpAge'), {type:'bar', data:{
     labels:['15-24','25-34','35-44','45-54','55-64','65+'],
     datasets:[
-      {label:'Total',data:[19.08,58.43,60.87,64.15,50.27,27.18],backgroundColor:'rgba(0,159,218,.75)',borderRadius:3,borderWidth:0},
-      {label:'Male',data:[24.79,77.31,81.88,79.45,67.91,37.04],backgroundColor:'rgba(0,56,168,.6)',borderRadius:3,borderWidth:0},
-      {label:'Female',data:[13.08,39.41,37.37,46.97,36.11,18.84],backgroundColor:'rgba(206,17,38,.5)',borderRadius:3,borderWidth:0}
+      {label:'National',data:[19.08,58.43,60.87,64.15,50.27,27.18],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+      {label:'Male',data:[24.79,77.31,81.88,79.45,67.91,37.04],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+      {label:'Female',data:[13.08,39.41,37.37,46.97,36.11,18.84],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
     ]
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{grid:{display:false},ticks:TICK_D},y:{grid:GRID_D,min:0,max:90,ticks:{...TICK_D,callback:v=>v+'%'}}},
@@ -3083,16 +3179,7 @@ lazy('cClass', () => {
 });
 
 // Industry
-lazy('cIndustry', () => {
-  new Chart(document.getElementById('cIndustry'), {type:'bar', data:{
-    labels:['Admin/support','Agriculture','Retail trade','Construction','Food service','Transport','Other services','Public admin'],
-    datasets:[{data:[21.31,17.87,14.95,12.11,11.44,7.01,3.06,2.62],
-      backgroundColor:['#009FDA','#00A651','#D4A017','#F05023','#CE1126','#0038A8','#00B8C8','#9FA0A4'],
-      borderRadius:3,borderWidth:0,barPercentage:.72}]
-  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK_D,font:{size:9}}}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
-});
+// Industry sector — now rendered as HTML bar strips (no Chart.js)
 
 // Income by macro
 lazy('cIncMacro', () => {
@@ -3106,15 +3193,7 @@ lazy('cIncMacro', () => {
     plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}% of HHs`}}}}});
 });
 
-// Migration intent by macro
-lazy('cMigration', () => {
-  new Chart(document.getElementById('cMigration'), {type:'bar', data:{
-    labels:['National',...MACROS],
-    datasets:[{data:[2,3,2,1,3],backgroundColor:['rgba(0,34,68,.85)',...MCOLS],borderRadius:5,borderWidth:0,barPercentage:.58}]
-  }, options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:5,ticks:{...TICK,callback:v=>v+'%'}}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
-});
+// Migration intent — now rendered as HTML bar strips (no Chart.js)
 
 // Migration Sankey — 2 columns: source macro-region → destination countries + regions
 (function(){
@@ -3131,7 +3210,7 @@ lazy('cMigration', () => {
   sObs.observe(el);
 
   function drawSankey(){
-    const w = Math.max(el.clientWidth || 500, 600), h = 420;
+    const w = Math.max(el.clientWidth || 700, 700), h = 460;
     const svg = d3.select(el).append('svg').attr('width',w).attr('height',h);
 
     // Left: source macro-regions, weighted by share of potential migrants
@@ -3199,21 +3278,21 @@ lazy('cMigration', () => {
     // Scale each link by its source region's weight
     const links = rawLinks.map(l => ({...l, value: +(l.value * regionWeight[l.source]).toFixed(2)}));
 
-    // Leave margin for labels: left 90px, right 100px
-    const ml = 90, mr = 100;
+    // Leave margin for labels: left 100px, right 130px
+    const ml = 100, mr = 130;
     const sankey = d3.sankey()
       .nodeId(d => d.index)
-      .nodeWidth(14)
-      .nodePadding(5)
-      .extent([[ml,5],[w-mr,h-5]]);
+      .nodeWidth(12)
+      .nodePadding(8)
+      .extent([[ml,8],[w-mr,h-8]]);
 
     const {nodes:sNodes, links:sLinks} = sankey({nodes:nodes.map(d=>({...d})),links:links.map(d=>({...d}))});
 
     const color = d3.scaleOrdinal()
       .domain(nodes.map(n=>n.name))
-      .range(['#009FDA','#00A651','#0038A8','#CE1126',
-              '#D4A017','#40B4E5','#F05023','#0038A8','#9FA0A4','#00B8C8',
-              '#009FDA','#CE1126','#D4A017','#00A651','#0038A8','#00B8C8']);
+      .range(['#0038A8','#00A651','#D4A017','#CE1126',
+              '#F05023','#40B4E5','#009FDA','#0038A8','#9FA0A4','#00B8C8',
+              '#D4A017','#CE1126','#0038A8','#00A651','#D4A017','#CE1126']);
 
     svg.append('g').selectAll('rect').data(sNodes).join('rect')
       .attr('x',d=>d.x0).attr('y',d=>d.y0)
@@ -3224,7 +3303,7 @@ lazy('cMigration', () => {
       .attr('d',d3.sankeyLinkHorizontal())
       .attr('stroke',d=>color(d.source.name))
       .attr('stroke-width',d=>Math.max(d.width,0.5))
-      .attr('stroke-opacity',.40);
+      .attr('stroke-opacity',.50);
 
     // Labels: left col → left of bar, right col → right of bar
     svg.append('g').selectAll('text').data(sNodes).join('text')
@@ -3240,21 +3319,7 @@ lazy('cMigration', () => {
   }
 })();
 
-// PhilHealth type
-lazy('cPhilType', () => {
-  new Chart(document.getElementById('cPhilType'), {type:'pie', data:{
-    labels:['Not covered','PhilHealth Paying','Dependent (Non-Pay)','Non-Paying Member','Dependent (Paying)'],
-    datasets:[{data:[53.89,15.73,12.03,11.26,7.09],
-      backgroundColor:['#009FDA','#40B4E5','#00B8C8','#00A651','#9FA0A4'],borderWidth:2,borderColor:'white',hoverOffset:4}]
-  }, plugins:[ChartDataLabels], options:{maintainAspectRatio:true,aspectRatio:1.5,
-    layout:{padding:{left:80,right:80,top:10,bottom:10}},
-    plugins:{legend:{display:false},
-    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}},
-    datalabels:{color:'#333',font:{family:"'IBM Plex Mono'",size:8,weight:'600'},
-      anchor:'end',align:'end',offset:8,clamp:true,
-      formatter:(v,ctx)=>{const l=['No cover (54%)','Paying (16%)','Dep Non-Pay (12%)','Non-Pay (11%)','Dep Pay (7%)']; return l[ctx.dataIndex];},
-      textAlign:'center'}}}});
-});
+// [REMOVED per annotation: cPhilType converted to bar strips]
 
 // [REMOVED per SFAP NEW-1: cPhilAgeGender chart dropped]
 
@@ -3282,15 +3347,7 @@ lazy('cFoodSrc', () => {
     plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
 });
 
-// Wet market by region
-lazy('cWetMkt', () => {
-  new Chart(document.getElementById('cWetMkt'), {type:'bar', data:{
-    labels:['National','NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
-    datasets:[{data:[74.0,90.9,71.4,76.2,70.0],backgroundColor:['rgba(0,34,68,.85)',...MCOLS],borderRadius:5,borderWidth:0,barPercentage:.58}]
-  }, options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:40,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
-});
+// [REMOVED per annotation: cWetMkt converted to bar strips]
 
 // SSB by age with gender filter
 let ssbChart = null;
@@ -3325,19 +3382,7 @@ lazy('cSSB', () => {
 // Tenure
 // [REMOVED per SFAP #48: orphan dwelling type JS cleaned up — canvas already removed from HTML]
 
-lazy('cTenure', () => {
-  new Chart(document.getElementById('cTenure'), {type:'pie', data:{
-    labels:['Owner','Rent-free (consent)','Other','Renting'],
-    datasets:[{data:[56.53,17.03,11.75,3.93],backgroundColor:['#00A651','#009FDA','#0038A8','#CE1126'],borderWidth:2,borderColor:'white',hoverOffset:4}]
-  }, plugins:[ChartDataLabels], options:{maintainAspectRatio:true,aspectRatio:1.6,
-    layout:{padding:{left:70,right:70,top:10,bottom:10}},
-    plugins:{legend:{display:false},
-    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}},
-    datalabels:{color:'#333',font:{family:"'IBM Plex Mono'",size:9,weight:'600'},
-      anchor:'end',align:'end',offset:8,clamp:true,
-      formatter:(v,ctx)=>{const l=['Owner (57%)','Rent-free (17%)','Other (12%)','Renting (4%)']; return l[ctx.dataIndex];},
-      textAlign:'center'}}}});
-});
+// [REMOVED per annotation: cTenure converted to bar strips]
 
 // Toilet type
 lazy('cToilet', () => {
@@ -3353,99 +3398,16 @@ lazy('cToilet', () => {
 
 // [REMOVED per SFAP NEW-3: cSanitRegion chart dropped]
 
-// Internet purposes
-lazy('cInetPurp', () => {
-  new Chart(document.getElementById('cInetPurp'), {type:'bar', data:{
-    labels:['Social media','News & Info','Online shopping','Online education','Entertainment','Payments/Banking','Govt information','Govt services'],
-    datasets:[{data:[36.24,15.59,14.02,13.09,8.87,4.06,2.26,2.03],
-      backgroundColor:['#CE1126','#009FDA','#D4A017','#00A651','#0038A8','#F05023','#00B8C8','#9FA0A4'],
-      borderRadius:3,borderWidth:0,barPercentage:.72}]
-  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK,font:{size:9}}}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
-});
+// [REMOVED per annotation: cInetPurp converted to bar strips]
 
-// Water safety
-lazy('cWaterSafe', () => {
-  new Chart(document.getElementById('cWaterSafe'), {type:'pie', data:{
-    labels:['Very safe','Somewhat safe','Somewhat unsafe','Unsafe'],
-    datasets:[{data:[60.31,33.07,5.19,1.42],backgroundColor:['#00A651','#009FDA','#F05023','#CE1126'],borderWidth:2,borderColor:'white',hoverOffset:4}]
-  }, plugins:[ChartDataLabels], options:{maintainAspectRatio:true,aspectRatio:1.7,
-    layout:{padding:{left:80,right:80,top:10,bottom:10}},
-    plugins:{legend:{display:false},
-    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}},
-    datalabels:{color:'#333',font:{family:"'IBM Plex Mono'",size:9,weight:'600'},
-      anchor:'end',align:'end',offset:8,clamp:true,
-      formatter:(v,ctx)=>{const l=['Very safe (60%)','Somewhat safe (33%)','Somewhat unsafe (5%)','Unsafe (1%)']; return l[ctx.dataIndex];},
-      textAlign:'center'}}}});
-});
+// [REMOVED per annotation: cWaterSafe converted to bar strips in 3-col layout]
 
-// Assets
-lazy('cAssets', () => {
-  const labs=['Washing machine','Motorcycle','Refrigerator','Gas stove','Computer','Air con','Car/Van','Boat'];
-  new Chart(document.getElementById('cAssets'), {type:'bar', data:{
-    labels:labs,
-    datasets:[{data:[54.98,54.03,48.96,25.91,14.59,10.47,3.93,1.59],
-      backgroundColor:['#009FDA','#F05023','#00A651','#D4A017','#0038A8','#CE1126','#00B8C8','#9FA0A4'],
-      borderRadius:3,borderWidth:0,barPercentage:.72}]
-  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
-});
+// [REMOVED per annotation: cAssets converted to bar strips]
 
-// Cooking fuels
-lazy('cFuels', () => {
-  new Chart(document.getElementById('cFuels'), {type:'bar', data:{
-    labels:['LPG','Fuelwood','Charcoal','Electricity','Kerosene'],
-    datasets:[{data:[61.49,50.73,27.03,21.38,3.64],
-      backgroundColor:['#D4A017','#CE1126','#9FA0A4','#009FDA','#F05023'],
-      borderRadius:4,borderWidth:0,barPercentage:.62}]
-  }, options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,max:80,ticks:{...TICK,callback:v=>v+'%'}}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
-});
+// [REMOVED per annotation: cFuels converted to bar strips]
 
-// Life satisfaction
-lazy('cLifeSat', () => {
-  new Chart(document.getElementById('cLifeSat'), {type:'bar', data:{
-    labels:['1 (Not at all)','2 (Partly)','3 (Satisfied)','4 (More than)','5 (Completely)'],
-    datasets:[{data:[3.89,20.89,51.92,11.83,11.47],
-      backgroundColor:['#CE1126','#F05023','#D4A017','#40B4E5','#009FDA'],borderRadius:4,borderWidth:0,barPercentage:.72}]
-  }, options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{grid:{display:false},ticks:TICK_D},y:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}}},
-    plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
-});
-
-// Life satisfaction by region
-lazy('cLifeSatRegion', () => {
-  new Chart(document.getElementById('cLifeSatRegion'), {type:'bar', data:{
-    labels:['NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
-    datasets:[
-      {label:'1 (Not at all)',data:[3.7,4.4,6.0,1.5],backgroundColor:'#CE1126',borderWidth:0,stack:'s'},
-      {label:'2 (Partly satisfied)',data:[24.9,22.1,17.7,18.9],backgroundColor:'#F05023',borderWidth:0,stack:'s'},
-      {label:'3 (Satisfied)',data:[54.2,55.2,50.3,45.8],backgroundColor:'#D4A017',borderWidth:0,stack:'s'},
-      {label:'4 (More than satisfied)',data:[9.1,7.7,14.3,19.2],backgroundColor:'#40B4E5',borderWidth:0,stack:'s'},
-      {label:'5 (Completely satisfied)',data:[8.1,10.6,11.7,14.6],backgroundColor:'#009FDA',borderRadius:[3,3,0,0],borderWidth:0,stack:'s'}
-    ]
-  }, options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{stacked:true,grid:{display:false},ticks:TICK_D},y:{stacked:true,grid:GRID_D,max:100,ticks:{...TICK_D,callback:v=>v+'%'}}},
-    plugins:{legend:{...LEG_D,labels:{...LEG_D.labels,font:{size:8}}},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
-});
-
-// Eco change
-lazy('cEcoChange', () => {
-  new Chart(document.getElementById('cEcoChange'), {type:'pie', data:{
-    labels:['Same','Somewhat improved','Somewhat worsened','Much worsened','Much improved'],
-    datasets:[{data:[45.51,28.74,11.68,6.90,7.16],backgroundColor:['#9FA0A4','#00A651','#F05023','#CE1126','#009FDA'],borderWidth:2,borderColor:'white',hoverOffset:4}]
-  }, plugins:[ChartDataLabels], options:{maintainAspectRatio:true,aspectRatio:1.6,
-    layout:{padding:{left:80,right:80,top:10,bottom:10}},
-    plugins:{legend:{display:false},
-    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}},
-    datalabels:{color:'#333',font:{family:"'IBM Plex Mono'",size:8,weight:'600'},
-      anchor:'end',align:'end',offset:8,clamp:true,
-      formatter:(v,ctx)=>{const l=['Same (46%)','Improved (29%)','Worsened (12%)','Much worse (7%)','Much better (7%)']; return l[ctx.dataIndex];},
-      textAlign:'center'}}}});
-});
+// [REMOVED per annotation: cLifeSat, cLifeSatRegion converted to bar strips]
+// [REMOVED per annotation: cEcoChange converted to bar strips]
 
 // Self income group
 lazy('cIncGroup', () => {
@@ -3458,49 +3420,9 @@ lazy('cIncGroup', () => {
     plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
 });
 
-// Likert — SFAP NEW-6: full 5-category horizontal stacked bar (Stata-verified)
-lazy('cLikert', () => {
-  const labs=['Citizens should have more say in govt decisions','Prices rising too quickly','Worried about children\'s education','Worried about political instability','Digital public services saved time/cost','Family financial situation worse vs 2yr ago','Worried about losing job','Good time to find a job','Optimistic about economic future','Worried about losing job to AI/technology','Taxes are well spent on priorities'];
-  // Stata-verified: [StrDisagree, Disagree, Neither, Agree, StrAgree]
-  const sd = [3.7, 5.2, 4.7, 6.0, 7.3, 6.0, 7.2, 7.2, 7.4, 8.1,20.7];
-  const da = [6.8,11.8,11.4,13.4,14.0,18.8,17.4,15.2,14.6,19.3,23.9];
-  const ne = [12.3, 7.5,13.0,16.9,18.8,17.1,18.6,21.2,22.6,20.2,18.9];
-  const ag = [47.4,39.4,48.5,39.4,45.5,39.9,38.7,43.8,42.5,35.6,27.2];
-  const sa = [29.7,36.1,22.3,24.3,14.4,18.3,18.1,12.6,12.9,16.8, 9.4];
-  new Chart(document.getElementById('cLikert'), {type:'bar', data:{
-    labels:labs,
-    datasets:[
-      {label:'Str. disagree',data:sd,backgroundColor:'rgba(206,17,38,.8)',borderWidth:0,stack:'s',barPercentage:.78},
-      {label:'Disagree',data:da,backgroundColor:'rgba(240,80,35,.65)',borderWidth:0,stack:'s',barPercentage:.78},
-      {label:'Neither',data:ne,backgroundColor:'rgba(159,160,164,.7)',borderWidth:0,stack:'s',barPercentage:.78},
-      {label:'Agree',data:ag,backgroundColor:'rgba(64,180,229,.7)',borderWidth:0,stack:'s',barPercentage:.78},
-      {label:'Str. agree',data:sa,backgroundColor:'rgba(0,159,218,.9)',borderWidth:0,stack:'s',barPercentage:.78}
-    ]
-  }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-    scales:{
-      x:{stacked:true,grid:GRID_D,max:100,ticks:{...TICK_D,callback:v=>v+'%'}},
-      y:{stacked:true,grid:{display:false},ticks:{...TICK_D,font:{size:9.5}}}
-    },
-    plugins:{legend:{...LEG_D,labels:{...LEG_D.labels,font:{size:9},padding:5,boxWidth:10}},
-    tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.x}%`}}}}});
-});
+// [REMOVED per annotation: cLikert converted to HTML stacked bar strips]
 
-// Eco by macro stacked
-lazy('cEcoMacro', () => {
-  const worse=[19.82,19.88,19.79,14.60];
-  const same =[47.67,43.85,41.28,50.67];
-  const better=[32.51,36.27,38.93,34.73];
-  new Chart(document.getElementById('cEcoMacro'), {type:'bar', data:{
-    labels:MACROS,
-    datasets:[
-      {label:'Better',data:better,backgroundColor:'rgba(0,166,81,.82)',borderRadius:[3,3,0,0],borderWidth:0,stack:'s'},
-      {label:'Same',data:same,  backgroundColor:'rgba(159,160,164,.72)',borderRadius:0,borderWidth:0,stack:'s'},
-      {label:'Worse',data:worse,backgroundColor:'rgba(206,17,38,.82)',borderRadius:[0,0,3,3],borderWidth:0,stack:'s'},
-    ]
-  }, options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{stacked:true,grid:{display:false},ticks:{...TICK_D,font:{size:9}}},y:{stacked:true,grid:GRID_D,max:100,ticks:{...TICK_D,callback:v=>v+'%'}}},
-    plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
-});
+// [REMOVED per annotation: cEcoMacro converted to HTML stacked bar strips with national]
 
 // SFAP NEW-7: Income mobility Sankey — v2 (self) × v3 (expected children)
 lazy('sankeySatEco', () => {
@@ -3560,12 +3482,12 @@ lazy('sankeySatEco', () => {
   });
 
   // Links
-  svg.append('g').attr('fill','none').attr('stroke-opacity',0.42)
+  svg.append('g').attr('fill','none').attr('stroke-opacity',0.6)
     .selectAll('path')
     .data(sLinks).join('path')
     .attr('d', d3.sankeyLinkHorizontal())
     .attr('stroke', d => nodes[d.source.index].color)
-    .attr('stroke-width', d => Math.max(1, d.width))
+    .attr('stroke-width', d => Math.max(2, d.width))
     .append('title')
     .text(d => `${d.source.name} → ${d.target.name}: ${d.value}%`);
 
@@ -3582,7 +3504,7 @@ lazy('sankeySatEco', () => {
     .text(d => `${d.name}: ${d3.format('.1f')(d.value)}%`);
 
   // Labels
-  svg.append('g').style('font-family','var(--mono,monospace)').style('font-size','9px')
+  svg.append('g').style('font-family','var(--mono,monospace)').style('font-size','11px').style('font-weight','600')
     .selectAll('text')
     .data(sNodes).join('text')
     .attr('x', d => d.x0 < W/2 ? d.x0-6 : d.x1+6)
