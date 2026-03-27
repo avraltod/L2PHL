@@ -1855,7 +1855,7 @@ tab hc2a macroreg [aw=hhw], col nofreq
         <div class="cbox dark">
           <div class="ctitle light">Attitudes & concerns — full response distribution</div>
           <div class="csub light">Horizontal stacked bar · all 5 Likert categories · sorted by total agree</div>
-          <div class="cwrap" style="height:340px;"><canvas id="cLikert"></canvas></div>
+          <div class="cwrap" style="height:380px;"><canvas id="cLikert"></canvas></div>
         </div>
       </div>
     </div>
@@ -2540,16 +2540,16 @@ lazy('cLikert', () => {
     datasets:[
       {label:'Str. disagree',data:sd,backgroundColor:'rgba(206,17,38,.8)',borderWidth:0,stack:'s',barPercentage:.78},
       {label:'Disagree',data:da,backgroundColor:'rgba(224,82,6,.65)',borderWidth:0,stack:'s',barPercentage:.78},
-      {label:'Neither',data:ne,backgroundColor:'rgba(159,160,164,.55)',borderWidth:0,stack:'s',barPercentage:.78},
+      {label:'Neither',data:ne,backgroundColor:'rgba(159,160,164,.7)',borderWidth:0,stack:'s',barPercentage:.78},
       {label:'Agree',data:ag,backgroundColor:'rgba(64,180,229,.7)',borderWidth:0,stack:'s',barPercentage:.78},
       {label:'Str. agree',data:sa,backgroundColor:'rgba(0,159,218,.9)',borderWidth:0,stack:'s',barPercentage:.78}
     ]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     scales:{
       x:{stacked:true,grid:GRID_D,max:100,ticks:{...TICK_D,callback:v=>v+'%'}},
-      y:{stacked:true,grid:{display:false},ticks:{...TICK_D,font:{size:8.5}}}
+      y:{stacked:true,grid:{display:false},ticks:{...TICK_D,font:{size:9.5}}}
     },
-    plugins:{legend:{...LEG_D,labels:{...LEG_D.labels,font:{size:8},padding:4,boxWidth:10}},
+    plugins:{legend:{...LEG_D,labels:{...LEG_D.labels,font:{size:9},padding:5,boxWidth:10}},
     tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.x}%`}}}}});
 });
 
