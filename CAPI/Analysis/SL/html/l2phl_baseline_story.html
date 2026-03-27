@@ -1124,7 +1124,7 @@ table macroreg [aw=indw] if ed_total_exp &gt; 0 &amp; ed_total_exp &lt; ., ///
 di as text ""
 di as text "Expenditure components (mean, among spenders of each):"
 
-local components meals fees transport books uniforms
+local components fees uniforms textbooks supplies meals
 local varnames ed5a ed5b ed5c ed5d ed5e
 
 local i = 1
@@ -1148,14 +1148,14 @@ forvalues j = 6/9 {
 * Alternative aggregation: by category
 preserve
     keep if ed1 == 1
-    * Rename for clarity
-    ren ed5a meals_lodging
-    ren ed5b fees_tuition
-    ren ed5c transport
-    ren ed5d books_materials
-    ren ed5e uniforms
+    * Rename for clarity (per questionnaire: ed5a=fees, ed5b=uniforms, ed5c=textbooks, ed5d=supplies, ed5e=meals)
+    ren ed5a fees_tuition
+    ren ed5b uniforms_footwear
+    ren ed5c textbooks_materials
+    ren ed5d edu_supplies
+    ren ed5e meals_lodging
 
-    foreach v of varlist meals_lodging fees_tuition transport books_materials uniforms {
+    foreach v of varlist fees_tuition uniforms_footwear textbooks_materials edu_supplies meals_lodging {
         su `v' [aw=indw] if `v' &gt; 0
     }
 restore
