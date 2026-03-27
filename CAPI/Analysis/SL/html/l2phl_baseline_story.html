@@ -679,7 +679,8 @@ use `_roster', clear
         <p>Intergenerational mobility is limited: 65 percent of fathers and 61 percent of mothers attained only primary education. The path from primary-educated parents to college-educated children is the central educational mobility challenge.</p>
       </div>
       <div class="body-copy">
-        <p>Annual education spend per student averages <strong>₱15,261</strong> (median ₱8,600). Urban families spend more — mean ₱15,742 (median ₱8,900) versus rural ₱14,731 (median ₱8,500). School fees show the biggest urban-rural gap: ₱3,034 vs ₱2,059 — reflecting higher private school enrolment in cities. <span style="font-size:0.85em;color:var(--navy);opacity:0.7;">(Top 1% of each component excluded.)</span></p>
+        <p>Annual education spend per student averages <strong>₱16,973</strong> — urban families spend ₱18,005 versus rural ₱15,834. School fees show the biggest urban-rural gap, reflecting higher private school enrolment in cities.</p>
+        <!-- SFAP #61: Updated to Stata-verified E02_MEAN_EXP (indw). Previous figure ₱15,261 used per-component P99 exclusion. -->
       </div>
     </div>
     <div class="rev d2">
@@ -797,6 +798,7 @@ tab ed3 [aw=indw] if ed1 == 1 &amp; age &lt;= 4
     <div class="two-col">
       <div class="rev">
         <span class="eyebrow r">Labour market</span>
+        <!-- SFAP #62: Uses NARROW definition (A1 only = worked ≥1hr last week): 44.7%. BROAD (A1|A2 = incl. had job but didn't work) = 52.1%. Narrow chosen to reflect actual labour market activity. -->
         <h2 class="hed light">45% work. But <em>jobs without protection</em> dominate.</h2>
         <div class="body-copy light">
           <p>The employment rate stands at 45 percent for adults 15 and older — but that headline figure masks a sharp gender divide. Men participate at 59 percent, women at 30 percent, a 29 percentage-point gap that reflects not just cultural norms but the structural weight of unpaid care work and limited access to formal employment for women.</p>
@@ -1321,15 +1323,15 @@ tab h17 settlement [aw=indw], col nofreq
     </div>
     <div class="rev">
       <span class="eyebrow r">Sugary beverages</span>
-      <h2 class="hed"><em class="r">9 in 10</em> drink sugar-sweetened beverages — 6.8 servings a day</h2>
+      <h2 class="hed"><em class="r">9 in 10</em> drink sugar-sweetened beverages — 7 servings a week</h2>
       <div class="body-copy">
-        <p>Ninety percent of individuals consume sweetened sugary beverages. The average consumer drinks 6.8 single-serve portions daily. This pattern is essentially uniform across urban (89 percent) and rural (92 percent) settings — it is a national dietary norm, not a segmented one.</p>
-        <!-- SFAP R2 #75/#77: Sharon suggested 7.1 servings — pending Stata verification of exact figure -->
+        <p>Ninety percent of individuals consume sweetened sugary beverages. The average consumer drinks about 7 single-serve portions per week — roughly one a day. This pattern is essentially uniform across urban (89 percent) and rural (92 percent) settings — it is a national dietary norm, not a segmented one.</p>
+        <!-- SFAP R2 #75/#77: Stata-verified 7.15 servings/WEEK (SSB3 asks per week per questionnaire) -->
         <p>At the household level, 90 percent of households have at least one SSB consumer. This means the category of "SSB-free household" is a statistical minority (10 percent).</p>
         <p>The implications for non-communicable disease burden — diabetes, hypertension, dental caries, obesity — are significant. The Philippines already faces a rising NCD burden, and the near-universal SSB consumption is a major dietary risk factor.</p>
       </div>
       <div class="bnum r rev d1">89.9<span style="font-size:2rem;">%</span></div>
-      <p class="bnum-cap">consume sugary beverages · mean 6.8 servings/day · near-universal across all age groups</p>
+      <p class="bnum-cap">consume sugary beverages · mean 7 servings/week · near-universal across all age groups</p>
     </div>
   </div>
   <!-- SFAP #28/#41: Child nutrition moved from Ch5 Health -->
@@ -1396,8 +1398,8 @@ gen_settlement
 tab ssb1 [aw=indw]
 
 * SSB servings per day
-su ssb3 [aw=indw] if ssb1 == 1 &amp; ssb3 > 0 &amp; ssb3 &lt; .  /* ssb3 = servings/day → ~7.15 */
-di as res "  Mean servings/day: " %5.1f r(mean)
+su ssb3 [aw=indw] if ssb1 == 1 &amp; ssb3 > 0 &amp; ssb3 &lt; .  /* ssb3 = servings/WEEK → ~7.15 */
+di as res "  Mean servings/week: " %5.1f r(mean)
 
 * SSB by macro-region
 tab ssb1 macroreg [aw=indw], col nofreq
@@ -1871,7 +1873,7 @@ tab hc2a macroreg [aw=hhw], col nofreq
     <div class="two-col" style="margin-top:32px;">
       <div class="rev">
         <div class="body-copy light">
-          <p>Life satisfaction averages 3.04 out of 5 (where 1 is not satisfied at all, 5 completely satisfied). Fifty-two percent are neutral at 3. Only 23 percent report being satisfied or very satisfied (codes 4-5); 25 percent are dissatisfied or very dissatisfied (codes 1-2).</p>
+          <p>Life satisfaction averages 3.04 out of 5 (where 1 is "not satisfied at all" and 5 is "completely satisfied"). Fifty-two percent select "satisfied" (code 3). Twenty-three percent report being more than satisfied or completely satisfied (codes 4-5); 25 percent are only partly satisfied or not satisfied at all (codes 1-2). Note: the scale has no neutral midpoint — code 3 is a positive response ("satisfied").</p>
           <p>On the economic situation: 46 percent say it is the same as last month. Nineteen percent feel worse off (somewhat or much worse). Thirty-five percent feel things improved. Visayas is most pessimistic (20 percent worse) while Mindanao is most stable (51 percent same).</p>
           <p>When asked about their income group, most place themselves in the middle: 49 percent group 3, 30 percent group 2, 20 percent group 1. Only 1 percent place themselves in the top two groups — suggesting the rich are either absent from the survey population or reluctant to self-identify as wealthy.</p>
           <p>Neighbourhood safety: 11 percent feel unsafe walking in their area. Eighty percent feel safe or very safe — though the remaining 10 percent report being afraid to walk alone, a distinct dimension beyond the safe/unsafe binary.</p>
@@ -1886,7 +1888,7 @@ tab hc2a macroreg [aw=hhw], col nofreq
       <div class="rev d2">
         <div class="cbox dark">
           <div class="ctitle light">Life satisfaction distribution</div>
-          <div class="csub light">1=Not at all satisfied → 5=Completely satisfied</div>
+          <div class="csub light">1=Not satisfied at all · 2=Partly · 3=Satisfied · 4=More than · 5=Completely</div>
           <div class="cwrap" style="height:175px;"><canvas id="cLifeSat"></canvas></div>
         </div>
         <div class="cbox dark" style="margin-top:12px;">
@@ -2559,9 +2561,9 @@ lazy('cFuels', () => {
 // Life satisfaction
 lazy('cLifeSat', () => {
   new Chart(document.getElementById('cLifeSat'), {type:'bar', data:{
-    labels:['1 (Not at all)','2 (Not satisfied)','3 (Neutral)','4 (Satisfied)','5 (Completely)'],
+    labels:['1 (Not at all)','2 (Partly)','3 (Satisfied)','4 (More than)','5 (Completely)'],
     datasets:[{data:[3.89,20.89,51.92,11.83,11.47],
-      backgroundColor:['#CE1126','#F05023','#9FA0A4','#40B4E5','#009FDA'],borderRadius:4,borderWidth:0,barPercentage:.72}]
+      backgroundColor:['#CE1126','#F05023','#D4A017','#40B4E5','#009FDA'],borderRadius:4,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{grid:{display:false},ticks:TICK_D},y:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}}},
     plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
@@ -2573,10 +2575,10 @@ lazy('cLifeSatRegion', () => {
     labels:['NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
     datasets:[
       {label:'1 (Not at all)',data:[3.7,4.4,6.0,1.5],backgroundColor:'#CE1126',borderWidth:0,stack:'s'},
-      {label:'2 (Not satisfied)',data:[24.9,22.1,17.7,18.9],backgroundColor:'#F05023',borderWidth:0,stack:'s'},
-      {label:'3 (Neutral)',data:[54.2,55.2,50.3,45.8],backgroundColor:'#9FA0A4',borderWidth:0,stack:'s'},
-      {label:'4 (Satisfied)',data:[9.1,7.7,14.3,19.2],backgroundColor:'#40B4E5',borderWidth:0,stack:'s'},
-      {label:'5 (Completely)',data:[8.1,10.6,11.7,14.6],backgroundColor:'#009FDA',borderRadius:[3,3,0,0],borderWidth:0,stack:'s'}
+      {label:'2 (Partly satisfied)',data:[24.9,22.1,17.7,18.9],backgroundColor:'#F05023',borderWidth:0,stack:'s'},
+      {label:'3 (Satisfied)',data:[54.2,55.2,50.3,45.8],backgroundColor:'#D4A017',borderWidth:0,stack:'s'},
+      {label:'4 (More than satisfied)',data:[9.1,7.7,14.3,19.2],backgroundColor:'#40B4E5',borderWidth:0,stack:'s'},
+      {label:'5 (Completely satisfied)',data:[8.1,10.6,11.7,14.6],backgroundColor:'#009FDA',borderRadius:[3,3,0,0],borderWidth:0,stack:'s'}
     ]
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{stacked:true,grid:{display:false},ticks:TICK_D},y:{stacked:true,grid:GRID_D,max:100,ticks:{...TICK_D,callback:v=>v+'%'}}},
@@ -2605,7 +2607,7 @@ lazy('cIncGroup', () => {
 
 // Likert — SFAP NEW-6: full 5-category horizontal stacked bar (Stata-verified)
 lazy('cLikert', () => {
-  const labs=['Citizens should have more say','Prices rising too quickly','Worried: child education','Worried: political instability','Digital services helpful','Family finances worse (2yr)','Worried: job loss','Good time to find a job','Optimistic about economy','Worried: AI/automation','Taxes well spent'];
+  const labs=['Citizens should have more say in govt decisions','Prices rising too quickly','Worried about children\'s education','Worried about political instability','Digital public services saved time/cost','Family financial situation worse vs 2yr ago','Worried about losing job','Good time to find a job','Optimistic about economic future','Worried about losing job to AI/technology','Taxes are well spent on priorities'];
   // Stata-verified: [StrDisagree, Disagree, Neither, Agree, StrAgree]
   const sd = [3.7, 5.2, 4.7, 6.0, 7.3, 6.0, 7.2, 7.2, 7.4, 8.1,20.7];
   const da = [6.8,11.8,11.4,13.4,14.0,18.8,17.4,15.2,14.6,19.3,23.9];
