@@ -626,7 +626,7 @@ tab m8 [aw=indw] if m7 == 1
 
 * Restore roster
 use `_roster', clear
-</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement programs)</div></div>
+</pre><div class="repl-note">§0 preamble is included above — run from the top. Other chapters require this preamble to be run first.</div></div>
   </details>
 </div>
 
@@ -1224,6 +1224,12 @@ merge m:1 hhid fmid using "$ado/final_weights.dta", ///
     keepusing(indw hhw popw region urban hhsize) nogen keep(match)
 gen_macroreg
 gen_settlement
+
+* Outlier cleaning: cap top 1% of cost variables
+_pctile h8a if h8a > 0 &amp; h8a &lt; ., p(99)
+replace h8a = . if h8a > r(r1) &amp; h8a &lt; .
+_pctile h14 if h14 > 0 &amp; h14 &lt; ., p(99)
+replace h14 = . if h14 > r(r1) &amp; h14 &lt; .
 
 * Need for health care (past 30 days)
 tab h2 [aw=indw]
