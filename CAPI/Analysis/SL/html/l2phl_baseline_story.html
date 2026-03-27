@@ -422,7 +422,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
       <h2 class="hed">2% of households have someone <em class="o">thinking about leaving</em> — but among them, intent is strong</h2>
       <div class="body-copy">
         <p>Migration intent is narrow but concentrated. Only 2 percent of households report at least one member aged 15 or older considering migration within the next year, translating to about 1 percent of the adult population. The overwhelmingly dominant reason for past moves: employment and job relocation.</p>
-        <p>Within those households, 36 percent of individual members are the ones actively considering the move. Women (1 percent) are slightly more likely to be considering migration than men (1 percent).</p>
+        <p>Within those households, 36 percent of individual members are the ones actively considering the move.</p>
         <p>Among those with a stated destination, two-thirds intend to go abroad and one-third to stay within the Philippines. The United States is the top overseas destination (18 percent of abroad-bound), followed by Australia (11 percent), the United Kingdom (8 percent), South Korea (8 percent), Japan (8 percent), Saudi Arabia (5 percent), and Canada (4 percent).</p>
       </div>
     </div>
@@ -646,7 +646,7 @@ use `_roster', clear
         <p>Ninety percent of students attend public schools. Private school attendance is highest in NCR at 14 percent, and lowest in Visayas at 9 percent — reflecting urban wealth concentration.</p>
       </div>
       <div class="body-copy" style="margin-top:18px;">
-        <p><strong>Why do young people leave school?</strong> Employment is the top reason (26 percent), followed by financial constraints (17 percent), having finished schooling (16 percent), and family matters (11 percent). Lack of interest and job-seeking each account for about 8 percent.</p>
+        <p><strong>Why do young people leave school?</strong> Employment is the top reason (26 percent), followed by financial constraints (15 percent), having finished schooling (16 percent), family matters (11 percent), and distance to school (10 percent). Taken together, cost and domestic burden — not academic failure — are the dominant drivers of dropout.</p>
       </div>
     </div>
     <div class="rev d2">
@@ -660,7 +660,7 @@ use `_roster', clear
         <div class="csub">% of reported reasons · multi-select</div>
         <div style="margin-top:6px;">
           <div class="bs"><div class="bs-lbl"><span>Employment</span><span>26%</span></div><div class="btrack"><div class="bfill" style="background:var(--red);" data-w="52"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Financial constraints</span><span>17%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="34"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Financial constraints</span><span>15%</span></div><div class="btrack"><div class="bfill" style="background:var(--orange);" data-w="30"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Finished schooling</span><span>16%</span></div><div class="btrack"><div class="bfill" style="background:var(--blue);" data-w="32"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Family matters</span><span>11%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="22"></div></div></div>
         </div>
@@ -962,7 +962,7 @@ su a23 [aw=indw] if employed==1 &amp; a23>0 &amp; a23&lt;.
       <span class="eyebrow b">Financial inclusion</span>
       <h2 class="hed">Mobile money arrived. <em class="b">Banks haven't.</em></h2>
       <div class="body-copy">
-        <p>Only 5 percent of households have a formal bank account — placing the Philippines far below regional peers. The gap is widest in Visayas, where just 1 percent of households are banked.</p>
+        <p>Only 5 percent of households have transacted with a formal bank account in the past 30 days — placing the Philippines far below regional peers. The gap is widest in Visayas, where just 1 percent of households report any bank transaction.</p>
         <p>Mobile money (18 percent) has outpaced banking significantly, but even this is uneven. NCR reaches 26 percent mobile money penetration; Visayas trails at just 12 percent.</p>
         <p>Rural households save at slightly higher rates (14 percent) than urban (12 percent) — likely through informal mechanisms like paluwagan savings groups (8 percent nationally). The financial system has not yet caught up with how ordinary Filipinos actually manage money.</p>
       </div>
@@ -1130,11 +1130,48 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
 <div class="sec dark-bg">
   <div class="sec-inner">
     <div class="full-w rev">
-      <span class="eyebrow r">Health system</span>
-      <h2 class="hed light" style="max-width:780px;">54% have no PhilHealth. When hospitalization hits, a ₱46,834 bill arrives — <em>18.5% paid out-of-pocket.</em></h2>
+      <span class="eyebrow r">Health access &amp; barriers</span>
+      <h2 class="hed light" style="max-width:780px;">1 in 3 needed health care — but only <em>77% got it.</em> 54% have no PhilHealth.</h2>
     </div>
+    <!-- SFAP #71/#72: Access barriers FIRST, then insurance/PhilHealth -->
     <div class="two-col" style="margin-top:32px;">
       <div class="rev">
+        <div class="body-copy light">
+          <p>Thirty-four percent of household members needed health services in the past 30 days. Of those, 77 percent were able to access care — leaving a 23 percent unmet need rate. NCR fares best (88 percent access) while Visayas struggles most (63 percent).</p>
+          <p>The top reason for not accessing care is cost: 41 percent cite inability to afford it. In the Visayas, the rate is 70 percent — more than double NCR's 33 percent.</p>
+          <p>Among those who sought care, 56 percent paid cash out-of-pocket, with a median cost of ₱1,000. The distribution is skewed: the 90th percentile reaches ₱4,300 — more than four times the median.</p>
+        </div>
+        <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
+          <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">23%</div><div class="scell-l" style="color:#4a6278;">Unmet health care need</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#F05023;">₱1,000</div><div class="scell-l" style="color:#4a6278;">Median OOP cost</div></div>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="cbox dark">
+          <div class="ctitle light">Reasons for not accessing health care</div>
+          <div class="csub light">% of those who could not get care</div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Cannot afford</span><span style="color:#CE1126;">41.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="41.1"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Not yet needed</span><span>3.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="3.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Not able to avail</span><span>1.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="1.0"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Afraid</span><span>0.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="0.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>No medical personnel</span><span>0.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="0.7"></div></div></div>
+          </div>
+        </div>
+        <!-- Nutrition moved to Ch6 per SFAP #28/#41 -->
+        <div class="cbox dark" style="margin-top:12px;">
+          <div class="ctitle light">Healthcare facility used (past 30 days)</div>
+          <div class="csub light">% of those who sought care</div>
+          <div class="cwrap" style="height:175px;"><canvas id="cFacility"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class="vis-sep light" style="color:rgba(245,240,232,.12);">· · ·</div>
+
+    <div class="two-col">
+      <div class="rev">
+        <span class="eyebrow r">Health insurance</span>
+        <h2 class="hed light">54% have no PhilHealth. When hospitalization hits, a ₱46,834 bill arrives.</h2>
         <div class="body-copy light">
           <p>The health service access gap has a financial explanation. Fifty-four percent of household members have no PhilHealth coverage — and of the 46 percent who do, most are non-paying members or dependents. Only 17 percent are contributing members.</p>
           <p>The regional pattern echoes what we saw on access: the Visayas trails at 36 percent coverage against NCR's 53 percent. Notably, rural and urban rates are nearly identical at 46 percent each.</p>
@@ -1175,42 +1212,6 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
             <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Luzon (excl. NCR)</span><span style="color:#40B4E5;">45.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="45.0"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:#002244;"><span style="color:#F05023;">Visayas</span><span style="color:#F05023;">36.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:var(--red);" data-w="36.2"></div></div></div>
           </div>
-        </div>
-        <div class="cbox dark" style="margin-top:12px;">
-          <div class="ctitle light">Healthcare facility used (past 30 days)</div>
-          <div class="csub light">% of those who sought care</div>
-          <div class="cwrap" style="height:175px;"><canvas id="cFacility"></canvas></div>
-        </div>
-      </div>
-    </div>
-    <div class="vis-sep light" style="color:rgba(245,240,232,.12);">· · ·</div>
-
-    <div class="two-col">
-      <div class="rev d2">
-        <div class="cbox dark">
-          <div class="ctitle light">Reasons for not accessing health care</div>
-          <div class="csub light">% of those who could not get care</div>
-          <div style="margin-top:8px;">
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Cannot afford</span><span style="color:#CE1126;">41.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="41.1"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Not yet needed</span><span>3.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="3.9"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Not able to avail</span><span>1.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="1.0"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>Afraid</span><span>0.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="0.9"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>No medical personnel</span><span>0.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="0.7"></div></div></div>
-          </div>
-        </div>
-        <!-- Nutrition moved to Ch6 per SFAP #28/#41 -->
-      </div>
-      <div class="rev">
-        <span class="eyebrow r">Health access &amp; barriers</span>
-        <h2 class="hed light">1 in 3 needed health care — but only <em>77% got it.</em></h2>
-        <div class="body-copy light">
-          <p>Thirty-four percent of household members needed health services in the past 30 days. Of those, 77 percent were able to access care — leaving a 23 percent unmet need rate. NCR fares best (88 percent access) while Visayas struggles most (63 percent).</p>
-          <p>The top reason for not accessing care is cost: 41 percent cite inability to afford it. In the Visayas, the rate is 70 percent — more than double NCR's 33 percent.</p>
-          <p>Among those who sought care, 56 percent paid cash out-of-pocket, with a median cost of ₱1,000. The distribution is skewed: the 90th percentile reaches ₱4,300 — more than four times the median.</p>
-        </div>
-        <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
-          <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">23%</div><div class="scell-l" style="color:#4a6278;">Unmet health care need</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#F05023;">₱1,000</div><div class="scell-l" style="color:#4a6278;">Median OOP cost</div></div>
         </div>
       </div>
     </div>
@@ -1315,14 +1316,15 @@ tab h17 settlement [aw=indw], col nofreq
       </div>
       <div class="hbox" style="margin-top:14px;">
         <div class="hbox-lbl">The SSB paradox</div>
-        <p>Consumption is lowest among young children (under 10: 79 percent) and the elderly (65+: 83 percent), but peaks sharply in working-age adults (25–44: 94 percent). This is not a childhood habit — it is a working-age norm.</p>
+        <p>SSB consumption starts at 79 percent among children under 10 and only goes up from there — peaking at 94 percent in working-age adults. No age group is spared. No life stage is low-risk.</p>
       </div>
     </div>
     <div class="rev">
       <span class="eyebrow r">Sugary beverages</span>
-      <h2 class="hed">Almost <em class="r">9 in 10</em> drink sugar-sweetened beverages — 6.8 servings a day</h2>
+      <h2 class="hed"><em class="r">9 in 10</em> drink sugar-sweetened beverages — 6.8 servings a day</h2>
       <div class="body-copy">
         <p>Ninety percent of individuals consume sweetened sugary beverages. The average consumer drinks 6.8 single-serve portions daily. This pattern is essentially uniform across urban (89 percent) and rural (92 percent) settings — it is a national dietary norm, not a segmented one.</p>
+        <!-- SFAP R2 #75/#77: Sharon suggested 7.1 servings — pending Stata verification of exact figure -->
         <p>At the household level, 90 percent of households have at least one SSB consumer. This means the category of "SSB-free household" is a statistical minority (10 percent).</p>
         <p>The implications for non-communicable disease burden — diabetes, hypertension, dental caries, obesity — are significant. The Philippines already faces a rising NCD burden, and the near-universal SSB consumption is a major dietary risk factor.</p>
       </div>
