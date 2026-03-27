@@ -13,9 +13,9 @@
 <style>
 :root {
   --ink:#002244; --paper:#f5f0e8; --cream:#e8eef7; --rule:#b8cce0;
-  --red:#CE1126; --blue:#009FDA; --gold:#D4A017; --green:#2d7a3e;
-  --orange:#0038A8; --purple:#00529b; --teal:#006eb6;
-  --dark-amber:#B8860B;
+  --red:#CE1126; --blue:#009FDA; --gold:#D4A017; --green:#00A651;
+  --orange:#F05023; --purple:#872B90; --teal:#00B8C8;
+  --dark-amber:#D4A017;
   --muted:#4a6278; --dim:#002244;
   --serif:"Playfair Display",Georgia,serif;
   --body:"Source Serif 4",Georgia,serif;
@@ -44,7 +44,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 .hero-flag{font-size:52px;line-height:1;margin-bottom:14px;}
 .hero-eye{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#D4A017;margin-bottom:18px;font-weight:600;}
 .hero-hed{font-family:var(--serif);font-size:clamp(1.8rem,3.6vw,2.8rem);font-weight:900;line-height:1.08;letter-spacing:-.03em;margin-bottom:22px;}
-.hero-hed em{font-style:italic;color:#e8c4a0;}
+.hero-hed em{font-style:italic;color:#FCD116;}
 .hero-deck{font-size:1rem;line-height:1.7;color:rgba(255,255,255,.85);max-width:440px;margin-bottom:28px;}
 .hero-src{font-family:var(--mono);font-size:11px;opacity:.7;letter-spacing:.1em;text-transform:uppercase;}
 .hero-kpis{display:flex;flex-direction:column;gap:20px;}
@@ -96,8 +96,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 .eyebrow.gold{color:var(--dark-amber);}
 .hed{font-family:var(--serif);font-size:clamp(1.8rem,3.2vw,2.7rem);font-weight:900;line-height:1.1;letter-spacing:-.025em;margin-bottom:20px;}
 .hed em{font-style:italic;} .hed em.r{color:var(--red);} .hed em.b{color:#009FDA;}
-.hed em.g{color:#00A651;} .hed em.o{color:#E05206;} .hed em.gold{color:#D4A017;}
-.hed em.p{color:#a98fd4;} .hed em.t{color:#4abfb0;}
+.hed em.g{color:#00A651;} .hed em.o{color:#F05023;} .hed em.gold{color:#D4A017;}
+.hed em.p{color:#872B90;} .hed em.t{color:#009FDA;}
 .hed.light{color:#002244;}
 .subhed{font-family:var(--serif);font-size:1.3rem;font-weight:700;margin-bottom:12px;margin-top:28px;}
 .body-copy{font-size:.98rem;line-height:1.78;color:var(--dim);}
@@ -107,7 +107,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 /* BIG NUMBERS */
 .bnum{font-family:var(--serif);font-size:clamp(3rem,6.5vw,5.5rem);font-weight:900;line-height:1;letter-spacing:-.04em;margin:22px 0 4px;}
 .bnum.r{color:var(--red);} .bnum.b{color:#009FDA;} .bnum.g{color:#00A651;}
-.bnum.o{color:#E05206;} .bnum.gold{color:var(--gold);} .bnum.p{color:#772583;}
+.bnum.o{color:#F05023;} .bnum.gold{color:var(--gold);} .bnum.p{color:#872B90;}
 .bnum-cap{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;font-weight:500;}
 
 /* PULL QUOTE */
@@ -156,8 +156,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 .callout{background:#003B6F;color:#FFFFFF;padding:30px 36px;margin:24px 0;border-radius:3px;}
 .callout-lbl{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#D4A017;margin-bottom:10px;font-weight:600;}
 .callout p{font-family:var(--serif);font-size:1.25rem;font-style:italic;line-height:1.45;}
-.callout p strong{font-style:normal;color:#e8c4a0;}
-.callout.b .callout-lbl{color:#4a9fd0;} .callout.g .callout-lbl{color:#5aad6f;}
+.callout p strong{font-style:normal;color:#FCD116;}
+.callout.b .callout-lbl{color:#40B4E5;} .callout.g .callout-lbl{color:#00A651;}
 .callout.o .callout-lbl{color:var(--orange);} .callout.gold .callout-lbl{color:var(--gold);}
 
 /* HIGHLIGHT BOX */
@@ -347,9 +347,9 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
         <p>This is not uniform across the country. Mindanao is the youngest, with 20 percent of its population under 10, while NCR has the smallest share in that bracket at 15 percent – a gap consistent with long-standing patterns of internal migration toward urban centers, which tend to skew slightly older.</p>
       </div>
       <div class="sgrid sgrid-3 rev d1" style="margin-top:20px;">
-        <div class="scell ink-c"><div class="scell-n" style="color:#e8c4a0;">25</div><div class="scell-l">MEDIAN AGE (M: 24 · F: 25)</div></div>
+        <div class="scell ink-c"><div class="scell-n" style="color:#FCD116;">25</div><div class="scell-l">MEDIAN AGE (M: 24 · F: 25)</div></div>
         <div class="scell"><div class="scell-n">41%</div><div class="scell-l">UNDER 20</div></div>
-        <div class="scell ink-c"><div class="scell-n" style="color:#e8c4a0;">51% | 49%</div><div class="scell-l">MALE | FEMALE</div></div>
+        <div class="scell ink-c"><div class="scell-n" style="color:#FCD116;">51% | 49%</div><div class="scell-l">MALE | FEMALE</div></div>
       </div>
     </div>
     <div class="rev d2">
@@ -403,21 +403,21 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
         <div class="ctitle">Disability by type</div>
         <div class="csub">% of persons with disability (multiple response)</div>
         <div class="sgrid sgrid-4 rev d1" style="margin-top:10px;">
-          <div class="scell" style="background:rgba(119,37,131,.08);"><div class="scell-n" style="color:#772583;">28%</div><div class="scell-l">Intellectual / Mental / Psychosocial</div></div>
-          <div class="scell" style="background:rgba(119,37,131,.08);"><div class="scell-n" style="color:#772583;">12%</div><div class="scell-l">Visual Disability</div></div>
-          <div class="scell" style="background:rgba(119,37,131,.08);"><div class="scell-n" style="color:#772583;">11%</div><div class="scell-l">Speech and Language Impairment</div></div>
-          <div class="scell" style="background:rgba(119,37,131,.08);"><div class="scell-n" style="color:#772583;">8%</div><div class="scell-l">Perforated eardrum</div></div>
+          <div class="scell" style="background:rgba(119,37,131,.08);"><div class="scell-n" style="color:#872B90;">28%</div><div class="scell-l">Intellectual / Mental / Psychosocial</div></div>
+          <div class="scell" style="background:rgba(119,37,131,.08);"><div class="scell-n" style="color:#872B90;">12%</div><div class="scell-l">Visual Disability</div></div>
+          <div class="scell" style="background:rgba(119,37,131,.08);"><div class="scell-n" style="color:#872B90;">11%</div><div class="scell-l">Speech and Language Impairment</div></div>
+          <div class="scell" style="background:rgba(119,37,131,.08);"><div class="scell-n" style="color:#872B90;">8%</div><div class="scell-l">Perforated eardrum</div></div>
         </div>
       </div>
       <div class="cbox" style="margin-top:12px;">
         <div class="ctitle">Disability prevalence by age group</div>
         <div class="csub">% with disability within each age band</div>
         <div class="sgrid sgrid-5 rev d1" style="margin-top:10px;">
-          <div class="scell"><div class="scell-n" style="font-size:20px;color:#772583;">2%</div><div class="scell-l" style="font-size:11px;">&lt;15</div></div>
-          <div class="scell"><div class="scell-n" style="font-size:20px;color:#772583;">1%</div><div class="scell-l" style="font-size:11px;">15–17</div></div>
-          <div class="scell"><div class="scell-n" style="font-size:20px;color:#772583;">3%</div><div class="scell-l" style="font-size:11px;">18–45</div></div>
-          <div class="scell"><div class="scell-n" style="font-size:20px;color:#772583;">4%</div><div class="scell-l" style="font-size:11px;">46–59</div></div>
-          <div class="scell"><div class="scell-n" style="font-size:20px;color:#772583;">5%</div><div class="scell-l" style="font-size:11px;">60+</div></div>
+          <div class="scell"><div class="scell-n" style="font-size:20px;color:#872B90;">2%</div><div class="scell-l" style="font-size:11px;">&lt;15</div></div>
+          <div class="scell"><div class="scell-n" style="font-size:20px;color:#872B90;">1%</div><div class="scell-l" style="font-size:11px;">15–17</div></div>
+          <div class="scell"><div class="scell-n" style="font-size:20px;color:#872B90;">3%</div><div class="scell-l" style="font-size:11px;">18–45</div></div>
+          <div class="scell"><div class="scell-n" style="font-size:20px;color:#872B90;">4%</div><div class="scell-l" style="font-size:11px;">46–59</div></div>
+          <div class="scell"><div class="scell-n" style="font-size:20px;color:#872B90;">5%</div><div class="scell-l" style="font-size:11px;">60+</div></div>
         </div>
         <p style="font-size:12px;color:#666;margin-top:6px;font-family:var(--body);">Disability prevalence rises sharply with age — from 2% among those under 15 to 5% among those 60 and older.</p>
       </div>
@@ -743,7 +743,7 @@ tab ed3 [aw=indw] if ed1 == 1 &amp; age &lt;= 4
         </div>
         <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
           <div class="scell dark-c"><div class="scell-n" style="color:#009FDA;">59%</div><div class="scell-l" style="color:#4a6278;">Male employment rate</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#E05206;">30%</div><div class="scell-l" style="color:#4a6278;">Female employment rate</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#F05023;">30%</div><div class="scell-l" style="color:#4a6278;">Female employment rate</div></div>
         </div>
       </div>
       <div class="rev d2">
@@ -1109,10 +1109,10 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
           <div class="ctitle light">PhilHealth coverage by macro-region</div>
           <div class="csub light">% covered · all categories</div>
           <div style="margin-top:8px;">
-            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#00A651;">52.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#1a6b9a;" data-w="52.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:#002244;"><span>NCR</span><span style="color:#00A651;">52.6%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#0038A8;" data-w="52.6"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Mindanao</span><span style="color:#009FDA;">52.7%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="52.7"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Luzon (excl. NCR)</span><span style="color:#40B4E5;">45.0%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#40B4E5;" data-w="45.0"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span style="color:#E05206;">Visayas</span><span style="color:#E05206;">36.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:var(--red);" data-w="36.2"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span style="color:#F05023;">Visayas</span><span style="color:#F05023;">36.2%</span></div><div class="btrack dark-t"><div class="bfill" style="background:var(--red);" data-w="36.2"></div></div></div>
           </div>
         </div>
         <div class="cbox dark" style="margin-top:12px;">
@@ -1149,7 +1149,7 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
         </div>
         <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
           <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">23%</div><div class="scell-l" style="color:#4a6278;">Unmet health care need</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#E05206;">₱1,000</div><div class="scell-l" style="color:#4a6278;">Median OOP cost</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#F05023;">₱1,000</div><div class="scell-l" style="color:#4a6278;">Median OOP cost</div></div>
         </div>
       </div>
     </div>
@@ -1280,14 +1280,14 @@ tab h17 settlement [aw=indw], col nofreq
         <div style="margin-top:8px;">
           <p style="font-family:var(--mono);font-size:10px;color:#5a7389;margin-bottom:8px;">Under-5 = age &lt; 5 years (0–59 months, UNICEF definition) · N = 739</p>
           <div class="bs"><div class="bs-lbl"><span>Stunted (low height-for-age)</span><span style="color:#CE1126;">26.6%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="26.6"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Underweight (low weight-for-age)</span><span style="color:#E05206;">18.2%</span></div><div class="btrack"><div class="bfill" style="background:#E05206;" data-w="18.2"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Underweight (low weight-for-age)</span><span style="color:#F05023;">18.2%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="18.2"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Wasted (low weight-for-height)</span><span style="color:#D4A017;">18.0%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="18.0"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Severely stunted</span><span>11.1%</span></div><div class="btrack"><div class="bfill" style="background:#772583;" data-w="11.1"></div></div></div>
+          <div class="bs"><div class="bs-lbl"><span>Severely stunted</span><span>11.1%</span></div><div class="btrack"><div class="bfill" style="background:#872B90;" data-w="11.1"></div></div></div>
         </div>
       </div>
       <div class="sgrid sgrid-2 rev d1" style="margin-top:12px;">
         <div class="scell r-c"><div class="scell-n" style="color:#CE1126;">26.6%</div><div class="scell-l">Under-5 stunting rate</div></div>
-        <div class="scell"><div class="scell-n" style="color:#E05206;">18.2%</div><div class="scell-l">Underweight</div></div>
+        <div class="scell"><div class="scell-n" style="color:#F05023;">18.2%</div><div class="scell-l">Underweight</div></div>
       </div>
     </div>
   </div>
@@ -1357,11 +1357,11 @@ tab ssb1 macroreg [aw=indw], col nofreq
         <!-- SFAP #44: Infographic-style hazard tiles instead of bar chart -->
         <div class="sgrid sgrid-2 rev d1" style="gap:8px;">
           <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#CE1126;font-size:1.6rem;">76.5%</div><div class="scell-l" style="color:#4a6278;">Typhoon</div></div>
-          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#E05206;font-size:1.6rem;">50.2%</div><div class="scell-l" style="color:#4a6278;">Extreme heat</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#F05023;font-size:1.6rem;">50.2%</div><div class="scell-l" style="color:#4a6278;">Extreme heat</div></div>
           <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#D4A017;font-size:1.4rem;">41.2%</div><div class="scell-l" style="color:#4a6278;">Earthquake</div></div>
           <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#D4A017;font-size:1.4rem;">36.1%</div><div class="scell-l" style="color:#4a6278;">Drought / El Niño</div></div>
-          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#0077b6;font-size:1.3rem;">31.6%</div><div class="scell-l" style="color:#4a6278;">Flood / La Niña</div></div>
-          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#0077b6;font-size:1.3rem;">12.2%</div><div class="scell-l" style="color:#4a6278;">Pest infestation</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#0038A8;font-size:1.3rem;">31.6%</div><div class="scell-l" style="color:#4a6278;">Flood / La Niña</div></div>
+          <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#0038A8;font-size:1.3rem;">12.2%</div><div class="scell-l" style="color:#4a6278;">Pest infestation</div></div>
         </div>
         <p style="font-family:var(--mono);font-size:9px;color:#5a7389;margin-top:6px;text-align:center;">Also: Livestock disease 9.3% · Volcanic 3.1% · Landslide 2.3% · Tsunami 0.2%</p>
         <div class="cbox dark" style="margin-top:16px;">
@@ -1384,7 +1384,7 @@ tab ssb1 macroreg [aw=indw], col nofreq
           <div class="csub light">% of HHs affected by any hazard (past 3 years)</div>
           <div style="margin-top:8px;">
             <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Luzon (excl. NCR)</span><span style="color:#CE1126;">96.9%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#CE1126;" data-w="96.9"></div></div></div>
-            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>NCR</span><span style="color:#E05206;">93.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#E05206;" data-w="93.1"></div></div></div>
+            <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>NCR</span><span style="color:#F05023;">93.1%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#F05023;" data-w="93.1"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Visayas</span><span>87.3%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="87.3"></div></div></div>
             <div class="bs"><div class="bs-lbl" style="color:rgba(245,240,232,.7);"><span>Mindanao</span><span>82.5%</span></div><div class="btrack dark-t"><div class="bfill" style="background:#009FDA;" data-w="82.5"></div></div></div>
           </div>
@@ -1400,9 +1400,9 @@ tab ssb1 macroreg [aw=indw], col nofreq
         </div>
         <div class="sgrid sgrid-2 rev d1" style="margin-top:16px;">
           <div class="scell dark-c"><div class="scell-n" style="color:#00A651;">97.4%</div><div class="scell-l" style="color:#4a6278;">Took preparedness measures</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#0077b6;">86.8%</div><div class="scell-l" style="color:#4a6278;">Have emergency plan</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#0038A8;">86.8%</div><div class="scell-l" style="color:#4a6278;">Have emergency plan</div></div>
           <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">17.4%</div><div class="scell-l" style="color:#4a6278;">Received assistance</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#0077b6;">83.9%</div><div class="scell-l" style="color:#4a6278;">Aware of hazard maps</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#0038A8;">83.9%</div><div class="scell-l" style="color:#4a6278;">Aware of hazard maps</div></div>
         </div>
       </div>
     </div>
@@ -1808,10 +1808,10 @@ tab hc2a macroreg [aw=hhw], col nofreq
           <p>Neighbourhood safety: 11 percent feel unsafe walking in their area. Eighty percent feel safe or very safe — though the remaining 10 percent report being afraid to walk alone, a distinct dimension beyond the safe/unsafe binary.</p>
         </div>
         <div class="sgrid sgrid-2 rev d1" style="margin-top:20px;">
-          <div class="scell dark-c"><div class="scell-n" style="color:#B8860B;">3.04/5</div><div class="scell-l" style="color:#4a6278;">Life satisfaction mean</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">3.04/5</div><div class="scell-l" style="color:#4a6278;">Life satisfaction mean</div></div>
           <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">19.0%</div><div class="scell-l" style="color:#4a6278;">Feel worse off (vs last month)</div></div>
           <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">10.7%</div><div class="scell-l" style="color:#4a6278;">Feel unsafe in neighbourhood</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#2d7a3e;">36.6%</div><div class="scell-l" style="color:#4a6278;">Believe taxes are well spent</div></div>
+          <div class="scell dark-c"><div class="scell-n" style="color:#00A651;">36.6%</div><div class="scell-l" style="color:#4a6278;">Believe taxes are well spent</div></div>
         </div>
       </div>
       <div class="rev d2">
@@ -2029,9 +2029,9 @@ save "$out/_hhwt_temp.dta", replace
   <p class="epi-body">Electricity reaches 96% of homes. Schools are near-full. The road to the wet market takes 17 minutes. But when sickness strikes, most families pay alone. When work disappears, there is no cushion. When the typhoon comes, half hear no warning. The story of the Philippines in 2025 is not a story of absence — it is a story of exposure without insurance.</p>
   <div class="epi-nums">
     <div class="epi-n"><div class="epi-n-val" style="color:var(--red);">108.7M</div><div class="epi-n-lbl">People represented</div></div>
-    <div class="epi-n"><div class="epi-n-val" style="color:#4a9fd0;">2,470</div><div class="epi-n-lbl">Households</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:#40B4E5;">2,470</div><div class="epi-n-lbl">Households</div></div>
     <div class="epi-n"><div class="epi-n-val" style="color:var(--gold);">14</div><div class="epi-n-lbl">Modules</div></div>
-    <div class="epi-n"><div class="epi-n-val" style="color:#5aad6f;">96%</div><div class="epi-n-lbl">Electricity</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:#00A651;">96%</div><div class="epi-n-lbl">Electricity</div></div>
     <div class="epi-n"><div class="epi-n-val" style="color:var(--red);">54%</div><div class="epi-n-lbl">No PhilHealth</div></div>
     <div class="epi-n"><div class="epi-n-val" style="color:var(--orange);">72%</div><div class="epi-n-lbl">No work contract</div></div>
   </div>
@@ -2102,7 +2102,7 @@ lazy('cHHComp', () => {
   new Chart(document.getElementById('cHHComp'), {type:'pie', data:{
     labels:['Head + Spouse + Children','Extended family','Head + Children only','Head + Spouse only','Head only'],
     datasets:[{data:[40,39,8,8,5],
-      backgroundColor:['#009FDA','#00A651','#CE1126','#D4A017','#772583'],
+      backgroundColor:['#009FDA','#00A651','#CE1126','#D4A017','#872B90'],
       borderWidth:2,borderColor:'white',hoverOffset:6}]
   }, plugins:[ChartDataLabels], options:{responsive:true,maintainAspectRatio:false,
     layout:{padding:{left:100,right:100,top:20,bottom:20}},
@@ -2174,7 +2174,7 @@ lazy('cClass', () => {
   new Chart(document.getElementById('cClass'), {type:'bar', data:{
     labels:['Private HH','Private estab.','Self-employed','Government','Employer','Unpaid family'],
     datasets:[{data:[32.98,21.79,16.01,8.24,7.14,3.5],
-      backgroundColor:['#009FDA','#772583','#D4A017','#00A651','#E05206','#9FA0A4'],
+      backgroundColor:['#009FDA','#872B90','#D4A017','#00A651','#F05023','#9FA0A4'],
       borderRadius:3,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK_D}},
@@ -2186,7 +2186,7 @@ lazy('cIndustry', () => {
   new Chart(document.getElementById('cIndustry'), {type:'bar', data:{
     labels:['Admin/support','Agriculture','Retail trade','Construction','Food service','Transport','Other services','Public admin'],
     datasets:[{data:[21.31,17.87,14.95,12.11,11.44,7.01,3.06,2.62],
-      backgroundColor:['#009FDA','#00A651','#D4A017','#E05206','#CE1126','#772583','#00B8C8','#9FA0A4'],
+      backgroundColor:['#009FDA','#00A651','#D4A017','#F05023','#CE1126','#872B90','#00B8C8','#9FA0A4'],
       borderRadius:3,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK_D,font:{size:9}}}},
@@ -2198,7 +2198,7 @@ lazy('cIncMacro', () => {
   new Chart(document.getElementById('cIncMacro'), {type:'bar', data:{
     labels:['Regular income','Domestic support','OFW remittances','Pension','4Ps / CCT'],
     datasets:[{data:[66.1,22.8,8.7,8.1,0.7],
-      backgroundColor:['#009FDA','#00A651','#772583','#D4A017','#CE1126'],
+      backgroundColor:['#009FDA','#00A651','#872B90','#D4A017','#CE1126'],
       borderRadius:4,borderWidth:0,barPercentage:.65}]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     scales:{x:{grid:GRID,max:80,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
@@ -2302,9 +2302,8 @@ lazy('cMigration', () => {
 
     const color = d3.scaleOrdinal()
       .domain(nodes.map(n=>n.name))
-      .range(['#0ea5e9','#22c55e','#a78bfa','#f43f5e',
-              '#CE1126','#00A651','#0038A8','#E05206','#772583','#B8860B','#40B4E5','#9FA0A4',
-              '#0ea5e9','#22c55e','#a78bfa','#f43f5e']);
+      .range(['#009FDA','#00A651','#872B90','#CE1126',
+              '#D4A017','#40B4E5','#F05023','#0038A8','#9FA0A4','#00B8C8']);
 
     svg.append('g').selectAll('rect').data(sNodes).join('rect')
       .attr('x',d=>d.x0).attr('y',d=>d.y0)
@@ -2349,7 +2348,7 @@ lazy('cFacility', () => {
   new Chart(document.getElementById('cFacility'), {type:'bar', data:{
     labels:['Rural Health Unit','Hospital','Barangay Health Station','Private Clinic','Pharmacy'],
     datasets:[{data:[32.4,27.3,20.0,13.7,6.6],
-      backgroundColor:['#00A651','#009FDA','#00B8C8','#E05206','#CE1126'],
+      backgroundColor:['#00A651','#009FDA','#00B8C8','#F05023','#CE1126'],
       borderRadius:3,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK_D,font:{size:9}}}},
@@ -2361,7 +2360,7 @@ lazy('cFoodSrc', () => {
   new Chart(document.getElementById('cFoodSrc'), {type:'bar', data:{
     labels:['Wet market','Sari-sari store','Supermarket','Ambulant peddlers','Large supermarket','Convenience store'],
     datasets:[{data:[73.97,15.06,5.99,2.5,0.71,0.66],
-      backgroundColor:['#00A651','#009FDA','#D4A017','#E05206','#CE1126','#772583'],
+      backgroundColor:['#00A651','#009FDA','#D4A017','#F05023','#CE1126','#872B90'],
       borderRadius:3,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
@@ -2414,7 +2413,7 @@ lazy('cSSB', () => {
 lazy('cTenure', () => {
   new Chart(document.getElementById('cTenure'), {type:'pie', data:{
     labels:['Owner','Rent-free (consent)','Other','Renting'],
-    datasets:[{data:[56.53,17.03,11.75,3.93],backgroundColor:['#00A651','#009FDA','#772583','#CE1126'],borderWidth:0,hoverOffset:4}]
+    datasets:[{data:[56.53,17.03,11.75,3.93],backgroundColor:['#00A651','#009FDA','#872B90','#CE1126'],borderWidth:0,hoverOffset:4}]
   }, options:{maintainAspectRatio:true,aspectRatio:1.6,
     plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
 });
@@ -2424,7 +2423,7 @@ lazy('cToilet', () => {
   new Chart(document.getElementById('cToilet'), {type:'bar', data:{
     labels:['Flush→sewage','Flush→septic','Pit latrine','Open defecation','Hanging toilet','No facility'],
     datasets:[{data:[71.12,10.44,8.17,5.73,2.73,0.13],
-      backgroundColor:['#00A651','#009FDA','#D4A017','#CE1126','#E05206','#9FA0A4'],
+      backgroundColor:['#00A651','#009FDA','#D4A017','#CE1126','#F05023','#9FA0A4'],
       borderRadius:3,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
@@ -2438,7 +2437,7 @@ lazy('cInetPurp', () => {
   new Chart(document.getElementById('cInetPurp'), {type:'bar', data:{
     labels:['Social media','News & Info','Online shopping','Online education','Entertainment','Payments/Banking','Govt information','Govt services'],
     datasets:[{data:[36.24,15.59,14.02,13.09,8.87,4.06,2.26,2.03],
-      backgroundColor:['#CE1126','#009FDA','#D4A017','#00A651','#772583','#E05206','#00B8C8','#9FA0A4'],
+      backgroundColor:['#CE1126','#009FDA','#D4A017','#00A651','#872B90','#F05023','#00B8C8','#9FA0A4'],
       borderRadius:3,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK,font:{size:9}}}},
@@ -2449,7 +2448,7 @@ lazy('cInetPurp', () => {
 lazy('cWaterSafe', () => {
   new Chart(document.getElementById('cWaterSafe'), {type:'doughnut', data:{
     labels:['Very safe','Somewhat safe','Somewhat unsafe','Unsafe'],
-    datasets:[{data:[60.31,33.07,5.19,1.42],backgroundColor:['#00A651','#009FDA','#E05206','#CE1126'],borderWidth:0,hoverOffset:4}]
+    datasets:[{data:[60.31,33.07,5.19,1.42],backgroundColor:['#00A651','#009FDA','#F05023','#CE1126'],borderWidth:0,hoverOffset:4}]
   }, options:{maintainAspectRatio:true,aspectRatio:1.7,
     plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
 });
@@ -2460,7 +2459,7 @@ lazy('cAssets', () => {
   new Chart(document.getElementById('cAssets'), {type:'bar', data:{
     labels:labs,
     datasets:[{data:[54.98,54.03,48.96,25.91,14.59,10.47,3.93,1.59],
-      backgroundColor:['#009FDA','#E05206','#00A651','#D4A017','#772583','#CE1126','#00B8C8','#9FA0A4'],
+      backgroundColor:['#009FDA','#F05023','#00A651','#D4A017','#872B90','#CE1126','#00B8C8','#9FA0A4'],
       borderRadius:3,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
     scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
@@ -2472,7 +2471,7 @@ lazy('cFuels', () => {
   new Chart(document.getElementById('cFuels'), {type:'bar', data:{
     labels:['LPG','Fuelwood','Charcoal','Electricity','Kerosene'],
     datasets:[{data:[61.49,50.73,27.03,21.38,3.64],
-      backgroundColor:['#D4A017','#CE1126','#9FA0A4','#009FDA','#E05206'],
+      backgroundColor:['#D4A017','#CE1126','#9FA0A4','#009FDA','#F05023'],
       borderRadius:4,borderWidth:0,barPercentage:.62}]
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,max:80,ticks:{...TICK,callback:v=>v+'%'}}},
@@ -2484,7 +2483,7 @@ lazy('cLifeSat', () => {
   new Chart(document.getElementById('cLifeSat'), {type:'bar', data:{
     labels:['1 (Not at all)','2 (Not satisfied)','3 (Neutral)','4 (Satisfied)','5 (Completely)'],
     datasets:[{data:[3.89,20.89,51.92,11.83,11.47],
-      backgroundColor:['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'],borderRadius:4,borderWidth:0,barPercentage:.72}]
+      backgroundColor:['#CE1126','#F05023','#9FA0A4','#40B4E5','#009FDA'],borderRadius:4,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{grid:{display:false},ticks:TICK_D},y:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}}},
     plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
@@ -2496,7 +2495,7 @@ lazy('cLifeSatRegion', () => {
     labels:['NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
     datasets:[
       {label:'1 (Not at all)',data:[3.7,4.4,6.0,1.5],backgroundColor:'#CE1126',borderWidth:0,stack:'s'},
-      {label:'2 (Not satisfied)',data:[24.9,22.1,17.7,18.9],backgroundColor:'#E05206',borderWidth:0,stack:'s'},
+      {label:'2 (Not satisfied)',data:[24.9,22.1,17.7,18.9],backgroundColor:'#F05023',borderWidth:0,stack:'s'},
       {label:'3 (Neutral)',data:[54.2,55.2,50.3,45.8],backgroundColor:'#9FA0A4',borderWidth:0,stack:'s'},
       {label:'4 (Satisfied)',data:[9.1,7.7,14.3,19.2],backgroundColor:'#40B4E5',borderWidth:0,stack:'s'},
       {label:'5 (Completely)',data:[8.1,10.6,11.7,14.6],backgroundColor:'#009FDA',borderRadius:[3,3,0,0],borderWidth:0,stack:'s'}
@@ -2510,7 +2509,7 @@ lazy('cLifeSatRegion', () => {
 lazy('cEcoChange', () => {
   new Chart(document.getElementById('cEcoChange'), {type:'pie', data:{
     labels:['Same','Somewhat improved','Somewhat worsened','Much worsened','Much improved'],
-    datasets:[{data:[45.51,28.74,11.68,6.90,7.16],backgroundColor:['#9FA0A4','#00A651','#E05206','#CE1126','#009FDA'],borderWidth:0,hoverOffset:4}]
+    datasets:[{data:[45.51,28.74,11.68,6.90,7.16],backgroundColor:['#9FA0A4','#00A651','#F05023','#CE1126','#009FDA'],borderWidth:0,hoverOffset:4}]
   }, options:{maintainAspectRatio:true,aspectRatio:1.6,
     plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.label}: ${c.parsed}%`}}}}});
 });
@@ -2520,7 +2519,7 @@ lazy('cIncGroup', () => {
   new Chart(document.getElementById('cIncGroup'), {type:'bar', data:{
     labels:['Group 1 (lowest)','Group 2','Group 3 (middle)','Group 4','Group 5 (highest)'],
     datasets:[{data:[20.21,29.72,48.62,1.22,0.23],
-      backgroundColor:['#CE1126','#E05206','#009FDA','#00A651','#00A651'],borderRadius:4,borderWidth:0,barPercentage:.72}]
+      backgroundColor:['#CE1126','#F05023','#009FDA','#00A651','#00A651'],borderRadius:4,borderWidth:0,barPercentage:.72}]
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{grid:{display:false},ticks:{...TICK_D,font:{size:8}}},y:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}}},
     plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
@@ -2539,7 +2538,7 @@ lazy('cLikert', () => {
     labels:labs,
     datasets:[
       {label:'Str. disagree',data:sd,backgroundColor:'rgba(206,17,38,.8)',borderWidth:0,stack:'s',barPercentage:.78},
-      {label:'Disagree',data:da,backgroundColor:'rgba(224,82,6,.65)',borderWidth:0,stack:'s',barPercentage:.78},
+      {label:'Disagree',data:da,backgroundColor:'rgba(240,80,35,.65)',borderWidth:0,stack:'s',barPercentage:.78},
       {label:'Neither',data:ne,backgroundColor:'rgba(159,160,164,.7)',borderWidth:0,stack:'s',barPercentage:.78},
       {label:'Agree',data:ag,backgroundColor:'rgba(64,180,229,.7)',borderWidth:0,stack:'s',barPercentage:.78},
       {label:'Str. agree',data:sa,backgroundColor:'rgba(0,159,218,.9)',borderWidth:0,stack:'s',barPercentage:.78}
@@ -2588,8 +2587,8 @@ lazy('sankeySatEco', () => {
   ];
 
   // Colors: warm red→orange→grey→teal→blue for income quintiles
-  const selfColors  = ['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'];
-  const childColors = ['#CE1126','#E05206','#9FA0A4','#40B4E5','#009FDA'];
+  const selfColors  = ['#CE1126','#F05023','#9FA0A4','#40B4E5','#009FDA'];
+  const childColors = ['#CE1126','#F05023','#9FA0A4','#40B4E5','#009FDA'];
 
   // Build nodes: 0-4 = self-income (left), 5-9 = children-income (right)
   const nodes = [
