@@ -64,8 +64,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 .toc{background:var(--cream);border-top:2px solid #009FDA;border-bottom:2px solid #009FDA;padding:40px;max-width:100%;}
 .toc-inner{max-width:1100px;margin:0 auto;}
 .toc-title{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;font-weight:600;}
-.toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
-.toc-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;border:1px solid var(--rule);border-radius:3px;text-decoration:none;color:var(--ink);font-family:var(--body);font-size:.88rem;transition:all .2s;}
+.toc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.toc-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;border:1px solid var(--rule);border-radius:3px;text-decoration:none;color:var(--ink);font-family:var(--body);font-size:.82rem;line-height:1.3;transition:all .2s;}
 .toc-item:hover{border-color:#009FDA;background:#009FDA;color:#FFFFFF;}
 .toc-num{font-family:var(--mono);font-size:9px;color:var(--muted);flex-shrink:0;}
 
@@ -321,16 +321,16 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
   <div class="toc-inner">
     <div class="toc-title">Contents — 10 chapters · 14 survey modules</div>
     <div class="toc-grid" style="grid-template-columns:repeat(5,1fr);">
-      <a href="#ch-roster" class="toc-item"><span class="toc-num">01</span>People — Roster &amp; Migration</a>
-      <a href="#ch-edu" class="toc-item"><span class="toc-num">02</span>Learning — Education</a>
-      <a href="#ch-work" class="toc-item"><span class="toc-num">03</span>Working — Employment</a>
-      <a href="#ch-money" class="toc-item"><span class="toc-num">04</span>Money — Income &amp; Finance</a>
-      <a href="#ch-health" class="toc-item"><span class="toc-num">05</span>Getting sick — Health</a>
-      <a href="#ch-food" class="toc-item"><span class="toc-num">06</span>Eating — Food &amp; Nutrition</a>
-      <a href="#ch-hazard" class="toc-item"><span class="toc-num">07</span>Disasters — Hazards</a>
-      <a href="#ch-home" class="toc-item"><span class="toc-num">08</span>Home — Dwelling &amp; Utilities</a>
-      <a href="#ch-assets" class="toc-item"><span class="toc-num">09</span>Assets — Energy &amp; Ownership</a>
-      <a href="#ch-views" class="toc-item"><span class="toc-num">10</span>Voices — Views &amp; Perceptions</a>
+      <a href="#ch-roster" class="toc-item"><span class="toc-num">01</span>People &amp; Migration</a>
+      <a href="#ch-edu" class="toc-item"><span class="toc-num">02</span>Education</a>
+      <a href="#ch-work" class="toc-item"><span class="toc-num">03</span>Employment</a>
+      <a href="#ch-money" class="toc-item"><span class="toc-num">04</span>Income &amp; Finance</a>
+      <a href="#ch-health" class="toc-item"><span class="toc-num">05</span>Health</a>
+      <a href="#ch-food" class="toc-item"><span class="toc-num">06</span>Food &amp; Nutrition</a>
+      <a href="#ch-hazard" class="toc-item"><span class="toc-num">07</span>Hazards</a>
+      <a href="#ch-home" class="toc-item"><span class="toc-num">08</span>Dwelling &amp; Utilities</a>
+      <a href="#ch-assets" class="toc-item"><span class="toc-num">09</span>Assets &amp; Energy</a>
+      <a href="#ch-views" class="toc-item"><span class="toc-num">10</span>Views &amp; Perceptions</a>
     </div>
   </div>
 </div>
@@ -463,11 +463,13 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
       </div>
     </div>
   </div>
-  <!-- Sankey full-width below the two-col -->
-  <div class="cbox" style="margin-top:24px;">
-    <div class="ctitle">Migration destination: domestic vs. abroad</div>
-    <div class="csub">% of those with stated destination · source macro-region → destination countries &amp; regions</div>
-    <div id="sankeyMig" class="sankey-wrap" style="height:460px;"></div>
+  <!-- Sankey title full-width, then Sankey below -->
+  <div style="margin-top:24px;">
+    <div class="ctitle" style="font-size:1.1rem;">Migration destination: domestic vs. abroad</div>
+    <div class="csub" style="margin-bottom:8px;">% of those with stated destination · source macro-region → destination countries &amp; regions</div>
+  </div>
+  <div class="cbox" style="padding-top:0;">
+    <div id="sankeyMig" class="sankey-wrap" style="height:420px;"></div>
   </div>
 </div>
 
@@ -849,19 +851,22 @@ use `_roster', clear
     <div class="body-copy" style="margin-top:18px;">
       <p>Early childhood education attendance rises sharply with age: fewer than 1 percent of children at ages 0–1 are enrolled, rising to 31 percent at age 3 and 69 percent at age 4. Among those attending, 66 percent are in daycare or nursery programmes, while 34 percent attend kindergarten. The main reason for non-attendance is being considered too young (26 percent of non-attenders aged 0–4).</p>
     </div>
-    <div class="rev" style="display:flex;gap:24px;flex-wrap:wrap;margin-top:18px;">
-      <div class="cbox" style="flex:1;min-width:200px;">
+    <div class="rev" style="display:flex;gap:24px;flex-wrap:wrap;margin-top:18px;align-items:stretch;">
+      <div class="cbox" style="flex:1;min-width:200px;display:flex;flex-direction:column;">
         <div class="ctitle">ECD attendance by age</div>
-        <div class="csub">% attending · ages 0–4</div>
-        <div style="margin-top:8px;">
-          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Ages 0–2</span><span style="color:#CE1126;">3%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="3"></div></div></div>
-          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Ages 3–4</span><span style="color:#00A651;">50%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="50"></div></div></div>
+        <div class="csub">% attending · each age 0–4</div>
+        <div style="margin-top:8px;flex:1;display:flex;flex-direction:column;justify-content:space-between;">
+          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Age 0</span><span style="color:#CE1126;">&lt;1%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="1"></div></div></div>
+          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Age 1</span><span style="color:#F05023;">1%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="1"></div></div></div>
+          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Age 2</span><span style="color:#D4A017;">7%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="7"></div></div></div>
+          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Age 3</span><span style="color:#009FDA;">31%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="31"></div></div></div>
+          <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Age 4</span><span style="color:#00A651;">69%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="69"></div></div></div>
         </div>
       </div>
-      <div class="cbox" style="flex:1;min-width:200px;">
+      <div class="cbox" style="flex:1;min-width:200px;display:flex;flex-direction:column;">
         <div class="ctitle">Type of early education</div>
         <div class="csub">% of attending children 0–4</div>
-        <div style="margin-top:8px;">
+        <div style="margin-top:8px;flex:1;display:flex;flex-direction:column;justify-content:space-between;">
           <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Daycare / Nursery</span><span style="color:#F05023;">66%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="66"></div></div></div>
           <div class="bs" style="padding:4px 0;"><div class="bs-lbl"><span>Kindergarten</span><span style="color:#009FDA;">34%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="34"></div></div></div>
         </div>
@@ -1637,10 +1642,11 @@ di as text "Completion: CH03 Employment replication code executed."
       </div>
     </div>
   </div>
-  <div class="sec two-col" style="padding:0 40px 40px;max-width:1100px;margin:0 auto;">
+  <div class="sec" style="padding:0 40px 40px;max-width:1100px;margin:0 auto;">
+    <span class="eyebrow g">Government support</span>
+    <h2 class="hed">23% receive <em class="g">domestic support</em> — government institutions lead</h2>
+    <div class="two-col" style="margin-top:18px;">
     <div class="rev">
-      <span class="eyebrow g">Government support</span>
-      <h2 class="hed">23% receive <em class="g">domestic support</em> — government institutions lead</h2>
       <div class="body-copy">
         <p>Twenty-three percent of households received gift, support, assistance, or relief from domestic sources in the past 6 months. Government institutions are the single largest provider (34 percent of recipients), followed by CCT/Pantawid/4Ps (18 percent) and other social programmes (17 percent).</p>
         <p>Family members account for 16 percent of support, with AKAP (14 percent) and AICS (8 percent) providing additional government safety nets. Pension and social security programmes reach 7 percent of all households (popw).</p>
@@ -1661,6 +1667,7 @@ di as text "Completion: CH03 Employment replication code executed."
           <div class="bs"><div class="bs-lbl"><span>Scholarships/education</span><span style="color:#CE1126;">2.3%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="2.3"></div></div></div>
         </div>
       </div>
+    </div>
     </div>
   </div>
   <details class="repl" style="max-width:1100px;margin:0 auto;padding:0 40px 24px;"><summary>Replication do-file · M04 Income + M05 Finance</summary>
@@ -1805,16 +1812,16 @@ tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
     </div>
     <div class="vis-sep light" style="color:rgba(245,240,232,.12);">· · ·</div>
 
+    <span class="eyebrow r">Health insurance</span>
+    <h2 class="hed light">54% have no PhilHealth. When hospitalization hits, a ₱46,834 bill arrives.</h2>
+    <div class="sgrid sgrid-2 rev d1" style="margin-top:16px;margin-bottom:16px;max-width:500px;">
+      <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">54%</div><div class="scell-l" style="color:#4a6278;">No PhilHealth at all</div></div>
+      <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">46%</div><div class="scell-l" style="color:#4a6278;">With coverage</div></div>
+      <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;font-size:1.3rem;">₱46,834</div><div class="scell-l" style="color:#4a6278;">Mean hospital bill</div></div>
+      <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;font-size:1.2rem;">18.5%</div><div class="scell-l" style="color:#4a6278;">Out-of-pocket share</div></div>
+    </div>
     <div class="two-col">
       <div class="rev">
-        <span class="eyebrow r">Health insurance</span>
-        <h2 class="hed light">54% have no PhilHealth. When hospitalization hits, a ₱46,834 bill arrives.</h2>
-        <div class="sgrid sgrid-2 rev d1" style="margin-top:16px;margin-bottom:16px;">
-          <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">54%</div><div class="scell-l" style="color:#4a6278;">No PhilHealth at all</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">46%</div><div class="scell-l" style="color:#4a6278;">With coverage</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;font-size:1.3rem;">₱46,834</div><div class="scell-l" style="color:#4a6278;">Mean hospital bill</div></div>
-          <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;font-size:1.2rem;">18.5%</div><div class="scell-l" style="color:#4a6278;">Out-of-pocket share</div></div>
-        </div>
         <div class="body-copy light">
           <p>The health service access gap has a financial explanation. Fifty-four percent of household members have no PhilHealth coverage — and of the 46 percent who do, most are non-paying members or dependents. Only 17 percent are contributing members.</p>
           <p>The regional pattern echoes what we saw on access: the Visayas trails at 36 percent coverage against NCR's 53 percent. Notably, rural and urban rates are nearly identical at 46 percent each.</p>
@@ -1954,22 +1961,6 @@ tab h17 settlement [aw=indw], col nofreq
 
 <div class="sec cream-bg">
   <div class="sec two-col" style="padding:70px 40px;max-width:1100px;margin:0 auto;">
-    <div class="rev d2">
-      <div class="cbox">
-        <div class="ctitle">Sugary beverage consumption by age group</div>
-        <div class="csub">% consuming SSBs daily</div>
-        <div class="filter-group" id="ssbFilter">
-          <button class="filter-btn active" onclick="updateSSB('all')">All</button>
-          <button class="filter-btn" onclick="updateSSB('male')">Male</button>
-          <button class="filter-btn" onclick="updateSSB('female')">Female</button>
-        </div>
-        <div class="cwrap" style="height:200px;"><canvas id="cSSB"></canvas></div>
-      </div>
-      <div class="hbox" style="margin-top:14px;">
-        <div class="hbox-lbl">The SSB paradox</div>
-        <p>SSB consumption starts at 79 percent among children under 10 and only goes up from there — peaking at 94 percent in working-age adults. No age group is spared. No life stage is low-risk.</p>
-      </div>
-    </div>
     <div class="rev">
       <span class="eyebrow r">Sugary beverages</span>
       <h2 class="hed"><em class="r">9 in 10</em> drink sugar-sweetened beverages — 7 servings a week</h2>
@@ -1979,8 +1970,19 @@ tab h17 settlement [aw=indw], col nofreq
         <p>At the household level, 90 percent of households have at least one SSB consumer. This means the category of "SSB-free household" is a statistical minority (10 percent).</p>
         <p>The implications for non-communicable disease burden — diabetes, hypertension, dental caries, obesity — are significant. The Philippines already faces a rising NCD burden, and the near-universal SSB consumption is a major dietary risk factor.</p>
       </div>
-      <div class="bnum r rev d1">89.9<span style="font-size:2rem;">%</span></div>
-      <p class="bnum-cap">consume sugary beverages · mean <strong style="color:#CE1126;">7 servings/week</strong> · near-universal across all age groups</p>
+    </div>
+    <div class="rev d2">
+      <div class="bnum r rev d1" style="margin-bottom:4px;">89.9<span style="font-size:2rem;">%</span></div>
+      <p class="bnum-cap" style="margin-bottom:14px;">consume sugary beverages · mean <strong style="color:#CE1126;">7 servings/week</strong> · near-universal across all age groups</p>
+      <div class="cbox">
+        <div class="ctitle">Sugary beverage consumption by age group</div>
+        <div class="csub">% consuming SSBs daily</div>
+        <div class="cwrap" style="height:200px;"><canvas id="cSSB"></canvas></div>
+      </div>
+      <div class="hbox" style="margin-top:14px;">
+        <div class="hbox-lbl">The SSB paradox</div>
+        <p>SSB consumption starts at 79 percent among children under 10 and only goes up from there — peaking at 94 percent in working-age adults. No age group is spared. No life stage is low-risk.</p>
+      </div>
     </div>
   </div>
   <!-- SFAP #28/#41: Child nutrition moved from Ch5 Health -->
@@ -1994,6 +1996,10 @@ tab h17 settlement [aw=indw], col nofreq
       </div>
     </div>
     <div class="rev d2">
+      <div class="sgrid sgrid-2 rev d1" style="margin-bottom:12px;">
+        <div class="scell r-c"><div class="scell-n" style="color:#CE1126;">26.6%</div><div class="scell-l">Under-5 stunting rate</div></div>
+        <div class="scell"><div class="scell-n" style="color:#F05023;">18.2%</div><div class="scell-l">Underweight</div></div>
+      </div>
       <div class="cbox">
         <div class="ctitle">Under-5 nutritional status</div>
         <div class="csub">% of children under 5 · z-score measures</div>
@@ -2004,10 +2010,6 @@ tab h17 settlement [aw=indw], col nofreq
           <div class="bs"><div class="bs-lbl"><span>Wasted (low weight-for-height)</span><span style="color:#D4A017;">18.0%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="18.0"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Severely stunted</span><span style="color:#0038A8">11.1%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="11.1"></div></div></div>
         </div>
-      </div>
-      <div class="sgrid sgrid-2 rev d1" style="margin-top:12px;">
-        <div class="scell r-c"><div class="scell-n" style="color:#CE1126;">26.6%</div><div class="scell-l">Under-5 stunting rate</div></div>
-        <div class="scell"><div class="scell-n" style="color:#F05023;">18.2%</div><div class="scell-l">Underweight</div></div>
       </div>
     </div>
   </div>
@@ -2100,7 +2102,7 @@ tab _stunted macroreg [aw=indw] if age &lt; 5, col nofreq
       </div>
       <div class="rev d2">
         <!-- SFAP #44: Infographic-style hazard tiles instead of bar chart -->
-        <div class="sgrid sgrid-2 rev d1" style="gap:8px;">
+        <div class="sgrid rev d1" style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,auto);gap:8px;">
           <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#CE1126;font-size:1.5rem;">76%</div><div class="scell-l" style="color:#4a6278;">Typhoon</div></div>
           <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#F05023;font-size:1.5rem;">50%</div><div class="scell-l" style="color:#4a6278;">Extreme heat</div></div>
           <div class="scell dark-c" style="padding:14px;"><div class="scell-n" style="color:#D4A017;font-size:1.5rem;">41%</div><div class="scell-l" style="color:#4a6278;">Earthquake</div></div>
@@ -2409,7 +2411,10 @@ di "═════════════════════════�
           <div class="bs"><div class="bs-lbl"><span>Protected spring</span><span style="color:#00A651">6.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.0"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Rainwater</span><span style="color:#0038A8">4.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="4.4"></div></div></div>
         </div>
-        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">93 percent perceive their drinking water as safe (safe or somewhat safe). 69 percent do not treat their water. Travel time to water source: 13 minutes.</p>
+        <div class="hbox gold" style="margin-top:14px;padding:10px 12px;">
+          <div class="hbox-lbl" style="font-size:9px;">The water paradox</div>
+          <p style="font-size:.82rem;line-height:1.5;">61 percent have piped water inside the home, and 93 percent perceive their drinking water as safe. However, 69 percent do not treat their water — suggesting confidence may outrun actual safety in some areas.</p>
+        </div>
       </div>
     </div>
     <div class="rev d2">
@@ -2425,12 +2430,7 @@ di "═════════════════════════�
       </div>
     </div>
   </div>
-  <div class="full-w rev" style="margin-top:24px;">
-    <div class="hbox gold">
-      <div class="hbox-lbl">The water paradox</div>
-      <p>61 percent have piped water inside the home, and 93 percent perceive their drinking water as safe. However, 69 percent do not treat their water — suggesting confidence may outrun actual safety in some areas.</p>
-    </div>
-  </div>
+  <!-- Water Paradox moved inside Water Access column -->
 </div>
 
 <!-- ── Section B: Internet ── -->
@@ -2441,9 +2441,9 @@ di "═════════════════════════�
     <span class="eyebrow" style="color:var(--blue);">Internet access</span>
     <h2 class="hed" style="max-width:850px;">Half the country is online — but <em style="color:var(--blue);">59% had an outage</em> last week.</h2>
   </div>
-  <div class="two-col" style="margin-top:36px;">
-    <div class="rev">
-      <div class="cbox" style="min-height:280px;">
+  <div class="two-col" style="margin-top:36px;align-items:stretch;">
+    <div class="rev" style="display:flex;flex-direction:column;">
+      <div class="cbox" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;">
         <div class="ctitle" style="color:var(--blue);">📱 Internet access by region</div>
         <div class="csub">50% national access · smartphone dominant</div>
         <div style="margin-top:12px;">
@@ -2456,8 +2456,8 @@ di "═════════════════════════�
         <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">64 percent use smartphones. Devices: Smart TV (13 percent), Laptop (11 percent). Social media/communication dominates use (36 percent).</p>
       </div>
     </div>
-    <div class="rev d1">
-      <div class="cbox">
+    <div class="rev d1" style="display:flex;flex-direction:column;">
+      <div class="cbox" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;">
         <div class="ctitle">Internet use purposes</div>
         <div class="csub">% of households by primary use · among connected HHs</div>
         <div style="margin-top:8px;">
@@ -2631,49 +2631,68 @@ di "═════════════════════════�
 <div class="chap" id="ch-assets"><span class="chap-n">09</span><span class="chap-r"></span><span class="chap-l">M13 Assets &amp; Energy — What families own</span></div>
 
 <div class="sec cream-bg">
-  <div class="sec two-col" style="padding:70px 40px;max-width:1100px;margin:0 auto;">
-    <div class="rev">
-      <span class="eyebrow t">Household assets</span>
-      <h2 class="hed">Motorcycles and washing machines — <em class="t">but only 3.9% own a car</em></h2>
-      <div class="body-copy">
-        <p>The two most common household assets are almost exactly tied: washing machines (55 percent) and motorcycles/tricycles (54 percent). These reflect the everyday priorities of Filipino family life — mobility and laundry.</p>
-        <p>Refrigerators reach 49 percent nationally. NCR leads (59 percent) while Visayas lags (45 percent). Computer/laptop ownership is 15 percent nationally — but 25 percent in NCR vs just 9 percent in Visayas. This digital asset gap directly constrains remote work and educational access.</p>
-        <p>Air conditioning is 10 percent nationally — almost entirely an NCR phenomenon (24 percent there vs 6 percent in Mindanao and 9 percent in Visayas). Cars are 4 percent nationally — equally rare across all regions (3 to 5 percent).</p>
-      </div>
-      <div class="sgrid sgrid-4 rev d1" style="margin-top:20px;">
-        <div class="scell b-c"><div class="scell-n" style="color:#009FDA;">55%</div><div class="scell-l">Washing machine</div></div>
-        <div class="scell o-c"><div class="scell-n" style="color:#F05023;">54%</div><div class="scell-l">Motorcycle</div></div>
-        <div class="scell g-c"><div class="scell-n" style="color:#00A651;">49%</div><div class="scell-l">Refrigerator</div></div>
-        <div class="scell r-c"><div class="scell-n" style="color:#CE1126;">3.9%</div><div class="scell-l">Car/Van</div></div>
-      </div>
-      <div class="sgrid sgrid-4 rev d2" style="margin-top:2px;">
-        <div class="scell" style="background:rgba(212,160,23,.08);"><div class="scell-n" style="color:#D4A017;">26%</div><div class="scell-l">Gas stove</div></div>
-        <div class="scell" style="background:rgba(0,56,168,.06);"><div class="scell-n" style="color:#0038A8;">15%</div><div class="scell-l">Computer</div></div>
-        <div class="scell r-c"><div class="scell-n" style="color:#CE1126;">10%</div><div class="scell-l">Air con</div></div>
-        <div class="scell" style="background:rgba(0,184,200,.06);"><div class="scell-n" style="color:#00B8C8;">1.6%</div><div class="scell-l">Boat</div></div>
-      </div>
+  <div class="sec" style="padding:70px 40px;max-width:1100px;margin:0 auto;">
+    <span class="eyebrow t">Household assets</span>
+    <h2 class="hed">Motorcycles and washing machines — <em class="t">but only 3.9% own a car</em></h2>
+    <div class="sgrid rev d1" style="display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:20px;margin-bottom:24px;">
+      <div class="scell b-c"><div class="scell-n" style="color:#009FDA;font-size:1.3rem;">55%</div><div class="scell-l" style="font-size:.72rem;">Washing machine</div></div>
+      <div class="scell o-c"><div class="scell-n" style="color:#F05023;font-size:1.3rem;">54%</div><div class="scell-l" style="font-size:.72rem;">Motorcycle</div></div>
+      <div class="scell g-c"><div class="scell-n" style="color:#00A651;font-size:1.3rem;">49%</div><div class="scell-l" style="font-size:.72rem;">Refrigerator</div></div>
+      <div class="scell" style="background:rgba(212,160,23,.08);"><div class="scell-n" style="color:#D4A017;font-size:1.3rem;">26%</div><div class="scell-l" style="font-size:.72rem;">Gas stove</div></div>
+      <div class="scell" style="background:rgba(0,56,168,.06);"><div class="scell-n" style="color:#0038A8;font-size:1.3rem;">15%</div><div class="scell-l" style="font-size:.72rem;">Computer</div></div>
+      <div class="scell r-c"><div class="scell-n" style="color:#CE1126;font-size:1.3rem;">10%</div><div class="scell-l" style="font-size:.72rem;">Air con</div></div>
+      <div class="scell r-c"><div class="scell-n" style="color:#CE1126;font-size:1.3rem;">3.9%</div><div class="scell-l" style="font-size:.72rem;">Car/Van</div></div>
+      <div class="scell" style="background:rgba(0,184,200,.06);"><div class="scell-n" style="color:#00B8C8;font-size:1.3rem;">1.6%</div><div class="scell-l" style="font-size:.72rem;">Boat</div></div>
     </div>
-    <div class="rev d2">
-      <div class="cbox">
-        <div class="ctitle">Asset ownership rates</div>
-        <div class="csub">% of HHs owning each asset</div>
-        <div style="margin-top:8px;">
-          <div class="bs"><div class="bs-lbl"><span>Washing machine</span><span style="color:#009FDA;">55.0%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="55.0"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Motorcycle</span><span style="color:#F05023;">54.0%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="54.0"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Refrigerator</span><span style="color:#00A651;">49.0%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="49.0"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Gas stove</span><span style="color:#D4A017;">25.9%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="25.9"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Computer</span><span style="color:#0038A8;">14.6%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="14.6"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Air con</span><span style="color:#CE1126;">10.5%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="10.5"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Car/Van</span><span style="color:#00B8C8;">3.9%</span></div><div class="btrack"><div class="bfill" style="background:#00B8C8;" data-w="3.9"></div></div></div>
-          <div class="bs"><div class="bs-lbl"><span>Boat</span><span style="color:#9FA0A4;">1.6%</span></div><div class="btrack"><div class="bfill" style="background:#9FA0A4;" data-w="1.6"></div></div></div>
+    <div class="two-col">
+      <div class="rev">
+        <div class="body-copy">
+          <p>The two most common household assets are almost exactly tied: washing machines (55 percent) and motorcycles/tricycles (54 percent). These reflect the everyday priorities of Filipino family life — mobility and laundry.</p>
+          <p>Refrigerators reach 49 percent nationally. NCR leads (59 percent) while Visayas lags (45 percent). Computer/laptop ownership is 15 percent nationally — but 25 percent in NCR vs just 9 percent in Visayas. This digital asset gap directly constrains remote work and educational access.</p>
+          <p>Air conditioning is 10 percent nationally — almost entirely an NCR phenomenon (24 percent there vs 6 percent in Mindanao and 9 percent in Visayas). Cars are 4 percent nationally — equally rare across all regions (3 to 5 percent).</p>
+        </div>
+      </div>
+      <div class="rev d2">
+        <div class="cbox">
+          <div class="ctitle">Asset ownership rates</div>
+          <div class="csub">% of HHs owning each asset</div>
+          <div style="margin-top:8px;">
+            <div class="bs"><div class="bs-lbl"><span>Washing machine</span><span style="color:#009FDA;">55.0%</span></div><div class="btrack"><div class="bfill" style="background:#009FDA;" data-w="55.0"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Motorcycle</span><span style="color:#F05023;">54.0%</span></div><div class="btrack"><div class="bfill" style="background:#F05023;" data-w="54.0"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Refrigerator</span><span style="color:#00A651;">49.0%</span></div><div class="btrack"><div class="bfill" style="background:#00A651;" data-w="49.0"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Gas stove</span><span style="color:#D4A017;">25.9%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="25.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Computer</span><span style="color:#0038A8;">14.6%</span></div><div class="btrack"><div class="bfill" style="background:#0038A8;" data-w="14.6"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Air con</span><span style="color:#CE1126;">10.5%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="10.5"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Car/Van</span><span style="color:#00B8C8;">3.9%</span></div><div class="btrack"><div class="bfill" style="background:#00B8C8;" data-w="3.9"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>Boat</span><span style="color:#9FA0A4;">1.6%</span></div><div class="btrack"><div class="bfill" style="background:#9FA0A4;" data-w="1.6"></div></div></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="sec">
+<div class="sec" style="padding:0 40px 40px;max-width:1100px;margin:0 auto;">
+  <span class="eyebrow o">Energy for cooking</span>
+  <h2 class="hed">LPG on top — but <em class="o">fuelwood burns in half of homes</em></h2>
+  <div class="sgrid sgrid-3 rev d1" style="margin-top:18px;margin-bottom:2px;">
+    <div class="scell" style="background:rgba(212,160,23,.08);"><div class="scell-n" style="color:#D4A017;">61%</div><div class="scell-l">LPG</div></div>
+    <div class="scell r-c"><div class="scell-n" style="color:#CE1126;">51%</div><div class="scell-l">Fuelwood</div></div>
+    <div class="scell" style="background:rgba(159,160,164,.1);"><div class="scell-n" style="color:#9FA0A4;">27%</div><div class="scell-l">Charcoal</div></div>
+  </div>
+  <div class="sgrid sgrid-3 rev d2" style="margin-bottom:24px;">
+    <div class="scell b-c"><div class="scell-n" style="color:#009FDA;">21%</div><div class="scell-l">Electricity</div></div>
+    <div class="scell o-c"><div class="scell-n" style="color:#F05023;">94%</div><div class="scell-l">NCR uses LPG</div></div>
+    <div class="scell g-c"><div class="scell-n" style="color:#00A651;">72%</div><div class="scell-l">Mindanao fuelwood</div></div>
+  </div>
   <div class="two-col">
+    <div class="rev">
+      <div class="body-copy">
+        <p>LPG is the primary cooking fuel at 61 percent. But 51 percent of households still use fuelwood — not as a curiosity but as a primary or supplementary fuel. Twenty-seven percent use charcoal. These are not mutually exclusive: many households use multiple fuels depending on what they are cooking and what is available.</p>
+        <p>The regional split is dramatic: 94 percent of NCR households use LPG vs just 39 percent in Mindanao. Conversely, 72 percent of Mindanao households use fuelwood vs only 4 percent in NCR. Visayas and Mindanao together have the highest biomass dependency, with direct implications for indoor air quality and deforestation.</p>
+        <p>Electricity for cooking is 21 percent nationally — highest in NCR (29 percent) and lowest in Visayas (15 percent). Despite near-universal electrification, the grid has not displaced solid fuels for cooking in most of the country.</p>
+      </div>
+    </div>
     <div class="rev d2">
       <div class="cbox">
         <div class="ctitle">Cooking fuel type</div>
@@ -2687,25 +2706,6 @@ di "═════════════════════════�
         </div>
       </div>
     </div>
-    <div class="rev">
-      <span class="eyebrow o">Energy for cooking</span>
-      <h2 class="hed">LPG on top — but <em class="o">fuelwood burns in half of homes</em></h2>
-      <div class="body-copy">
-        <p>LPG is the primary cooking fuel at 61 percent. But 51 percent of households still use fuelwood — not as a curiosity but as a primary or supplementary fuel. Twenty-seven percent use charcoal. These are not mutually exclusive: many households use multiple fuels depending on what they are cooking and what is available.</p>
-        <p>The regional split is dramatic: 94 percent of NCR households use LPG vs just 39 percent in Mindanao. Conversely, 72 percent of Mindanao households use fuelwood vs only 4 percent in NCR. Visayas and Mindanao together have the highest biomass dependency, with direct implications for indoor air quality and deforestation.</p>
-        <p>Electricity for cooking is 21 percent nationally — highest in NCR (29 percent) and lowest in Visayas (15 percent). Despite near-universal electrification, the grid has not displaced solid fuels for cooking in most of the country.</p>
-      </div>
-      <div class="sgrid sgrid-3 rev d1" style="margin-top:20px;">
-        <div class="scell" style="background:rgba(212,160,23,.08);"><div class="scell-n" style="color:#D4A017;">61%</div><div class="scell-l">LPG</div></div>
-        <div class="scell r-c"><div class="scell-n" style="color:#CE1126;">51%</div><div class="scell-l">Fuelwood</div></div>
-        <div class="scell" style="background:rgba(159,160,164,.1);"><div class="scell-n" style="color:#9FA0A4;">27%</div><div class="scell-l">Charcoal</div></div>
-      </div>
-      <div class="sgrid sgrid-3 rev d2" style="margin-top:2px;">
-        <div class="scell b-c"><div class="scell-n" style="color:#009FDA;">21%</div><div class="scell-l">Electricity</div></div>
-        <div class="scell o-c"><div class="scell-n" style="color:#F05023;">94%</div><div class="scell-l">NCR uses LPG</div></div>
-        <div class="scell g-c"><div class="scell-n" style="color:#00A651;">72%</div><div class="scell-l">Mindanao fuelwood</div></div>
-      </div>
-    </div>
   </div>
 <!-- M13 Assets & Energy merged into M12 Utilities replication block above -->
 
@@ -2717,7 +2717,7 @@ di "═════════════════════════�
     <div class="full-w rev">
       <span class="eyebrow p">Perceptions &amp; sentiment</span>
       <h2 class="hed light" style="max-width:850px;">Life satisfaction: 3.04/5. 19% feel worse off. <em>Prices and governance top all concerns.</em></h2>
-      <div class="sgrid sgrid-2 rev d1" style="margin-top:16px;margin-bottom:16px;max-width:600px;">
+      <div class="sgrid sgrid-4 rev d1" style="margin-top:16px;margin-bottom:16px;">
         <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">3.04/5</div><div class="scell-l" style="color:#4a6278;">Life satisfaction mean</div></div>
         <div class="scell dark-c"><div class="scell-n" style="color:#CE1126;">19%</div><div class="scell-l" style="color:#4a6278;">Feel worse off (vs last month)</div></div>
         <div class="scell dark-c"><div class="scell-n" style="color:#D4A017;">11%</div><div class="scell-l" style="color:#4a6278;">Feel unsafe in neighbourhood</div></div>
@@ -2789,17 +2789,17 @@ di "═════════════════════════�
             <span><span style="display:inline-block;width:10px;height:10px;background:rgba(0,159,218,.9);border-radius:2px;vertical-align:middle;"></span> Str.agree</span>
           </div>
           <div style="margin-top:4px;">
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">More say in govt <span style="float:right;color:#40B4E5;">77%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:3.7%;background:rgba(206,17,38,.8);"></div><div style="width:6.8%;background:rgba(240,80,35,.65);"></div><div style="width:12.3%;background:rgba(159,160,164,.7);"></div><div style="width:47.4%;background:rgba(64,180,229,.7);"></div><div style="width:29.7%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Prices rising too quickly <span style="float:right;color:#40B4E5;">76%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:5.2%;background:rgba(206,17,38,.8);"></div><div style="width:11.8%;background:rgba(240,80,35,.65);"></div><div style="width:7.5%;background:rgba(159,160,164,.7);"></div><div style="width:39.4%;background:rgba(64,180,229,.7);"></div><div style="width:36.1%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Children's education <span style="float:right;color:#40B4E5;">71%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:4.7%;background:rgba(206,17,38,.8);"></div><div style="width:11.4%;background:rgba(240,80,35,.65);"></div><div style="width:13.0%;background:rgba(159,160,164,.7);"></div><div style="width:48.5%;background:rgba(64,180,229,.7);"></div><div style="width:22.3%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Political instability <span style="float:right;color:#40B4E5;">64%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:6.0%;background:rgba(206,17,38,.8);"></div><div style="width:13.4%;background:rgba(240,80,35,.65);"></div><div style="width:16.9%;background:rgba(159,160,164,.7);"></div><div style="width:39.4%;background:rgba(64,180,229,.7);"></div><div style="width:24.3%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Digital services saved time <span style="float:right;color:#40B4E5;">60%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.3%;background:rgba(206,17,38,.8);"></div><div style="width:14.0%;background:rgba(240,80,35,.65);"></div><div style="width:18.8%;background:rgba(159,160,164,.7);"></div><div style="width:45.5%;background:rgba(64,180,229,.7);"></div><div style="width:14.4%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Financial situation worse <span style="float:right;color:#40B4E5;">58%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:6.0%;background:rgba(206,17,38,.8);"></div><div style="width:18.8%;background:rgba(240,80,35,.65);"></div><div style="width:17.1%;background:rgba(159,160,164,.7);"></div><div style="width:39.9%;background:rgba(64,180,229,.7);"></div><div style="width:18.3%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Worried about losing job <span style="float:right;color:#40B4E5;">57%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.2%;background:rgba(206,17,38,.8);"></div><div style="width:17.4%;background:rgba(240,80,35,.65);"></div><div style="width:18.6%;background:rgba(159,160,164,.7);"></div><div style="width:38.7%;background:rgba(64,180,229,.7);"></div><div style="width:18.1%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Good time to find a job <span style="float:right;color:#40B4E5;">56%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.2%;background:rgba(206,17,38,.8);"></div><div style="width:15.2%;background:rgba(240,80,35,.65);"></div><div style="width:21.2%;background:rgba(159,160,164,.7);"></div><div style="width:43.8%;background:rgba(64,180,229,.7);"></div><div style="width:12.6%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Optimistic about economy <span style="float:right;color:#40B4E5;">55%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.4%;background:rgba(206,17,38,.8);"></div><div style="width:14.6%;background:rgba(240,80,35,.65);"></div><div style="width:22.6%;background:rgba(159,160,164,.7);"></div><div style="width:42.5%;background:rgba(64,180,229,.7);"></div><div style="width:12.9%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">AI/tech job displacement <span style="float:right;color:#40B4E5;">52%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:8.1%;background:rgba(206,17,38,.8);"></div><div style="width:19.3%;background:rgba(240,80,35,.65);"></div><div style="width:20.2%;background:rgba(159,160,164,.7);"></div><div style="width:35.6%;background:rgba(64,180,229,.7);"></div><div style="width:16.8%;background:rgba(0,159,218,.9);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Taxes well spent <span style="float:right;color:#40B4E5;">37%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:20.7%;background:rgba(206,17,38,.8);"></div><div style="width:23.9%;background:rgba(240,80,35,.65);"></div><div style="width:18.9%;background:rgba(159,160,164,.7);"></div><div style="width:27.2%;background:rgba(64,180,229,.7);"></div><div style="width:9.4%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">More say in govt <span style="float:right;color:#0038A8;font-weight:700;">77%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:3.7%;background:rgba(206,17,38,.8);"></div><div style="width:6.8%;background:rgba(240,80,35,.65);"></div><div style="width:12.3%;background:rgba(159,160,164,.7);"></div><div style="width:47.4%;background:rgba(64,180,229,.7);"></div><div style="width:29.7%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Prices rising too quickly <span style="float:right;color:#CE1126;font-weight:700;">76%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:5.2%;background:rgba(206,17,38,.8);"></div><div style="width:11.8%;background:rgba(240,80,35,.65);"></div><div style="width:7.5%;background:rgba(159,160,164,.7);"></div><div style="width:39.4%;background:rgba(64,180,229,.7);"></div><div style="width:36.1%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Children's education <span style="float:right;color:#009FDA;font-weight:700;">71%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:4.7%;background:rgba(206,17,38,.8);"></div><div style="width:11.4%;background:rgba(240,80,35,.65);"></div><div style="width:13.0%;background:rgba(159,160,164,.7);"></div><div style="width:48.5%;background:rgba(64,180,229,.7);"></div><div style="width:22.3%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Political instability <span style="float:right;color:#F05023;font-weight:700;">64%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:6.0%;background:rgba(206,17,38,.8);"></div><div style="width:13.4%;background:rgba(240,80,35,.65);"></div><div style="width:16.9%;background:rgba(159,160,164,.7);"></div><div style="width:39.4%;background:rgba(64,180,229,.7);"></div><div style="width:24.3%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Digital services saved time <span style="float:right;color:#00A651;font-weight:700;">60%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.3%;background:rgba(206,17,38,.8);"></div><div style="width:14.0%;background:rgba(240,80,35,.65);"></div><div style="width:18.8%;background:rgba(159,160,164,.7);"></div><div style="width:45.5%;background:rgba(64,180,229,.7);"></div><div style="width:14.4%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Financial situation worse <span style="float:right;color:#D4A017;font-weight:700;">58%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:6.0%;background:rgba(206,17,38,.8);"></div><div style="width:18.8%;background:rgba(240,80,35,.65);"></div><div style="width:17.1%;background:rgba(159,160,164,.7);"></div><div style="width:39.9%;background:rgba(64,180,229,.7);"></div><div style="width:18.3%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Worried about losing job <span style="float:right;color:#0038A8;font-weight:700;">57%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.2%;background:rgba(206,17,38,.8);"></div><div style="width:17.4%;background:rgba(240,80,35,.65);"></div><div style="width:18.6%;background:rgba(159,160,164,.7);"></div><div style="width:38.7%;background:rgba(64,180,229,.7);"></div><div style="width:18.1%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Good time to find a job <span style="float:right;color:#00B8C8;font-weight:700;">56%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.2%;background:rgba(206,17,38,.8);"></div><div style="width:15.2%;background:rgba(240,80,35,.65);"></div><div style="width:21.2%;background:rgba(159,160,164,.7);"></div><div style="width:43.8%;background:rgba(64,180,229,.7);"></div><div style="width:12.6%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Optimistic about economy <span style="float:right;color:#009FDA;font-weight:700;">55%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:7.4%;background:rgba(206,17,38,.8);"></div><div style="width:14.6%;background:rgba(240,80,35,.65);"></div><div style="width:22.6%;background:rgba(159,160,164,.7);"></div><div style="width:42.5%;background:rgba(64,180,229,.7);"></div><div style="width:12.9%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">AI/tech job displacement <span style="float:right;color:#9FA0A4;font-weight:700;">52%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:8.1%;background:rgba(206,17,38,.8);"></div><div style="width:19.3%;background:rgba(240,80,35,.65);"></div><div style="width:20.2%;background:rgba(159,160,164,.7);"></div><div style="width:35.6%;background:rgba(64,180,229,.7);"></div><div style="width:16.8%;background:rgba(0,159,218,.9);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#002244;margin-bottom:2px;">Taxes well spent <span style="float:right;color:#CE1126;font-weight:700;">37%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:20.7%;background:rgba(206,17,38,.8);"></div><div style="width:23.9%;background:rgba(240,80,35,.65);"></div><div style="width:18.9%;background:rgba(159,160,164,.7);"></div><div style="width:27.2%;background:rgba(64,180,229,.7);"></div><div style="width:9.4%;background:rgba(0,159,218,.9);"></div></div></div>
           </div>
         </div>
       </div>
@@ -2807,28 +2807,28 @@ di "═════════════════════════�
 
     <div class="vis-sep" style="color:rgba(245,240,232,.1);">· · ·</div>
 
-    <div class="two-col">
+    <span class="eyebrow b">Regional sentiment</span>
+    <h2 class="hed light">Visayas most <em class="r">pessimistic.</em> Mindanao most <em class="t">stable.</em></h2>
+    <div class="two-col" style="margin-top:18px;">
       <div class="rev d2">
         <div class="cbox dark">
           <div class="ctitle light">Economic sentiment by macro-region</div>
           <div class="csub light">Stacked % better / same / worse vs last month</div>
-          <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:8px;color:#5a7389;margin-bottom:6px;">
-            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(0,166,81,.82);border-radius:2px;vertical-align:middle;"></span> Better</span>
-            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(159,160,164,.72);border-radius:2px;vertical-align:middle;"></span> Same</span>
-            <span><span style="display:inline-block;width:10px;height:10px;background:rgba(206,17,38,.82);border-radius:2px;vertical-align:middle;"></span> Worse</span>
+          <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:8px;color:#c9d8e6;margin-bottom:6px;">
+            <span><span style="display:inline-block;width:10px;height:10px;background:#00A651;border-radius:2px;vertical-align:middle;"></span> Better</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:#D4A017;border-radius:2px;vertical-align:middle;"></span> Same</span>
+            <span><span style="display:inline-block;width:10px;height:10px;background:#CE1126;border-radius:2px;vertical-align:middle;"></span> Worse</span>
           </div>
           <div style="margin-top:4px;">
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;"><span style="font-weight:700;">National</span><span style="float:right;">36% / 46% / 19%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:35.9%;background:rgba(0,166,81,.82);"></div><div style="width:45.5%;background:rgba(159,160,164,.72);"></div><div style="width:18.6%;background:rgba(206,17,38,.82);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">NCR<span style="float:right;">33% / 48% / 20%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:32.5%;background:rgba(0,166,81,.82);"></div><div style="width:47.7%;background:rgba(159,160,164,.72);"></div><div style="width:19.8%;background:rgba(206,17,38,.82);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Luzon (excl. NCR)<span style="float:right;">36% / 44% / 20%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:36.3%;background:rgba(0,166,81,.82);"></div><div style="width:43.9%;background:rgba(159,160,164,.72);"></div><div style="width:19.9%;background:rgba(206,17,38,.82);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Visayas<span style="float:right;">39% / 41% / 20%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:38.9%;background:rgba(0,166,81,.82);"></div><div style="width:41.3%;background:rgba(159,160,164,.72);"></div><div style="width:19.8%;background:rgba(206,17,38,.82);"></div></div></div>
-            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#ccc;margin-bottom:2px;">Mindanao<span style="float:right;">35% / 51% / 15%</span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:34.7%;background:rgba(0,166,81,.82);"></div><div style="width:50.7%;background:rgba(159,160,164,.72);"></div><div style="width:14.6%;background:rgba(206,17,38,.82);"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;"><span style="font-weight:700;">National</span><span style="float:right;"><span style="color:#00A651;">36%</span> / <span style="color:#D4A017;">46%</span> / <span style="color:#CE1126;">19%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:35.9%;background:#00A651;"></div><div style="width:45.5%;background:#D4A017;"></div><div style="width:18.6%;background:#CE1126;"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;">NCR<span style="float:right;"><span style="color:#00A651;">33%</span> / <span style="color:#D4A017;">48%</span> / <span style="color:#CE1126;">20%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:32.5%;background:#00A651;"></div><div style="width:47.7%;background:#D4A017;"></div><div style="width:19.8%;background:#CE1126;"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;">Luzon (excl. NCR)<span style="float:right;"><span style="color:#00A651;">36%</span> / <span style="color:#D4A017;">44%</span> / <span style="color:#CE1126;">20%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:36.3%;background:#00A651;"></div><div style="width:43.9%;background:#D4A017;"></div><div style="width:19.9%;background:#CE1126;"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;">Visayas<span style="float:right;"><span style="color:#00A651;">39%</span> / <span style="color:#D4A017;">41%</span> / <span style="color:#CE1126;">20%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:38.9%;background:#00A651;"></div><div style="width:41.3%;background:#D4A017;"></div><div style="width:19.8%;background:#CE1126;"></div></div></div>
+            <div style="margin-bottom:6px;"><div style="font-family:var(--mono);font-size:9px;color:#c9d8e6;margin-bottom:2px;">Mindanao<span style="float:right;"><span style="color:#00A651;">35%</span> / <span style="color:#D4A017;">51%</span> / <span style="color:#CE1126;">15%</span></span></div><div class="btrack dark-t" style="height:14px;border-radius:3px;overflow:hidden;display:flex;"><div style="width:34.7%;background:#00A651;"></div><div style="width:50.7%;background:#D4A017;"></div><div style="width:14.6%;background:#CE1126;"></div></div></div>
           </div>
         </div>
       </div>
       <div class="rev">
-        <span class="eyebrow b">Regional sentiment</span>
-        <h2 class="hed light">Visayas most <em class="r">pessimistic.</em> Mindanao most <em class="t">stable.</em></h2>
         <div class="body-copy light">
           <p>Visayas shows the highest "worse off" sentiment at 20 percent, consistent with Visayas being the region with the lowest PhilHealth coverage, lowest internet access, lowest financial inclusion, and highest hazard exposure relative to infrastructure.</p>
           <p>Mindanao shows the highest "same" rate at 51 percent — suggesting a stability perception despite lower objective indicators. Visayas is most optimistic with 39 percent reporting improvement, while NCR trails at 33 percent improved.</p>
@@ -3210,7 +3210,7 @@ lazy('cIncMacro', () => {
   sObs.observe(el);
 
   function drawSankey(){
-    const w = Math.max(el.clientWidth || 700, 700), h = 460;
+    const w = Math.max(el.clientWidth || 700, 700), h = 420;
     const svg = d3.select(el).append('svg').attr('width',w).attr('height',h);
 
     // Left: source macro-regions, weighted by share of potential migrants
@@ -3282,9 +3282,9 @@ lazy('cIncMacro', () => {
     const ml = 100, mr = 130;
     const sankey = d3.sankey()
       .nodeId(d => d.index)
-      .nodeWidth(12)
-      .nodePadding(8)
-      .extent([[ml,8],[w-mr,h-8]]);
+      .nodeWidth(14)
+      .nodePadding(4)
+      .extent([[ml,4],[w-mr,h-4]]);
 
     const {nodes:sNodes, links:sLinks} = sankey({nodes:nodes.map(d=>({...d})),links:links.map(d=>({...d}))});
 
@@ -3303,7 +3303,7 @@ lazy('cIncMacro', () => {
       .attr('d',d3.sankeyLinkHorizontal())
       .attr('stroke',d=>color(d.source.name))
       .attr('stroke-width',d=>Math.max(d.width,0.5))
-      .attr('stroke-opacity',.50);
+      .attr('stroke-opacity',.55);
 
     // Labels: left col → left of bar, right col → right of bar
     svg.append('g').selectAll('text').data(sNodes).join('text')
@@ -3313,9 +3313,9 @@ lazy('cIncMacro', () => {
       .attr('text-anchor', d => d.x0 < w/2 ? 'end' : 'start')
       .text(d => d.name)
       .attr('font-family',"'IBM Plex Mono',monospace")
-      .attr('font-size','10px')
-      .attr('font-weight','400')
-      .attr('fill','#4A6278');
+      .attr('font-size','11px')
+      .attr('font-weight','600')
+      .attr('fill','#002244');
   }
 })();
 
@@ -3350,31 +3350,18 @@ lazy('cFoodSrc', () => {
 // [REMOVED per annotation: cWetMkt converted to bar strips]
 
 // SSB by age with gender filter
-let ssbChart = null;
-const ssbData = {
-  all:[78.56,91.44,93.08,94.27,90.08,82.78],
-  male:[78.56,91.44,93.08,94.27,90.08,82.78],
-  female:[78.56,91.44,93.08,94.27,90.08,82.78]
-};
-// Gender-specific rates (all ~89.4% but regional differences exist)
-function updateSSB(gender){
-  document.querySelectorAll('#ssbFilter .filter-btn').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-  if(!ssbChart) return;
-  const cols = gender==='male'?'rgba(0,56,168,.7)':gender==='female'?'rgba(206,17,38,.6)':'rgba(0,159,218,.7)';
-  ssbChart.data.datasets[0].backgroundColor = ssbData[gender].map((v,i)=>i===3?'#CE1126':cols);
-  const lbl = gender==='all'?'All':gender==='male'?'Male':'Female';
-  ssbChart.data.datasets[0].label = lbl + ' (89.9% avg)';
-  ssbChart.update();
-}
+// ssbChart variable removed — SSB now uses grouped National/Male/Female bars
 lazy('cSSB', () => {
-  const d = ssbData.all;
-  ssbChart = new Chart(document.getElementById('cSSB'), {type:'bar', data:{
+  new Chart(document.getElementById('cSSB'), {type:'bar', data:{
     labels:['<10','10-17','18-24','25-44','45-64','65+'],
-    datasets:[{label:'All (89.9% avg)',data:d,backgroundColor:d.map((v,i)=>i===3?'#CE1126':'rgba(0,159,218,.7)'),borderRadius:4,borderWidth:0,barPercentage:.78}]
+    datasets:[
+      {label:'National',data:[78.56,91.44,93.08,94.27,90.08,82.78],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+      {label:'Male',data:[80.12,92.31,93.85,94.90,90.65,83.42],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+      {label:'Female',data:[76.94,90.54,92.28,93.61,89.49,82.17],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
+    ]
   }, options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
-    plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.y}%`}}}}});
+    plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
 });
 
 // [REMOVED per SFAP NEW-2: orphan cHazard JS cleaned up — canvas already removed]
@@ -3441,9 +3428,9 @@ lazy('sankeySatEco', () => {
     [0.0, 0.0, 0.0, 0.1, 0.4]   // v2=5 (Richest)
   ];
 
-  // Colors: warm red→orange→grey→teal→blue for income quintiles
-  const selfColors  = ['#CE1126','#F05023','#9FA0A4','#40B4E5','#009FDA'];
-  const childColors = ['#CE1126','#F05023','#9FA0A4','#40B4E5','#009FDA'];
+  // Colors: WB palette for income quintiles (poorest→richest)
+  const selfColors  = ['#CE1126','#F05023','#D4A017','#009FDA','#00A651'];
+  const childColors = ['#CE1126','#F05023','#D4A017','#009FDA','#00A651'];
 
   // Build nodes: 0-4 = self-income (left), 5-9 = children-income (right)
   const nodes = [
@@ -3461,8 +3448,8 @@ lazy('sankeySatEco', () => {
 
   const rect = el.getBoundingClientRect();
   const rawW = rect.width || 500;
-  const W = Math.max(rawW, 500) + 320, H = rect.height || 460;
-  const ml = 120, mr = 120; // margins for labels
+  const W = Math.max(rawW, 500) + 360, H = rect.height || 460;
+  const ml = 140, mr = 160; // margins for labels (wider right for "Child:" labels)
   const svg = d3.select(el).append('svg')
     .attr('viewBox',`0 0 ${W} ${H}`)
     .attr('preserveAspectRatio','xMidYMid meet')
@@ -3503,15 +3490,15 @@ lazy('sankeySatEco', () => {
     .append('title')
     .text(d => `${d.name}: ${d3.format('.1f')(d.value)}%`);
 
-  // Labels
-  svg.append('g').style('font-family','var(--mono,monospace)').style('font-size','11px').style('font-weight','600')
+  // Labels — use node color for visibility, bold
+  svg.append('g').style('font-family','var(--mono,monospace)').style('font-size','11px').style('font-weight','700')
     .selectAll('text')
     .data(sNodes).join('text')
-    .attr('x', d => d.x0 < W/2 ? d.x0-6 : d.x1+6)
+    .attr('x', d => d.x0 < W/2 ? d.x0-8 : d.x1+8)
     .attr('y', d => (d.y0+d.y1)/2)
     .attr('dy','0.35em')
     .attr('text-anchor', d => d.x0 < W/2 ? 'end' : 'start')
-    .attr('fill','#c9d8e6')
+    .attr('fill', d => d.color || '#FFFFFF')
     .text(d => `${d.name} ${d3.format('.1f')(d.value)}%`);
 
   function drawSankey(){ /* already drawn inline */ }
