@@ -236,7 +236,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 
 /* SANKEY */
 .sankey-wrap{width:100%;min-height:300px;position:relative;overflow:visible;}
-.sankey-wrap svg{width:100%;height:100%;overflow:visible;}
+.sankey-wrap svg{width:100%;height:100%;overflow:visible !important;}
 
 /* SVG MAP */
 .map-wrap{position:relative;width:100%;max-width:400px;margin:0 auto;}
@@ -2633,11 +2633,14 @@ lazy('sankeySatEco', () => {
   }
 
   const rect = el.getBoundingClientRect();
-  const W = (rect.width || 500) + 200, H = rect.height || 420;
-  const ml = 110, mr = 110; // margins for labels
+  const rawW = rect.width || 500;
+  const W = Math.max(rawW, 500) + 200, H = rect.height || 420;
+  const ml = 120, mr = 120; // margins for labels
   const svg = d3.select(el).append('svg')
     .attr('viewBox',`0 0 ${W} ${H}`)
-    .attr('preserveAspectRatio','xMidYMid meet');
+    .attr('preserveAspectRatio','xMidYMid meet')
+    .attr('overflow','visible')
+    .style('overflow','visible');
 
   const sankey = d3.sankey()
     .nodeId(d=>d.index)
@@ -2677,7 +2680,7 @@ lazy('sankeySatEco', () => {
   svg.append('g').style('font-family','var(--mono,monospace)').style('font-size','9px')
     .selectAll('text')
     .data(sNodes).join('text')
-    .attr('x', d => d.x0 < W/2 ? d.x0-4 : d.x1+4)
+    .attr('x', d => d.x0 < W/2 ? d.x0-6 : d.x1+6)
     .attr('y', d => (d.y0+d.y1)/2)
     .attr('dy','0.35em')
     .attr('text-anchor', d => d.x0 < W/2 ? 'end' : 'start')
