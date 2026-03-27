@@ -445,10 +445,12 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
   <details class="repl"><summary>Replication do-file · M01 Roster + M06 Migration</summary>
   <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
 ********************************************************************************
-* L2Phl CAPI Baseline — Replication Preamble (§0)
-* Run this block FIRST, then any chapter block below
+* L2Phl CAPI Baseline — CH01: PEOPLE — Replication Code
+* Demographics, Households, Disability, Migration
+* Run §0 preamble FIRST, then this block
 ********************************************************************************
 
+* ── §0  SETUP PREAMBLE (run first) ─────────────────────────────────────────
 clear all
 set more off
 set excelxlsxlargefile on
@@ -525,26 +527,40 @@ merge m:1 hhid fmid using "$ado/final_weights.dta", ///
 gen_macroreg
 gen_settlement
 
-* Age groups
+* Age groups (original bands)
 cap drop age_grp_orig
 gen age_grp_orig = .
 replace age_grp_orig = 1 if age &lt; 10
-replace age_grp_orig = 2 if age >= 10 &amp; age &lt;= 19
-replace age_grp_orig = 3 if age >= 20 &amp; age &lt;= 29
-replace age_grp_orig = 4 if age >= 30 &amp; age &lt;= 39
-replace age_grp_orig = 5 if age >= 40 &amp; age &lt;= 49
-replace age_grp_orig = 6 if age >= 50 &amp; age &lt;= 59
-replace age_grp_orig = 7 if age >= 60 &amp; age &lt;= 69
-replace age_grp_orig = 8 if age >= 70 &amp; age &lt; .
+replace age_grp_orig = 2 if age &gt;= 10 &amp; age &lt;= 19
+replace age_grp_orig = 3 if age &gt;= 20 &amp; age &lt;= 29
+replace age_grp_orig = 4 if age &gt;= 30 &amp; age &lt;= 39
+replace age_grp_orig = 5 if age &gt;= 40 &amp; age &lt;= 49
+replace age_grp_orig = 6 if age &gt;= 50 &amp; age &lt;= 59
+replace age_grp_orig = 7 if age &gt;= 60 &amp; age &lt;= 69
+replace age_grp_orig = 8 if age &gt;= 70 &amp; age &lt; .
 
-* Under-20 share
+la def AGE_GRP_ORIG 1 "&lt;10" 2 "10-19" 3 "20-29" 4 "30-39" 5 "40-49" 6 "50-59" 7 "60-69" 8 "70+", replace
+la val age_grp_orig AGE_GRP_ORIG
+
+* POPULATION TOTAL
+su indw
+di as res "Population (weighted): " %12.0f r(sum) " individuals"
+
+* HOUSEHOLD COUNT
+preserve
+    bys hhid: keep if _n == 1
+    count
+    di as res "Number of households: " r(N)
+restore
+
+* UNDER 20 SHARE
 cap drop _tmp
 gen _tmp = (age &lt; 20) if age &lt; .
 su _tmp [aw=indw]
-di as res "Under 20: " %5.0f r(mean)*100 "%"
+di as res "Under 20 share: " %5.1f r(mean)*100 "%"
 drop _tmp
 
-* Median age — total and by sex
+* MEDIAN AGE — total and by sex
 _pctile age [pw=indw], p(50)
 di as res "  Median age (total): " r(r1)
 forvalues s = 1/2 {
@@ -553,11 +569,75 @@ forvalues s = 1/2 {
     di as res "  Median age (`lbl'): " r(r1)
 }
 
-* Gender split
+* GENDER SPLIT
+di as text "Gender distribution:"
 tab gender [aw=indw]
 
-* Disability prevalence
+* AGE DISTRIBUTION BY GROUP
+di as text "Age group distribution (%):"
+tab age_grp_orig [aw=indw]
+
+* HOUSEHOLD COMPOSITION — from relationship variable
+* Code HH types from relationship: nuclear, extended, single-parent, couples, single
+cap drop hh_type
+gen hh_type = .
+
+preserve
+    bys hhid: gen n_members = _N
+    * Identify HH structure
+    gen is_head = (relationship == 1)  // assuming relationship==1 is head
+    gen is_spouse = (relationship == 2)
+    gen is_child = (relationship == 3)
+    gen is_other_rel = (relationship &gt; 3 &amp; relationship &lt; .)
+
+    by hhid: egen has_spouse = max(is_spouse)
+    by hhid: egen has_children = max(is_child)
+    by hhid: egen has_other = max(is_other_rel)
+
+    * Classify HH type (keep single row per HH)
+    bys hhid: keep if _n == 1
+
+    gen hh_type_cat = .
+    * Single-person
+    replace hh_type_cat = 5 if n_members == 1
+    * Couple (no children)
+    replace hh_type_cat = 4 if n_members == 2 &amp; has_spouse == 1 &amp; has_children == 0
+    * Nuclear (head, spouse, children only)
+    replace hh_type_cat = 1 if has_spouse == 1 &amp; has_children == 1 &amp; has_other == 0
+    * Extended (has other relatives beyond nuclear core)
+    replace hh_type_cat = 2 if has_other == 1
+    * Single-parent (head with children, no spouse)
+    replace hh_type_cat = 3 if has_spouse == 0 &amp; has_children == 1 &amp; n_members &gt; 1
+
+    keep hhid hh_type_cat hhsize
+    save "$out/_hh_type_temp.dta", replace
+restore
+
+merge m:1 hhid using "$out/_hh_type_temp.dta", nogen keep(match)
+la def HH_TYPE 1 "Nuclear" 2 "Extended" 3 "Single-parent" 4 "Couples (no child)" 5 "Single", replace
+la val hh_type_cat HH_TYPE
+
+* Household type distribution
+preserve
+    bys hhid: keep if _n == 1
+    tab hh_type_cat [aw=hhw]
+    di as res "Household types (%)"
+restore
+
+* AVERAGE HOUSEHOLD SIZE
+preserve
+    bys hhid: keep if _n == 1
+    su hhsize [aw=hhw]
+    di as res "Average HH size: " r(mean)
+restore
+
+* MARITAL STATUS BY SEX
+di as text "Marital status by sex:"
+tab marital_status gender [aw=indw]
+
+* DISABILITY
 gen disabled = (member_disability == 1)
+di as text "Disability prevalence:"
 su disabled [aw=indw]
 su disabled [aw=indw] if gender == 1
 su disabled [aw=indw] if gender == 2
@@ -568,15 +648,19 @@ su disabled [aw=indw] if settlement == 2
 cap drop age_grp_new
 gen age_grp_new = .
 replace age_grp_new = 1 if age &lt; 15
-replace age_grp_new = 2 if age >= 15 &amp; age &lt;= 17
-replace age_grp_new = 3 if age >= 18 &amp; age &lt;= 45
-replace age_grp_new = 4 if age >= 46 &amp; age &lt;= 59
-replace age_grp_new = 5 if age >= 60 &amp; age &lt; .
+replace age_grp_new = 2 if age &gt;= 15 &amp; age &lt;= 17
+replace age_grp_new = 3 if age &gt;= 18 &amp; age &lt;= 45
+replace age_grp_new = 4 if age &gt;= 46 &amp; age &lt;= 59
+replace age_grp_new = 5 if age &gt;= 60 &amp; age &lt; .
+la def AGE_GRP_NEW 1 "&lt;15" 2 "15-17" 3 "18-45" 4 "46-59" 5 "60+", replace
+la val age_grp_new AGE_GRP_NEW
+
 forvalues ag = 1/5 {
     su disabled [aw=indw] if age_grp_new == `ag'
 }
 
 * PWD ID coverage (among those with disability)
+di as text "PWD ID status (among disabled):"
 tab inci_pwdid [aw=indw] if member_disability == 1
 tab inci_pwdid macroreg [aw=indw] if member_disability == 1, col nofreq
 
@@ -593,8 +677,10 @@ preserve
     rename dis_ pct
     replace pct = pct * 100
     gsort -pct
+    di as text "Top disability types (%):"
     list in 1/4
 restore
+
 
 * ── §2  MIGRATION (M06) ─────────────────────────────────────────────
 * Save roster, load M06
@@ -608,6 +694,7 @@ gen_macroreg
 gen_settlement
 
 * HH-level migration intent (m6: 1=Yes, 2=No)
+di as text "HH with migration intent:"
 preserve
     bys hhid: keep if _n == 1
     gen _tmp = (m6 == 1)
@@ -615,14 +702,38 @@ preserve
     su _tmp [aw=hhw], by(macroreg)
 restore
 
-* Individual intent (m7) — among 15+
-gen considering15 = (m7 == 1) if age >= 15
-replace considering15 = 0 if considering15 == . &amp; age >= 15
+* Individual migration rate within considering HHs (36%)
+* m7: individual considering migration (ages 15+)
+gen considering15 = (m7 == 1) if age &gt;= 15
+replace considering15 = 0 if considering15 == . &amp; age &gt;= 15
+
+* Among HHs with migration intent, % of members 15+ considering
+preserve
+    bys hhid: gen _hh_intent = max(m6)
+    keep if _hh_intent == 1
+    su considering15 [aw=indw] if age &gt;= 15
+    di as res "Among HHs with intent, % of 15+ considering: " %5.1f r(mean)*100 "%"
+restore
+
+* Individual consideration rate overall
 su considering15 [aw=indw]
+di as res "Overall individual consideration rate (15+): " %5.1f r(mean)*100 "%"
+
+* Gender breakdown
+di as text "Migration consideration by gender:"
 tab m7 gender [aw=indw], col nofreq
 
-* Destination (m8: 1=Within PH, 2=Abroad)
+* DESTINATION BREAKDOWN
+* m8: 1=Within PH, 2=Abroad
+di as text "Destination type:"
 tab m8 [aw=indw] if m7 == 1
+
+* m8_country (or similar country variable)
+* Countries: US, Australia, UK, S. Korea, Japan, Saudi Arabia, Canada
+di as text "Destination country breakdown (among abroad-bound):"
+if (c(version) &gt;= 18) {
+    cap tab m8_country [aw=indw] if m7 == 1 &amp; m8 == 2
+}
 
 * Restore roster
 use `_roster', clear
@@ -733,6 +844,12 @@ use `_roster', clear
 
   <details class="repl" style="max-width:1100px;margin:0 auto;padding:0 40px 24px;"><summary>Replication do-file · M02 Education</summary>
   <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
+********************************************************************************
+* L2Phl CAPI Baseline — CH02: EDUCATION — Complete Replication Code
+* School Attendance, Attainment, Expenditure, Early Childhood
+* Requires §0 preamble with globals, paths, gen_macroreg, gen_settlement
+********************************************************************************
+
 * ── §2  EDUCATION (M02) — Attendance, attainment, expenditure ──────
 * Weight: indw (individual level)
 
@@ -743,49 +860,280 @@ merge m:1 hhid fmid using "$ado/final_weights.dta", ///
 gen_macroreg
 gen_settlement
 
-* School attendance — ages 5-24
-tab ed1 [aw=indw] if age >= 5 &amp; age &lt;= 24
+* ══════════════════════════════════════════════════════════════════════
+* SCHOOL ATTENDANCE BY AGE BAND (ages 5-24)
+* ══════════════════════════════════════════════════════════════════════
 
-* School type (public vs. private) — among attending
+di as text "School attendance by age band:"
+di "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+* Overall attendance 5-24
+su ed1 [aw=indw] if age &gt;= 5 &amp; age &lt;= 24
+di as res "Ages 5-24 overall: " %5.1f r(mean)*100 "%"
+
+* By age band
+forvalues age_min = 6(3)22 {
+    local age_max = `age_min' + 2
+    su ed1 [aw=indw] if age &gt;= `age_min' &amp; age &lt;= `age_max'
+    di as res "  Ages `age_min'-`age_max': " %5.1f r(mean)*100 "%"
+}
+
+* Target bands specifically
+forvalues age = 6 11 12 15 16 17 18 19 20 24 {
+    if `age' &lt; 12 {
+        local band "6-11"
+        local lb = 6
+        local ub = 11
+    }
+    else if `age' &lt; 16 {
+        local band "12-15"
+        local lb = 12
+        local ub = 15
+    }
+    else if `age' &lt; 18 {
+        local band "16-17"
+        local lb = 16
+        local ub = 17
+    }
+    else if `age' &lt; 20 {
+        local band "18-19"
+        local lb = 18
+        local ub = 19
+    }
+    else {
+        local band "20-24"
+        local lb = 20
+        local ub = 24
+    }
+}
+
+* More structured approach
+di as text ""
+di as text "School attendance by age band (%):"
+tab age if age &gt;= 5 &amp; age &lt;= 24 &amp; ed1 == 1, su(ed1) [aw=indw]
+
+* ══════════════════════════════════════════════════════════════════════
+* ATTENDANCE BY GENDER AND AGE
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Attendance by gender (5-24):"
+tab gender [aw=indw] if age &gt;= 5 &amp; age &lt;= 24 &amp; ed1 == 1
+
+* Gender breakdown by age band (6-11, 12-15, 16-17, 18-19)
+di as text ""
+di as text "Attendance rate by gender &amp; age band:"
+
+foreach band in "6 11" "12 15" "16 17" "18 19" {
+    gettoken lb ub : band
+    su ed1 [aw=indw] if gender == 1 &amp; age &gt;= `lb' &amp; age &lt;= `ub'
+    local f_rate = r(mean) * 100
+    su ed1 [aw=indw] if gender == 2 &amp; age &gt;= `lb' &amp; age &lt;= `ub'
+    local m_rate = r(mean) * 100
+    di as res "  Ages `lb'-`ub': F " %5.1f `f_rate' "%  M " %5.1f `m_rate' "%"
+}
+
+* ══════════════════════════════════════════════════════════════════════
+* SCHOOL TYPE (public vs. private) — among attending
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "School type (among attending students):"
 tab ed2 [aw=indw] if ed1 == 1
+
+di as text ""
+di as text "School type by macro-region (% of attending):"
 tab ed2 macroreg [aw=indw] if ed1 == 1, col nofreq
+
+di as text ""
+di as text "School type by settlement (% of attending):"
 tab ed2 settlement [aw=indw] if ed1 == 1, col nofreq
 
-* Education level — among attending
-tab ed3 [aw=indw] if ed1 == 1
+* ══════════════════════════════════════════════════════════════════════
+* EDUCATIONAL ATTAINMENT (adults 18+) — highest level achieved
+* ══════════════════════════════════════════════════════════════════════
 
-* Total education expenditure — among students
+di as text ""
+di as text "Highest education attainment (adults 18+):"
+tab ed4 [aw=indw] if age &gt;= 18, nofreq
+
+di as text ""
+di as text "Attainment by gender (adults 18+):"
+tab ed4 gender [aw=indw] if age &gt;= 18, col nofreq
+
+* Key attainment rates (simplified)
+preserve
+    keep if age &gt;= 18
+    * Secondary as highest
+    su (ed4 == 2) [aw=indw]
+    di as res "Secondary attainment: " %5.1f r(mean)*100 "%"
+
+    * College as highest
+    su (ed4 == 3) [aw=indw]
+    di as res "College attainment: " %5.1f r(mean)*100 "%"
+
+    su (ed4 == 3) [aw=indw] if gender == 1
+    di as res "  Women with college: " %5.1f r(mean)*100 "%"
+    su (ed4 == 3) [aw=indw] if gender == 2
+    di as res "  Men with college: " %5.1f r(mean)*100 "%"
+
+    * Postgrad
+    su (ed4 &gt; 3 &amp; ed4 &lt; .) [aw=indw]
+    di as res "Postgraduate: " %5.1f r(mean)*100 "%"
+restore
+
+* ══════════════════════════════════════════════════════════════════════
+* PARENTAL EDUCATION
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Parental education (father's highest level):"
+tab ed6 [aw=indw], nofreq
+
+di as text ""
+di as text "Parental education (mother's highest level):"
+tab ed7 [aw=indw], nofreq
+
+preserve
+    su (ed6 == 1) [aw=indw]
+    di as res "Fathers with primary only: " %5.1f r(mean)*100 "%"
+    su (ed7 == 1) [aw=indw]
+    di as res "Mothers with primary only: " %5.1f r(mean)*100 "%"
+restore
+
+* ══════════════════════════════════════════════════════════════════════
+* REASONS FOR NON-ATTENDANCE (ages 5-24)
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Reasons for non-attendance (ages 5-24, multiple response):"
+
+* Assume ed8_* variables contain reason codes
+* Common codes: 1=Employment, 2=Financial, 3=Finished, 4=Family, 5=Distance, etc.
+* Count mentions of each reason among non-attending (ed1==2)
+
+if "`r(width)'" != "" {
+    foreach var of varlist ed8_* {
+        qui su `var' [aw=indw] if age &gt;= 5 &amp; age &lt;= 24 &amp; ed1 == 2
+        local pct = r(mean) * 100 if r(N) &gt; 0
+        if r(N) &gt; 0 {
+            di as res "  `var': " %5.1f `pct' "%"
+        }
+    }
+}
+
+* Fallback: manual coding if multi-select
+* (adjust based on actual variable structure)
+
+* ══════════════════════════════════════════════════════════════════════
+* EARLY CHILDHOOD DEVELOPMENT (ECD) — ages 0-4
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "ECD attendance by age (0-4):"
+
+forvalues a = 0/4 {
+    su ed1 [aw=indw] if age == `a'
+    if r(N) &gt; 0 {
+        di as res "  Age `a': " %5.1f r(mean)*100 "%"
+    }
+}
+
+* Overall ECD rate (ages 0-4)
+su ed1 [aw=indw] if age &lt;= 4
+di as res "Overall (ages 0-4): " %5.1f r(mean)*100 "%"
+
+* ECD type (daycare vs. kindergarten) among attending
+di as text ""
+di as text "Type of ECD (among attending 0-4):"
+tab ed3 [aw=indw] if ed1 == 1 &amp; age &lt;= 4
+
+* ══════════════════════════════════════════════════════════════════════
+* EDUCATION EXPENDITURE — among students
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Education expenditure analysis (students only):"
+
+* Create total expenditure variable
+* Components: meals (ed5a), fees (ed5b), transport (ed5c), books (ed5d),
+*             uniforms (ed5e), other
 cap drop ed_total_exp
 egen ed_total_exp = rowtotal(ed5a ed5b ed5c ed5d ed5e ed5f ed5g ed5h ed5i) ///
     if ed1 == 1
 
 * Outlier treatment: set top 1% of each component to missing
 foreach v of varlist ed5a ed5b ed5c ed5d ed5e ed5f ed5g ed5h ed5i {
-    qui _pctile `v' [aw=indw] if `v' > 0 &amp; `v' &lt; . &amp; ed1 == 1, p(99)
-    qui replace `v' = . if `v' > r(r1) &amp; `v' &lt; . &amp; ed1 == 1
+    qui _pctile `v' [aw=indw] if `v' &gt; 0 &amp; `v' &lt; . &amp; ed1 == 1, p(99)
+    qui replace `v' = . if `v' &gt; r(r1) &amp; `v' &lt; . &amp; ed1 == 1
 }
+
 * Recompute total after outlier removal
 cap drop ed_total_exp
 egen ed_total_exp = rowtotal(ed5a ed5b ed5c ed5d ed5e ed5f ed5g ed5h ed5i) ///
     if ed1 == 1
 replace ed_total_exp = . if ed_total_exp == 0
 
-* Mean &amp; median expenditure (among spenders)
-su ed_total_exp [aw=indw] if ed_total_exp > 0 &amp; ed_total_exp &lt; .
-_pctile ed_total_exp [aw=indw] if ed_total_exp > 0 &amp; ed_total_exp &lt; ., p(50)
-di as res "  Mean: " %10.0f r(mean) "  Median: " %10.0f r(r1)
+* Mean &amp; median total expenditure (among spenders)
+di as text "Total annual education expenditure (among spenders):"
+su ed_total_exp [aw=indw] if ed_total_exp &gt; 0 &amp; ed_total_exp &lt; .
+_pctile ed_total_exp [aw=indw] if ed_total_exp &gt; 0 &amp; ed_total_exp &lt; ., p(50)
+di as res "  Mean: ₱" %10.0f r(mean) "  Median: ₱" %10.0f r(r1)
 
-* By settlement (mean + median)
-table settlement [aw=indw] if ed_total_exp > 0, ///
+* By settlement
+di as text ""
+di as text "Expenditure by settlement:"
+table settlement [aw=indw] if ed_total_exp &gt; 0 &amp; ed_total_exp &lt; ., ///
     stat(mean median ed_total_exp) nformat(%10.0f)
 
 * By macro-region
-table macroreg [aw=indw] if ed_total_exp > 0, ///
+di as text ""
+di as text "Expenditure by macro-region:"
+table macroreg [aw=indw] if ed_total_exp &gt; 0 &amp; ed_total_exp &lt; ., ///
     stat(mean median ed_total_exp) nformat(%10.0f)
 
-* Early childhood (ages 0-4) — SFAP #17
-tab ed1 [aw=indw] if age &lt;= 4
-tab ed3 [aw=indw] if ed1 == 1 &amp; age &lt;= 4
+* COMPONENT BREAKDOWN — mean among spenders of each component
+di as text ""
+di as text "Expenditure components (mean, among spenders of each):"
+
+local components meals fees transport books uniforms
+local varnames ed5a ed5b ed5c ed5d ed5e
+
+local i = 1
+foreach comp of local components {
+    local var: word `i' of `varnames'
+    su `var' [aw=indw] if `var' &gt; 0 &amp; `var' &lt; . &amp; ed1 == 1
+    if r(N) &gt; 0 {
+        di as res "  `comp' (ed5`i'): ₱" %10.0f r(mean)
+    }
+    local i = `i' + 1
+}
+
+* Full list if 6-9 exist
+forvalues j = 6/9 {
+    su ed5`j' [aw=indw] if ed5`j' &gt; 0 &amp; ed5`j' &lt; . &amp; ed1 == 1
+    if r(N) &gt; 0 {
+        di as res "  Component ed5`j': ₱" %10.0f r(mean)
+    }
+}
+
+* Alternative aggregation: by category
+preserve
+    keep if ed1 == 1
+    * Rename for clarity
+    ren ed5a meals_lodging
+    ren ed5b fees_tuition
+    ren ed5c transport
+    ren ed5d books_materials
+    ren ed5e uniforms
+
+    foreach v of varlist meals_lodging fees_tuition transport books_materials uniforms {
+        su `v' [aw=indw] if `v' &gt; 0
+    }
+restore
+
+di as text ""
+di as text "Completion: CH02 Education replication code executed."
 </pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement programs)</div></div>
   </details>
 </div>
@@ -859,48 +1207,300 @@ tab ed3 [aw=indw] if ed1 == 1 &amp; age &lt;= 4
     </div>
     <details class="repl"><summary>Replication do-file · M03 Employment (detail)</summary>
     <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
-* ── §1b  OUTLIER &amp; OUT-OF-RANGE CLEANING ─────────────────────────
+********************************************************************************
+* L2Phl CAPI Baseline — CH03: EMPLOYMENT — Complete Replication Code
+* Employment Status, Industry, Benefits, Working Hours, Job Loss
+* Requires §0 preamble with globals, paths, gen_macroreg, gen_settlement
+********************************************************************************
+
+* ── §3  EMPLOYMENT (M03) — Full analysis ──────────────────────────────
+* Weight: indw (individual level)
+
+use "$dta/${dta_file}_${date}_M03_emp.dta", clear
+merge m:1 hhid fmid using "$ado/final_weights.dta", ///
+    keepusing(indw hhw popw region urban hhsize) nogen keep(match)
+
+gen_macroreg
+gen_settlement
+
+* ══════════════════════════════════════════════════════════════════════
+* DATA CLEANING — Outliers and out-of-range values
+* ══════════════════════════════════════════════════════════════════════
+
 * a22/a23: recode -99 (not applicable) to missing
 replace a22 = . if a22 == -99
 replace a23 = . if a23 == -99
 
 * a11: cap top 1% working hours to missing
-_pctile a11 if a1==1 &amp; a11>0 &amp; a11&lt;., p(99)
-replace a11 = . if a11 > r(r1) &amp; a11&lt;. &amp; a1==1
+_pctile a11 if a1==1 &amp; a11&gt;0 &amp; a11&lt;., p(99)
+replace a11 = . if a11 &gt; r(r1) &amp; a11&lt;. &amp; a1==1
 
-* ── §3  EMPLOYMENT (M03) — Sector, class, benefits ──────────────
-* NOTE: employed = (a1==1) [narrow definition]
+* ══════════════════════════════════════════════════════════════════════
+* EMPLOYMENT STATUS (narrow definition: a1==1, worked ≥1hr last week)
+* ══════════════════════════════════════════════════════════════════════
 
-* Industry sector — among employed
-tab a5 [aw=indw] if employed == 1
+gen employed = (a1 == 1) if age &gt;= 15
 
-* Class of worker
-tab a6 [aw=indw] if employed == 1
+di as text "EMPLOYMENT STATUS (ages 15+)"
+di "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-* Employer pension/SS contributions (a18, not a9)
-tab a18 [aw=indw] if employed == 1
-tab a18 macroreg [aw=indw] if employed == 1, col nofreq
+* Overall employment rate
+su employed [aw=indw] if age &gt;= 15
+di as res "Overall employment rate (15+): " %5.1f r(mean)*100 "%"
 
-* Benefits (parsed from a19_txt)
-forvalues b = 1/7 {
-    cap tab a19_ben`b' [aw=indw] if employed == 1
+* By gender
+su employed [aw=indw] if age &gt;= 15 &amp; gender == 1
+di as res "Male employment rate: " %5.1f r(mean)*100 "%"
+su employed [aw=indw] if age &gt;= 15 &amp; gender == 2
+di as res "Female employment rate: " %5.1f r(mean)*100 "%"
+
+* ══════════════════════════════════════════════════════════════════════
+* EMPLOYMENT BY AGE BAND
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Employment rate by age band:"
+
+* Key age bands: 15-24, 25-34, 35-44, 45-54, 55-64, 65+
+local bands "15 24" "25 34" "35 44" "45 54" "55 64" "65 999"
+
+foreach band in `bands' {
+    gettoken lb ub : band
+    su employed [aw=indw] if age &gt;= `lb' &amp; age &lt;= `ub'
+    if r(N) &gt; 0 {
+        di as res "  Ages `lb'-`ub': " %5.1f r(mean)*100 "%"
+    }
 }
 
-* Working hours — mean + median (top 1% already excluded)
-su a11 [aw=indw] if employed==1 &amp; a11>0 &amp; a11&lt;.
-_pctile a11 [aw=indw] if employed==1 &amp; a11>0 &amp; a11&lt;., p(50)
+* ══════════════════════════════════════════════════════════════════════
+* EMPLOYMENT BY REGION
+* ══════════════════════════════════════════════════════════════════════
 
-* Job loss, search, gig — population-level denominators
-* (a13/a15/a20 are skip-pattern vars; missing = "no")
-gen _looking  = (a13==1) if age>=15
-gen _wantmore = (a15==1) if age>=15
-gen _gig      = (a20==1) if employed==1
-su _looking _wantmore _gig [aw=indw]
+di as text ""
+di as text "Employment rate by macro-region:"
+table macroreg [aw=indw] if age &gt;= 15 &amp; employed &lt; ., ///
+    stat(mean employed) nformat(%5.2f)
 
-* Travel time &amp; transport cost (-99 already cleaned)
-su a22 [aw=indw] if employed==1 &amp; a22>0 &amp; a22&lt;.
-su a23 [aw=indw] if employed==1 &amp; a23>0 &amp; a23&lt;.
-</pre><div class="repl-note">Requires §0 setup + employed var · a18 for pension (not a9) · a13/a15/a20: missing=no · top 1% a11 excluded · -99 in a22/a23 cleaned</div></div>
+* Specific regions mentioned: Luzon, Visayas
+preserve
+    keep if age &gt;= 15 &amp; employed &lt; .
+    su employed [aw=indw] if macroreg == 2  // Luzon excl. NCR
+    di as res "  Luzon (excl. NCR): " %5.1f r(mean)*100 "%"
+    su employed [aw=indw] if macroreg == 3  // Visayas
+    di as res "  Visayas: " %5.1f r(mean)*100 "%"
+restore
+
+* ══════════════════════════════════════════════════════════════════════
+* INDUSTRY SECTOR — among employed
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Industry sector (among employed):"
+tab a5 [aw=indw] if employed == 1, nofreq
+
+* ══════════════════════════════════════════════════════════════════════
+* CLASS OF WORKER — among employed
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Class of worker (among employed):"
+tab a6 [aw=indw] if employed == 1, nofreq
+
+* ══════════════════════════════════════════════════════════════════════
+* CONTRACT TYPE — formal vs. informal
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Contract type (among employed):"
+* a16: 1=Written, 2=Verbal, 3=None, 4=DK
+tab a16 [aw=indw] if employed == 1
+
+* Calculate percentages manually for reporting
+preserve
+    keep if employed == 1
+    su (a16 == 1) [aw=indw]
+    local written = r(mean) * 100
+    su (a16 == 2) [aw=indw]
+    local verbal = r(mean) * 100
+    su (a16 == 3) [aw=indw]
+    local none = r(mean) * 100
+    su (a16 == 4) [aw=indw]
+    local dk = r(mean) * 100
+
+    di as res ""
+    di as res "  Written contract: " %5.1f `written' "%"
+    di as res "  Verbal agreement: " %5.1f `verbal' "%"
+    di as res "  No contract: " %5.1f `none' "%"
+    di as res "  Don't know: " %5.1f `dk' "%"
+restore
+
+* ══════════════════════════════════════════════════════════════════════
+* EMPLOYER CONTRIBUTIONS — Pension/Social Security
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Employer pension/SS contributions (a18):"
+tab a18 [aw=indw] if employed == 1
+
+* Coverage by region
+di as text ""
+di as text "Employer contribution by macro-region (% yes):"
+preserve
+    keep if employed == 1
+    su (a18 == 1) [aw=indw] if macroreg == 1
+    di as res "  NCR: " %5.1f r(mean)*100 "%"
+    su (a18 == 1) [aw=indw] if macroreg == 2
+    di as res "  Luzon excl. NCR: " %5.1f r(mean)*100 "%"
+    su (a18 == 1) [aw=indw] if macroreg == 3
+    di as res "  Visayas: " %5.1f r(mean)*100 "%"
+    su (a18 == 1) [aw=indw] if macroreg == 4
+    di as res "  Mindanao: " %5.1f r(mean)*100 "%"
+restore
+
+* ══════════════════════════════════════════════════════════════════════
+* BENEFITS — PhilHealth, SSS/GSIS, None
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Benefits received (a19_ben1 through a19_ben7):"
+
+* Loop through benefit flags
+* Typical: a19_ben1=PhilHealth, a19_ben2=SSS, a19_ben3=GSIS, etc.
+* a19_ben99=None, a19_ben98=DK
+
+forvalues b = 1/7 {
+    cap su a19_ben`b' [aw=indw] if employed == 1
+    if _rc == 0 {
+        di as res "  a19_ben`b': " %5.1f r(mean)*100 "%"
+    }
+}
+
+* Summary of main benefits
+preserve
+    keep if employed == 1
+
+    * PhilHealth (often ben1)
+    cap su a19_ben1 [aw=indw]
+    if _rc == 0 {
+        di as res "  PhilHealth: " %5.1f r(mean)*100 "%"
+    }
+
+    * SSS (often ben2)
+    cap su a19_ben2 [aw=indw]
+    if _rc == 0 {
+        di as res "  SSS: " %5.1f r(mean)*100 "%"
+    }
+
+    * GSIS (often ben3)
+    cap su a19_ben3 [aw=indw]
+    if _rc == 0 {
+        di as res "  GSIS: " %5.1f r(mean)*100 "%"
+    }
+
+    * None (often ben99)
+    cap su a19_ben99 [aw=indw]
+    if _rc == 0 {
+        di as res "  None: " %5.1f r(mean)*100 "%"
+    }
+restore
+
+* ══════════════════════════════════════════════════════════════════════
+* WORKING HOURS
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Working hours (among employed, top 1% excluded):"
+
+su a11 [aw=indw] if employed==1 &amp; a11&gt;0 &amp; a11&lt;.
+di as res "  Mean: " %5.1f r(mean) " hours/week"
+
+_pctile a11 [aw=indw] if employed==1 &amp; a11&gt;0 &amp; a11&lt;., p(50)
+di as res "  Median: " %5.1f r(r1) " hours/week"
+
+* % working &lt;20 hours
+preserve
+    keep if employed == 1 &amp; a11 &gt; 0 &amp; a11 &lt; .
+    su (a11 &lt; 20) [aw=indw]
+    di as res "  % working &lt;20 hours: " %5.1f r(mean)*100 "%"
+restore
+
+* ══════════════════════════════════════════════════════════════════════
+* JOB LOSS — HH level (past 30 days)
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Job loss (past 30 days):"
+
+* a3/a4 variables may indicate job loss
+* Assume a3 or similar captures recent job loss
+cap su (a3 == 1) [aw=hhw]
+if _rc == 0 {
+    di as res "  % of HHs with member job loss: " %5.1f r(mean)*100 "%"
+}
+
+* ══════════════════════════════════════════════════════════════════════
+* JOB SEARCH — among working-age (15+)
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Job search and additional work desire:"
+
+* a13: actively looking for work (skip-pattern: missing = no)
+gen _looking = (a13==1) if age&gt;=15
+su _looking [aw=indw]
+di as res "  % actively looking for work: " %5.1f r(mean)*100 "%"
+
+* a15: wants more work (skip-pattern: missing = no)
+gen _wantmore = (a15==1) if age&gt;=15
+su _wantmore [aw=indw]
+di as res "  % wanting more work: " %5.1f r(mean)*100 "%"
+
+* ══════════════════════════════════════════════════════════════════════
+* GIG WORK — Platform-based employment
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Gig work:"
+
+* a20: involved in gig work (skip-pattern: missing = no)
+gen _gig = (a20==1) if employed==1
+su _gig [aw=indw]
+di as res "  % of employed in gig work: " %5.1f r(mean)*100 "%"
+
+* ══════════════════════════════════════════════════════════════════════
+* COMMUTE — Travel time and transport cost
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "Commute to work (among employed, excluding -99 'not applicable'):"
+
+su a22 [aw=indw] if employed==1 &amp; a22&gt;0 &amp; a22&lt;.
+di as res "  Mean travel time (minutes): " %5.1f r(mean)
+
+_pctile a22 [aw=indw] if employed==1 &amp; a22&gt;0 &amp; a22&lt;., p(50)
+di as res "  Median travel time: " %5.1f r(r1) " minutes"
+
+su a23 [aw=indw] if employed==1 &amp; a23&gt;0 &amp; a23&lt;.
+di as res "  Mean daily transport cost: ₱" %8.2f r(mean)
+
+_pctile a23 [aw=indw] if employed==1 &amp; a23&gt;0 &amp; a23&lt;., p(50)
+di as res "  Median daily transport cost: ₱" %8.2f r(r1)
+
+* ══════════════════════════════════════════════════════════════════════
+* SUMMARY TABLES
+* ══════════════════════════════════════════════════════════════════════
+
+di as text ""
+di as text "═══════════════════════════════════════════════════════════"
+di as text "EMPLOYMENT SUMMARY"
+di as text "═══════════════════════════════════════════════════════════"
+
+table macroreg gender [aw=indw] if age &gt;= 15 &amp; employed &lt; ., ///
+    stat(mean employed) nformat(%5.2f)
+
+di as text ""
+di as text "Completion: CH03 Employment replication code executed."
+</pre><div class="repl-note">Requires §0 setup + employed var · a18 for pension · a13/a15/a20: missing=no · top 1% a11 excluded · -99 in a22/a23 cleaned</div></div>
     </details>
   </div>
 </div>
@@ -1041,18 +1641,18 @@ gen_macroreg
 gen_settlement
 
 * §1b Outlier cleaning: earnings top 1%
-_pctile ia3ab if ia3ab > 0 &amp; ia3ab &lt; ., p(99)
+_pctile ia3ab if ia3ab &gt; 0 &amp; ia3ab &lt; ., p(99)
 local p99_earn = r(r1)
-count if ia3ab > `p99_earn' &amp; ia3ab &lt; .   /* 28 obs */
-replace ia3ab = . if ia3ab > `p99_earn' &amp; ia3ab &lt; .
+count if ia3ab &gt; `p99_earn' &amp; ia3ab &lt; .   /* 28 obs */
+replace ia3ab = . if ia3ab &gt; `p99_earn' &amp; ia3ab &lt; .
 
 * Regular income → 66.1% (indw)
 gen _reginc = (ia1 == 1)
 su _reginc [aw=indw]
 
 * Mean 6-mo earnings after P99 exclusion → PHP 10,576 (median 7,500)
-su ia3ab [aw=indw] if ia3ab > 0 &amp; ia3ab &lt; .
-_pctile ia3ab [aw=indw] if ia3ab > 0 &amp; ia3ab &lt; ., p(50)
+su ia3ab [aw=indw] if ia3ab &gt; 0 &amp; ia3ab &lt; .
+_pctile ia3ab [aw=indw] if ia3ab &gt; 0 &amp; ia3ab &lt; ., p(50)
 
 * §4b HH transfers (hhw / popw)
 use "$dta/${dta_file}_${date}_M04_inc2.dta", clear
@@ -1063,10 +1663,10 @@ gen_macroreg
 gen has_ofw = (ic1_1 &lt; .)
 egen ofw_total = rowtotal(ic1_1 ic1_2 ic1_3), missing
 replace ofw_total = . if has_ofw == 0
-_pctile ofw_total if ofw_total > 0 &amp; ofw_total &lt; ., p(99)
-replace ofw_total = . if ofw_total > r(r1) &amp; ofw_total &lt; .
+_pctile ofw_total if ofw_total &gt; 0 &amp; ofw_total &lt; ., p(99)
+replace ofw_total = . if ofw_total &gt; r(r1) &amp; ofw_total &lt; .
 su has_ofw [aw=hhw]
-su ofw_total [aw=hhw] if has_ofw == 1 &amp; ofw_total > 0 &amp; ofw_total &lt; .
+su ofw_total [aw=hhw] if has_ofw == 1 &amp; ofw_total &gt; 0 &amp; ofw_total &lt; .
 
 * Domestic support → 22.8% (hhw)
 gen _domsup = (ic3 == 1) if ic3 &lt; .
@@ -1122,7 +1722,7 @@ tab f9 [aw=hhw] if f7 == 1 &amp; f9 &lt; . &amp; f9 != 99
 * Loan purpose: Business 27.1%, Food 24.7%, Housing 12.3%
 * Education 11.7%, Other consumption 8.5%, Health 5.6%, Car 4.5%
 tab f8_purp1 [aw=hhw] if f7 == 1 &amp; f8_purp1 &lt; .
-</pre><div class="repl-note">Full do-file: 4_L2PHL_CAPI_R00_ch04_money.do · Requires 00_setup.do</div></div>
+</pre><div class="repl-note">Covers M04 (Income) and M05 (Finance). Requires §0 setup block + _hhwt_temp.dta</div></div>
   </details>
 </div>
 
@@ -1229,10 +1829,10 @@ gen_macroreg
 gen_settlement
 
 * Outlier cleaning: cap top 1% of cost variables
-_pctile h8a if h8a > 0 &amp; h8a &lt; ., p(99)
-replace h8a = . if h8a > r(r1) &amp; h8a &lt; .
-_pctile h14 if h14 > 0 &amp; h14 &lt; ., p(99)
-replace h14 = . if h14 > r(r1) &amp; h14 &lt; .
+_pctile h8a if h8a &gt; 0 &amp; h8a &lt; ., p(99)
+replace h8a = . if h8a &gt; r(r1) &amp; h8a &lt; .
+_pctile h14 if h14 &gt; 0 &amp; h14 &lt; ., p(99)
+replace h14 = . if h14 &gt; r(r1) &amp; h14 &lt; .
 
 * Need for health care (past 30 days)
 tab h2 [aw=indw]
@@ -1249,14 +1849,14 @@ tab h4 [aw=indw] if inlist(h2, 1, 2, 3)
 
 * Out-of-pocket
 tab h8 [aw=indw] if inlist(h2, 1, 2, 3) &amp; h2a == 1
-su h8a [aw=indw] if h8 == 1 &amp; h8a > 0 &amp; h8a &lt; .
+su h8a [aw=indw] if h8 == 1 &amp; h8a &gt; 0 &amp; h8a &lt; .
 
 * Hospitalisation (past 12 months)
 tab h12 [aw=indw]
 * Hospital bill — exclude free stays, use popw with hh_tag for HH-level stat
-* su h14 [aw=popw] if hh_tag == 1 &amp; h12 == 1 &amp; h14 > 0 &amp; h14 &lt; .
+* su h14 [aw=popw] if hh_tag == 1 &amp; h12 == 1 &amp; h14 &gt; 0 &amp; h14 &lt; .
 * Simplified (individual-level approximation):
-su h14 [aw=indw] if h12 == 1 &amp; h14 > 0 &amp; h14 &lt; .
+su h14 [aw=indw] if h12 == 1 &amp; h14 &gt; 0 &amp; h14 &lt; .
 di as res "  Mean hospital bill: PHP " %10.0f r(mean)
 * Note: Storyline uses popw + hh_tag for ₱46,834; indw gives similar
 
@@ -1398,12 +1998,37 @@ gen_settlement
 tab ssb1 [aw=indw]
 
 * SSB servings per day
-su ssb3 [aw=indw] if ssb1 == 1 &amp; ssb3 > 0 &amp; ssb3 &lt; .  /* ssb3 = servings/WEEK → ~7.15 */
+su ssb3 [aw=indw] if ssb1 == 1 &amp; ssb3 &gt; 0 &amp; ssb3 &lt; .  /* ssb3 = servings/WEEK → ~7.15 */
 di as res "  Mean servings/week: " %5.1f r(mean)
 
 * SSB by macro-region
 tab ssb1 macroreg [aw=indw], col nofreq
-</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+
+* ── Child nutrition (M09_nh) — under-5 anthropometry ────────────────
+use "$dta/${dta_file}_${date}_M09_nh.dta", clear
+merge m:1 hhid fmid using "$ado/final_weights.dta", ///
+    keepusing(indw hhw popw region urban hhsize) nogen keep(match)
+gen_macroreg
+gen_settlement
+
+* Stunting, underweight, wasting (z-score &lt; -2 SD)
+gen _stunted = (h_stunt_z &lt; -2) if h_stunt_z &lt; .
+gen _underweight = (h_weight_z &lt; -2) if h_weight_z &lt; .
+gen _wasted = (h_height_z &lt; -2) if h_height_z &lt; .
+gen _severe_stunt = (h_stunt_z &lt; -3) if h_stunt_z &lt; .
+
+su _stunted [aw=indw] if age &lt; 5
+su _underweight [aw=indw] if age &lt; 5
+su _wasted [aw=indw] if age &lt; 5
+su _severe_stunt [aw=indw] if age &lt; 5
+
+* By gender
+su _stunted [aw=indw] if age &lt; 5 &amp; gender == 1
+su _stunted [aw=indw] if age &lt; 5 &amp; gender == 2
+
+* By macro-region
+tab _stunted macroreg [aw=indw] if age &lt; 5, col nofreq
+</pre><div class="repl-note">Covers M08 Food, SSB, and child nutrition (M09_nh). Requires §0 setup + _hhwt_temp.dta</div></div>
   </details>
 </div>
 
@@ -1513,6 +2138,23 @@ tab nh4 [aw=hhw] if nh1 == 1
 
 * Awareness of hazard maps
 cap tab nh11 [aw=hhw]
+
+* Early warning by region
+tab nh2 macroreg [aw=hhw] if nh1 == 1, col nofreq
+
+* Any hazard by region
+preserve
+    bys hhid: egen any_hazard = max(nh1 == 1)
+    bys hhid: keep if _n == 1
+    tab any_hazard macroreg [aw=hhw], col nofreq
+restore
+
+* Preparedness measures and emergency planning
+* Note: these need to be computed from household-level hazard module variables
+* Check for variables like nh5 (preparedness), nh7 (emergency plan), nh10 (assistance type)
+tab nh5 [aw=hhw] if nh1 == 1        /* Preparedness measures taken */
+tab nh7 [aw=hhw] if nh1 == 1        /* Emergency plan */
+tab nh10 [aw=hhw] if nh1 == 1       /* Received assistance type */
 </pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
     </details>
   </div>
@@ -1601,46 +2243,77 @@ cap tab nh11 [aw=hhw]
   </div>
   <details class="repl" style="max-width:1100px;margin:0 auto;padding:0 40px 24px;"><summary>Replication do-file · M10 Dwelling + M11 Sanitation</summary>
   <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
-* ── §10  DWELLING (M10) — Weight: hhw ─────────────────────────────
+* ═════════════════════════════════════════════════════════════════════════════
+* CH08: DWELLING &amp; SANITATION (M10 &amp; M11)
+* Replication do-file for L2PHL Baseline Storyline
+* ═════════════════════════════════════════════════════════════════════════════
+
+* ── §10  DWELLING (M10) — Weight: hhw ──────────────────────────────────────────
 use "$dta/${dta_file}_${date}_M10_dwell.dta", clear
 merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
 gen_macroreg
 gen_settlement
 
-* Type of building/house (colleague: use pie charts)
+* Type of building/house
+* Expected result: 89% single house
 tab dw1 [aw=hhw]
 
-* Roof material, wall material, bedrooms, tenure
-tab dw2 [aw=hhw]
-tab dw3 [aw=hhw]
-tab dw4 [aw=hhw]
+* Tenure status
+* Expected results: Own 56%, Rent-free with consent 18%, Rent 4%
 tab dw5 [aw=hhw]
+
+* Roof material
+* Expected results: Asbestos 29.5%, Concrete 25.2%, Half concrete/GI 19.1%,
+*                  Cogon/nipa/anahaw 8.6%, Wood/bamboo 6.6%, Makeshift 5.6%, Metal/GI 5.5%
+tab dw2 [aw=hhw]
+
+* Wall material
+* Expected results: Half concrete/wood 42.1%, Concrete/brick 27.2%, Cogon/nipa 17.6%,
+*                  Wood/bamboo 8.3%, Makeshift 1.7%, Other 2.5%
+tab dw3 [aw=hhw]
+
+* Number of bedrooms (dw4)
+tab dw4 [aw=hhw]
 
 * Building type by macro-region and settlement
 tab dw1 macroreg [aw=hhw], col nofreq
 tab dw1 settlement [aw=hhw], col nofreq
 
-* ── §11  SANITATION (M11) — Weight: hhw ───────────────────────────
+
+* ── §11  SANITATION (M11) — Weight: hhw ───────────────────────────────────────
 use "$dta/${dta_file}_${date}_M11_san.dta", clear
 merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
 gen_macroreg
 gen_settlement
 
 * Toilet facility type
+* Expected results: Flush sewage 71%, Flush septic 10%, Pit 8%, Open defecation 6%, Hanging 3%, Other 2%
 tab s1 [aw=hhw]
 
-* Waste disposal, segregation
+* Waste disposal methods (multi-select; s5_cat1 through s5_cat4)
+* Expected results: Municipal collection 65%, Pit/landfill 21.8%, Burning 6.6%, Compost 5%
 forvalues c = 1/4 {
     cap tab s5_cat`c' [aw=hhw]
 }
-tab s6 [aw=hhw]           /* organic */
-tab s7 [aw=hhw]           /* recyclables */
-tab s8 [aw=hhw]           /* satisfaction */
+
+* Organic waste segregation (s6)
+tab s6 [aw=hhw]
+
+* Recyclables segregation (s7)
+tab s7 [aw=hhw]
+
+* Satisfaction with waste disposal services (s8)
+* Expected: 15% satisfied, 11% dissatisfied, 75% neutral
+tab s8 [aw=hhw]
 
 * Toilet type by macro-region and settlement
 tab s1 macroreg [aw=hhw], col nofreq
 tab s1 settlement [aw=hhw], col nofreq
-</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+
+di "═══════════════════════════════════════════════════════════════════════════"
+di "CH08 Dwelling &amp; Sanitation Replication Complete"
+di "═══════════════════════════════════════════════════════════════════════════"
+</pre><div class="repl-note">Covers M10 (Dwelling) and M11 (Sanitation). Requires §0 setup + _hhwt_temp.dta</div></div>
   </details>
 </div>
 
@@ -1731,49 +2404,155 @@ tab s1 settlement [aw=hhw], col nofreq
   </div>
   <details class="repl"><summary>Replication do-file · M12 Utilities</summary>
   <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
-* ── §12  UTILITIES (M12) — Weight: hhw ────────────────────────────
+* ═════════════════════════════════════════════════════════════════════════════
+* CH09: ASSETS &amp; UTILITIES (M12 &amp; M13)
+* Replication do-file for L2PHL Baseline Storyline
+* ═════════════════════════════════════════════════════════════════════════════
 
-* ── Electricity ───────────────────────────────────────────────────
+* ── UTILITIES (M12) — Weight: hhw ──────────────────────────────────────────────
+
+* ── Electricity ────────────────────────────────────────────────────────────────
 use "$dta/${dta_file}_${date}_M12_elec.dta", clear
 merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
 gen_macroreg
 gen_settlement
 
+* Electricity access
+* Expected: 96% national access; 99% from grid
 tab el1 [aw=hhw]
+
+* Electricity access by macro-region
+* Expected: NCR 98.4%, Luzon 96.8%, Visayas 94.9%, Mindanao 93.8%
 tab el1 macroreg [aw=hhw], col nofreq
 
-su el5 [aw=hhw] if el1 == 1 &amp; el5 >= 0 &amp; el5 &lt; .
+* Hours of electricity unavailability (el5)
+su el5 [aw=hhw] if el1 == 1 &amp; el5 &gt;= 0 &amp; el5 &lt; .
 di as res "  Mean hours unavailable: " %5.1f r(mean)
 
-* ── Internet ──────────────────────────────────────────────────────
-use "$dta/${dta_file}_${date}_M12_net.dta", clear
-merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
-gen_macroreg
-gen_settlement
 
-cap drop has_internet
-gen has_internet = (n1_type1 != 5 &amp; n1_type1 &lt; .) if n1_type1 &lt; .
-tab has_internet [aw=hhw]
-tab has_internet macroreg [aw=hhw], col nofreq
-
-* Purpose of internet use
-forvalues p = 1/12 {
-    cap tab n4_purp`p' [aw=hhw] if has_internet == 1
-}
-
-* ── Water ─────────────────────────────────────────────────────────
+* ── Water ──────────────────────────────────────────────────────────────────────
 use "$dta/${dta_file}_${date}_M12_water.dta", clear
 merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
 gen_macroreg
 gen_settlement
 
-tab w1 [aw=hhw]            /* Main water source */
-tab w5 [aw=hhw]            /* Drinking water source */
-tab w8 [aw=hhw]            /* Perception of safety */
+* Main water source (w1)
+* Expected: Piped (inside) 61%, Unprotected well 8.4%, Protected spring 6%, Rainwater 4.4%
+tab w1 [aw=hhw]
 
+* Drinking water source (w5)
+tab w5 [aw=hhw]
+
+* Perception of drinking water safety (w8)
+* Expected: 93% perceive water as safe
+tab w8 [aw=hhw]
+
+* Water treatment (w10)
+* Expected: 69% do not treat their water
+tab w10 [aw=hhw]
+
+* Travel time to water source (w11)
+* Expected: 13 minutes average
+su w11 [aw=hhw] if w11 &gt;= 0 &amp; w11 &lt; .
+di as res "  Mean travel time to water (minutes): " %5.1f r(mean)
+
+* Water access by macro-region
 tab w1 macroreg [aw=hhw], col nofreq
+
+* Water safety perception by settlement
 tab w8 settlement [aw=hhw], col nofreq
-</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
+
+
+* ── Internet ───────────────────────────────────────────────────────────────────
+use "$dta/${dta_file}_${date}_M12_net.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+* Internet access indicator
+* Expected: 50% national access
+cap drop has_internet
+gen has_internet = (n1_type1 != 5 &amp; n1_type1 &lt; .) if n1_type1 &lt; .
+tab has_internet [aw=hhw]
+
+* Internet access by macro-region
+* Expected: NCR 64.1%, Luzon 50.8%, Mindanao 42.9%, Visayas 40.7%
+tab has_internet macroreg [aw=hhw], col nofreq
+
+* Device types (n1_type1 through n1_type5)
+* Expected: Smartphone 64%, TV 13%, Laptop 11%
+foreach dtype in 1 2 3 4 5 {
+    cap tab n1_type`dtype' [aw=hhw] if n1_type`dtype' &lt; .
+}
+
+* Primary purpose of internet use (n4_purp1 through n4_purp12)
+* Expected: Social media/communication 36%, Information/news, Work, Learning, Shopping, etc.
+forvalues p = 1/12 {
+    cap tab n4_purp`p' [aw=hhw] if has_internet == 1
+}
+
+* Internet outages (n5)
+* Expected: 59% had outage last week
+tab n5 [aw=hhw] if has_internet == 1
+
+
+* ── ASSETS &amp; ENERGY (M13) — Weight: hhw ───────────────────────────────────────
+use "$dta/${dta_file}_${date}_M13_hc.dta", clear
+merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
+gen_macroreg
+gen_settlement
+
+* Asset ownership (ownership = has at least 1 unit)
+* hc1_1 = refrigerator
+* hc1_2 = washing machine
+* hc1_3 = air conditioner
+* hc1_4 = gas stove / electric stove / wood-burning stove
+* hc1_5 = motorcycle / tricycle
+* hc1_6 = car / van
+* hc1_7 = computer / laptop
+* hc1_8 = boat / watercraft
+
+foreach item in 1 2 3 4 5 6 7 8 {
+    cap gen own_hc`item' = (hc1_`item' &gt;= 1 &amp; hc1_`item' &lt; .) if hc1_`item' &lt; .
+}
+
+* Asset ownership rates — national
+* Expected: Washing machine 55%, Motorcycle 54%, Refrigerator 49%, Gas stove 26%,
+*          Computer/laptop 15%, Air conditioning 10%, Car/van 4%, Boat 1.6%
+foreach item in 1 2 3 4 5 6 7 8 {
+    cap su own_hc`item' [aw=hhw]
+    if _rc == 0 &amp; r(N) &gt; 0 {
+        di as res "  hc1_`item' ownership: " %5.1f r(mean)*100 "%"
+    }
+}
+
+* Asset ownership by macro-region
+foreach item in 1 2 3 4 5 6 7 8 {
+    cap table macroreg [aw=hhw], stat(mean own_hc`item') nformat(%5.3f)
+}
+
+* Asset ownership by settlement (urban/rural)
+foreach item in 1 2 3 4 5 6 7 8 {
+    cap table settlement [aw=hhw], stat(mean own_hc`item') nformat(%5.3f)
+}
+
+* Cooking fuel types (hc2a = primary, hc2b_1 through hc2b_7 = secondary uses)
+* Multi-select question
+* Expected: LPG 61.49%, Fuelwood 50.73%, Charcoal 27%, Electricity 21%
+tab hc2a [aw=hhw]
+
+forvalues s = 1/7 {
+    cap tab hc2b_`s' [aw=hhw]
+}
+
+* Primary cooking fuel by macro-region
+* Expected: NCR LPG 94%, Mindanao fuelwood 72%
+tab hc2a macroreg [aw=hhw], col nofreq
+
+di "═══════════════════════════════════════════════════════════════════════════"
+di "CH09 Assets &amp; Utilities Replication Complete"
+di "═══════════════════════════════════════════════════════════════════════════"
+</pre><div class="repl-note">Covers M12 (Utilities) and M13 (Assets/Energy). Requires §0 setup + _hhwt_temp.dta</div></div>
   </details>
 </div>
 
@@ -1820,46 +2599,7 @@ tab w8 settlement [aw=hhw], col nofreq
       </div>
     </div>
   </div>
-  <details class="repl"><summary>Replication do-file · M13 Assets &amp; Energy</summary>
-  <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
-* ── §13  ASSETS &amp; ENERGY (M13) — Weight: hhw ─────────────────────
-use "$dta/${dta_file}_${date}_M13_hc.dta", clear
-merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
-gen_macroreg
-gen_settlement
-
-* Ownership rates (has at least 1)
-* hc1_1=refrigerator, hc1_2=washing machine, hc1_3=AC,
-* hc1_4=stove, hc1_5=motorcycle, hc1_6=car
-foreach item in 1 2 3 4 5 6 {
-    cap gen own_hc`item' = (hc1_`item' >= 1 &amp; hc1_`item' &lt; .) ///
-        if hc1_`item' &lt; .
-}
-
-* Asset ownership rates — national
-foreach item in 1 2 3 4 5 6 {
-    cap su own_hc`item' [aw=hhw]
-    if _rc == 0 &amp; r(N) > 0 {
-        di as res "  hc1_`item': " %5.1f r(mean)*100 "%"
-    }
-}
-
-* By macro-region
-foreach item in 1 2 3 4 5 6 {
-    cap table macroreg [aw=hhw], stat(mean own_hc`item') nformat(%5.3f)
-}
-
-* By settlement
-foreach item in 1 2 3 4 5 6 {
-    cap table settlement [aw=hhw], stat(mean own_hc`item') nformat(%5.3f)
-}
-
-* Primary cooking fuel
-tab hc2a [aw=hhw]
-tab hc2a macroreg [aw=hhw], col nofreq
-</pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
-  </details>
-</div>
+<!-- M13 Assets & Energy merged into M12 Utilities replication block above -->
 
 <!-- ═══════════════════════════════ CH 12: VIEWS ═══════════════════════════════ -->
 <div class="chap" id="ch-views"><span class="chap-n">10</span><span class="chap-r"></span><span class="chap-l">M14 Views &amp; Perceptions — What they think</span></div>
@@ -1975,124 +2715,179 @@ tab hc2a macroreg [aw=hhw], col nofreq
 
     <details class="repl"><summary>Replication do-file · M14 Views &amp; Perceptions</summary>
     <div class="repl-code"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
-* ── §14  VIEWS &amp; PERCEPTIONS (M14) — Weight: hhw ─────────────────
+* ═════════════════════════════════════════════════════════════════════════════
+* CH10: VOICES &amp; PERCEPTIONS (M14)
+* Replication do-file for L2PHL Baseline Storyline
+* ═════════════════════════════════════════════════════════════════════════════
+
+* ── §14  VIEWS &amp; PERCEPTIONS (M14) — Weight: hhw ───────────────────────────────
 use "$dta/${dta_file}_${date}_M14_view.dta", clear
 merge m:1 hhid using "$out/_hhwt_temp.dta", nogen keep(match master)
 gen_macroreg
 gen_settlement
 
-* Life satisfaction (1-5 scale)
+
+* ── LIFE SATISFACTION ──────────────────────────────────────────────────────────
+
+* Life satisfaction (v1): 1-5 scale
+* Expected mean: 3.04/5
+* Distribution: Code 1-2 = 25%, Code 3 = 52%, Code 4-5 = 23%
 tab v1 [aw=hhw]
-su v1 [aw=hhw] if v1 >= 1 &amp; v1 &lt;= 5
-di as res "  Mean: " %5.2f r(mean)
+su v1 [aw=hhw] if v1 &gt;= 1 &amp; v1 &lt;= 5
+di as res "  Mean life satisfaction: " %5.2f r(mean) " out of 5"
 
 * Life satisfaction by macro-region
-table macroreg [aw=hhw] if v1 >= 1 &amp; v1 &lt;= 5, stat(mean v1) nformat(%5.2f)
+table macroreg [aw=hhw] if v1 &gt;= 1 &amp; v1 &lt;= 5, stat(mean v1) nformat(%5.2f)
 
-* Self-income classification (v2) — graph per colleague
+* Distribution of life satisfaction (codes 1-5) as percentages
+forvalues code = 1/5 {
+    su v1 [aw=hhw] if v1 == `code'
+    if r(N) &gt; 0 {
+        di as res "  Code `code': " %5.1f r(mean &gt; 0)*100 "%"
+    }
+}
+
+
+* ── SELF-PERCEIVED INCOME GROUP ────────────────────────────────────────────────
+
+* Self-income classification (v2): codes 1-5
+* Expected: Group 1 (lowest) 20%, Group 2 = 30%, Group 3 = 49%, Group 4-5 = 1%
 tab v2 [aw=hhw]
+
+* Self-income group by macro-region
 tab v2 macroreg [aw=hhw], col nofreq
 
-* Perceived change vs. past month (v5)
+
+* ── EXPECTED CHILDREN'S INCOME CLASS ───────────────────────────────────────────
+
+* Expected income class for children (v3): codes 1-5
+* This is measured among households with children under 18
+tab v3 [aw=hhw] if hh_has_child_u18 == 1
+
+
+* ── ECONOMIC SENTIMENT (Change vs. last month) ─────────────────────────────────
+
+* Economic situation vs. past month (v5): codes = better, same, worse
+* Expected: Better 35%, Same 46%, Worse 19%
 tab v5 [aw=hhw]
+
+* Economic sentiment by macro-region
+* Expected: Visayas 20% worse, Mindanao 51% same
 tab v5 macroreg [aw=hhw], col nofreq
 
-* Crosstab V2 × V3 (per colleague)
-tab v2 v3 [aw=hhw] if hh_has_child_u18 == 1, row nofreq
 
-* Worries (v9 series)
+* ── SAFETY &amp; NEIGHBOURHOOD ────────────────────────────────────────────────────
+
+* Neighbourhood safety (v4): how safe feel walking alone
+* Expected: 10.7% feel unsafe
+tab v4 [aw=hhw]
+
+
+* ── INCOME MOBILITY: v2 × v3 CROSSTAB ──────────────────────────────────────────
+
+* Crosstab: self-income class (v2) vs expected children's income class (v3)
+* Among households with children under 18
+tab v2 v3 [aw=hhw] if hh_has_child_u18 == 1, row nofreq
+tab v2 v3 [aw=hhw] if hh_has_child_u18 == 1, col nofreq
+
+
+* ── LIKERT SCALE ITEMS (v9a - v9k) ────────────────────────────────────────────
+
+* v9a: Citizens should have more say in government decisions
+* Expected: 77% AGREE (categories 4-5)
+tab v9a [aw=hhw]
+
+* v9b: Prices are rising too quickly
+* Expected: 76% AGREE
+tab v9b [aw=hhw]
+
+* v9c: Worried about children's education / future
+* Expected: 71% AGREE
+tab v9c [aw=hhw]
+
+* v9d: Worried about political instability
+* Expected: 64% AGREE
+tab v9d [aw=hhw]
+
+* v9e: Digital public services saved time / cost
+* Expected: 60% AGREE
+tab v9e [aw=hhw]
+
+* v9f: Family financial situation worse vs 2 years ago
+* Expected: 58% AGREE
+tab v9f [aw=hhw]
+
+* v9g: Worried about losing job
+* Expected: 57% AGREE
+tab v9g [aw=hhw]
+
+* v9h: Worried about losing job to AI / automation
+* Expected: 52% AGREE
+tab v9h [aw=hhw]
+
+* v9i: Good time to find a job
+* Expected: 56% AGREE
+tab v9i [aw=hhw]
+
+* v9j: Optimistic about economic future
+* Expected: 55% AGREE
+tab v9j [aw=hhw]
+
+* v9k: Taxes are well spent on priorities
+* Expected: 37% AGREE (lowest agreement)
+tab v9k [aw=hhw]
+
+* Loop through all v9 items for efficiency
+di as text "=== Summary of all Likert items (v9a-v9k) ==="
 foreach v in v9a v9b v9c v9d v9e v9f v9g v9h v9i v9j v9k {
     tab `v' [aw=hhw]
 }
 
-* Support statements (v10 series)
+
+* ── SUPPORT STATEMENTS (v10a - v10e) ───────────────────────────────────────────
+
+* v10a through v10e: Policy support questions
+tab v10a [aw=hhw]
+tab v10b [aw=hhw]
+tab v10c [aw=hhw]
+tab v10d [aw=hhw]
+tab v10e [aw=hhw]
+
+* Loop through all v10 items
+di as text "=== Summary of all support items (v10a-v10e) ==="
 foreach v in v10a v10b v10c v10d v10e {
     tab `v' [aw=hhw]
 }
+
+
+* ── SUMMARY STATISTICS ────────────────────────────────────────────────────────
+
+di ""
+di "═══════════════════════════════════════════════════════════════════════════"
+di "Key Summary Statistics for Ch10"
+di "═══════════════════════════════════════════════════════════════════════════"
+
+* Life satisfaction satisfied+ (codes 3-5) should be ~75%
+su v1 [aw=hhw] if v1 &gt;= 3 &amp; v1 &lt;= 5
+di as res "  Satisfied+ (v1=3-5): " %5.1f r(mean &gt; 0)*100 "%"
+
+* Count who feel worse off economically
+su v5 [aw=hhw] if v5 == 3
+di as res "  Feel worse off (v5=worse): " %5.1f r(mean &gt; 0)*100 "%"
+
+* Count who feel unsafe
+su v4 [aw=hhw] if v4 == 5
+di as res "  Feel unsafe (v4=unsafe): " %5.1f r(mean &gt; 0)*100 "%"
+
+di "═══════════════════════════════════════════════════════════════════════════"
+di "CH10 Voices &amp; Perceptions Replication Complete"
+di "═══════════════════════════════════════════════════════════════════════════"
 </pre><div class="repl-note">Requires §0 setup block (paths, weights, gen_macroreg, gen_settlement, _hhwt_temp.dta)</div></div>
     </details>
   </div>
 </div>
 
-<!-- REPLICATION PREAMBLE -->
-<div class="sec" style="background:#001a2e;color:#c9d8e6;padding:60px 40px;">
-  <div style="max-width:900px;margin:0 auto;">
-    <span class="eyebrow" style="color:#40B4E5;">Replication</span>
-    <h2 class="hed" style="color:#fff;font-size:1.8rem;">§0 Setup — run this first</h2>
-    <p style="color:#7a9ab8;font-size:.95rem;margin-bottom:18px;">All chapter-level replication blocks above depend on this preamble. Copy-paste into a fresh .do file, adjust paths for your machine, then run any chapter block.</p>
-    <div class="repl-code" style="background:#00111f;border:1px solid #1a3a55;"><button class="repl-copy" onclick="navigator.clipboard.writeText(this.parentElement.querySelector('pre').textContent)">Copy</button><pre>
-********************************************************************************
-* L2Phl CAPI Baseline — Replication Preamble (§0)
-* Run this block FIRST, then any chapter block below
-********************************************************************************
-
-clear all
-set more off
-set excelxlsxlargefile on
-set maxvar 10000
-
-* ── User paths ────────────────────────────────────────────────────
-loc user = "AP"  // AP or BB or LD
-
-if ("`user'"=="AP") ///
-    glo wd "~/iDrive/GitHub/PHL/L2PHL/CAPI"
-if ("`user'"=="BB") ///
-    glo wd "/Users/batmandakh/Dropbox/BB/WB/PHL/CAPI"
-if ("`user'"=="LD") ///
-    glo wd "C:\Users\Liz Danganan\OneDrive - PSRC\3 MACROS &amp; TEMPLATES\TIPON\TIPON\data"
-
-cd "$wd"
-
-* ── Round &amp; date globals ──────────────────────────────────────────
-glo LNG ENG
-glo R 00
-glo M 10
-glo D 15
-glo Y 2025
-glo dta_file l2phl
-glo date ${Y}${M}${D}
-
-* ── Paths ─────────────────────────────────────────────────────────
-glo ado "$wd/Round${R}/ado"
-glo dta "$wd/Round${R}/dta/$date"
-glo xls "$wd/Round${R}/xls"
-glo out "$wd/Analysis/SL"
-
-cap adopath - "$wd/Round${R}/ado/"
-adopath + "$wd/Round${R}/ado/"
-cap confirmdir "$out"
-if _rc ~= 0 mkdir "$out"
-
-* ── Macro-region generator ────────────────────────────────────────
-cap program drop gen_macroreg
-program define gen_macroreg
-    cap drop macroreg
-    gen macroreg = .
-    replace macroreg = 1 if inlist(region, 101, 102, 103, 104, 105)
-    replace macroreg = 2 if inlist(region, 1, 2, 3, 4, 5) | inlist(region, 14, 17)
-    replace macroreg = 3 if inlist(region, 6, 7, 8, 18)
-    replace macroreg = 4 if inlist(region, 9, 10, 11, 12) | inlist(region, 16, 19)
-    la def MACROREG 1 "NCR" 2 "Luzon (excl. NCR)" 3 "Visayas" 4 "Mindanao", replace
-    la val macroreg MACROREG
-end
-
-* ── Settlement type ───────────────────────────────────────────────
-cap program drop gen_settlement
-program define gen_settlement
-    cap drop settlement
-    gen settlement = urban
-    la def SETTLE 1 "Urban" 2 "Rural", replace
-    la val settlement SETTLE
-end
-
-* ── Create HH-level weight file ───────────────────────────────────
-use "$ado/final_weights.dta", clear
-bys hhid: keep if _n == 1
-keep hhid hhw popw region urban hhsize
-save "$out/_hhwt_temp.dta", replace
-</pre></div>
-  </div>
-</div>
+<!-- §0 Replication Preamble moved into Ch01 replication block above -->
 
 <!-- EPILOGUE -->
 <section class="epi">
