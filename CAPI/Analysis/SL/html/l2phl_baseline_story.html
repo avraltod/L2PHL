@@ -536,7 +536,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
     <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
-      <p>The poorest households have <strong>12 percentage points more youth</strong> under 20 than the richest (46% vs 34%). Migration intent runs in the opposite direction, wealthier households are <strong>5x more likely</strong> to consider migration (4.2% vs 0.8%), suggesting that lower-income households may face barriers in terms of networks and resources to move.</p>
+      <p>Q1 households have more children under 20 (46% vs 34% in Q5). Meanwhile, migration interest is higher among wealthier households (4.2% in Q5 vs 0.8% in Q1), possibly because moving requires networks and savings that poorer households lack.</p>
     </div>
   </div>
 </div>
@@ -777,7 +777,7 @@ wq_pct migind indw &quot;CH01_MIGRATE&quot; &quot;% considering migration (15+)&
 <div class="sec" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
-    <h2 class="hed" style="max-width:800px;">Head education is the <em class="r">sharpest class divide</em>, Q5 heads are <em class="b">17x more likely</em> to hold a degree</h2>
+    <h2 class="hed" style="max-width:800px;">Head education <em class="r">varies widely by wealth</em>: Q5 heads are <em class="b">17x more likely</em> to hold a degree</h2>
     <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% attending school (5–24)</div>
@@ -812,7 +812,7 @@ wq_pct migind indw &quot;CH01_MIGRATE&quot; &quot;% considering migration (15+)&
     <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
-      <p>School attendance barely varies by wealth (76–80%), but <strong>what kind of school</strong> and <strong>how much families pay</strong> diverge sharply. The poorest are almost entirely in public schools (96%) while the richest spend <strong>59% more</strong> on education. The starkest gap: only <strong>2.7% of Q1 household heads</strong> have a tertiary degree versus <strong>46.8% of Q5</strong>, education level closely tracks household welfare.</p>
+      <p>School attendance is similar across quintiles (76 to 80%), but the type of school and spending differ. In Q1, 96% attend public schools; Q5 households spend 59% more on education. Only <strong>2.7% of Q1 household heads</strong> hold a tertiary degree compared to <strong>46.8% in Q5</strong>.</p>
     </div>
   </div>
 </div>
@@ -1224,7 +1224,7 @@ wq_pct female_emp indw &quot;CH03_FEMALE&quot; &quot;% female employed&quot;
     <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
       <div class="callout" style="margin-top:24px;">
         <div class="callout-lbl">Poverty lens</div>
-        <p>The financial exclusion of the poorest is almost total. Just <strong>1 in 100</strong> Q1 households has a bank account; <strong>1 in 500</strong> could handle an emergency expense. Mobile money is the only bright spot, even in Q1, 8% have access, but the <strong>5x gap</strong> with Q5 (36%) means digital finance is widening, not closing, inequality. The savings rate tells the story starkly: Q1 at 3.4% versus Q5 at 30%.</p>
+        <p>About <strong>1 in 100</strong> Q1 households has a bank account, and <strong>1 in 500</strong> could cover an emergency expense. Mobile money reaches 8% even in Q1, though Q5 is at 36%. The savings rate follows a similar pattern: 3.4% in Q1 versus 30% in Q5.</p>
       </div>
     </div>
   </div>
@@ -1353,7 +1353,7 @@ wq_pct emerg hhw &quot;CH04_EMERGENCY&quot; &quot;% can cover emergency&quot;
       <div class="rev">
         <div class="body-copy light">
           <p>The health service access gap has a financial explanation. Fifty-four percent of household members have no PhilHealth coverage, and of the 46 percent who do, most are non-paying members or dependents. Only 17 percent are contributing members.</p>
-          <p>Regionally, Visayas has 36 percent coverage compared to NCR's 53 percent. Notably, rural and urban rates are nearly identical at 46 percent each.</p>
+          <p>Regionally, Visayas has 36 percent coverage compared to NCR's 53 percent. Rural and urban rates are nearly identical at 46 percent each.</p>
           <p>When hospitalization occurs, costs can be substantial. Nine percent reported they were hospitalized in the past twelve months with an average bill of ₱46,834, with 18.5 percent of hospital costs paid directly out-of-pocket.</p>
         </div>
         <!-- SFAP #34: OOP cost distribution -->
@@ -1951,7 +1951,7 @@ wq_pct multi3 hhw &quot;CH07_MULTI3&quot; &quot;% exposed to 3+ hazards&quot;
     <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
-      <p>The dwelling gradient is a ladder of deprivation. Electricity is nearly universal even for Q1 (84%), but <strong>piped water</strong> drops to 35% and <strong>concrete walls</strong> to just 11%. The starkest gap is internet: <strong>0.7% in Q1 vs 30% in Q5</strong>, a 43x ratio that locks the poorest out of digital government services, remote work, and online education.</p>
+      <p>Electricity reaches 84% of Q1 households, but <strong>piped water</strong> is at 35% and <strong>concrete walls</strong> at 11%. Internet access shows the widest gap: <strong>0.7% in Q1 vs 30% in Q5</strong>, which limits access to online services and remote work for lower-income households.</p>
     </div>
   </div>
 </div>
@@ -2158,7 +2158,7 @@ wq_pct piped hhw &quot;CH08_PIPED&quot; &quot;% piped water&quot;
     <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
-      <p>Assets are the physical manifestation of the welfare ranking, they literally define it, since the PMT model uses them as inputs. Still, the gradients reveal what matters most: <strong>motorcycle ownership</strong> rises 7x from Q1 to Q5 (7% to 47%), and <strong>computer access</strong> goes from 18% to 81%. These assets aren't luxuries, they're prerequisites for mobility and digital participation.</p>
+      <p>Since the PMT model uses assets as inputs, these gradients are partly mechanical. That said, the gaps are large: <strong>motorcycle ownership</strong> goes from 7% in Q1 to 47% in Q5, and <strong>computer access</strong> from 18% to 81%. Both affect daily mobility and the ability to work or study online.</p>
     </div>
   </div>
 </div>
