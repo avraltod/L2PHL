@@ -2640,7 +2640,7 @@ di as res "  Log saved to: `logpath'"
     <div class="two-col" style="margin-top:18px;">
       <div class="rev">
         <div class="body-copy light">
-          <p>The sample uses a two-stage stratified design. <strong>Strata</strong> are defined by the cross-classification of region and urban/rural status, yielding 36 explicit strata across 18 regions (with NCR contributing five sub-region strata, all classified as urban).</p>
+          <p>The sample uses a two-stage stratified design. <strong>Strata</strong> are defined by the cross-classification of region and urban/rural status, yielding 39 explicit strata: 17 non-NCR regions each contribute an urban and a rural stratum (34 strata), and the National Capital Region is divided into five sub-regions — all classified as urban (5 strata).</p>
           <p><strong>Stage 1:</strong> Primary Sampling Units (PSUs) — barangays identified by their Philippine Standard Geographic Code (PSGC) — were selected with probability proportional to size (PPS), using 2020 Census population as the measure of size (MOS). Within each stratum <em>s</em>, PSU <em>p</em> was selected with probability proportional to its population: &pi;<sup>(1)</sup> = n<sub>s</sub> &times; POP<sub>sp</sub> / POP<sub>s</sub>.</p>
           <p><strong>Stage 2:</strong> Within each selected PSU, households were drawn with equal probability. The Stage-2 inclusion probability is &pi;<sup>(2)</sup> = m<sub>sp</sub> / HH<sub>sp</sub>, where m<sub>sp</sub> is the number of sampled households and HH<sub>sp</sub> is the total number of households in the PSU.</p>
           <p>The combined inclusion probability is &pi; = &pi;<sup>(1)</sup> &times; &pi;<sup>(2)</sup>, and the base household design weight is W = 1 / &pi;.</p>
@@ -2692,24 +2692,25 @@ di as res "  Log saved to: `logpath'"
     </div>
 
     <div class="body-copy light rev" style="margin-top:22px;">
-      <p>The questionnaire was administered on tablets using SurveyCTO, a CAPI platform that enforces skip patterns, range checks and consistency validations in real time. Modules M01 through M03 and M06–M07 collect person-level data (weighted by <em>indw</em>), while modules M04–M05 and M08–M14 are administered at the household level (weighted by <em>hhw</em>). Module M00 (Passport) records household identifiers, GPS coordinates, interview timing and enumerator metadata.</p>
+      <p>The questionnaire was administered on tablets using SurveyToGo (STG), a mobile CAPI platform developed by Dooblo that enforces skip patterns, piping, looping, range checks and consistency validations in real time — with full offline capability for remote fieldwork areas. Modules M01 through M03 and M06–M07 collect person-level data (weighted by <em>indw</em>), while modules M04–M05 and M08–M14 are administered at the household level (weighted by <em>hhw</em>). Module M00 (Passport) records household identifiers, GPS coordinates, interview timing and enumerator metadata.</p>
     </div>
 
     <div class="vis-sep" style="color:rgba(245,240,232,.1);">· · ·</div>
 
     <!-- §4 Field team & World Bank team -->
     <span class="eyebrow r">Implementation</span>
-    <h2 class="hed light">Field operations and <em class="r">World Bank oversight</em></h2>
+    <h2 class="hed light">PSRC and <em class="r">the World Bank</em> — a partnership spanning fieldwork to analysis</h2>
 
     <div class="two-col" style="margin-top:18px;">
       <div class="rev">
         <div class="body-copy light">
-          <p>Field data collection was carried out by trained enumerators deployed across all 18 regions. Each team consisted of interviewers and a field supervisor responsible for quality oversight, spot checks and re-interviews. Enumerators underwent a multi-day training programme covering questionnaire content, tablet operation, informed consent protocols, and field safety procedures.</p>
-          <p>Interviews were conducted face-to-face in respondents' homes during September and October 2025. The average interview duration was approximately 45–60 minutes per household. Supervisors monitored daily completion rates, flagged incomplete or inconsistent submissions, and conducted back-checks on a random subset of completed interviews.</p>
+          <p>Field data collection was carried out by the <strong>Philippine Survey and Research Center, Inc. (PSRC)</strong>, the largest independent research agency in the Philippines. Founded in 1974, PSRC brings over 50 years of field research experience and a nationwide network of trained enumerators and field supervisors. PSRC is a member of the Worldwide Independent Network (WIN), the leading global association for market research and polling, and engages with over 200,000 respondents annually across the archipelago.</p>
+          <p>For Project TIPON (the internal name for the L2Phl survey), PSRC deployed field teams across all 18 regions. Each team consisted of interviewers and a field supervisor responsible for quality oversight, spot checks and re-interviews. PSRC programmed the questionnaire using SurveyToGo (STG), their mobile CAPI platform, which supports offline data collection, GPS capture, multimedia integration, smart skip logic and real-time validation — essential for reaching remote rural barangays with limited connectivity.</p>
+          <p>Interviews were conducted face-to-face in respondents' homes during September and October 2025. PSRC supervisors monitored daily completion rates, flagged incomplete or inconsistent submissions, and conducted back-checks on a random subset of completed interviews. Mock interviews and a pilot round preceded the main fieldwork to refine question wording and test the STG scripting.</p>
         </div>
         <div class="callout" style="margin-top:18px;">
           <div class="callout-lbl">World Bank team</div>
-          <p>The survey was designed and supervised by the <strong>World Bank's Poverty and Equity Global Practice</strong>, with technical leadership from the Washington DC and Manila offices. The team provided end-to-end oversight: sampling frame construction, questionnaire design, enumerator training, real-time data monitoring and post-collection quality assurance.</p>
+          <p>The survey was designed and supervised by the <strong>World Bank's Poverty and Equity Global Practice</strong>, with technical leadership from the Washington DC and Manila offices. The team provided end-to-end oversight: sampling frame construction from the 2020 Census, questionnaire design, enumerator training, real-time data monitoring and post-collection quality assurance. Weight construction, data cleaning and all statistical analysis were conducted by the World Bank team.</p>
         </div>
       </div>
       <div class="rev d2">
@@ -2722,18 +2723,22 @@ di as res "  Log saved to: `logpath'"
               <div style="font-size:.86rem;color:#002244;line-height:1.5;">Survey design, sampling frame, weight construction, questionnaire development, data quality monitoring, analysis and reporting</div>
             </div>
             <div style="padding:10px 14px;background:#EEF5FA;border-radius:3px;margin-bottom:6px;">
-              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#00A651;font-weight:600;margin-bottom:4px;">Field supervisors</div>
-              <div style="font-size:.86rem;color:#002244;line-height:1.5;">Team management, daily monitoring, back-checks, spot-check re-interviews, data upload oversight</div>
+              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#00A651;font-weight:600;margin-bottom:4px;">PSRC — Field implementation</div>
+              <div style="font-size:.86rem;color:#002244;line-height:1.5;">CAPI scripting (SurveyToGo), enumerator recruitment and training, nationwide field deployment, daily supervision, back-checks, data upload and server management</div>
             </div>
             <div style="padding:10px 14px;background:#EEF5FA;border-radius:3px;margin-bottom:6px;">
-              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#D4A017;font-weight:600;margin-bottom:4px;">Enumerators</div>
-              <div style="font-size:.86rem;color:#002244;line-height:1.5;">Face-to-face household interviews via CAPI tablets, informed consent, GPS capture, real-time data validation</div>
+              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#D4A017;font-weight:600;margin-bottom:4px;">PSRC — Field supervisors</div>
+              <div style="font-size:.86rem;color:#002244;line-height:1.5;">Regional team management, daily monitoring, spot-check re-interviews, quality assurance at the point of collection</div>
             </div>
             <div style="padding:10px 14px;background:#EEF5FA;border-radius:3px;">
-              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#CE1126;font-weight:600;margin-bottom:4px;">Data management</div>
-              <div style="font-size:.86rem;color:#002244;line-height:1.5;">SurveyCTO server administration, raw data extraction, format conversion, secure storage</div>
+              <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#CE1126;font-weight:600;margin-bottom:4px;">PSRC — Enumerators</div>
+              <div style="font-size:.86rem;color:#002244;line-height:1.5;">Face-to-face household interviews via CAPI tablets, informed consent, GPS capture, real-time data validation</div>
             </div>
           </div>
+        </div>
+        <div class="hbox b" style="margin-top:14px;">
+          <div class="hbox-lbl">About PSRC</div>
+          <p>The Philippine Survey and Research Center, Inc. (PSRC) was founded in 1974 and is the largest independent research agency in the Philippines. With over 50 years of experience and a tagline of "Insight to Incite," PSRC is a member of the Worldwide Independent Network (WIN) and engages with over 200,000 respondents annually. Their nationwide field infrastructure made them the natural partner for a survey of this scale and geographic reach.</p>
         </div>
       </div>
     </div>
@@ -2755,7 +2760,7 @@ di as res "  Log saved to: `logpath'"
         <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#009FDA;font-weight:600;margin-bottom:10px;">Layer 1 — Field</div>
         <div class="ctitle light">Real-time CAPI validation</div>
         <div style="font-size:.86rem;color:#002244;line-height:1.6;margin-top:8px;">
-          SurveyCTO enforces skip patterns, range checks, and consistency rules during the interview. GPS coordinates are captured automatically. Supervisors conduct daily reviews and flag anomalies for re-interview.
+          PSRC's SurveyToGo (STG) platform enforces skip patterns, range checks, and consistency rules during the interview. GPS coordinates are captured automatically. PSRC supervisors conduct daily reviews and flag anomalies for re-interview.
         </div>
       </div>
       <div class="cbox dark">
@@ -2785,7 +2790,7 @@ di as res "  Log saved to: `logpath'"
         <div style="margin-top:14px;display:flex;align-items:center;gap:0;flex-wrap:wrap;">
           <div style="background:#009FDA;color:#fff;padding:10px 16px;border-radius:3px 0 0 3px;font-family:var(--mono);font-size:11px;text-align:center;min-width:120px;">
             <div style="font-weight:700;">Raw data</div>
-            <div style="font-size:9px;opacity:.8;">SurveyCTO export</div>
+            <div style="font-size:9px;opacity:.8;">PSRC / STG export</div>
           </div>
           <div style="width:0;height:0;border-left:14px solid #009FDA;border-top:14px solid transparent;border-bottom:14px solid transparent;"></div>
           <div style="background:#0038A8;color:#fff;padding:10px 16px;font-family:var(--mono);font-size:11px;text-align:center;min-width:120px;">
