@@ -427,7 +427,7 @@
         </div>
         <div class="body-copy light">
           <p>K-medians clustering applied to the first 10 principal components from M1, which together explain 34 percent of total indicator variance. The algorithm partitions households into K groups by minimizing the sum of absolute deviations from each cluster median, a method more robust to outliers than K-means.</p>
-          <p>The optimal number of clusters is K = 3 (Calinski-Harabasz index = 364.6), suggesting three natural welfare classes in the data. For comparability with the other methods, results are mapped to K = 5 quintiles. Cluster sizes range from 15.8 to 23.1 percent of households, indicating unequal natural groupings.</p>
+          <p>The optimal number of clusters is K = 3 (Calinski-Harabasz index = 364.6), indicating three natural welfare classes in the data. For comparability with the other methods, results are mapped to K = 5 quintiles. Cluster sizes range from 15.8 to 23.1 percent of households, indicating unequal natural groupings.</p>
           <p>The correlation with v2 is the lowest of all methods (&rho; = 0.233), but the correlation with M1 PCA is 0.796. K-medians identifies structural asset groupings that do not closely correspond to how households perceive their own welfare, consistent with the literature showing that asset-based clusters capture long-run wealth rather than current subjective wellbeing.</p>
         </div>
       </div>
@@ -563,28 +563,28 @@
 <!-- SECTION 3: ASSET GRADIENTS -->
 <section id="sec3" class="sec rev">
   <span class="eyebrow r">Welfare Quintiles</span>
-  <h2 class="hed">From <em class="r">Q1 to Q5</em>: asset ownership by welfare quintile</h2>
+  <h2 class="hed">From <em class="r">Q1 to Q5</em>: asset ownership by M5 Ridge quintile</h2>
 
   <div class="sgrid sgrid-5" style="margin:32px 0;">
     <div class="scell dark-c">
-      <div class="scell-n">−1.432</div>
-      <div class="scell-l">Q1 M5 Mean</div>
+      <div class="scell-n">−1.326</div>
+      <div class="scell-l">Q1 Mean (M1)</div>
     </div>
     <div class="scell dark-c">
-      <div class="scell-n">−0.513</div>
-      <div class="scell-l">Q2 M5 Mean</div>
+      <div class="scell-n">−0.574</div>
+      <div class="scell-l">Q2 Mean (M1)</div>
     </div>
     <div class="scell dark-c">
-      <div class="scell-n">+0.030</div>
-      <div class="scell-l">Q3 M5 Mean</div>
+      <div class="scell-n">−0.060</div>
+      <div class="scell-l">Q3 Mean (M1)</div>
     </div>
     <div class="scell dark-c">
-      <div class="scell-n">+0.552</div>
-      <div class="scell-l">Q4 M5 Mean</div>
+      <div class="scell-n">+0.496</div>
+      <div class="scell-l">Q4 Mean (M1)</div>
     </div>
     <div class="scell dark-c">
-      <div class="scell-n">+1.366</div>
-      <div class="scell-l">Q5 M5 Mean</div>
+      <div class="scell-n">+1.465</div>
+      <div class="scell-l">Q5 Mean (M1)</div>
     </div>
   </div>
 
@@ -620,7 +620,7 @@
             <div class="btrack"><div class="bfill" data-w="16" style="background:#CE1126;"></div></div>
           </div>
         </div>
-        <div class="src">Showing Q5 prevalence by M5 Ridge PMT quintile.</div>
+        <div class="src">Asset prevalence by M5 Ridge PMT quintile. Q1 = lowest welfare, Q5 = highest.</div>
       </div>
     </div>
     <div>
@@ -706,8 +706,8 @@
   <h2 class="hed">Five methods, <em class="g">consistent ranking</em></h2>
 
   <div class="body-copy" style="max-width:900px;margin-bottom:28px;">
-    <p>Five different statistical approaches produced five different welfare rankings. Pairwise comparisons show substantial agreement. Method 1 (Core PCA) and Method 2 (Extended PCA) agree 74 percent of the time, placing the same household in the same quintile. Method 1 and the Ridge PMT (Method 5) agree 40 percent of the time. Random assignment to five quintiles would yield 20 percent agreement, so the observed 40 percent represents twice the chance rate.</p>
-    <p>At least 3 of the 5 methods assign the same quintile for 73.5 percent of households. For about one-third of the sample, 4 or 5 methods agree, indicating that the welfare ranking is consistent across methods.</p>
+    <p>Five different statistical approaches produced five different welfare rankings. Method 1 (Core PCA) and Method 2 (Extended PCA) agree 74 percent of the time, placing the same household in the same quintile. The consensus quintile (median across all five methods) correlates at 0.938 with M1 Core PCA and at 0.392 with self-reported welfare (v2).</p>
+    <p>At least 3 of the 5 methods assign the same quintile for 73.5 percent of households. For 34.1 percent, 4 or more methods agree. For 13.2 percent, all 5 methods assign the same quintile. Random assignment would yield 20 percent agreement at the 3-method level, so the observed 73.5 percent indicates substantial convergence across methods.</p>
   </div>
 
   <div class="two-col">
