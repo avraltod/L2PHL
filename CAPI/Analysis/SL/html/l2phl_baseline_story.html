@@ -502,7 +502,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Poorer households are <em class="r">younger, larger</em>, and more likely to <em class="r">lack a PWD ID</em></h2>
-    <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+    <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% members under 20</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">45.6%</div></div><div class="qtrack"><div class="qfill" data-w="45.6"></div></div></div>
@@ -533,10 +533,10 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">41.6%</div></div><div class="qtrack"><div class="qfill" data-w="41.6"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
-      <p>Q1 households have more children under 20 (46% vs 34% in Q5). Meanwhile, migration interest is higher among wealthier households (4.2% in Q5 vs 0.8% in Q1), possibly because moving requires networks and savings that poorer households lack.</p>
+      <p>Q1 households have more children under 20 (46% vs 34% in Q5). Meanwhile, migration interest is higher among Q5 households (4.2%) than Q1 households (0.8%).</p>
     </div>
   </div>
 </div>
@@ -690,7 +690,7 @@ wq_pct migind indw &quot;CH01_MIGRATE&quot; &quot;% considering migration (15+)&
         <p>Ninety percent of students attend public schools. Private school attendance is highest in NCR at 14 percent, and lowest in Visayas at 9 percent.</p>
       </div>
       <div class="body-copy" style="margin-top:18px;">
-        <p><strong>Why do young people leave school?</strong> Employment is the top reason (4 percent of non-attenders), followed by financial constraints (2 percent), having finished schooling (2 percent), family matters (2 percent), and distance to school (less than 1 percent). Cost and household responsibilities appear more prominent than academic difficulty as drivers of dropout.</p>
+        <p>Among those not attending school, employment is the most common reason cited (4 percent of non-attenders), followed by financial constraints (2 percent), having finished schooling (2 percent), family matters (2 percent), and distance to school (less than 1 percent). Cost and household responsibilities appear more prominent than academic difficulty as reasons for non-attendance.</p>
       </div>
     </div>
     <div class="rev d2">
@@ -778,7 +778,7 @@ wq_pct migind indw &quot;CH01_MIGRATE&quot; &quot;% considering migration (15+)&
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Head education <em class="r">tracks wealth closely</em>: 47% of Q5 heads hold a degree vs <em class="b">2.7% in Q1</em></h2>
-    <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+    <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% attending school (5–24)</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">76.0%</div></div><div class="qtrack"><div class="qfill" data-w="76.0"></div></div></div>
@@ -809,7 +809,7 @@ wq_pct migind indw &quot;CH01_MIGRATE&quot; &quot;% considering migration (15+)&
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">46.8%</div></div><div class="qtrack"><div class="qfill" data-w="46.8"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
       <p>School attendance is similar across quintiles (76 to 80%), but the type of school and spending differ. In Q1, 96% attend public schools; Q5 households spend 59% more on education. Only <strong>2.7% of Q1 household heads</strong> hold a tertiary degree compared to <strong>46.8% in Q5</strong>.</p>
@@ -894,8 +894,8 @@ wq_mean ed_exp indw &quot;CH02_EXPENSE&quot; &quot;Mean annual ed expense (PHP)&
           <div class="scell dark-c"><div class="scell-n" style="color:#F05023;">30.2%</div><div class="scell-l" style="color:#4a6278;">Female employment rate</div></div>
         </div>
         <div class="body-copy light">
-          <p>The employment rate stands at 45 percent for adults 15 and older. This aggregate figure reflects a large gender difference: men participate at 59 percent and women at 30 percent, a 29 percentage-point gap that likely reflects a combination of social norms, unpaid care responsibilities, and differences in access to formal employment.</p>
-          <p>Employment peaks at ages 45 to 54, where 64 percent are working. Youth employment (ages 15 to 24) is 19 percent, though many in this age band are still in school. Regionally, Luzon leads at 48 percent while the Visayas is at 41 percent.</p>
+          <p>The employment rate stands at 45 percent for adults 15 and older. This aggregate figure reflects a large gender difference: men participate at 59 percent and women at 30 percent, a 29 percentage-point gap.</p>
+          <p>Employment peaks at ages 45 to 54, where 64 percent are working. Youth employment (ages 15 to 24) is 19 percent, though many in this age band are still in school. Regionally, the employment rate was highest in Luzon at 48 percent and lowest in the Visayas at 41 percent.</p>
         </div>
       </div>
       <div class="rev d2">
@@ -959,7 +959,7 @@ wq_mean ed_exp indw &quot;CH02_EXPENSE&quot; &quot;Mean annual ed expense (PHP)&
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">The wealth gap in work is a <em class="r">gender story</em>, poor women's employment is <em class="r">half</em> that of rich women</h2>
-    <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+    <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% employed (all)</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">47.6%</div></div><div class="qtrack"><div class="qfill" data-w="47.6"></div></div></div>
@@ -990,7 +990,7 @@ wq_mean ed_exp indw &quot;CH02_EXPENSE&quot; &quot;Mean annual ed expense (PHP)&
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">65.1%</div></div><div class="qtrack"><div class="qfill" data-w="65.1"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
       <p>Male employment is similar across quintiles (around 64%), but <strong>female employment rises</strong> from 29% in Q1 to 49% in Q5. Contract coverage also varies: <strong>83% have no written contract</strong> in Q1 versus 65% in Q5. Among lower-income households, work is available but often without formal protections or benefits.</p>
@@ -1189,8 +1189,8 @@ wq_pct female_emp indw &quot;CH03_FEMALE&quot; &quot;% female employed&quot;
   <div class="sec" style="background:#EEF5FA;padding:50px 40px;">
     <div style="max-width:1100px;margin:0 auto;">
       <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
-      <h2 class="hed" style="max-width:800px;">Financial inclusion is near-zero for the poorest, <em class="r">1% have a bank account</em>, <em class="r">0.2% can handle an emergency</em></h2>
-      <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+      <h2 class="hed" style="max-width:800px;">Financial inclusion is near zero in the lowest quintile: <em class="r">1% have a bank account</em>, <em class="r">0.2% can handle an emergency</em></h2>
+      <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% with bank account</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">1.0%</div></div><div class="qtrack"><div class="qfill" data-w="1.0"></div></div></div>
@@ -1221,7 +1221,7 @@ wq_pct female_emp indw &quot;CH03_FEMALE&quot; &quot;% female employed&quot;
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">6.6%</div></div><div class="qtrack"><div class="qfill" data-w="6.6"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
       <div class="callout" style="margin-top:24px;">
         <div class="callout-lbl">Poverty lens</div>
         <p>About <strong>1 in 100</strong> Q1 households has a bank account, and <strong>1 in 500</strong> could cover an emergency expense. Mobile money reaches 8% even in Q1, though Q5 is at 36%. The savings rate follows a similar pattern: 3.4% in Q1 versus 30% in Q5.</p>
@@ -1399,8 +1399,8 @@ wq_pct emerg hhw &quot;CH04_EMERGENCY&quot; &quot;% can cover emergency&quot;
 <div class="sec" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
-    <h2 class="hed" style="max-width:800px;">The poorest are <em class="r">least insured</em> but face the <em class="r">highest hospital bills</em> relative to income</h2>
-    <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+    <h2 class="hed" style="max-width:800px;">Q1 households have the <em class="r">lowest insurance rates</em> but face the <em class="r">highest hospital bills</em> relative to income</h2>
+    <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% with PhilHealth</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">37.9%</div></div><div class="qtrack"><div class="qfill" data-w="37.9"></div></div></div>
@@ -1431,7 +1431,7 @@ wq_pct emerg hhw &quot;CH04_EMERGENCY&quot; &quot;% can cover emergency&quot;
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">45.5%</div></div><div class="qtrack"><div class="qfill" data-w="45.5"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
       <p>PhilHealth coverage rises with wealth (38% in Q1 vs 55% in Q5), yet hospitalization rates are similar across quintiles (8 to 10%). A Q1 hospital stay averages <strong>₱21,270</strong>, lower than Q5's ₱52,519 but a larger share of household income. About <strong>62% of Q1 households lack health insurance</strong>.</p>
@@ -1587,7 +1587,7 @@ wq_pct hospitalized indw &quot;CH05_HOSPITAL&quot; &quot;% hospitalized&quot;
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Wet market use <em class="b">rises with wealth</em>, but SSB consumption is <em class="r">universal across classes</em></h2>
-    <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+    <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% use wet market</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">63.2%</div></div><div class="qtrack"><div class="qfill" data-w="63.2"></div></div></div>
@@ -1604,10 +1604,10 @@ wq_pct hospitalized indw &quot;CH05_HOSPITAL&quot; &quot;% hospitalized&quot;
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">90.8%</div></div><div class="qtrack"><div class="qfill" data-w="90.8"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
-      <p>SSB consumption is similar across all wealth levels: <strong>around 90% consume SSBs daily</strong> at about 7 servings per week. The wet market gradient (63% in Q1 vs 80% in Q5) likely reflects urban access rather than preference. Because consumption is similar across quintiles, any policy targeting SSBs would have <strong>broad reach</strong>.</p>
+      <p>SSB consumption is similar across all wealth levels: <strong>around 90% consume SSBs daily</strong> at about 7 servings per week. The wet market gradient ranges from 63% in Q1 to 80% in Q5.</p>
     </div>
   </div>
 </div>
@@ -1689,7 +1689,7 @@ wq_mean ssb_srv indw &quot;CH06_SSB_SERVINGS&quot; &quot;Mean SSB servings/week&
         <div class="body-copy light">
           <p>The Philippines is among the countries most exposed to natural hazards, located along the Pacific typhoon belt and the Ring of Fire. For many Filipino households, exposure to multiple hazards is a regular occurrence.</p>
           <p>Three in four households experienced a typhoon in the past three years. Half were affected by extreme heat events. Four in ten reported earthquake exposure. More than a third experienced flooding. These hazards often overlap and recur, affecting household welfare and assets over time, particularly among lower-income households.</p>
-          <p>Early warning coverage remains an area for improvement. Only 55 percent of affected households received advance warning before a hazard event. Among those who did, 85 percent reported understanding the message, which suggests room for improvement in both coverage and clarity of warning systems.</p>
+          <p>Early warning coverage remains an area for improvement. Only 55 percent of affected households received advance warning before a hazard event. Among those who did, 85 percent reported understanding the message, while 15 percent did not.</p>
         </div>
       </div>
       <div class="rev d2">
@@ -1750,8 +1750,8 @@ wq_mean ssb_srv indw &quot;CH06_SSB_SERVINGS&quot; &quot;Mean SSB servings/week&
     <div class="sec" style="background:#EEF5FA;padding:50px 40px;">
       <div style="max-width:1100px;margin:0 auto;">
         <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
-        <h2 class="hed" style="max-width:800px;">Early warning systems <em class="b">favor the better-off</em>, the poorest are <em class="r">less likely to receive alerts</em></h2>
-        <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+        <h2 class="hed" style="max-width:800px;">Early warning receipt varies by welfare quintile: Q1 households are <em class="r">less likely to receive alerts</em> than <em class="b">Q5 households</em></h2>
+        <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
         <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% received early warning</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">77.0%</div></div><div class="qtrack"><div class="qfill" data-w="77.0"></div></div></div>
@@ -1761,10 +1761,10 @@ wq_mean ssb_srv indw &quot;CH06_SSB_SERVINGS&quot; &quot;Mean SSB servings/week&
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">85.1%</div></div><div class="qtrack"><div class="qfill" data-w="85.1"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
         <div class="callout" style="margin-top:24px;">
           <div class="callout-lbl">Poverty lens</div>
-          <p>Hazard exposure is universal, typhoons, floods, and heat affect all quintiles equally. But early warning receipt shows a clear wealth gradient: <strong>77% in Q1 vs 89% in Q4</strong>. Lower-income households tend to have less access to alert systems and fewer resources to recover, which can compound the effects of disasters.</p>
+          <p>Hazard exposure is universal, typhoons, floods, and heat affect all quintiles equally. But early warning receipt shows a clear wealth gradient: <strong>77% in Q1 vs 89% in Q4</strong>. Early warning receipt is lower among Q1 households than among higher quintiles.</p>
         </div>
       </div>
     </div>
@@ -1916,8 +1916,8 @@ wq_pct multi3 hhw &quot;CH07_MULTI3&quot; &quot;% exposed to 3+ hazards&quot;
 <div class="sec" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
-    <h2 class="hed" style="max-width:800px;">Internet is the <em class="r">new divide</em>, only <em class="r">0.7%</em> of the poorest are connected vs <em class="b">30%</em> of the richest</h2>
-    <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+    <h2 class="hed" style="max-width:800px;">Internet access varies widely by quintile: <em class="r">0.7%</em> in Q1 compared with <em class="b">30%</em> in Q5</h2>
+    <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% piped water</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">35.3%</div></div><div class="qtrack"><div class="qfill" data-w="35.3"></div></div></div>
@@ -1948,10 +1948,10 @@ wq_pct multi3 hhw &quot;CH07_MULTI3&quot; &quot;% exposed to 3+ hazards&quot;
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">100%</div></div><div class="qtrack"><div class="qfill" data-w="100.0"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
-      <p>Electricity reaches 84% of Q1 households, but <strong>piped water</strong> is at 35% and <strong>concrete walls</strong> at 11%. Internet access shows the widest gap: <strong>0.7% in Q1 vs 30% in Q5</strong>, which limits access to online services and remote work for lower-income households.</p>
+      <p>Electricity reaches 84% of Q1 households, but <strong>piped water</strong> is at 35% and <strong>concrete walls</strong> at 11%. Internet access shows the widest gap: <strong>0.7% in Q1 compared with 30% in Q5</strong>.</p>
     </div>
   </div>
 </div>
@@ -2047,7 +2047,7 @@ wq_pct piped hhw &quot;CH08_PIPED&quot; &quot;% piped water&quot;
           <div class="bs"><div class="bs-lbl"><span>Visayas</span><span style="color:#D4A017;">94.9%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="94.9"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span style="color:#CE1126;">Mindanao</span><span style="color:#CE1126;">92.8%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="92.8"></div></div></div>
         </div>
-        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">99 percent of connected households use the utility grid. Solar covers less than 1 percent. Generator/battery less than 1 percent. Urban (97 percent) leads rural (95 percent).</p>
+        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">99 percent of connected households use the utility grid. Solar covers less than 1 percent. Generator/battery less than 1 percent. The urban rate (97 percent) was slightly higher than rural (95 percent).</p>
       </div>
     </div>
     <div class="rev d1">
@@ -2060,7 +2060,7 @@ wq_pct piped hhw &quot;CH08_PIPED&quot; &quot;% piped water&quot;
           <div class="bs"><div class="bs-lbl"><span>Protected spring</span><span style="color:#00A651">6.0%</span></div><div class="btrack"><div class="bfill" style="background:var(--green);" data-w="6.0"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span>Rainwater</span><span style="color:#0038A8">4.4%</span></div><div class="btrack"><div class="bfill" style="background:var(--purple);" data-w="4.4"></div></div></div>
         </div>
-        <p style="font-size:.82rem;line-height:1.5;margin-top:14px;color:var(--dim);">61 percent have piped water inside the home, and 93 percent perceive their drinking water as safe. However, 69 percent do not treat their water, which suggests that perceived and actual water safety may differ in some areas.</p>
+        <p style="font-size:.82rem;line-height:1.5;margin-top:14px;color:var(--dim);">61 percent have piped water inside the home, and 93 percent perceive their drinking water as safe. However, 69 percent do not treat their water, indicating a gap between perceived and treated water safety.</p>
       </div>
     </div>
     <div class="rev d2">
@@ -2099,7 +2099,7 @@ wq_pct piped hhw &quot;CH08_PIPED&quot; &quot;% piped water&quot;
           <div class="bs"><div class="bs-lbl"><span>Mindanao</span><span style="color:#CE1126;">45.2%</span></div><div class="btrack"><div class="bfill" style="background:#CE1126;" data-w="45.2"></div></div></div>
           <div class="bs"><div class="bs-lbl"><span style="color:#D4A017;">Visayas</span><span style="color:#D4A017;">40.7%</span></div><div class="btrack"><div class="bfill" style="background:#D4A017;" data-w="40.7"></div></div></div>
         </div>
-        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">64 percent use smartphones. Devices: Smart TV (13 percent), Laptop (11 percent). Social media/communication dominates use (36 percent).</p>
+        <p style="font-size:.85rem;line-height:1.6;margin-top:14px;color:var(--dim);">64 percent use smartphones. Devices: Smart TV (13 percent), Laptop (11 percent). Social media and communication account for the largest share of use (36 percent).</p>
       </div>
     </div>
     <div class="rev d1" style="display:flex;flex-direction:column;">
@@ -2124,7 +2124,7 @@ wq_pct piped hhw &quot;CH08_PIPED&quot; &quot;% piped water&quot;
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Asset ownership tracks wealth <em class="b">almost perfectly</em>, from <em class="r">1% fridge ownership</em> in Q1 to <em class="b">11%</em> in Q5</h2>
-    <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+    <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">% own motorcycle</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">7.0%</div></div><div class="qtrack"><div class="qfill" data-w="7.0"></div></div></div>
@@ -2155,7 +2155,7 @@ wq_pct piped hhw &quot;CH08_PIPED&quot; &quot;% piped water&quot;
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">36.3%</div></div><div class="qtrack"><div class="qfill" data-w="36.3"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
       <p>Since the PMT model uses assets as inputs, these gradients are partly mechanical. That said, the gaps are large: <strong>motorcycle ownership</strong> goes from 7% in Q1 to 47% in Q5, and <strong>computer access</strong> from 18% to 81%. Both affect daily mobility and the ability to work or study online.</p>
@@ -2226,7 +2226,7 @@ wq_pct has_phone hhw &quot;CH09_PHONE&quot; &quot;% own phone&quot;
       <div class="rev">
         <div class="body-copy">
           <p>The two most common household assets are almost exactly tied: washing machines (55 percent) and motorcycles/tricycles (54 percent). These reflect common household priorities.</p>
-          <p>Refrigerators reach 49 percent nationally. NCR leads (59 percent) while Visayas lags (45 percent). Computer or laptop ownership is 15 percent nationally, ranging from 25 percent in NCR to 9 percent in Visayas. This gap affects access to remote work and online education.</p>
+          <p>Refrigerators reach 49 percent nationally. The rate was highest in NCR (59 percent) and lowest in Visayas (45 percent). Computer or laptop ownership is 15 percent nationally, ranging from 25 percent in NCR to 9 percent in Visayas. This gap affects access to remote work and online education.</p>
           <p>Air conditioning is found in 10 percent of households nationally, mostly concentrated in NCR (24 percent) compared to 6 percent in Mindanao. Cars are at 4 percent nationally, fairly consistent across regions.</p>
         </div>
       </div>
@@ -2257,7 +2257,7 @@ wq_pct has_phone hhw &quot;CH09_PHONE&quot; &quot;% own phone&quot;
     <div class="rev">
       <div class="body-copy">
         <p>LPG is the primary cooking fuel at 61 percent. But 51 percent of households still use fuelwood, not as a curiosity but as a primary or supplementary fuel. Twenty-seven percent use charcoal. Many households use multiple fuels depending on what they are cooking and what is available.</p>
-        <p>The regional variation is clear: 94 percent of NCR households use LPG compared to 39 percent in Mindanao. Conversely, 72 percent of Mindanao households use fuelwood vs only 4 percent in NCR. Visayas and Mindanao together have the highest biomass dependency, which has implications for indoor air quality and forest resources.</p>
+        <p>The regional variation is clear: 94 percent of NCR households use LPG compared to 39 percent in Mindanao. Conversely, 72 percent of Mindanao households use fuelwood vs only 4 percent in NCR. Visayas and Mindanao together have the highest biomass dependency.</p>
         <p>Electricity for cooking is 21 percent nationally, highest in NCR (29 percent) and lowest in Visayas (15 percent). Despite wide electrification coverage, solid fuels remain common for cooking in most of the country.</p>
       </div>
     </div>
@@ -2419,7 +2419,7 @@ wq_pct has_phone hhw &quot;CH09_PHONE&quot; &quot;% own phone&quot;
       <div class="rev">
         <div class="body-copy light">
           <p>Visayas shows the highest "worse off" sentiment at 20 percent, consistent with Visayas being the region with the lowest PhilHealth coverage, lowest internet access, lowest financial inclusion, and highest hazard exposure relative to infrastructure.</p>
-          <p>Mindanao shows the highest "same" rate at 51 percent, suggesting a stability perception despite lower objective indicators. Visayas is most optimistic with 39 percent reporting improvement, while NCR trails at 33 percent improved.</p>
+          <p>Mindanao has the highest "same" rate at 51 percent. Visayas has the highest "better off" rate at 39 percent, while NCR is at 33 percent.</p>
         </div>
       </div>
     </div>
@@ -2449,8 +2449,8 @@ wq_pct has_phone hhw &quot;CH09_PHONE&quot; &quot;% own phone&quot;
 <div class="sec" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
-    <h2 class="hed" style="max-width:800px;">Life satisfaction barely varies by wealth, but <em class="r">the poorest feel most left behind</em></h2>
-    <div class="wgrad-sub">Q1 = poorest 20% · Q5 = richest 20% · Ridge PMT welfare ranking</div>
+    <h2 class="hed" style="max-width:800px;">Life satisfaction varies little by quintile, but <em class="r">Q1 households report the largest decline in perceived well-being</em></h2>
+    <div class="wgrad-sub">Q1 = lowest 20% · Q5 = highest 20% · Ridge PMT welfare ranking</div>
     <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;">
       <div class="wgrad-ind"><div class="wlbl">Mean life satisfaction (1–5)</div>
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q1</div><div class="qval">3.04</div></div><div class="qtrack"><div class="qfill" data-w="95.0"></div></div></div>
@@ -2481,7 +2481,7 @@ wq_pct has_phone hhw &quot;CH09_PHONE&quot; &quot;% own phone&quot;
         <div class="qrow"><div class="qrow-top"><div class="qtag">Q5</div><div class="qval">78.5%</div></div><div class="qtrack"><div class="qfill" data-w="78.5"></div></div></div>
       </div>
     </div>
-    <div class="wgrad-legend"><span class="lq1">Q1 Poorest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Richest</span></div>
+    <div class="wgrad-legend"><span class="lq1">Q1 Lowest</span><span class="lq2">Q2</span><span class="lq3">Q3</span><span class="lq4">Q4</span><span class="lq5">Q5 Highest</span></div>
     <div class="callout" style="margin-top:24px;">
       <div class="callout-lbl">Poverty lens</div>
       <p>Perceptions are broadly similar across wealth quintiles: AI anxiety (around 52%), price concerns (around 75%), and economic optimism (around 55%) show little variation. The main difference is subjective welfare: <strong>24% of Q1 feel worse off</strong> versus 16% of Q5. Lower-income households are somewhat more likely to <strong>report feeling worse off</strong>.</p>
@@ -2745,7 +2745,7 @@ wq_pct optimistic hhw &quot;CH10_OPTIMISTIC&quot; &quot;% optimistic about econo
         <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#D4A017;font-weight:600;margin-bottom:10px;">Layer 3: Verification</div>
         <div class="ctitle light">Three-layer cross-check</div>
         <div style="font-size:.86rem;color:#002244;line-height:1.6;margin-top:8px;">
-          All published statistics are verified through a three-way comparison: Stata replication code regenerates every number from cleaned microdata, DOCX reports are produced by Stata's putdocx, and the HTML storyline is cross-checked against both. All 96 statistics must pass.
+          All published statistics are verified through a three-way comparison: Stata replication code regenerates every number from cleaned microdata, DOCX reports are produced by Stata's putdocx, and the HTML storyline is cross-checked against both. All 96 statistics are required to match.
         </div>
       </div>
     </div>
@@ -3183,8 +3183,8 @@ lazy('sankeySatEco', () => {
   if (!el) return;
 
   // Stata-verified v2xv3 cross-tab (% of total, from Ch10_Views.docx)
-  const selfLabels = ['1 Poorest','2nd','3 Middle','4th','5 Richest'];
-  const childLabels = ['1 Poorest','2nd','3 Middle','4th','5 Richest'];
+  const selfLabels = ['1 Lowest','2nd','3 Middle','4th','5 Highest'];
+  const childLabels = ['1 Lowest','2nd','3 Middle','4th','5 Highest'];
   // flow[i][j] = % of all HHs with v2=i+1 AND v3=j+1
   const flow = [
     [4.5, 3.9, 8.2, 1.5, 1.3],  // v2=1 (Poorest)
