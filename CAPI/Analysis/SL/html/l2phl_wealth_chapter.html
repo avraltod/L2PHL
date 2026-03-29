@@ -262,6 +262,7 @@
     <div class="toc-title">Contents</div>
     <div class="toc-grid">
       <a href="#sec1" class="toc-item"><span class="toc-num">§1</span> <span>The Approach: Why Income Data Failed</span></a>
+      <a href="#sec1b" class="toc-item"><span class="toc-num">§1b</span> <span>Five Methods: How Each Works</span></a>
       <a href="#sec2" class="toc-item"><span class="toc-num">§2</span> <span>PMT Coefficients: Top Predictors</span></a>
       <a href="#sec3" class="toc-item"><span class="toc-num">§3</span> <span>Asset Gradients: Quintile Divides</span></a>
       <a href="#sec4" class="toc-item"><span class="toc-num">§4</span> <span>Geographic Patterns: The 1.15 SD Gap</span></a>
@@ -322,6 +323,214 @@
       <div class="pull b">
         <p>"The Ridge PMT produces a transparent, cross-validated welfare prediction from 77 observable indicators, following the standard approach for poverty targeting."</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 1B: FIVE METHODS DETAILED -->
+<section id="sec1b" class="sec dark-bg rev">
+  <div class="sec-inner">
+    <span class="eyebrow t">Methodology</span>
+    <h2 class="hed">Five methods, <em class="t">five angles</em> on welfare</h2>
+
+    <div class="body-copy light" style="max-width:900px;margin-bottom:36px;">
+      <p>Each method approaches welfare measurement from a different statistical tradition. Methods 1 and 2 are unsupervised: they rank households without reference to any self-reported welfare variable. Methods 3 and 5 are supervised: they use the M14 v2 self-reported welfare scale as a training target. Method 4 finds natural groupings in the indicator space. The table below summarizes each approach, its inputs, and its validation against v2.</p>
+    </div>
+
+    <!-- METHOD 1: CORE PCA -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-bottom:48px;" class="two-col">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <span style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#009FDA;font-weight:600;background:rgba(0,159,218,.1);padding:4px 10px;border-radius:2px;">M1</span>
+          <span style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:#002244;">Core PCA</span>
+        </div>
+        <div class="body-copy light">
+          <p>Principal Component Analysis on 40 binary DHS-style indicators covering dwelling materials, assets, fuel, utilities, and sanitation. The first principal component (PC1) captures the single dimension of greatest variation across households. PC1 explains 10.2 percent of total indicator variance, consistent with the 10 to 25 percent range observed in DHS surveys across 90 countries.</p>
+          <p>Indicators load on PC1 as expected: car ownership, concrete walls, piped water, and flush toilets load positively (associated with higher welfare), while nipa roofing, surface water, and open defecation load negatively.</p>
+          <p>This method is location-free: no region dummies are included, making the resulting index internationally comparable. It can be benchmarked against the Philippines DHS 2022 wealth index, which uses a near-identical indicator set.</p>
+        </div>
+      </div>
+      <div>
+        <div class="cbox dark">
+          <div class="ctitle light">M1 Core PCA at a Glance</div>
+          <div class="sgrid sgrid-2" style="gap:2px;margin-top:14px;">
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">40</div><div class="scell-l">Indicators</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">10.2%</div><div class="scell-l">PC1 Variance</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">0.302</div><div class="scell-l">Spearman &rho; vs v2</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">74%</div><div class="scell-l">Same Q as M2</div></div>
+          </div>
+          <p style="font-family:var(--mono);font-size:10px;color:#4a6278;margin-top:12px;line-height:1.5;">Unsupervised. No welfare target used in estimation. DHS-comparable across countries.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- METHOD 2: EXTENDED PCA -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-bottom:48px;" class="two-col">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <span style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#009FDA;font-weight:600;background:rgba(0,159,218,.1);padding:4px 10px;border-radius:2px;">M2</span>
+          <span style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:#002244;">Extended PCA</span>
+        </div>
+        <div class="body-copy light">
+          <p>Adds 15 indicators to the M1 core set: household head's education level, employment status, written contract, financial inclusion (bank account, mobile money, savings capacity, emergency fund), OFW remittances, agricultural income, food sourcing (supermarket vs. wet market), dependency ratio, and disability status. Total: 55 indicators.</p>
+          <p>PC1 explains 6.3 percent of variance in the extended set, lower than Core PCA because the additional variables introduce dimensions (education, labour market) that do not perfectly align with asset wealth. The correlation with M1 is 0.935 (Spearman), and 74 percent of households are assigned to the same quintile. The correlation with v2 is marginally lower at 0.293 vs. 0.302 for Core PCA.</p>
+          <p>The extended set is useful when the analysis requires a broader welfare concept that includes human capital and financial access, not only physical assets.</p>
+        </div>
+      </div>
+      <div>
+        <div class="cbox dark">
+          <div class="ctitle light">M2 Extended PCA at a Glance</div>
+          <div class="sgrid sgrid-2" style="gap:2px;margin-top:14px;">
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">55</div><div class="scell-l">Indicators</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">6.3%</div><div class="scell-l">PC1 Variance</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">0.293</div><div class="scell-l">Spearman &rho; vs v2</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">0.935</div><div class="scell-l">&rho; vs M1 Core</div></div>
+          </div>
+          <p style="font-family:var(--mono);font-size:10px;color:#4a6278;margin-top:12px;line-height:1.5;">Unsupervised. Broader welfare concept. Near-identical quintile assignment to M1.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- METHOD 3: RANDOM FOREST -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-bottom:48px;" class="two-col">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <span style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#F05023;font-weight:600;background:rgba(240,80,35,.1);padding:4px 10px;border-radius:2px;">M3</span>
+          <span style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:#002244;">Random Forest</span>
+        </div>
+        <div class="body-copy light">
+          <p>A supervised ensemble of 500 decision trees, each trained on a bootstrap sample of households and a random subset of 25 indicators per split. The target variable is M14 v2 (self-reported welfare on a 1 to 5 scale). Each tree partitions the indicator space into regions where households report similar welfare levels. The final prediction averages across all 500 trees.</p>
+          <p>Random Forest achieves the highest correlation with v2 by far: Spearman &rho; = 0.894, with an OOB RMSE of 0.805. Wall construction (concrete vs. nipa) is the most important splitting variable (14.5 percent relative importance), followed by geographic indicators and sanitation type.</p>
+          <p>The high &rho; is partly mechanical: the model is trained on the same welfare variable it is validated against. This limits its use as an independent welfare measure. It is best treated as a sensitivity check, showing what an unconstrained nonlinear learner would produce from the same indicator set.</p>
+        </div>
+      </div>
+      <div>
+        <div class="cbox dark">
+          <div class="ctitle light">M3 Random Forest at a Glance</div>
+          <div class="sgrid sgrid-2" style="gap:2px;margin-top:14px;">
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">500</div><div class="scell-l">Trees</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">25</div><div class="scell-l">Vars / Split</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;color:#F05023;">0.894</div><div class="scell-l">Spearman &rho; vs v2</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">0.805</div><div class="scell-l">OOB RMSE</div></div>
+          </div>
+          <p style="font-family:var(--mono);font-size:10px;color:#F05023;margin-top:12px;line-height:1.5;">Supervised. Overfits to v2 by design. Used as sensitivity check only.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- METHOD 4: K-MEDIANS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-bottom:48px;" class="two-col">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <span style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#0038A8;font-weight:600;background:rgba(0,56,168,.1);padding:4px 10px;border-radius:2px;">M4</span>
+          <span style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:#002244;">K-Medians Clustering</span>
+        </div>
+        <div class="body-copy light">
+          <p>K-medians clustering applied to the first 10 principal components from M1, which together explain 34 percent of total indicator variance. The algorithm partitions households into K groups by minimizing the sum of absolute deviations from each cluster median, a method more robust to outliers than K-means.</p>
+          <p>The optimal number of clusters is K = 3 (Calinski-Harabasz index = 364.6), suggesting three natural welfare classes in the data. For comparability with the other methods, results are mapped to K = 5 quintiles. Cluster sizes range from 15.8 to 23.1 percent of households, indicating unequal natural groupings.</p>
+          <p>The correlation with v2 is the lowest of all methods (&rho; = 0.233), but the correlation with M1 PCA is 0.796. K-medians identifies structural asset groupings that do not closely correspond to how households perceive their own welfare, consistent with the literature showing that asset-based clusters capture long-run wealth rather than current subjective wellbeing.</p>
+        </div>
+      </div>
+      <div>
+        <div class="cbox dark">
+          <div class="ctitle light">M4 K-Medians at a Glance</div>
+          <div class="sgrid sgrid-2" style="gap:2px;margin-top:14px;">
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">10</div><div class="scell-l">PCA Components</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">K = 3</div><div class="scell-l">Optimal Clusters</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">0.233</div><div class="scell-l">Spearman &rho; vs v2</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">0.796</div><div class="scell-l">&rho; vs M1 Core</div></div>
+          </div>
+          <div style="margin-top:14px;">
+            <div class="bs"><div class="bs-lbl"><span>K=3 (optimal)</span><span>CH = 364.6</span></div><div class="btrack dark-t"><div class="bfill" data-w="100" style="background:#0038A8;"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>K=4</span><span>CH = 307.3</span></div><div class="btrack dark-t"><div class="bfill" data-w="84" style="background:#0038A8;opacity:.7;"></div></div></div>
+            <div class="bs"><div class="bs-lbl"><span>K=5 (quintiles)</span><span>CH = 276.9</span></div><div class="btrack dark-t"><div class="bfill" data-w="76" style="background:#0038A8;opacity:.5;"></div></div></div>
+          </div>
+          <p style="font-family:var(--mono);font-size:10px;color:#4a6278;margin-top:12px;line-height:1.5;">Unsupervised. Finds natural groupings. Mapped to quintiles for comparability.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- METHOD 5: RIDGE PMT -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-bottom:28px;" class="two-col">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <span style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#D4A017;font-weight:600;background:rgba(212,160,23,.1);padding:4px 10px;border-radius:2px;">M5</span>
+          <span style="font-family:var(--serif);font-size:1.3rem;font-weight:700;color:#002244;">Ridge PMT (Primary)</span>
+        </div>
+        <div class="body-copy light">
+          <p>A supervised linear regression with L2 (ridge) regularization, predicting M14 v2 from 77 standardized household indicators plus 21 region dummies. The ridge penalty (&lambda; = 100, selected by 5-fold cross-validation) shrinks all coefficients toward zero without setting any exactly to zero, producing a stable, interpretable linear model.</p>
+          <p>This approach follows the World Bank Proxy Means Test (PMT) framework used by DSWD for 4Ps beneficiary identification. The PMT methodology has been applied in poverty targeting programs across 30 countries. Its key advantage is coefficient transparency: each predictor's contribution to the welfare score can be inspected and explained to policymakers.</p>
+          <p>The 5-fold CV Spearman &rho; is 0.272 (out-of-sample), while the quintile-level &rho; against v2 is 0.410. The top coefficient is head's tertiary education (+0.084), followed by Central Visayas region dummy (-0.078, negative) and car ownership (+0.074). Six of the top 15 coefficients are region dummies, indicating that geographic location is as strongly associated with welfare as individual household characteristics.</p>
+        </div>
+      </div>
+      <div>
+        <div class="cbox dark">
+          <div class="ctitle light">M5 Ridge PMT at a Glance</div>
+          <div class="sgrid sgrid-2" style="gap:2px;margin-top:14px;">
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">77 + 21</div><div class="scell-l">Features + Regions</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">&lambda; = 100</div><div class="scell-l">CV Lambda</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;color:#D4A017;">0.410</div><div class="scell-l">Spearman &rho; vs v2</div></div>
+            <div class="scell dark-c"><div class="scell-n" style="font-size:1.4rem;">0.272</div><div class="scell-l">CV &rho; (OOS)</div></div>
+          </div>
+          <p style="font-family:var(--mono);font-size:10px;color:#D4A017;margin-top:12px;line-height:1.5;">Supervised. PMT standard. Transparent coefficients. Primary method for L2Phl analysis.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY COMPARISON TABLE -->
+    <div class="callout" style="margin-top:32px;">
+      <div class="callout-lbl">Method Comparison Summary</div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-family:var(--body);font-size:.88rem;color:rgba(255,255,255,.9);margin-top:14px;">
+          <thead>
+            <tr style="border-bottom:2px solid rgba(255,255,255,.2);">
+              <th style="text-align:left;padding:8px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;">Method</th>
+              <th style="text-align:left;padding:8px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;">Type</th>
+              <th style="text-align:center;padding:8px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;">Features</th>
+              <th style="text-align:center;padding:8px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;">&rho; vs v2</th>
+              <th style="text-align:left;padding:8px 12px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;">Best Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.1);">
+              <td style="padding:8px 12px;font-weight:600;">M1 Core PCA</td>
+              <td style="padding:8px 12px;">Unsupervised</td>
+              <td style="padding:8px 12px;text-align:center;">40</td>
+              <td style="padding:8px 12px;text-align:center;">0.302</td>
+              <td style="padding:8px 12px;">DHS-comparable, cross-country benchmarking</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.1);">
+              <td style="padding:8px 12px;font-weight:600;">M2 Extended PCA</td>
+              <td style="padding:8px 12px;">Unsupervised</td>
+              <td style="padding:8px 12px;text-align:center;">55</td>
+              <td style="padding:8px 12px;text-align:center;">0.293</td>
+              <td style="padding:8px 12px;">Broader welfare concept (+ education, finance)</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.1);">
+              <td style="padding:8px 12px;font-weight:600;color:#F05023;">M3 Random Forest</td>
+              <td style="padding:8px 12px;">Supervised</td>
+              <td style="padding:8px 12px;text-align:center;">39</td>
+              <td style="padding:8px 12px;text-align:center;color:#F05023;">0.894*</td>
+              <td style="padding:8px 12px;">Sensitivity check (overfits to v2)</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,.1);">
+              <td style="padding:8px 12px;font-weight:600;">M4 K-Medians</td>
+              <td style="padding:8px 12px;">Unsupervised</td>
+              <td style="padding:8px 12px;text-align:center;">10 PCs</td>
+              <td style="padding:8px 12px;text-align:center;">0.233</td>
+              <td style="padding:8px 12px;">Natural welfare groupings (optimal K = 3)</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px;font-weight:600;color:#FCD116;">M5 Ridge PMT</td>
+              <td style="padding:8px 12px;">Supervised</td>
+              <td style="padding:8px 12px;text-align:center;">77 + 21</td>
+              <td style="padding:8px 12px;text-align:center;color:#FCD116;">0.410</td>
+              <td style="padding:8px 12px;font-weight:600;">Primary: social protection targeting (4Ps)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-family:var(--mono);font-size:10px;opacity:.6;margin-top:10px;">*M3 overfits to v2 by construction. Used as upper bound only.</p>
     </div>
   </div>
 </section>
