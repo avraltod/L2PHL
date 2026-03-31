@@ -1,0 +1,4449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2Phl CAPI Baseline Household Survey - Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --ink: #002244;
+      --paper: #f5f0e8;
+      --cream: #e8eef7;
+      --rule: #b8cce0;
+      --red: #CE1126;
+      --blue: #009FDA;
+      --sky: #40B4E5;
+      --gold: #D4A017;
+      --green: #00A651;
+      --serif: "Playfair Display", Georgia, serif;
+      --body: "Source Serif 4", Georgia, serif;
+      --mono: "IBM Plex Mono", monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--body);
+      background-color: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+
+    /* ═══ APP LAYOUT — sidebar + main ═══ */
+    html, body { height: 100%; overflow: hidden; }
+    .app { display: flex; height: 100vh; }
+
+    /* ═══ SIDEBAR ═══ */
+    .sb {
+      width: 240px;
+      flex-shrink: 0;
+      background: var(--ink);
+      color: rgba(255,255,255,.88);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: var(--body);
+      font-size: 12px;
+    }
+    .sb-hd {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .sb-flag { font-size: 1.4rem; margin-bottom: 4px; }
+    .sb-title {
+      font-family: var(--serif);
+      font-size: 13px;
+      color: #fff;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+    .sb-sub {
+      font-size: 9px;
+      color: rgba(255,255,255,.42);
+      margin-top: 2px;
+      font-family: var(--mono);
+    }
+    .sb-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 14px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.08) transparent;
+    }
+    .sb-body::-webkit-scrollbar { width: 3px; }
+    .sb-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
+    .sb-s { margin-bottom: 12px; }
+    .sb-st {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #009FDA;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .sb-st::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(0,159,218,.2);
+    }
+    .sb-box {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .sb-r {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+    .sb-r:last-child { margin-bottom: 0; }
+    .sb-l { font-size: 10.5px; color: rgba(255,255,255,.58); }
+    .sb-v { font-size: 11.5px; font-weight: 600; color: #fff; }
+    .sb-ft {
+      padding: 8px 14px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      flex-shrink: 0;
+      display: flex;
+      gap: 6px;
+    }
+    .sb-ft .xbtn {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--mono);
+    }
+    .sb-ft .xbtn.p { background: #009FDA; color: #fff; }
+    .sb-ft .xbtn.s { background: rgba(255,255,255,.08); color: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.1); }
+    .sb-ft .xbtn:hover { opacity: .82; }
+
+    /* MAIN PANEL — takes remaining space */
+    .main-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .main-panel .container {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,34,68,.1) transparent;
+    }
+    .main-panel .container::-webkit-scrollbar { width: 4px; }
+    .main-panel .container::-webkit-scrollbar-thumb { background: rgba(0,34,68,.12); }
+
+    /* MASTHEAD — compact */
+    .mast {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 5px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #009FDA;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .mast-logo {
+      font-family: var(--serif);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mast-sub {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .5;
+    }
+
+    /* Force all chart canvases to compact height */
+    .cwrap canvas, .cbox canvas { max-height: 150px !important; }
+    .sankey-wrap svg { max-height: 150px !important; }
+
+    .mast-nav {
+      display: flex;
+      gap: 3px;
+      flex-wrap: nowrap;
+    }
+
+    .mast-nav a {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .9);
+      text-decoration: none;
+      padding: 3px 8px;
+      border: 1px solid rgba(255, 255, 255, .4);
+      border-radius: 12px;
+      transition: all .15s;
+      cursor: pointer;
+    }
+
+    .mast-nav a:hover,
+    .mast-nav a.active {
+      color: #FFFFFF;
+      border-color: #009FDA;
+      background: rgba(0, 159, 218, .25);
+    }
+
+    @media (max-width: 720px) {
+      .mast {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .mast-nav {
+        justify-content: center;
+      }
+    }
+
+    /* Capture Button */
+    .capture-btn {
+      padding: 4px 10px;
+      background: rgba(0, 159, 218, .15);
+      color: rgba(255, 255, 255, .9);
+      border: 1px solid rgba(0, 159, 218, .35);
+      border-radius: 2px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .capture-btn:hover {
+      background: rgba(0, 159, 218, .25);
+      border-color: #009FDA;
+    }
+    .capture-btn svg { width: 12px; height: 12px; }
+    .capture-btn.capturing { background: var(--green); pointer-events: none; }
+
+    /* HERO — hidden in compact dashboard mode */
+    .hero { display: none; }
+
+    /* CHAPTER DIVIDER — compact single line */
+    .chap {
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 6px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+    }
+    .chap-n { font-family: var(--mono); font-size: 11px; color: #40B4E5; letter-spacing: .15em; font-weight: 600; }
+    .chap-r { flex: 1; height: 1px; background: rgba(245,240,232,.12); }
+    .chap-l { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; opacity: .82; }
+
+    /* Tab Content */
+    .tab-content { display: none; animation: fadeIn 0.15s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Main Content — compact */
+    .container { max-width: 100%; margin: 0 auto; padding: 0; }
+
+    /* Grid Layout — tight, 3-col for charts */
+    .grid { display: grid; gap: 6px; margin-bottom: 6px; }
+    .grid-3 { grid-template-columns: repeat(4, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    /* Chart Box — compact */
+    .cbox {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 8px 10px 5px;
+      box-shadow: 0 1px 6px rgba(0,0,0,.06);
+      overflow: hidden;
+    }
+    .cc-hd { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 2px; }
+    .ctitle { font-family: var(--serif); font-size: 0.82rem; font-weight: 700; color: var(--ink); margin-bottom: 0; line-height: 1.2; }
+    .csub { font-family: var(--mono); font-size: 8.5px; letter-spacing: .05em; text-transform: uppercase; color: #3d5568; margin-bottom: 3px; font-weight: 500; }
+    .cb { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 600; white-space: nowrap; flex-shrink: 0; margin-left: 4px; line-height: 1.5; }
+    .cb.b { background: rgba(0,159,218,.12); color: #009FDA; }
+    .cb.g { background: rgba(0,166,81,.1); color: #00A651; }
+    .cb.r { background: rgba(206,17,38,.1); color: #CE1126; }
+    .cb.o { background: rgba(245,158,11,.12); color: #d97706; }
+    .cb.p { background: rgba(167,139,250,.12); color: #7c3aed; }
+
+    /* 2-col grid for sparse tabs */
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    /* Last child in grid-2 when it's alone on its row (odd count): span full width */
+    .grid-2 > .cbox:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+    /* Orphan-fill for 4-col grids: when last row has fewer than 4 items, stretch them */
+    /* 2 orphans (e.g. 6 charts = 4+2): each spans 2 cols */
+    .grid-3 > .cbox:last-child:nth-child(4n+2),
+    .grid-4 > .cbox:last-child:nth-child(4n+2) { grid-column: span 2; }
+    .grid-3 > .cbox:nth-last-child(2):nth-child(4n+1),
+    .grid-4 > .cbox:nth-last-child(2):nth-child(4n+1) { grid-column: span 2; }
+
+    /* 1 orphan (e.g. 5 charts = 4+1): span all 4 cols */
+    .grid-3 > .cbox:last-child:nth-child(4n+1),
+    .grid-4 > .cbox:last-child:nth-child(4n+1) { grid-column: 1 / -1; }
+
+    /* 3 orphans (e.g. 7 charts = 4+3): no change needed, they look fine at 3-of-4 */
+
+    .cwrap { position: relative; }
+
+    /* Taller charts for 2-col sparse grids */
+    .grid-2 .cwrap { height: 200px !important; }
+    .grid-2 .cwrap canvas { max-height: 195px !important; }
+
+    .sankey-wrap { overflow-x: auto; }
+
+    /* Stat Card — inline compact strip */
+    .stat-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 6px 10px 5px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--wb-blue);
+    }
+    .stat-card.accent-blue::before { background: #009FDA; }
+    .stat-card.accent-green::before { background: #00A651; }
+    .stat-card.accent-red::before { background: #CE1126; }
+    .stat-card.accent-gold::before { background: #FCD116; }
+    .stat-card.accent-purple::before { background: #a78bfa; }
+    .stat-card.accent-amber::before { background: #f59e0b; }
+    .stat-value { font-family: var(--serif); font-size: 1.1rem; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.2; }
+    .stat-label { font-size: 8px; font-family: var(--mono); color: #3d5568; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; }
+    .stat-card.accent-blue .stat-value { color: var(--blue); }
+    .stat-card.accent-green .stat-value { color: var(--green); }
+    .stat-card.accent-red .stat-value { color: var(--red); }
+    .stat-card.accent-gold .stat-value { color: var(--gold); }
+
+    /* Module Header — hidden (chapter divider replaces it) */
+    .module-header { display: none; }
+    .module-code, .module-title, .module-desc { display: none; }
+
+    /* Variable Pills — hidden */
+    .var-pills { display: none; }
+
+    /* Footer — hidden in compact mode */
+    footer { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sb">
+  <div class="sb-hd">
+    <div class="sb-flag">&#x1F1F5;&#x1F1ED;</div>
+    <div class="sb-title">L2Phl Baseline Survey</div>
+    <div class="sb-sub">Listening to Philippines &middot; CAPI<br>Sep&ndash;Oct 2025 &middot; 14 Modules</div>
+  </div>
+  <div class="sb-body">
+
+    <div class="sb-s">
+      <div class="sb-st">Key Weighted Estimates</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Sample members</span><span class="sb-v">10,496</span></div>
+        <div class="sb-r"><span class="sb-l">Sample HH</span><span class="sb-v">2,470</span></div>
+        <div class="sb-r"><span class="sb-l">Represents (pop.)</span><span class="sb-v">~108.7M</span></div>
+        <div class="sb-r"><span class="sb-l">Male</span><span class="sb-v">50.63%</span></div>
+        <div class="sb-r"><span class="sb-l">Female</span><span class="sb-v">49.37%</span></div>
+        <div class="sb-r"><span class="sb-l">Median age</span><span class="sb-v">25 yrs</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">Household Profile</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Modal HH size</span><span class="sb-v">4 persons</span></div>
+        <div class="sb-r"><span class="sb-l">Urban share</span><span class="sb-v">54.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Tagalog HHs</span><span class="sb-v">39.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Son/daughter</span><span class="sb-v">43.2%</span></div>
+        <div class="sb-r"><span class="sb-l">Single/unmarried</span><span class="sb-v">56.2%</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">Disability</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">With disability</span><span class="sb-v" style="color:#f87171">2.51%</span></div>
+        <div class="sb-r"><span class="sb-l">PWD ID coverage</span><span class="sb-v">58.3%</span></div>
+        <div class="sb-r"><span class="sb-l">Male disability</span><span class="sb-v">3.08%</span></div>
+        <div class="sb-r"><span class="sb-l">Female disability</span><span class="sb-v">1.92%</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">Education (M02)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Attendance (5&ndash;24)</span><span class="sb-v" style="color:#4ade80">78.3%</span></div>
+        <div class="sb-r"><span class="sb-l">Female attendance</span><span class="sb-v">80.4%</span></div>
+        <div class="sb-r"><span class="sb-l">Male attendance</span><span class="sb-v">76.3%</span></div>
+        <div class="sb-r"><span class="sb-l">Public school</span><span class="sb-v">89.8%</span></div>
+        <div class="sb-r"><span class="sb-l">Annual spend</span><span class="sb-v">&#x20B1;16,380</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">Employment (M03)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Employment rate (15+)</span><span class="sb-v" style="color:#4ade80">44.7%</span></div>
+        <div class="sb-r"><span class="sb-l">Male rate</span><span class="sb-v">60.2%</span></div>
+        <div class="sb-r"><span class="sb-l">Female rate</span><span class="sb-v">30.1%</span></div>
+        <div class="sb-r"><span class="sb-l">No contract</span><span class="sb-v" style="color:#fbbf24">71.8%</span></div>
+        <div class="sb-r"><span class="sb-l">Avg hours/week</span><span class="sb-v">31.9 hrs</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">Income &amp; Finance (M04&ndash;05)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Regular income earners</span><span class="sb-v">66.1%</span></div>
+        <div class="sb-r"><span class="sb-l">OFW remittances (HH)</span><span class="sb-v">7.4%</span></div>
+        <div class="sb-r"><span class="sb-l">Bank account</span><span class="sb-v">5.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Mobile money</span><span class="sb-v">18.3%</span></div>
+        <div class="sb-r"><span class="sb-l">Took a loan (6mo)</span><span class="sb-v">18.2%</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">Health &amp; Hazards (M07, M09)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">PhilHealth covered</span><span class="sb-v">46.1%</span></div>
+        <div class="sb-r"><span class="sb-l">OOP for consultation</span><span class="sb-v" style="color:#fbbf24">54.1%</span></div>
+        <div class="sb-r"><span class="sb-l">Typhoon exposure (3yr)</span><span class="sb-v" style="color:#f87171">76.4%</span></div>
+        <div class="sb-r"><span class="sb-l">Extreme heat</span><span class="sb-v" style="color:#f87171">49.7%</span></div>
+        <div class="sb-r"><span class="sb-l">Early warning</span><span class="sb-v">55.1%</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">Housing &amp; WASH (M10&ndash;12)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Electricity access</span><span class="sb-v" style="color:#4ade80">96.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Internet access</span><span class="sb-v">49.0%</span></div>
+        <div class="sb-r"><span class="sb-l">Piped water (inside)</span><span class="sb-v">60.6%</span></div>
+        <div class="sb-r"><span class="sb-l">Flush toilet</span><span class="sb-v">71.1%</span></div>
+        <div class="sb-r"><span class="sb-l">Water unsafe</span><span class="sb-v" style="color:#f87171">60.3%</span></div>
+      </div>
+    </div>
+
+    <div class="sb-s">
+      <div class="sb-st">Views &amp; Perceptions (M14)</div>
+      <div class="sb-box">
+        <div class="sb-r"><span class="sb-l">Life satisfaction</span><span class="sb-v">3.04/5</span></div>
+        <div class="sb-r"><span class="sb-l">Feel worse off</span><span class="sb-v" style="color:#f87171">34.7%</span></div>
+        <div class="sb-r"><span class="sb-l">AI anxiety (top)</span><span class="sb-v" style="color:#fbbf24">27.4%</span></div>
+        <div class="sb-r"><span class="sb-l">Feel unsafe</span><span class="sb-v">12.8%</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="sb-ft">
+    <button class="xbtn p" onclick="window.print()">Print</button>
+    <button class="xbtn s" onclick="alert('L2Phl CAPI Baseline Household Survey\nSep&ndash;Oct 2025 &middot; World Bank Group\n2,470 HH &middot; 10,496 members &middot; 18 regions\nWeights: indw, hhw, popw')">About</button>
+  </div>
+</aside>
+
+<!-- ═══ MAIN PANEL ═══ -->
+<div class="main-panel">
+
+  <!-- MASTHEAD -->
+  <header class="mast">
+    <div>
+      <div class="mast-logo" style="display:flex;align-items:center;gap:16px;">
+        <svg class="wb-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;">
+          <circle cx="50" cy="50" r="45" fill="#009FDA" opacity="0.9"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#40B4E5" stroke-width="2"/>
+          <path d="M 30 50 A 20 20 0 0 1 70 50" fill="#40B4E5" opacity="0.5"/>
+          <circle cx="50" cy="35" r="3" fill="#40B4E5"/>
+          <circle cx="60" cy="55" r="3" fill="#40B4E5"/>
+          <circle cx="40" cy="65" r="2.5" fill="#40B4E5"/>
+        </svg>
+        <div>
+          <div style="color:#FFF;font-family:var(--serif);font-size:13px;font-weight:700;">L2Phl CAPI Baseline Survey</div>
+          <div class="mast-sub">World Bank Group · Module Dashboard</div>
+        </div>
+      </div>
+    </div>
+    <nav class="mast-nav">
+      <a href="#" data-tab="passport" class="active">M00</a>
+      <a href="#" data-tab="demographics">M01</a>
+      <a href="#" data-tab="education">M02</a>
+      <a href="#" data-tab="employment">M03</a>
+      <a href="#" data-tab="income">M04</a>
+      <a href="#" data-tab="finance">M05</a>
+      <a href="#" data-tab="migration">M06</a>
+      <a href="#" data-tab="health">M07</a>
+      <a href="#" data-tab="food">M08</a>
+      <a href="#" data-tab="hazards">M09</a>
+      <a href="#" data-tab="dwelling">M10</a>
+      <a href="#" data-tab="sanitation">M11</a>
+      <a href="#" data-tab="utilities">M12</a>
+      <a href="#" data-tab="assets">M13</a>
+      <a href="#" data-tab="views">M14</a>
+      <a href="#" class="capture-btn" id="captureBtn" onclick="captureTab(); return false;" style="margin-left:8px;background:rgba(0,159,218,.15);border-color:rgba(0,159,218,.35);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Capture
+      </a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" style="min-height:auto;padding:80px 40px 60px;">
+    <div class="hero-inner">
+      <div>
+        <p class="hero-flag" style="font-size:52px;line-height:1;margin-bottom:14px;">🇵🇭</p>
+        <p class="hero-eye">Philippines 2025</p>
+        <h1 class="hero-hed">Listening to the Philippines:<br><em>Baseline Household Survey</em></h1>
+        <p class="hero-deck">A nationally representative CAPI survey covering 14 modules across 2,470 households and 10,496 members in 18 regions.</p>
+        <p class="hero-src">L2Phl · Sep–Oct 2025 · World Bank Group</p>
+      </div>
+      <div class="hero-kpis">
+        <div class="hkpi r"><div class="hkpi-n">108.7<span>M</span></div><div class="hkpi-l">Population Represented</div></div>
+        <div class="hkpi b"><div class="hkpi-n">2,470</div><div class="hkpi-l">Households Surveyed</div></div>
+        <div class="hkpi g"><div class="hkpi-n">14</div><div class="hkpi-l">Survey Modules</div></div>
+        <div class="hkpi o"><div class="hkpi-n">18</div><div class="hkpi-l">Regions Covered</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <div class="container">
+
+    <div id="passport" class="tab-content active">
+
+      <div class="chap"><span class="chap-n">M00</span><span class="chap-r"></span><span class="chap-l">Survey Passport</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M00</span>
+        <h2 class="module-title">Survey Passport</h2>
+        <p class="module-desc">Metadata on fieldwork logistics, interview duration, and geographic coverage across 2,470 households and 247 primary sampling units.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">region</span>
+        <span class="var-pill">urban</span>
+        <span class="var-pill">psu</span>
+        <span class="var-pill">interview_date</span>
+        <span class="var-pill">duration</span>
+        <span class="var-pill">language</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card">
+          <div class="stat-label">Total Households</div>
+          <div class="stat-value">2,470</div>
+        </div>
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Primary Sampling Units</div>
+          <div class="stat-value">247</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-label">Population (Weighted)</div>
+          <div class="stat-value">108.7M</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Fieldwork Period</div>
+          <div class="stat-value" style="font-size: 1.3rem;">28 days</div>
+          <div style="font-size:11px;color:#666;margin-top:0.2rem;font-family:var(--mono);">Sep 18 – Oct 15, 2025</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Fieldwork timeline</div>
+          <div class="csub">daily interviews completed</div></div><span class="cb o">28 days</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="fieldworkChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Regional distribution</div>
+          <div class="csub">weighted households</div></div><span class="cb b">18 regions</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="regionalChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Mean duration by module</div>
+          <div class="csub">minutes per module</div></div><span class="cb p">14 modules</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="moduleDurationChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Interview duration distribution</div>
+          <div class="csub">minutes</div></div><span class="cb o">Median 57min</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="durationDistributionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Urban vs rural coverage</div></div><span class="cb b">54% urban</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="urbanRuralChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Survey languages</div></div><span class="cb p">4 languages</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="languageChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Households per PSU</div></div><span class="cb b">10 HH/PSU</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="hhPerPsuChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Urban/rural by region</div></div><span class="cb o">By region</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="urbanRuralByRegionChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="demographics" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M01</span><span class="chap-r"></span><span class="chap-l">Demographics: People</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M01</span>
+        <h2 class="module-title">Demographics</h2>
+        <p class="module-desc">Population pyramid, household structure, age/sex distribution, marital status, and dependency ratios.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">fmid</span>
+        <span class="var-pill">b2</span>
+        <span class="var-pill">b3</span>
+        <span class="var-pill">b4</span>
+        <span class="var-pill">b5</span>
+        <span class="var-pill">b6</span>
+        <span class="var-pill">b7</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card">
+          <div class="stat-label">Population</div>
+          <div class="stat-value">108.7M</div>
+        </div>
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Median Age</div>
+          <div class="stat-value">25</div>
+        </div>
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Male Share</div>
+          <div class="stat-value">50.6%</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-label">Under 20</div>
+          <div class="stat-value">40.6%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Population pyramid</div>
+          <div class="csub">weighted, by 5-year age band</div></div><span class="cb b">108.7M pop</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="agePyramidChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Age group distribution</div>
+          <div class="csub">% of population by national / male / female</div></div><span class="cb o">8 age bands</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cAge"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Marital status by sex</div>
+          <div class="csub">% of adults 15+</div></div><span class="cb g">Marital</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cMarital"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Household size distribution</div>
+          <div class="csub">weighted</div></div><span class="cb p">Modal: 5</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="hhsizeChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Relationship to household head</div></div><span class="cb r">43.2% child</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="relationshipChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Remittance receipt status</div></div><span class="cb g">7.4% OFW</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="remittanceChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Gender split by region</div>
+          <div class="csub">weighted</div></div><span class="cb r">Gender gap</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="genderRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Dependency ratio components</div></div><span class="cb o">Dep. ratio</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="dependencyChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="education" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M02</span><span class="chap-r"></span><span class="chap-l">Education: Learning</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M02</span>
+        <h2 class="module-title">Education</h2>
+        <p class="module-desc">School attendance by age band and gender, public vs private enrollment, educational attainment, expenditure, and early childhood participation.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">c2</span>
+        <span class="var-pill">c3</span>
+        <span class="var-pill">c4</span>
+        <span class="var-pill">c5</span>
+        <span class="var-pill">c6</span>
+        <span class="var-pill">c7</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-blue">
+          <div class="stat-label">School Attendance (5-24)</div>
+          <div class="stat-value">78.3%</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-label">Public School</div>
+          <div class="stat-value">89.8%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Annual Spend</div>
+          <div class="stat-value" style="font-size: 1.3rem;">₱16,380</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">ECD Participation (0-4)</div>
+          <div class="stat-value">19.9%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Attendance rate by age band</div>
+          <div class="csub">% attending school, by gender</div></div><span class="cb b">Attendance</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cAttend"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Highest attainment by sex</div>
+          <div class="csub">adults 18+, %</div></div><span class="cb o">Attainment</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cAttain"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">School type distribution</div>
+          <div class="csub">public vs private</div></div><span class="cb g">School type</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="eduSchoolTypeChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Attendance by gender</div>
+          <div class="csub">ages 5-24</div></div><span class="cb p">By gender</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="eduAttendanceGenderChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Education expenditure</div>
+          <div class="csub">by category</div></div><span class="cb r">₱16,380/yr</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="eduExpenditureChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">ECD programme participation</div>
+          <div class="csub">children 0-4 years</div></div><span class="cb b">ECD prog.</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="eduEcdChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Reasons for school dropout</div></div><span class="cb o">Reasons</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="eduDropoutReasonsChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="employment" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M03</span><span class="chap-r"></span><span class="chap-l">Employment: Working</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M03</span>
+        <h2 class="module-title">Employment</h2>
+        <p class="module-desc">Labour force participation, employment rates by age and gender, contract type, sector distribution, and working conditions.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">a1</span>
+        <span class="var-pill">a5</span>
+        <span class="var-pill">a8</span>
+        <span class="var-pill">a12</span>
+        <span class="var-pill">a15</span>
+        <span class="var-pill">a20</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Employment Rate</div>
+          <div class="stat-value">44.7%</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">No Formal Contract</div>
+          <div class="stat-value">71.8%</div>
+        </div>
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Male Employment</div>
+          <div class="stat-value">60.2%</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">Female Employment</div>
+          <div class="stat-value">30.1%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Employment rate by age group</div>
+          <div class="csub">% employed, by national / male / female</div></div><span class="cb g">44.7% empl.</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cEmpAge"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Class of worker</div>
+          <div class="csub">% among employed</div></div><span class="cb p">Class of worker</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cClass"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Employment by gender</div></div><span class="cb b">M60% F30%</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="empGenderChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Contract type</div></div><span class="cb r">Contract type</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="empContractChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Employment by sector/industry</div></div><span class="cb b">By sector</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="empSectorChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Employment characteristics</div></div><span class="cb b">Employment</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="empCharacteristicsChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Job loss & working hours</div></div><span class="cb o">Job loss</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="empJobLossHoursChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="income" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M04</span><span class="chap-r"></span><span class="chap-l">Income: Earnings</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M04</span>
+        <h2 class="module-title">Income</h2>
+        <p class="module-desc">Cash earnings, OFW remittances, pension receipt, and household income sources over the past six months.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">ia1</span>
+        <span class="var-pill">ia3ab</span>
+        <span class="var-pill">id1</span>
+        <span class="var-pill">id2a</span>
+        <span class="var-pill">ie1a</span>
+        <span class="var-pill">ie2a</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Mean 6-mo Earnings</div>
+          <div class="stat-value" style="font-size: 1.3rem;">₱10,464</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-label">OFW Mean Remittance</div>
+          <div class="stat-value" style="font-size: 1.3rem;">₱21,845</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pension Receipt</div>
+          <div class="stat-value">8.1%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Regular Income</div>
+          <div class="stat-value">66.1%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Mean & median earnings</div></div><span class="cb g">₱10,464</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="incEarningsChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Income sources & transfers</div></div><span class="cb p">Transfers</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="incSourcesChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Income sources by type</div>
+          <div class="csub">% of individuals / households receiving</div></div><span class="cb r">Sources</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cIncMacro"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="finance" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M05</span><span class="chap-r"></span><span class="chap-l">Finance: Money</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M05</span>
+        <h2 class="module-title">Finance</h2>
+        <p class="module-desc">Bank accounts, mobile money usage, savings capacity, borrowing behavior, and emergency financial resilience.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">f1</span>
+        <span class="var-pill">f2</span>
+        <span class="var-pill">f3</span>
+        <span class="var-pill">f5</span>
+        <span class="var-pill">f8</span>
+        <span class="var-pill">f12</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card">
+          <div class="stat-label">Bank Account</div>
+          <div class="stat-value">5.0%</div>
+        </div>
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Mobile Money</div>
+          <div class="stat-value">18.3%</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-label">Can Save</div>
+          <div class="stat-value">12.9%</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">Emergency Capacity</div>
+          <div class="stat-value">2.1%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Financial inclusion</div></div><span class="cb b">Inclusion</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="finInclusionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Primary loan source</div></div><span class="cb o">Loan sources</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="finLoanSourceChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Emergency help source</div></div><span class="cb g">Emergency</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="finEmergencyChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Financial services access</div></div><span class="cb p">Access</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="finServicesChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Mobile money by region</div></div><span class="cb r">18.3% MoMo</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="finMobileMoneyRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Loan purposes</div></div><span class="cb b">Loan purposes</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="finLoanPurposesChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Government programme support</div></div><span class="cb o">23% receive</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="finGovProgrammeChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="migration" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M06</span><span class="chap-r"></span><span class="chap-l">Migration: Moving</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M06</span>
+        <h2 class="module-title">Migration</h2>
+        <p class="module-desc">Internal migration intent, destination preferences, and migration flows across macro-regions.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">g1</span>
+        <span class="var-pill">g2</span>
+        <span class="var-pill">g3</span>
+        <span class="var-pill">g5</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Considering Migration</div>
+          <div class="stat-value">35.6%</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">NCR Highest</div>
+          <div class="stat-value">45.5%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Visayas Intent</div>
+          <div class="stat-value">31.2%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mindanao Intent</div>
+          <div class="stat-value">33.8%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Migration intent by urban/rural</div></div><span class="cb b">Urban/Rural</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="migUrbanRuralChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Migration intent by region</div></div><span class="cb r">NCR 45.5%</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="migRegionChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="health" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M07</span><span class="chap-r"></span><span class="chap-l">Health: Getting Sick</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M07</span>
+        <h2 class="module-title">Health</h2>
+        <p class="module-desc">PhilHealth coverage, out-of-pocket costs, healthcare facility usage, hospitalisation, and barriers to access.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">h1</span>
+        <span class="var-pill">h2</span>
+        <span class="var-pill">h3</span>
+        <span class="var-pill">h5</span>
+        <span class="var-pill">h8</span>
+        <span class="var-pill">h10</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-blue">
+          <div class="stat-label">PhilHealth Coverage</div>
+          <div class="stat-value">46.1%</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">Paid OOP</div>
+          <div class="stat-value">57.3%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Mean Hospital Bill</div>
+          <div class="stat-value" style="font-size: 1.3rem;">₱52,160</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">Barrier: Cost</div>
+          <div class="stat-value">31.2%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Healthcare facility used</div>
+          <div class="csub">past 30 days, %</div></div><span class="cb g">Healthcare</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cFacility"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">PhilHealth coverage by region</div></div><span class="cb p">46.1% covered</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="healthCoverageRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">PhilHealth by type</div></div><span class="cb r">PhilHealth by type</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="healthPhilhealthTypeChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">PhilHealth by region (detail)</div></div><span class="cb b">By region</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="healthPhilhealthRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Barriers to healthcare</div></div><span class="cb o">Barriers</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="healthBarriersChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Out-of-pocket expenditure</div>
+          <div class="csub">distribution</div></div><span class="cb g">OOP costs</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="healthOopChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="food" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M08</span><span class="chap-r"></span><span class="chap-l">Food &amp; Nutrition: Eating</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M08</span>
+        <h2 class="module-title">Food & Nutrition</h2>
+        <p class="module-desc">Food sources, wet market usage, shopping frequency, and sugar-sweetened beverage consumption patterns.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">n1</span>
+        <span class="var-pill">n2</span>
+        <span class="var-pill">n4</span>
+        <span class="var-pill">n5</span>
+        <span class="var-pill">n7</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-green">
+          <div class="stat-label">Wet Market</div>
+          <div class="stat-value">74%</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">SSB Consumption</div>
+          <div class="stat-value">89.4%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">SSB Servings/Day</div>
+          <div class="stat-value">6.9</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Own Production</div>
+          <div class="stat-value">28%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Primary food source</div>
+          <div class="csub">% of households</div></div><span class="cb p">Food source</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cFoodSrc"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Sugary beverage consumption</div>
+          <div class="csub">servings/day by age group</div></div><span class="cb r">SSB intake</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cSSB"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Food source distribution</div></div><span class="cb b">Sources</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="foodSourceChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Shopping frequency</div></div><span class="cb b">Shopping frequency</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="foodShoppingChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Wet market by region</div></div><span class="cb o">By region</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="foodWetMarketRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">SSB consumption patterns</div></div><span class="cb g">SSB pattern</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="foodSsbChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="hazards" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M09</span><span class="chap-r"></span><span class="chap-l">Natural Hazards: Disasters</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M09</span>
+        <h2 class="module-title">Natural Hazards</h2>
+        <p class="module-desc">Exposure to typhoons, floods, earthquakes, and extreme heat; early warning systems; disaster preparedness and assistance.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">nh1</span>
+        <span class="var-pill">nh2</span>
+        <span class="var-pill">nh3</span>
+        <span class="var-pill">nh6</span>
+        <span class="var-pill">nh8</span>
+        <span class="var-pill">nh9</span>
+        <span class="var-pill">nh13</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-red">
+          <div class="stat-label">Typhoon Exposure</div>
+          <div class="stat-value">76.5%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Extreme Heat</div>
+          <div class="stat-value">49.7%</div>
+        </div>
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Warning Received</div>
+          <div class="stat-value">55.1%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Flood Exposure</div>
+          <div class="stat-value">34.2%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Hazard exposure & warnings</div></div><span class="cb p">Exposure</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="hazardExposureChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Warning receipt by region</div></div><span class="cb r">55.1% warned</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="hazardWarningRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Disaster preparedness</div></div><span class="cb b">Preparedness</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="hazardPreparednessChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Hazard exposure by region</div></div><span class="cb o">By region</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="hazardExposureRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Disaster assistance received</div></div><span class="cb g">17.4% aided</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="hazardAssistanceChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="dwelling" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M10</span><span class="chap-r"></span><span class="chap-l">Dwelling: Where Families Live</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M10</span>
+        <h2 class="module-title">Dwelling</h2>
+        <p class="module-desc">Housing tenure, construction materials, dwelling condition, and environmental health indicators.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">j1</span>
+        <span class="var-pill">j2</span>
+        <span class="var-pill">j3</span>
+        <span class="var-pill">j4</span>
+        <span class="var-pill">j5</span>
+        <span class="var-pill">j6</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-green">
+          <div class="stat-label">Own House</div>
+          <div class="stat-value">78%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Concrete Walls</div>
+          <div class="stat-value">52%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Metal Roof</div>
+          <div class="stat-value">73%</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">Peeling Paint</div>
+          <div class="stat-value">18%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Tenure type</div></div><span class="cb p">Tenure type</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="dwelTenureChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Peeling paint status</div></div><span class="cb r">18% peeling</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="dwelPaintChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Wall material</div></div><span class="cb b">Wall material</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="dwelWallChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Roof material</div></div><span class="cb o">Roof material</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="dwelRoofChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Dwelling condition</div></div><span class="cb g">Dwelling condition</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="dwelConditionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Dwelling condition status</div></div><span class="cb p">Condition</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="dwellingConditionChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="sanitation" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M11</span><span class="chap-r"></span><span class="chap-l">Sanitation: Waste &amp; Hygiene</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M11</span>
+        <h2 class="module-title">Sanitation</h2>
+        <p class="module-desc">Toilet facility types, improved vs unimproved sanitation, and waste disposal methods.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">k1</span>
+        <span class="var-pill">k2</span>
+        <span class="var-pill">k3</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-green">
+          <div class="stat-label">Improved Sanitation</div>
+          <div class="stat-value">74%</div>
+        </div>
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Flush Toilet</div>
+          <div class="stat-value">64%</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">Open Defecation</div>
+          <div class="stat-value">2.8%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Regular Collection</div>
+          <div class="stat-value">55%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Toilet facility type</div>
+          <div class="csub">% of households</div></div><span class="cb r">74% improved</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="cToilet"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Waste disposal method</div></div><span class="cb b">Disposal</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="sanWasteChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Improved vs unimproved</div></div><span class="cb o">Improved</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="sanImprovedChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="utilities" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M12</span><span class="chap-r"></span><span class="chap-l">Utilities: Power &amp; Water</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M12</span>
+        <h2 class="module-title">Utilities</h2>
+        <p class="module-desc">Electricity access, internet connectivity, device ownership, water source and safety, and internet usage patterns.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">l1</span>
+        <span class="var-pill">l2</span>
+        <span class="var-pill">l3</span>
+        <span class="var-pill">l5</span>
+        <span class="var-pill">l6</span>
+        <span class="var-pill">l8</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-green">
+          <div class="stat-label">Electricity</div>
+          <div class="stat-value">96%</div>
+        </div>
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Internet Access</div>
+          <div class="stat-value">49%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Piped Water</div>
+          <div class="stat-value">60.6%</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">Water Unsafe</div>
+          <div class="stat-value">60.3%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Internet-enabled devices</div></div><span class="cb g">49% internet</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="utilDeviceChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Main water source</div></div><span class="cb p">Main water source</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="utilWaterSourceChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Water safety perception</div></div><span class="cb r">60.3% unsafe</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="utilWaterSafetyChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Electricity by region</div></div><span class="cb b">96% electric</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="utilElectricityRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Internet by region</div></div><span class="cb o">Internet by region</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="utilInternetRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Household devices</div></div><span class="cb g">Household devices</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="utilDevicesChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Internet usage purposes</div></div><span class="cb p">Usage</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="utilInternetPurposesChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="assets" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M13</span><span class="chap-r"></span><span class="chap-l">Assets &amp; Energy: What Families Own</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M13</span>
+        <h2 class="module-title">Assets & Energy</h2>
+        <p class="module-desc">Household asset ownership, cooking fuel sources, and energy access patterns.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">m1</span>
+        <span class="var-pill">m2</span>
+        <span class="var-pill">m3</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Washing Machine</div>
+          <div class="stat-value">55%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Motorcycle</div>
+          <div class="stat-value">54%</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-label">Refrigerator</div>
+          <div class="stat-value">49%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Car</div>
+          <div class="stat-value">3.9%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Asset ownership</div></div><span class="cb r">Asset ownership</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="assetOwnershipChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Primary cooking fuel</div></div><span class="cb b">Cook fuel</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="assetCookingFuelChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Cooking fuel sources</div></div><span class="cb o">Fuel source</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="assetCookingFuelDetailChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="views" class="tab-content">
+
+      <div class="chap"><span class="chap-n">M14</span><span class="chap-r"></span><span class="chap-l">Views &amp; Perceptions: What They Think</span></div>
+
+      <div class="module-header">
+        <span class="module-code">M14</span>
+        <h2 class="module-title">Views & Perceptions</h2>
+        <p class="module-desc">Life satisfaction, economic sentiment, safety perception, top concerns, institutional confidence, and income mobility expectations.</p>
+      </div>
+
+      <div class="var-pills">
+        <span class="var-pill">v1</span>
+        <span class="var-pill">v2</span>
+        <span class="var-pill">v3</span>
+        <span class="var-pill">v4</span>
+        <span class="var-pill">v5</span>
+        <span class="var-pill">v6</span>
+        <span class="var-pill">v7</span>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="stat-card accent-blue">
+          <div class="stat-label">Life Satisfaction</div>
+          <div class="stat-value">3.04/5</div>
+        </div>
+        <div class="stat-card accent-red">
+          <div class="stat-label">Feel Worse Off</div>
+          <div class="stat-value">34.7%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">AI Anxiety</div>
+          <div class="stat-value">27.4%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Feel Unsafe</div>
+          <div class="stat-value">12.8%</div>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Life satisfaction</div></div><span class="cb g">Life satisfaction</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="viewLifeSatisfactionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Self-rated economic position</div></div><span class="cb p">Self-rated</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="viewEconomicPositionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Economic change perception</div></div><span class="cb r">34.7% worse</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="viewEconomicChangeChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Safety perception</div></div><span class="cb b">Safety perception</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="viewSafetyChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Top concerns</div></div><span class="cb o">Top concerns</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="viewConcernsChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Economic change detail</div></div><span class="cb g">Econ. detail</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="viewEconomicChangeDetailChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Economic sentiment by region</div></div><span class="cb p">By region</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="viewEconomicSentimentRegionChart"></canvas></div>
+        </div>
+        <div class="cbox">
+          <div class="cc-hd"><div><div class="ctitle">Confidence in institutions</div></div><span class="cb r">Confidence</span></div>
+          <div class="cwrap" style="height:155px"><canvas id="viewConfidenceChart"></canvas></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    L2Phl · World Bank Group · CAPI Baseline Household Survey · Sep–Oct 2025
+  </footer>
+
+  <script>
+    // ============================================================================
+    // CHART DEFAULTS & HELPERS
+    // ============================================================================
+
+    const chartDefaults = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            font: { family: "'IBM Plex Mono'", size: 12 },
+            color: '#666666',
+            usePointStyle: true,
+            padding: 15
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 34, 68, 0.9)',
+          titleFont: { family: "'Inter', sans-serif", size: 12, weight: '600' },
+          bodyFont: { family: "'Inter', sans-serif", size: 12 },
+          padding: 12,
+          borderColor: '#009FDA',
+          borderWidth: 1,
+          displayColors: true,
+          callbacks: {
+            label: function(ctx) {
+              let label = ctx.dataset.label || '';
+              if (label) label += ': ';
+              if (ctx.parsed.y !== null) {
+                label += ctx.parsed.y.toLocaleString();
+              } else if (ctx.parsed !== null) {
+                label += ctx.parsed.toLocaleString();
+              }
+              return label;
+            }
+          }
+        }
+      }
+    };
+
+    let charts = {};
+
+    // Story chart configs (from baseline_story.html)
+    const TOOLTIP = {backgroundColor:'rgba(14,12,10,.93)',borderColor:'rgba(200,191,174,.25)',borderWidth:1,titleColor:'#f5f0e8',bodyColor:'rgba(245,240,232,.78)',padding:8,titleFont:{size:10},bodyFont:{size:10}};
+    const TICK = {color:'#5a6a78',font:{family:"'IBM Plex Mono'",size:9},maxRotation:0,autoSkip:true};
+    const TICK_D = {color:'#3d5568',font:{family:"'IBM Plex Mono'",size:9},maxRotation:0,autoSkip:true};
+    const GRID = {display:false};
+    const GRID_D = {display:false};
+    const LEG = {display:true,labels:{color:'#5a6a78',font:{family:"'IBM Plex Mono'",size:9},boxWidth:9,boxHeight:9,padding:5}};
+    const LEG_D = {display:true,labels:{color:'#3d5568',font:{family:"'IBM Plex Mono'",size:9},boxWidth:9,boxHeight:9,padding:5}};
+
+    // Global Chart.js defaults — compact dashboard mode
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+    Chart.defaults.layout = { padding: { top: 2, right: 4, bottom: 2, left: 4 } };
+    Chart.defaults.plugins.legend.labels.font = { family: "'IBM Plex Mono'", size: 9 };
+    Chart.defaults.plugins.legend.labels.boxWidth = 9;
+    Chart.defaults.plugins.legend.labels.boxHeight = 9;
+    Chart.defaults.plugins.legend.labels.padding = 5;
+    Chart.defaults.plugins.tooltip.titleFont = { size: 10 };
+    Chart.defaults.plugins.tooltip.bodyFont = { size: 10 };
+    Chart.defaults.font.size = 10;
+    const MCOLS = ['#0038A8','#00A651','#D4A017','#CE1126'];
+
+    function pct(val, total) { return ((val / total) * 100).toFixed(1); }
+
+    // ============================================================================
+    // PASSPORT CHARTS
+    // ============================================================================
+
+    function initFieldworkChart() {
+      const dates = ['2025-09-18','2025-09-19','2025-09-20','2025-09-21','2025-09-22','2025-09-23','2025-09-24','2025-09-25','2025-09-26','2025-09-27','2025-09-28','2025-09-29','2025-09-30','2025-10-01','2025-10-02','2025-10-03','2025-10-04','2025-10-05','2025-10-06','2025-10-07','2025-10-08','2025-10-09','2025-10-10','2025-10-11','2025-10-12','2025-10-13','2025-10-14','2025-10-15'];
+      const counts = [3,20,27,25,46,59,61,73,36,71,77,117,169,120,160,156,165,100,130,188,131,144,60,141,76,56,48,11];
+      const bgColors = dates.map(d => {const day = new Date(d).getDay(); return (day === 0 || day === 6) ? 'rgba(0, 159, 218, 0.4)' : 'rgba(0, 159, 218, 0.8)';});
+
+      const ctx = document.getElementById('fieldworkChart').getContext('2d');
+      charts.fieldwork = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: dates.map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+          datasets: [{
+            label: 'Interviews',
+            data: counts,
+            backgroundColor: bgColors,
+            borderColor: 'rgba(0, 159, 218, 1)',
+            borderWidth: 0,
+            borderRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {...TOOLTIP}
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {...TICK},
+              grid: GRID
+            },
+            x: {
+              ticks: {...TICK},
+              grid: GRID
+            }
+          }
+        }
+      });
+    }
+
+    function initRegionalChart() {
+      const ctx = document.getElementById('regionalChart').getContext('2d');
+      const islands = { 'Luzon (excl. NCR)': 48574169, 'Mindanao': 30828584, 'Visayas': 15865388, 'NCR': 13398602 };
+      const colors = ['#002244', '#009FDA', '#00A651', '#CE1126'];
+      charts.regional = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(islands),
+          datasets: [{
+            data: Object.values(islands),
+            backgroundColor: colors,
+            borderColor: '#FFFFFF',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: {
+                label: function(ctx) {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((ctx.parsed / total) * 100).toFixed(1);
+                  return ctx.label + ': ' + (ctx.parsed/1e6).toFixed(1) + 'M (' + percentage + '%)';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function initModuleDurationChart() {
+      const modules = ['Views','Demo','Employ','Hazards','Passport','Dwelling','Educ','Health','Migration','SSB','Food','Sanitation','Income','Finance','Comms'];
+      const durations = [6.4,7.1,6.0,4.5,4.5,4.1,5.1,2.4,1.4,0.9,1.4,1.4,4.3,1.9,0.5];
+      const colors = durations.map((_,i) => `hsl(201, 100%, ${70 - (i/durations.length)*30}%)`);
+
+      const ctx = document.getElementById('moduleDurationChart').getContext('2d');
+      charts.moduleDuration = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: modules,
+          datasets: [{
+            label: 'Mean Duration (minutes)',
+            data: durations,
+            backgroundColor: colors,
+            borderWidth: 0,
+            borderRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            tooltip: {...TOOLTIP}
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: {...TICK},
+              grid: GRID
+            },
+            y: {
+              ticks: {...TICK, padding: 4},
+              grid: GRID,
+              afterFit: function(axis) { axis.width = 80; }
+            }
+          }
+        }
+      });
+    }
+
+    function initDurationDistributionChart() {
+      const ctx = document.getElementById('durationDistributionChart').getContext('2d');
+      charts.durationDist = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['<20','20-30','30-40','40-50','50-60','60-70','70-80','80-90','90-100','100-150','150+'],
+          datasets: [{
+            label: 'Households',
+            data: [5,51,255,591,595,448,268,131,65,58,3],
+            backgroundColor: 'rgba(0, 159, 218, 0.8)',
+            borderColor: 'rgba(0, 159, 218, 1)',
+            borderWidth: 0,
+            borderRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {...TOOLTIP}
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {...TICK},
+              grid: GRID
+            },
+            x: {
+              ticks: {...TICK},
+              grid: GRID
+            }
+          }
+        }
+      });
+    }
+
+    function initUrbanRuralChart() {
+      const ctx = document.getElementById('urbanRuralChart').getContext('2d');
+      charts.urbanRural = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Urban','Rural'],
+          datasets: [{
+            data: [1430, 1040],
+            backgroundColor: ['#009FDA', '#00A651'],
+            borderColor: '#FFFFFF',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: {
+                label: function(ctx) {
+                  const pcts = ['55.2%', '44.8%'];
+                  return ctx.label + ': ' + ctx.parsed + ' HH (' + pcts[ctx.dataIndex] + ')';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function initLanguageChart() {
+      const ctx = document.getElementById('languageChart').getContext('2d');
+      const data = [1718, 562, 134, 56];
+      const colors = ['#002244', '#009FDA', '#00A651', '#FCD116'];
+      charts.language = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Filipino','Cebuano','Hiligaynon','Waray'],
+          datasets: [{
+            data: data,
+            backgroundColor: colors,
+            borderColor: '#FFFFFF',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: {
+                label: function(ctx) {
+                  const total = 2470;
+                  const percentage = ((ctx.parsed / total) * 100).toFixed(1);
+                  return ctx.label + ': ' + ctx.parsed + ' (' + percentage + '%)';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function initHhPerPsuChart() {
+      const ctx = document.getElementById('hhPerPsuChart').getContext('2d');
+      charts.hhPerPsu = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['10 HH/PSU'],
+          datasets: [{
+            label: 'Number of PSUs',
+            data: [247],
+            backgroundColor: 'rgba(0, 159, 218, 0.8)',
+            borderColor: 'rgba(0, 159, 218, 1)',
+            borderWidth: 0,
+            borderRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {...TOOLTIP}
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {...TICK},
+              grid: GRID
+            },
+            x: {
+              ticks: {...TICK},
+              grid: GRID
+            }
+          }
+        }
+      });
+    }
+
+    function initUrbanRuralByRegionChart() {
+      const regions = ['I Ilocos','II Cagayan V.','III Central Luzon','IV-A CALABARZON','V Bicol','VI W. Visayas','VII C. Visayas','VIII E. Visayas','IX Zamboanga','X N. Mindanao','XI Davao','XII SOCCSKSARGEN','CAR','XIII Caraga','IV-B MIMAROPA','BARMM','NIR','NCR-North','NCR-East','Manila','NCR-South','Quezon City'];
+      const urban = [331189,176190,2013745,2877213,316038,251455,910414,152068,340137,612397,895190,591573,154722,245919,283135,235050,677149,754685,465783,486293,1054167,738724];
+      const rural = [975067,731282,1026743,1185507,1049006,907631,708213,930038,555762,585339,442591,473880,284444,415854,509740,597858,451715,0,0,0,0,0];
+
+      const ctx = document.getElementById('urbanRuralByRegionChart').getContext('2d');
+      charts.urbanRuralByRegion = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: regions,
+          datasets: [
+            { label: 'Urban', data: urban, backgroundColor: 'rgba(0, 159, 218, 0.8)', borderWidth: 0 },
+            { label: 'Rural', data: rural, backgroundColor: 'rgba(0, 166, 81, 0.8)', borderWidth: 0 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: {...TOOLTIP}
+          },
+          indexAxis: 'y',
+          scales: {
+            x: {
+              stacked: true,
+              beginAtZero: true,
+              ticks: {...TICK},
+              grid: GRID
+            },
+            y: {
+              stacked: true,
+              ticks: {...TICK},
+              grid: GRID
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // DEMOGRAPHICS CHARTS
+    // ============================================================================
+
+    const PYRAMID_LABELS = ['0-4','5-9','10-14','15-19','20-24','25-29','30-34','35-39','40-44','45-49','50-54','55-59','60-64','65-69','70-74','75-79','80-84','85-89','90-94','95-99'];
+    const PYRAMID_MALE = [4588000,6841537,6163639,6153905,5510918,4842144,4226776,3787480,3013479,2684727,1937805,1507597,1299917,901683,671474,397933,184949,92129,22362,0];
+    const PYRAMID_FEMALE = [4302207,6445098,6392651,6049539,6044485,4759589,4051330,3641092,2703137,2271360,1842610,1601870,1288476,908461,657467,446627,256667,128735,47188,0];
+    const HHSIZE_LABELS = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','16'];
+    const HHSIZE_VALUES = [1128832,2886379,3779048,4892775,4559530,3729744,2293855,1398003,940139,497649,274085,139037,56752,57784,33431];
+    const REL_LABELS = ['Head','Son/Daughter','Spouse','Grandchild','Sibling','Other relative','Son/Daughter-in-law','Parent','Non-relative','Domestic helper'];
+    const REL_VALUES = [26393906,32843474,17798994,12834768,5935099,5415050,3547982,2598131,744363,555276];
+    const MARITAL_LABELS = ['Single','Married','Living-in','Widowed','Separated','Unknown','Annulled','Divorced'];
+    const MARITAL_VALUES = [31143782,27025497,10327218,3870414,2476050,1016093,368263,201877];
+    const AGEGRP_LABELS = ['0-4','5-14','15-24','25-34','35-44','45-54','55-64','65+'];
+    const AGEGRP_VALUES = [8201347,23840480,21917886,16494414,14026649,9351539,8055861,6778867];
+    const REMIT_LABELS = ['No','Yes, domestic','Yes, both','Yes, international'];
+    const REMIT_VALUES = [99779478,6285736,1466665,1135164];
+    const GENDER_REG_LABELS = ['Ilocos','Cagayan V.','Central Luzon','CALABARZON','Bicol','W. Visayas','C. Visayas','E. Visayas','Zamboanga','N. Mindanao','Davao','SOCCSKSARGEN','CAR','Caraga','MIMAROPA','BARMM','NIR','NCR-N','NCR-E','Manila','NCR-S','QC'];
+    const GENDER_REG_MALE = [2194564,1588315,6390132,8376995,3308918,2277921,3320731,2390058,2023242,2861021,2810690,2338298,940379,1437706,1496173,1909885,2762201,1394008,899510,946769,2169657,1547859];
+    const GENDER_REG_FEMALE = [2186020,1716200,6034405,8178532,3676274,2466721,3238857,2551404,1896230,2580418,2379630,1655700,706887,898447,1318096,1368120,3802593,1288671,827634,1084950,1816060,1610162];
+
+    function initAgePyramidChart() {
+      const maleData = PYRAMID_MALE.map(v => -v);
+      const ctx = document.getElementById('agePyramidChart').getContext('2d');
+      charts.agePyramid = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: PYRAMID_LABELS,
+          datasets: [
+            { label: 'Male', data: maleData, backgroundColor: '#009FDA', borderRadius: 2 },
+            { label: 'Female', data: PYRAMID_FEMALE, backgroundColor: '#CE1126', borderRadius: 2 }
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: {
+                label: ctx => ctx.dataset.label + ': ' + Math.abs(ctx.raw).toLocaleString()
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              ticks: {...TICK, callback: v => (Math.abs(v)/1e6).toFixed(1)+'M'},
+              grid: GRID
+            },
+            y: {
+              stacked: true,
+              ticks: {...TICK},
+              grid: GRID
+            }
+          }
+        }
+      });
+    }
+
+    function initHhsizeChart() {
+      const ctx = document.getElementById('hhsizeChart').getContext('2d');
+      charts.hhsize = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: HHSIZE_LABELS,
+          datasets: [{ label: 'Households (weighted)', data: HHSIZE_VALUES,
+            backgroundColor: HHSIZE_LABELS.map((_,i) => `rgba(0,159,218,${0.4 + i*0.04})`),
+            borderRadius: 4 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: { label: ctx => ctx.raw.toLocaleString() + ' households' }
+            }},
+          scales: {
+            x: { ticks: {...TICK}, grid: GRID },
+            y: { ticks: {...TICK, callback: v => (v/1e6).toFixed(1)+'M'},
+                 grid: GRID, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    function initRelationshipChart() {
+      const ctx = document.getElementById('relationshipChart').getContext('2d');
+      charts.relationship = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: REL_LABELS,
+          datasets: [{ label: 'Population (weighted)', data: REL_VALUES,
+            backgroundColor: '#002244', borderRadius: 4 }]
+        },
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false },
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: { label: ctx => ctx.raw.toLocaleString() }
+            }},
+          scales: {
+            x: { ticks: {...TICK, callback: v => (v/1e6).toFixed(0)+'M'},
+                 grid: GRID, beginAtZero: true },
+            y: { ticks: {...TICK}, grid: GRID }
+          }
+        }
+      });
+    }
+
+    function initMaritalChart() {
+      const ctx = (document.getElementById('maritalChart')||document.createElement('canvas')).getContext('2d');
+      charts.marital = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: MARITAL_LABELS,
+          datasets: [{ data: MARITAL_VALUES,
+            backgroundColor: ['#009FDA','#002244','#00A651','#CE1126','#FCD116','#999','#40B4E5','#666'],
+            borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: { label: ctx => {
+                const pct = (ctx.raw / ctx.dataset.data.reduce((a,b)=>a+b,0) * 100).toFixed(1);
+                return ctx.label + ': ' + ctx.raw.toLocaleString() + ' (' + pct + '%)';
+              }}
+            }
+          }
+        }
+      });
+    }
+
+    function initAgeGroupChart() {
+      const ctx = (document.getElementById('ageGroupChart')||document.createElement('canvas')).getContext('2d');
+      charts.ageGroup = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: AGEGRP_LABELS,
+          datasets: [{ label: 'Population', data: AGEGRP_VALUES,
+            backgroundColor: AGEGRP_LABELS.map((_,i) => i < 2 ? '#FCD116' : i < 6 ? '#009FDA' : '#CE1126'),
+            borderRadius: 4 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: { label: ctx => {
+                const pct = (ctx.raw/108667043*100).toFixed(1);
+                return ctx.raw.toLocaleString() + ' (' + pct + '%)';
+              }}
+            }
+          },
+          scales: {
+            x: { ticks: {...TICK}, grid: GRID },
+            y: { ticks: {...TICK, callback: v => (v/1e6).toFixed(0)+'M'},
+                 grid: GRID, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    function initRemittanceChart() {
+      const ctx = document.getElementById('remittanceChart').getContext('2d');
+      charts.remittance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: REMIT_LABELS,
+          datasets: [{ data: REMIT_VALUES,
+            backgroundColor: ['#E0E0E0','#009FDA','#002244','#00A651'],
+            borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: { label: ctx => {
+                const pct = (ctx.raw / ctx.dataset.data.reduce((a,b)=>a+b,0) * 100).toFixed(1);
+                return ctx.label + ': ' + ctx.raw.toLocaleString() + ' (' + pct + '%)';
+              }}
+            }
+          }
+        }
+      });
+    }
+
+    function initGenderRegionChart() {
+      const ctx = document.getElementById('genderRegionChart').getContext('2d');
+      charts.genderRegion = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: GENDER_REG_LABELS,
+          datasets: [
+            { label: 'Male', data: GENDER_REG_MALE, backgroundColor: '#009FDA', borderRadius: 2 },
+            { label: 'Female', data: GENDER_REG_FEMALE, backgroundColor: '#CE1126', borderRadius: 2 }
+          ]
+        },
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw.toLocaleString() }
+            }
+          },
+          scales: {
+            x: { stacked: true, ticks: {...TICK, callback: v => (v/1e6).toFixed(0)+'M'},
+                 grid: GRID, beginAtZero: true },
+            y: { stacked: true, ticks: {...TICK}, grid: GRID }
+          }
+        }
+      });
+    }
+
+    function initDependencyChart() {
+      const ctx = document.getElementById('dependencyChart').getContext('2d');
+      charts.dependency = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Working Age (15-64)','Youth (0-14)','Elderly (65+)'],
+          datasets: [{ data: [69846349, 32041827, 6778867],
+            backgroundColor: ['#009FDA','#FCD116','#CE1126'],
+            borderWidth: 2, borderColor: '#fff' }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: {
+              ...TOOLTIP,
+              callbacks: { label: ctx => {
+                const pct = (ctx.raw / ctx.dataset.data.reduce((a,b)=>a+b,0) * 100).toFixed(1);
+                return ctx.label + ': ' + ctx.raw.toLocaleString() + ' (' + pct + '%)';
+              }}
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // EDUCATION CHARTS (M02)
+    // ============================================================================
+
+    function initEducationCharts() {
+      // School Type
+      const ctx1 = document.getElementById('eduSchoolTypeChart').getContext('2d');
+      charts.eduSchoolType = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: ['Public','Private'],
+          datasets: [{
+            data: [89.81, 10.19],
+            backgroundColor: ['#009FDA', '#CE1126'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+
+      // Attendance by Gender
+      const ctx2 = document.getElementById('eduAttendanceGenderChart').getContext('2d');
+      charts.eduAttendanceGender = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Male','Female'],
+          datasets: [{
+            label: 'School Attendance Rate (%)',
+            data: [76.32, 80.41],
+            backgroundColor: ['#009FDA', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { ...TICK, callback: v => v + '%' },
+              grid: GRID
+            },
+            x: { ticks: TICK, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // EMPLOYMENT CHARTS (M03)
+    // ============================================================================
+
+    function initEmploymentCharts() {
+      // Employment by Gender
+      const ctx1 = document.getElementById('empGenderChart').getContext('2d');
+      charts.empGender = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Male','Female'],
+          datasets: [{
+            label: 'Employment Rate (%)',
+            data: [59.0, 30.2],
+            backgroundColor: ['#009FDA', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 100, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Contract Type
+      const ctx2 = document.getElementById('empContractChart').getContext('2d');
+      charts.empContract = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Written','Oral','No contract','N/A'],
+          datasets: [{
+            data: [17.83, 4.31, 71.75, 6.11],
+            backgroundColor: ['#009FDA', '#FCD116', '#CE1126', '#999'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+
+      // Sector/Industry
+      const ctx3 = document.getElementById('empSectorChart').getContext('2d');
+      charts.empSector = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Admin/Support','Agriculture','Retail Trade','Construction','Food Service','Transport'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [21.3, 17.9, 15.0, 12.1, 11.4, 7.0],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651','#CE1126','#FCD116'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 25, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // INCOME CHARTS (M04)
+    // ============================================================================
+
+    function initIncomeCharts() {
+      const ctx1 = document.getElementById('incEarningsChart').getContext('2d');
+      charts.incEarnings = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Regular Income','Seasonal Income'],
+          datasets: [
+            {
+              label: 'Mean (₱)',
+              data: [10576, 7500],
+              backgroundColor: '#009FDA',
+              borderRadius: 4,
+              yAxisID: 'y'
+            },
+            {
+              label: 'Median (₱)',
+              data: [7500, 5000],
+              backgroundColor: '#00A651',
+              borderRadius: 4,
+              yAxisID: 'y'
+            }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { font: { family: "'IBM Plex Mono'" } } },
+            tooltip: { callbacks: { label: ctx => '₱' + ctx.parsed.y.toLocaleString() } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { callback: v => '₱' + (v/1000).toFixed(0) + 'K', color: '#999', font: { family: "'IBM Plex Mono'" } },
+              grid: { color: '#E8E8E8' }
+            },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // FINANCE CHARTS (M05)
+    // ============================================================================
+
+    function initFinanceCharts() {
+      // Financial Inclusion
+      const ctx1 = document.getElementById('finInclusionChart').getContext('2d');
+      charts.finInclusion = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Bank Account','Mobile Money','Can Save','Emergency Fund'],
+          datasets: [{
+            label: 'Rate (%)',
+            data: [4.9, 18.0, 12.9, 2.1],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 20, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Loan Source
+      const ctx2 = document.getElementById('finLoanSourceChart').getContext('2d');
+      charts.finLoanSource = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Formal','Private','Informal','Digital','Govt','Product/service','Family'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [41.59, 31.23, 15.68, 5.07, 2.19, 1.18, 0.95],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651','#CE1126','#FCD116','#999'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 45, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Emergency Help
+      const ctx3 = document.getElementById('finEmergencyChart').getContext('2d');
+      charts.finEmergency = new Chart(ctx3, {
+        type: 'doughnut',
+        data: {
+          labels: ['Family','Friends','Informal','Govt','Formal'],
+          datasets: [{
+            data: [79.81, 7.11, 5.08, 3.07, 2.37],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651','#CE1126'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // MIGRATION CHARTS (M06)
+    // ============================================================================
+
+    function initMigrationCharts() {
+      // Urban/Rural
+      const ctx1 = document.getElementById('migUrbanRuralChart').getContext('2d');
+      charts.migUrbanRural = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Rural','Urban'],
+          datasets: [{
+            label: 'Migration Intent Rate (%)',
+            data: [2.4, 2.1],
+            backgroundColor: ['#00A651','#009FDA'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 5, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: TICK, grid: GRID }
+          }
+        }
+      });
+
+      // By Region (Macro-regions from story)
+      const ctx2 = document.getElementById('migRegionChart').getContext('2d');
+      const migRegions = ['National','NCR','Luzon (excl. NCR)','Visayas','Mindanao'];
+      const migRates = [2.3, 2.7, 2.4, 1.1, 2.9];
+      charts.migRegion = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: migRegions,
+          datasets: [{
+            label: 'Migration Intent Rate (%)',
+            data: migRates,
+            backgroundColor: ['#002244', '#0038A8', '#00A651', '#D4A017', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 5, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: TICK, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // HEALTH CHARTS (M07)
+    // ============================================================================
+
+    function initHealthCharts() {
+      // Facility Type
+      const ctx1 = (document.getElementById('healthFacilityChart')||document.createElement('canvas')).getContext('2d');
+      charts.healthFacility = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['BHS','Public hospital','RHU','Private clinic','Private hospital'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [8.92, 7.52, 5.50, 3.78, 1.82],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651','#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 10, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: TICK, grid: GRID }
+          }
+        }
+      });
+
+      // Coverage by Region
+      const ctx2 = document.getElementById('healthCoverageRegionChart').getContext('2d');
+      const healthRegions = ['Caraga','CAR','SOCCSKSARGEN','N. Mindanao','Davao','E. Visayas','CALABARZON','Ilocos','Central Luzon','Bicol','MIMAROPA','NIR','Cagayan V.','BARMM','Zamboanga','W. Visayas','C. Visayas'];
+      const healthCoverage = [80.87, 77.41, 67.79, 54.45, 53.23, 52.78, 46.04, 45.62, 43.46, 43.31, 38.04, 38.33, 37.82, 37.72, 31.24, 33.52, 25.20];
+      charts.healthCoverageRegion = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: healthRegions,
+          datasets: [{
+            label: 'PhilHealth Coverage (%)',
+            data: healthCoverage,
+            backgroundColor: healthCoverage.map(h => h > 60 ? '#00A651' : h > 45 ? '#FCD116' : '#CE1126'),
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 90, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // FOOD & NUTRITION CHARTS (M08)
+    // ============================================================================
+
+    function initFoodCharts() {
+      // Food Source
+      const ctx1 = document.getElementById('foodSourceChart').getContext('2d');
+      charts.foodSource = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: ['Wet market','Sari-sari','Supermarket','Ambulant','Others'],
+          datasets: [{
+            data: [74.66, 15.12, 5.63, 2.22, 2.37],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651','#CE1126'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+
+      // Shopping Frequency
+      const ctx2 = document.getElementById('foodShoppingChart').getContext('2d');
+      charts.foodShopping = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['>1/week','1/week','2/month','<1/month','3/month'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [44.40, 39.21, 8.08, 4.84, 2.68],
+            backgroundColor: ['#CE1126','#FCD116','#009FDA','#40B4E5','#00A651'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 50, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // NATURAL HAZARDS CHARTS (M09)
+    // ============================================================================
+
+    function initHazardsCharts() {
+      const ctx1 = document.getElementById('hazardExposureChart').getContext('2d');
+      const hazardLabels = ['Typhoon','Extreme heat','Earthquake','Drought','Flood','Pest','Livestock disease','Volcanic','Landslide','Tsunami'];
+      const exposure = [76.5, 49.91, 41.00, 35.35, 31.20, 11.94, 9.09, 2.75, 2.17, 0.19];
+      const warnings = [67.31, 23.87, 16.21, 15.76, 18.99, null, null, null, null, null];
+
+      charts.hazardExposure = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: hazardLabels,
+          datasets: [
+            {
+              label: 'Exposure Rate (%)',
+              data: exposure,
+              backgroundColor: '#009FDA',
+              borderRadius: 3, borderWidth: 0,
+              yAxisID: 'y'
+            },
+            {
+              label: 'Warning Receipt Rate (%)',
+              data: warnings,
+              backgroundColor: '#CE1126',
+              borderRadius: 3, borderWidth: 0,
+              yAxisID: 'y'
+            }
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => {
+              if (ctx.parsed.x === null) return '';
+              return ctx.dataset.label.replace('Rate', '').trim() + ctx.parsed.x.toFixed(2) + '%';
+            }}}
+          },
+          scales: {
+            x: { beginAtZero: true, max: 80, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // DWELLING CHARTS (M10)
+    // ============================================================================
+
+    function initDwellingCharts() {
+      // Tenure Type
+      const ctx1 = document.getElementById('dwelTenureChart').getContext('2d');
+      charts.dwelTenure = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: ['Own house+lot','Own house rent-free lot','Rent','Rent-free consent','Own house rent lot'],
+          datasets: [{
+            data: [56.11, 17.37, 11.23, 8.23, 4.19],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651','#CE1126'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+
+      // Peeling Paint
+      const ctx2 = document.getElementById('dwelPaintChart').getContext('2d');
+      charts.dwelPaint = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Yes','No'],
+          datasets: [{
+            data: [53.29, 46.71],
+            backgroundColor: ['#CE1126','#00A651'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+
+      // Wall Material
+      const ctx3 = document.getElementById('dwelWallChart').getContext('2d');
+      charts.dwelWall = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Half concrete/wood','Concrete','Wood/bamboo','Metal sheets'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [42.27, 27.62, 16.88, 8.52],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 50, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Roof Material
+      const ctx4 = document.getElementById('dwelRoofChart').getContext('2d');
+      charts.dwelRoof = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+          labels: ['Asbestos','Metal sheets','Half GI/concrete','Thatch','Wood/bamboo'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [30.29, 25.33, 19.07, 8.23, 5.97],
+            backgroundColor: ['#CE1126','#FCD116','#009FDA','#40B4E5','#00A651'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 35, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Condition
+      const ctx5 = document.getElementById('dwelConditionChart').getContext('2d');
+      charts.dwelCondition = new Chart(ctx5, {
+        type: 'bar',
+        data: {
+          labels: ['Unpainted needs repair','Dilapidated','Painted needs repair','Well-painted'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [36.97, 30.36, 24.61, 5.69],
+            backgroundColor: ['#CE1126','#FCD116','#009FDA','#00A651'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 40, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // SANITATION CHARTS (M11)
+    // ============================================================================
+
+    function initSanitationCharts() {
+      // Toilet Type
+      const ctx1 = (document.getElementById('sanToiletChart')||document.createElement('canvas')).getContext('2d');
+      charts.sanToilet = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Water-sealed septic exclusive','Water-sealed septic shared','Water-sealed other exclusive','Closed pit','Water-sealed other shared','None'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [71.95, 10.04, 8.11, 5.28, 2.90, 1.10],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651','#CE1126','#FCD116'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 80, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Waste Disposal
+      const ctx2 = document.getElementById('sanWasteChart').getContext('2d');
+      charts.sanWaste = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Collection','Burned','Open dump','Buried'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [64.67, 22.37, 6.44, 4.92],
+            backgroundColor: ['#009FDA','#FCD116','#CE1126','#40B4E5'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 70, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Improved vs Unimproved
+      const ctx3 = document.getElementById('sanImprovedChart').getContext('2d');
+      charts.sanImproved = new Chart(ctx3, {
+        type: 'doughnut',
+        data: {
+          labels: ['Improved','Unimproved'],
+          datasets: [{
+            data: [93, 7],
+            backgroundColor: ['#00A651','#CE1126'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(1) + '%' } }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // UTILITIES CHARTS (M12)
+    // ============================================================================
+
+    function initUtilitiesCharts() {
+      // Device Ownership
+      const ctx1 = document.getElementById('utilDeviceChart').getContext('2d');
+      charts.utilDevice = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Smartphone','Smart TV','Laptop','Tablet','PC'],
+          datasets: [{
+            label: 'Ownership Rate (%)',
+            data: [50.20, 13.57, 9.34, 5.35, 4.09],
+            backgroundColor: ['#009FDA','#FCD116','#40B4E5','#00A651','#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 55, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Water Source
+      const ctx2 = document.getElementById('utilWaterSourceChart').getContext('2d');
+      charts.utilWaterSource = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Piped into dwelling','Protected well','Tubed well','Protected spring','Piped to neighbor','Piped to yard','Public tap'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [60.44, 8.52, 6.01, 4.52, 3.89, 3.86, 3.41],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651','#CE1126','#FCD116','#999'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 65, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Water Safety
+      const ctx3 = document.getElementById('utilWaterSafetyChart').getContext('2d');
+      charts.utilWaterSafety = new Chart(ctx3, {
+        type: 'doughnut',
+        data: {
+          labels: ['Very safe','Mostly safe','Mostly unsafe','Very unsafe'],
+          datasets: [{
+            data: [60.42, 32.67, 5.40, 1.51],
+            backgroundColor: ['#00A651','#009FDA','#FCD116','#CE1126'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // ASSETS & ENERGY CHARTS (M13)
+    // ============================================================================
+
+    function initAssetsCharts() {
+      // Asset Ownership
+      const ctx1 = document.getElementById('assetOwnershipChart').getContext('2d');
+      charts.assetOwnership = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Washing machine','Motorcycle','Refrigerator','Gas stove','Computer','Air con','Car/Van'],
+          datasets: [{
+            label: 'Ownership Rate (%)',
+            data: [55.0, 54.0, 49.0, 25.9, 14.6, 10.5, 3.9],
+            backgroundColor: ['#009FDA','#F05023','#00A651','#D4A017','#0038A8','#CE1126','#00B8C8'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 60, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Cooking Fuel
+      const ctx2 = document.getElementById('assetCookingFuelChart').getContext('2d');
+      charts.assetCookingFuel = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Animal dung','LPG/Gas','Electricity','Wood','Coal','Charcoal'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [57.38, 57.14, 49.58, 24.96, 16.03, 10.85],
+            backgroundColor: ['#002244','#009FDA','#40B4E5','#00A651','#CE1126','#FCD116'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } }
+          },
+          scales: {
+            x: { beginAtZero: true, max: 65, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // VIEWS & PERCEPTIONS CHARTS (M14)
+    // ============================================================================
+
+    function initViewsCharts() {
+      // Life Satisfaction
+      const ctx1 = document.getElementById('viewLifeSatisfactionChart').getContext('2d');
+      charts.viewLifeSatisfaction = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Not satisfied','Partly','Satisfied','More than','Completely'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [3.89, 20.89, 51.92, 11.83, 11.47],
+            backgroundColor: ['#CE1126','#FCD116','#009FDA','#40B4E5','#00A651'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 60, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Economic Position
+      const ctx2 = document.getElementById('viewEconomicPositionChart').getContext('2d');
+      charts.viewEconomicPosition = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Poorest','2nd poorest','Middle','2nd richest','Richest'],
+          datasets: [{
+            data: [19.37, 30.20, 48.98, 0.79, 0.66],
+            backgroundColor: ['#CE1126','#FCD116','#009FDA','#40B4E5','#00A651'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+
+      // Economic Change
+      const ctx3 = document.getElementById('viewEconomicChangeChart').getContext('2d');
+      charts.viewEconomicChange = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Sig worsened','Slightly worsened','Same','Slightly improved','Sig improved'],
+          datasets: [{
+            label: 'Percentage (%)',
+            data: [6.90, 11.68, 45.51, 28.74, 7.16],
+            backgroundColor: ['#CE1126','#FCD116','#009FDA','#40B4E5','#00A651'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 50, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Safety Perception
+      const ctx4 = document.getElementById('viewSafetyChart').getContext('2d');
+      charts.viewSafety = new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+          labels: ['Safe','Somewhat safe','Afraid','Somewhat unsafe','Unsafe'],
+          datasets: [{
+            data: [61.42, 16.36, 9.97, 6.18, 5.01],
+            backgroundColor: ['#00A651','#009FDA','#FCD116','#CE1126','#666'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+
+      // Top Concerns
+      const ctx5 = document.getElementById('viewConcernsChart').getContext('2d');
+      const concerns = ['Prices rising','Children\'s education','Political instability','Worsening finances','Job loss anxiety','AI/automation anxiety'];
+      const concernRates = [75.5, 70.8, 63.7, 58.2, 56.8, 52.4];
+      charts.viewConcerns = new Chart(ctx5, {
+        type: 'bar',
+        data: {
+          labels: concerns,
+          datasets: [{
+            label: 'Concern Rate (%)',
+            data: concernRates,
+            backgroundColor: concernRates.map(r => r > 70 ? '#CE1126' : r > 60 ? '#FCD116' : r > 50 ? '#009FDA' : '#40B4E5'),
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + '%' } }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 80, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // EDUCATION CHARTS - ADDITIONAL INDICATORS (M02)
+    // ============================================================================
+
+    function initEducationAdditionalCharts() {
+      // Attendance by Age Band
+      const ctx1 = (document.getElementById('eduAttendanceAgeBandChart')||document.createElement('canvas')).getContext('2d');
+      charts.eduAttendanceAgeBand = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Elementary','Junior HS','Senior HS','Tertiary','20-24'],
+          datasets: [{
+            label: 'Attendance Rate (%)',
+            data: [98, 96, 87, 65, 30],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#CE1126', '#D4A017'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' } } },
+          scales: {
+            y: { beginAtZero: true, max: 100, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Educational Attainment
+      const ctx2 = (document.getElementById('eduAttainmentChart')||document.createElement('canvas')).getContext('2d');
+      charts.eduAttainment = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Secondary (51%)','College (13%)','Female College (16%)','Male College (11%)'],
+          datasets: [{
+            data: [51, 13, 16, 11],
+            backgroundColor: ['#009FDA', '#CE1126', '#40B4E5', '#D4A017'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed.toFixed(1) + '%' } }
+          }
+        }
+      });
+
+      // Education Expenditure
+      const ctx3 = document.getElementById('eduExpenditureChart').getContext('2d');
+      charts.eduExpenditure = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Meals','Tuition','Transport','Books','Uniforms'],
+          datasets: [{
+            label: 'Amount (₱)',
+            data: [9461, 6651, 5653, 1729, 1423],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#CE1126', '#D4A017'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => '₱' + ctx.parsed.x.toLocaleString() } } },
+          scales: {
+            x: { ticks: { callback: v => '₱' + v.toLocaleString(), color: '#999', font: { family: "'IBM Plex Mono'" } }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // ECD Participation
+      const ctx4 = document.getElementById('eduEcdChart').getContext('2d');
+      charts.eduEcd = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+          labels: ['Age 0-2','Age 3','Age 4'],
+          datasets: [{
+            label: 'ECD Participation (%)',
+            data: [2.9, 31.4, 69.2],
+            backgroundColor: ['#CE1126', '#40B4E5', '#00A651'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' } } },
+          scales: {
+            y: { beginAtZero: true, max: 100, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Dropout Reasons
+      const ctx5 = document.getElementById('eduDropoutReasonsChart').getContext('2d');
+      charts.eduDropoutReasons = new Chart(ctx5, {
+        type: 'bar',
+        data: {
+          labels: ['Employment','Financial','Finished','Family','Distance'],
+          datasets: [{
+            label: 'Share (%)',
+            data: [3.7, 2.4, 2.2, 1.6, 0.2],
+            backgroundColor: ['#CE1126', '#40B4E5', '#00A651', '#D4A017', '#009FDA'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 5, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // EMPLOYMENT CHARTS - ADDITIONAL INDICATORS (M03)
+    // ============================================================================
+
+    function initEmploymentAdditionalCharts() {
+      // Employment by Age Group
+      const ctx1 = (document.getElementById('empAgeGroupChart')||document.createElement('canvas')).getContext('2d');
+      charts.empAgeGroup = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Youth 15-24','25-34','35-44','45-54','55-64','65+'],
+          datasets: [{
+            label: 'Employment Rate (%)',
+            data: [19, 42, 55, 64, 48, 18],
+            backgroundColor: ['#CE1126', '#40B4E5', '#009FDA', '#00A651', '#D4A017', '#FCD116'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' } } },
+          scales: {
+            y: { beginAtZero: true, max: 80, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { color: '#333', font: { family: "'IBM Plex Mono'", size: 11 } }, grid: GRID }
+          }
+        }
+      });
+
+      // Employment Characteristics
+      const ctx2 = document.getElementById('empCharacteristicsChart').getContext('2d');
+      charts.empCharacteristics = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['No Formal Contract','Pension/SS Contrib','Gig Work'],
+          datasets: [{
+            data: [71.7, 28, 5],
+            backgroundColor: ['#CE1126', '#009FDA', '#D4A017'],
+            borderRadius: 4,
+            borderWidth: 0,
+            barPercentage: 0.6
+          }]
+        },
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ' ' + ctx.parsed.x.toFixed(1) + '%' } }
+          },
+          scales: {
+            x: { ticks: { ...TICK, callback: v => v + '%' }, grid: GRID, beginAtZero: true, max: 100 },
+            y: { ticks: { ...TICK }, grid: { display: false } }
+          }
+        }
+      });
+
+      // Job Loss & Working Hours
+      const ctx3 = document.getElementById('empJobLossHoursChart').getContext('2d');
+      charts.empJobLossHours = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Job Loss (Past 30d)','Work <20 hrs','Full-time 35+'],
+          datasets: [{
+            label: 'Share of Households (%)',
+            data: [10, 42, 58],
+            backgroundColor: ['#CE1126', '#40B4E5', '#00A651'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' } } },
+          scales: {
+            y: { beginAtZero: true, max: 100, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { color: '#333', font: { family: "'IBM Plex Mono'", size: 11 } }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // INCOME CHARTS - ADDITIONAL INDICATORS (M04)
+    // ============================================================================
+
+    function initIncomeAdditionalCharts() {
+      const ctx1 = document.getElementById('incSourcesChart').getContext('2d');
+      charts.incSources = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Domestic Support','OFW Remittance (Median)'],
+          datasets: [{
+            label: 'Rate / Amount',
+            data: [22.8, 10000],
+            backgroundColor: ['#009FDA', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => (ctx.datasetIndex === 0 ? ctx.parsed.y.toFixed(1) + '%' : '₱' + ctx.parsed.y.toLocaleString()) } }
+          },
+          scales: {
+            y: { ticks: { color: '#999', font: { family: "'IBM Plex Mono'" } }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // FINANCE CHARTS - ADDITIONAL INDICATORS (M05)
+    // ============================================================================
+
+    function initFinanceAdditionalCharts() {
+      // Financial Services
+      const ctx1 = document.getElementById('finServicesChart').getContext('2d');
+      charts.finServices = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Credit/Debit Card','Paluwagan','Mobile Money','Bank Account'],
+          datasets: [{
+            label: 'Adoption Rate (%)',
+            data: [10.5, 8.1, 18, 4.9],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' } } },
+          scales: {
+            y: { beginAtZero: true, max: 25, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Mobile Money by Region
+      const ctx2 = document.getElementById('finMobileMoneyRegionChart').getContext('2d');
+      charts.finMobileMoneyRegion = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['NCR','Mindanao','Luzon','Visayas'],
+          datasets: [{
+            label: 'Mobile Money Adoption (%)',
+            data: [25.5, 19.2, 17.9, 11.6],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 30, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Loan Purposes
+      const ctx3 = document.getElementById('finLoanPurposesChart').getContext('2d');
+      charts.finLoanPurposes = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Business','Food/Daily','Housing','Education','Health'],
+          datasets: [{
+            label: 'Share of Loans (%)',
+            data: [27.1, 24.7, 12.3, 11.7, 5.6],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#D4A017', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 30, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Government Programme
+      const ctx4 = document.getElementById('finGovProgrammeChart').getContext('2d');
+      charts.finGovProgramme = new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+          labels: ['Receiving Support (23%)','Not Receiving (77%)'],
+          datasets: [{
+            data: [23, 77],
+            backgroundColor: ['#00A651', '#E0E0E0'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.toFixed(1) + '%' } }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // HEALTH CHARTS - ADDITIONAL INDICATORS (M07)
+    // ============================================================================
+
+    function initHealthAdditionalCharts() {
+      // PhilHealth by Type
+      const ctx1 = document.getElementById('healthPhilhealthTypeChart').getContext('2d');
+      charts.healthPhilhealthType = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['Paying','Dependent Non-Pay','Non-Paying','Dependent Paying'],
+          datasets: [{
+            label: 'Coverage (%)',
+            data: [15.7, 12.0, 11.3, 7.1],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' } } },
+          scales: {
+            y: { beginAtZero: true, max: 20, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // PhilHealth by Region
+      const ctx2 = document.getElementById('healthPhilhealthRegionChart').getContext('2d');
+      charts.healthPhilhealthRegion = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['NCR','Mindanao','Luzon','Visayas'],
+          datasets: [{
+            label: 'PhilHealth Coverage (%)',
+            data: [52.6, 52.7, 45.0, 36.2],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 60, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Healthcare Barriers
+      const ctx3 = document.getElementById('healthBarriersChart').getContext('2d');
+      charts.healthBarriers = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Cannot Afford','Not Yet Needed','Not Able','Afraid'],
+          datasets: [{
+            label: 'Share (%)',
+            data: [41.1, 3.9, 1.0, 0.9],
+            backgroundColor: ['#CE1126', '#40B4E5', '#D4A017', '#FCD116'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 50, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // OOP Distribution
+      const ctx4 = document.getElementById('healthOopChart').getContext('2d');
+      charts.healthOop = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+          labels: ['P10','P25','Median','P75','P90','Mean'],
+          datasets: [{
+            label: 'Amount (₱)',
+            data: [200, 500, 1000, 2000, 4300, 2282],
+            backgroundColor: ['#CE1126', '#40B4E5', '#009FDA', '#00A651', '#D4A017', '#FCD116'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { ...TOOLTIP, callbacks: { label: ctx => '₱' + ctx.parsed.y.toLocaleString() } } },
+          scales: {
+            y: { ticks: { callback: v => '₱' + v.toLocaleString(), color: '#999', font: { family: "'IBM Plex Mono'" } }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // FOOD & NUTRITION CHARTS - ADDITIONAL INDICATORS (M08)
+    // ============================================================================
+
+    function initFoodAdditionalCharts() {
+      // Wet Market by Region
+      const ctx1 = document.getElementById('foodWetMarketRegionChart').getContext('2d');
+      charts.foodWetMarketRegion = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['NCR','Visayas','National','Luzon','Mindanao'],
+          datasets: [{
+            label: 'Wet Market Purchase (%)',
+            data: [89.8, 77.8, 74.0, 71.4, 66.9],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#D4A017', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 100, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // SSB Consumption by age group
+      const ctx2 = document.getElementById('foodSsbChart').getContext('2d');
+      charts.foodSsb = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Children <10','Working-age (peak)','Elderly 60+'],
+          datasets: [{
+            data: [79, 94, 27],
+            backgroundColor: ['#CE1126', '#FCD116', '#009FDA'],
+            borderRadius: 4,
+            borderWidth: 0,
+            barPercentage: 0.6
+          }]
+        },
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ' ' + ctx.parsed.x + '% consume SSB' } }
+          },
+          scales: {
+            x: { ticks: { ...TICK, callback: v => v + '%' }, grid: GRID, beginAtZero: true, max: 100 },
+            y: { ticks: { ...TICK }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // HAZARDS CHARTS - ADDITIONAL INDICATORS (M09)
+    // ============================================================================
+
+    function initHazardsAdditionalCharts() {
+      // Warning by Region
+      const ctx1 = document.getElementById('hazardWarningRegionChart').getContext('2d');
+      charts.hazardWarningRegion = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['NCR','Luzon','Visayas','Mindanao'],
+          datasets: [{
+            label: 'Warning Receipt (%)',
+            data: [70.6, 59.2, 49.6, 41.3],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 80, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Preparedness
+      const ctx2 = document.getElementById('hazardPreparednessChart').getContext('2d');
+      charts.hazardPreparedness = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Preparedness Measures','Emergency Plan','Hazard Maps'],
+          datasets: [{
+            label: 'Share (%)',
+            data: [97.4, 86.8, 83.9],
+            backgroundColor: ['#00A651', '#009FDA', '#40B4E5'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' } } },
+          scales: {
+            y: { beginAtZero: true, max: 100, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            x: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Hazard Exposure by Region
+      const ctx3 = document.getElementById('hazardExposureRegionChart').getContext('2d');
+      charts.hazardExposureRegion = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Luzon','NCR','Visayas','National','Mindanao'],
+          datasets: [{
+            label: 'Any Hazard Exposure (%)',
+            data: [96.9, 93.1, 87.3, 91.0, 82.5],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#D4A017', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 100, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Assistance Received
+      const ctx4 = document.getElementById('hazardAssistanceChart').getContext('2d');
+      charts.hazardAssistance = new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+          labels: ['Received Assistance (17.4%)','No Assistance (82.6%)'],
+          datasets: [{
+            data: [17.4, 82.6],
+            backgroundColor: ['#00A651', '#E0E0E0'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: LEG,
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.toFixed(1) + '%' } }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // DWELLING CHARTS - ADDITIONAL INDICATORS (M10)
+    // ============================================================================
+
+    function initDwellingAdditionalCharts() {
+      const ctx1 = document.getElementById('dwellingConditionChart').getContext('2d');
+      charts.dwellingCondition = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: ['Unpainted Needs Repair (36.97%)','Dilapidated (30.36%)','Painted Needs Repair (24.61%)','Well-painted (5.69%)'],
+          datasets: [{
+            data: [36.97, 30.36, 24.61, 5.69],
+            backgroundColor: ['#CE1126', '#D4A017', '#40B4E5', '#00A651'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.toFixed(2) + '%' } }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // UTILITIES CHARTS - ADDITIONAL INDICATORS (M12)
+    // ============================================================================
+
+    function initUtilitiesAdditionalCharts() {
+      // Electricity by Region
+      const ctx1 = document.getElementById('utilElectricityRegionChart').getContext('2d');
+      charts.utilElectricityRegion = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['NCR','Luzon','Visayas','Mindanao'],
+          datasets: [{
+            label: 'Electricity Access (%)',
+            data: [98.7, 96.7, 94.9, 92.8],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 100, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Internet by Region
+      const ctx2 = document.getElementById('utilInternetRegionChart').getContext('2d');
+      charts.utilInternetRegion = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['NCR','Luzon','Mindanao','Visayas'],
+          datasets: [{
+            label: 'Internet Access (%)',
+            data: [67.4, 52.0, 45.2, 40.7],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 80, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Devices
+      const ctx3 = document.getElementById('utilDevicesChart').getContext('2d');
+      charts.utilDevices = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Smartphone','Smart TV','Laptop','Tablet','PC'],
+          datasets: [{
+            label: 'Ownership (%)',
+            data: [50.2, 13.6, 9.3, 5.4, 4.1],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#D4A017', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 60, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+
+      // Internet Purposes
+      const ctx4 = document.getElementById('utilInternetPurposesChart').getContext('2d');
+      charts.utilInternetPurposes = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+          labels: ['Social Media','News','Shopping','Education','Entertainment','Banking'],
+          datasets: [{
+            label: 'Share (%)',
+            data: [36.2, 15.6, 14.0, 13.1, 8.9, 4.1],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#D4A017', '#FCD116', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 40, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // ASSETS CHARTS - ADDITIONAL INDICATORS (M13)
+    // ============================================================================
+
+    function initAssetsAdditionalCharts() {
+      const ctx1 = document.getElementById('assetCookingFuelDetailChart').getContext('2d');
+      charts.assetCookingFuelDetail = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['LPG','Fuelwood','Charcoal','Electricity','Kerosene'],
+          datasets: [{
+            label: 'Usage (%)',
+            data: [61.5, 50.7, 27.0, 21.4, 4.1],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#D4A017', '#CE1126'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 70, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+    // ============================================================================
+    // VIEWS CHARTS - ADDITIONAL INDICATORS (M14)
+    // ============================================================================
+
+    function initViewsAdditionalCharts() {
+      // Economic Change Perception
+      const ctx1 = document.getElementById('viewEconomicChangeDetailChart').getContext('2d');
+      charts.viewEconomicChangeDetail = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: ['Better (35.9%)','Same (45.5%)','Worse (18.6%)'],
+          datasets: [{
+            data: [35.9, 45.5, 18.6],
+            backgroundColor: ['#00A651', '#FCD116', '#CE1126'],
+            borderColor: '#fff',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { ...LEG.labels } },
+            tooltip: { ...TOOLTIP, callbacks: { label: ctx => ctx.parsed.toFixed(1) + '%' } }
+          }
+        }
+      });
+
+      // Economic Sentiment by Region
+      const ctx2 = document.getElementById('viewEconomicSentimentRegionChart').getContext('2d');
+      charts.viewEconomicSentimentRegion = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['NCR','Luzon','Visayas','Mindanao'],
+          datasets: [
+            {
+              label: 'Better (%)',
+              data: [33.1, 34.4, 37.8, 33.7],
+              backgroundColor: '#00A651'
+            },
+            {
+              label: 'Same (%)',
+              data: [45.8, 45.3, 42.6, 51.6],
+              backgroundColor: '#FCD116'
+            },
+            {
+              label: 'Worse (%)',
+              data: [21.1, 20.3, 19.6, 14.7],
+              backgroundColor: '#CE1126'
+            }
+          ]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { font: { family: "'IBM Plex Mono'", size: 10 }, padding: 10 } } },
+          scales: {
+            x: { stacked: true, beginAtZero: true, max: 100, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { stacked: true, ticks: { color: '#333', font: { family: "'IBM Plex Mono'", size: 11 } }, grid: { display: false } }
+          }
+        }
+      });
+
+      // Confidence Items
+      const ctx3 = document.getElementById('viewConfidenceChart').getContext('2d');
+      charts.viewConfidence = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+          labels: ['Gov Input','Digital Saves Time','Gov Digital','Jobs','Economy','Gov Economy','Taxes Spent Well','Tax Increase'],
+          datasets: [{
+            label: 'Confidence / Agreement (%)',
+            data: [77.1, 59.9, 58.8, 56.4, 55.4, 54.4, 36.6, 32.8],
+            backgroundColor: ['#009FDA', '#40B4E5', '#00A651', '#D4A017', '#FCD116', '#CE1126', '#999', '#666'],
+            borderRadius: 3, borderWidth: 0
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(1) + '%' } } },
+          scales: {
+            x: { beginAtZero: true, max: 85, ticks: { ...TICK, callback: v => v + '%' }, grid: GRID },
+            y: { ticks: { ...TICK }, grid: GRID }
+          }
+        }
+      });
+    }
+
+
+        // ============================================================================
+    // TAB SWITCHING
+    // ============================================================================
+
+    const validTabs = ['passport','demographics','education','employment','income','finance','migration','health','food','hazards','dwelling','sanitation','utilities','assets','views'];
+    let demoChartsInit = false;
+    let eduChartsInit = false;
+    let empChartsInit = false;
+    let incChartsInit = false;
+    let finChartsInit = false;
+    let migChartsInit = false;
+    let healthChartsInit = false;
+    let foodChartsInit = false;
+    let hazardsChartsInit = false;
+    let dwellingChartsInit = false;
+    let sanitationChartsInit = false;
+    let utilitiesChartsInit = false;
+    let assetsChartsInit = false;
+    let viewsChartsInit = false;
+    let eduAdditionalChartsInit = false;
+    let empAdditionalChartsInit = false;
+    let incAdditionalChartsInit = false;
+    let finAdditionalChartsInit = false;
+    let healthAdditionalChartsInit = false;
+    let foodAdditionalChartsInit = false;
+    let hazardsAdditionalChartsInit = false;
+    let dwellingAdditionalChartsInit = false;
+    let utilitiesAdditionalChartsInit = false;
+    let assetsAdditionalChartsInit = false;
+    let viewsAdditionalChartsInit = false;
+    let storyDemoInit = false;
+    let storyEduInit = false;
+    let storyEmpInit = false;
+    let storyIncInit = false;
+    let storyMigInit = false;
+    let storyHealthInit = false;
+    let storyFoodInit = false;
+    let storySanitInit = false;
+    let storyViewsInit = false;
+
+    document.querySelectorAll('.mast-nav a[data-tab]').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const tabId = this.getAttribute('data-tab');
+        if (!validTabs.includes(tabId)) return;
+        document.querySelectorAll('.mast-nav a[data-tab]').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+
+        // Show hero only on M00 landing tab
+        const hero = document.querySelector('.hero');
+        if (hero) hero.style.display = (tabId === 'passport') ? '' : 'none';
+
+        // Scroll to top of content (past sticky masthead)
+        window.scrollTo({ top: 0, behavior: 'instant' });
+
+        if (tabId === 'demographics' && !demoChartsInit) {
+          initDemoCharts(); demoChartsInit = true;
+          initStoryDemoCharts(); storyDemoInit = true;
+        } else if (tabId === 'education' && !eduChartsInit) {
+          initEducationCharts(); eduChartsInit = true;
+          initStoryEduCharts(); storyEduInit = true;
+          initEducationAdditionalCharts(); eduAdditionalChartsInit = true;
+        } else if (tabId === 'employment' && !empChartsInit) {
+          initEmploymentCharts(); empChartsInit = true;
+          initStoryEmpCharts(); storyEmpInit = true;
+          initEmploymentAdditionalCharts(); empAdditionalChartsInit = true;
+        } else if (tabId === 'income' && !incChartsInit) {
+          initIncomeCharts(); incChartsInit = true;
+          initStoryIncCharts(); storyIncInit = true;
+          initIncomeAdditionalCharts(); incAdditionalChartsInit = true;
+        } else if (tabId === 'finance' && !finChartsInit) {
+          initFinanceCharts(); finChartsInit = true;
+          initFinanceAdditionalCharts(); finAdditionalChartsInit = true;
+        } else if (tabId === 'migration' && !migChartsInit) {
+          initMigrationCharts(); migChartsInit = true;
+          initStoryMigCharts(); storyMigInit = true;
+        } else if (tabId === 'health' && !healthChartsInit) {
+          initHealthCharts(); healthChartsInit = true;
+          initStoryHealthCharts(); storyHealthInit = true;
+          initHealthAdditionalCharts(); healthAdditionalChartsInit = true;
+        } else if (tabId === 'food' && !foodChartsInit) {
+          initFoodCharts(); foodChartsInit = true;
+          initStoryFoodCharts(); storyFoodInit = true;
+          initFoodAdditionalCharts(); foodAdditionalChartsInit = true;
+        } else if (tabId === 'hazards' && !hazardsChartsInit) {
+          initHazardsCharts(); hazardsChartsInit = true;
+          initHazardsAdditionalCharts(); hazardsAdditionalChartsInit = true;
+        } else if (tabId === 'dwelling' && !dwellingChartsInit) {
+          initDwellingCharts(); dwellingChartsInit = true;
+          initDwellingAdditionalCharts(); dwellingAdditionalChartsInit = true;
+        } else if (tabId === 'sanitation' && !sanitationChartsInit) {
+          initSanitationCharts(); sanitationChartsInit = true;
+          initStorySanitCharts(); storySanitInit = true;
+        } else if (tabId === 'utilities' && !utilitiesChartsInit) {
+          initUtilitiesCharts(); utilitiesChartsInit = true;
+          initUtilitiesAdditionalCharts(); utilitiesAdditionalChartsInit = true;
+        } else if (tabId === 'assets' && !assetsChartsInit) {
+          initAssetsCharts(); assetsChartsInit = true;
+          initAssetsAdditionalCharts(); assetsAdditionalChartsInit = true;
+        } else if (tabId === 'views' && !viewsChartsInit) {
+          initViewsCharts(); viewsChartsInit = true;
+          initStoryViewsCharts(); storyViewsInit = true;
+          initViewsAdditionalCharts(); viewsAdditionalChartsInit = true;
+        }
+      });
+    });
+
+    // ============================================================================
+    // STORY CHARTS (from baseline_story.html — exact style preserved)
+    // ============================================================================
+
+    function initStoryDemoCharts() {
+      // Age distribution
+      new Chart(document.getElementById('cAge'), {type:'bar', data:{
+        labels:['<10','10-19','20-29','30-39','40-49','50-59','60-69','70+'],
+        datasets:[
+          {label:'National',data:[18,23,17,14,11,8,6,4],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+          {label:'Male',data:[19,23,17,14,12,7,6,3],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+          {label:'Female',data:[17,23,17,14,10,8,7,4],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
+        ]
+      }, options:{responsive:true,maintainAspectRatio:false,
+        scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}}},
+        plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+
+      // Marital status
+      new Chart(document.getElementById('cMarital'), {type:'bar', data:{
+        labels:['Single','Married','Common-law','Widowed','Separated'],
+        datasets:[
+          {label:'National',data:[56,26,12,4,2],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+          {label:'Male',data:[60,25,12,1,2],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+          {label:'Female',data:[53,26,13,6,2],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
+        ]
+      }, options:{responsive:true,maintainAspectRatio:false,
+        scales:{x:{grid:{display:false},ticks:{...TICK,font:{size:9}}},y:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}}},
+        plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+    }
+
+    function initStoryEduCharts() {
+      new Chart(document.getElementById('cAttend'), {type:'bar', data:{
+        labels:['6-11','12-15','16-17','18-19','20-24'],
+        datasets:[
+          {label:'National',data:[97.66,96.33,87.25,65.21,30.19],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+          {label:'Boys',data:[97.96,93.92,81.56,59.54,27.96],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+          {label:'Girls',data:[97.32,98.74,93.33,70.85,32.48],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
+        ]
+      }, options:{responsive:true,maintainAspectRatio:false,
+        scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
+        plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+
+      const labs=['Secondary','Primary','College/Uni','Some college','TVET','No schooling'];
+      new Chart(document.getElementById('cAttain'), {type:'bar', data:{
+        labels:labs,
+        datasets:[
+          {label:'National',data:[50.8,21.7,13.4,10.3,2.4,1.0],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+          {label:'Male',data:[52.1,23.5,11.2,9.8,2.1,1.1],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+          {label:'Female',data:[49.4,19.9,15.5,10.7,2.7,0.8],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
+        ]
+      }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK,font:{size:9}}}},
+        plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.x}%`}}}}});
+    }
+
+    function initStoryEmpCharts() {
+      new Chart(document.getElementById('cEmpAge'), {type:'bar', data:{
+        labels:['15-24','25-34','35-44','45-54','55-64','65+'],
+        datasets:[
+          {label:'National',data:[19.08,58.43,60.87,64.15,50.27,27.18],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+          {label:'Male',data:[24.79,77.31,81.88,79.45,67.91,37.04],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+          {label:'Female',data:[13.08,39.41,37.37,46.97,36.11,18.84],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
+        ]
+      }, options:{responsive:true,maintainAspectRatio:false,
+        scales:{x:{grid:{display:false},ticks:TICK_D},y:{grid:GRID_D,min:0,max:90,ticks:{...TICK_D,callback:v=>v+'%'}}},
+        plugins:{legend:LEG_D,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+
+      new Chart(document.getElementById('cClass'), {type:'bar', data:{
+        labels:['Private HH','Private estab.','Self-employed','Government','Employer','Unpaid family'],
+        datasets:[{data:[32.98,21.79,16.01,8.24,7.14,3.5],
+          backgroundColor:['#009FDA','#0038A8','#D4A017','#00A651','#F05023','#9FA0A4'],
+          borderRadius:3,borderWidth:0,barPercentage:.72}]
+      }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK_D}},
+        plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+    }
+
+    function initStoryIncCharts() {
+      new Chart(document.getElementById('cIncMacro'), {type:'bar', data:{
+        labels:['Regular income','Domestic support','OFW remittances','Pension','4Ps / CCT'],
+        datasets:[{data:[66.1,22.8,8.7,8.1,0.7],
+          backgroundColor:['#009FDA','#00A651','#0038A8','#D4A017','#CE1126'],
+          borderRadius:4,borderWidth:0,barPercentage:.65}]
+      }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        scales:{x:{grid:GRID,max:80,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
+        plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}% of HHs`}}}}});
+    }
+
+    function initStoryMigCharts() {
+      const el = document.getElementById('sankeyMig');
+      if (!el || typeof d3 === 'undefined') return;
+      const w = Math.max(el.clientWidth || 700, 700), h = 420;
+      const svg = d3.select(el).append('svg').attr('width',w).attr('height',h);
+      const regionWeight = [0.18, 0.35, 0.10, 0.37];
+      const nodes = [
+        {name:'NCR'},{name:'Luzon'},{name:'Visayas'},{name:'Mindanao'},
+        {name:'USA'},{name:'Australia'},{name:'UK'},{name:'S. Korea'},
+        {name:'Japan'},{name:'Saudi Arabia'},{name:'Canada'},{name:'Other abroad'},
+        {name:'Within NCR'},{name:'Within Luzon'},{name:'Within Visayas'},{name:'Within Mindanao'}
+      ];
+      const rawLinks = [
+        {source:0,target:4,value:8.4},{source:0,target:5,value:5.1},
+        {source:0,target:6,value:3.9},{source:0,target:7,value:3.6},
+        {source:0,target:8,value:3.5},{source:0,target:9,value:2.1},
+        {source:0,target:10,value:1.9},{source:0,target:11,value:17.5},
+        {source:0,target:12,value:20.5},{source:0,target:13,value:14.6},
+        {source:0,target:14,value:9.7},{source:0,target:15,value:9.2},
+        {source:1,target:4,value:13.7},{source:1,target:5,value:8.3},
+        {source:1,target:6,value:6.3},{source:1,target:7,value:5.9},
+        {source:1,target:8,value:5.7},{source:1,target:9,value:3.4},
+        {source:1,target:10,value:3.1},{source:1,target:11,value:28.3},
+        {source:1,target:12,value:9.6},{source:1,target:13,value:6.8},
+        {source:1,target:14,value:4.6},{source:1,target:15,value:4.3},
+        {source:2,target:4,value:14.9},{source:2,target:5,value:9.0},
+        {source:2,target:6,value:6.8},{source:2,target:7,value:6.4},
+        {source:2,target:8,value:6.2},{source:2,target:9,value:3.7},
+        {source:2,target:10,value:3.4},{source:2,target:11,value:30.9},
+        {source:2,target:12,value:7.1},{source:2,target:13,value:5.0},
+        {source:2,target:14,value:3.3},{source:2,target:15,value:3.2},
+        {source:3,target:4,value:11.1},{source:3,target:5,value:6.7},
+        {source:3,target:6,value:5.1},{source:3,target:7,value:4.8},
+        {source:3,target:8,value:4.6},{source:3,target:9,value:2.8},
+        {source:3,target:10,value:2.5},{source:3,target:11,value:22.9},
+        {source:3,target:12,value:15.0},{source:3,target:13,value:10.7},
+        {source:3,target:14,value:7.1},{source:3,target:15,value:6.7}
+      ];
+      const links = rawLinks.map(l => ({...l, value: +(l.value * regionWeight[l.source]).toFixed(2)}));
+      const ml = 100, mr = 130;
+      const sankey = d3.sankey().nodeId(d=>d.index).nodeWidth(14).nodePadding(4).extent([[ml,4],[w-mr,h-4]]);
+      const {nodes:sNodes, links:sLinks} = sankey({nodes:nodes.map(d=>({...d})),links:links.map(d=>({...d}))});
+      const color = d3.scaleOrdinal().domain(nodes.map(n=>n.name))
+        .range(['#0038A8','#00A651','#D4A017','#CE1126','#F05023','#40B4E5','#009FDA','#0038A8','#9FA0A4','#00B8C8','#D4A017','#CE1126','#0038A8','#00A651','#D4A017','#CE1126']);
+      svg.append('g').selectAll('rect').data(sNodes).join('rect')
+        .attr('x',d=>d.x0).attr('y',d=>d.y0).attr('height',d=>Math.max(d.y1-d.y0,1)).attr('width',d=>d.x1-d.x0)
+        .attr('fill',d=>color(d.name)).attr('rx',2);
+      svg.append('g').attr('fill','none').selectAll('path').data(sLinks).join('path')
+        .attr('d',d3.sankeyLinkHorizontal()).attr('stroke',d=>color(d.source.name))
+        .attr('stroke-width',d=>Math.max(d.width,0.5)).attr('stroke-opacity',.55);
+      svg.append('g').selectAll('text').data(sNodes).join('text')
+        .attr('x', d => d.x0 < w/2 ? d.x0 - 6 : d.x1 + 6)
+        .attr('y', d => (d.y0 + d.y1) / 2).attr('dy','0.35em')
+        .attr('text-anchor', d => d.x0 < w/2 ? 'end' : 'start')
+        .text(d => d.name).attr('font-family',"'IBM Plex Mono',monospace")
+        .attr('font-size','11px').attr('font-weight','600').attr('fill','#002244');
+    }
+
+    function initStoryHealthCharts() {
+      new Chart(document.getElementById('cFacility'), {type:'bar', data:{
+        labels:['Rural Health Unit','Hospital','Barangay Health Station','Private Clinic','Pharmacy'],
+        datasets:[{data:[32.4,27.3,20.0,13.7,6.6],
+          backgroundColor:['#00A651','#009FDA','#00B8C8','#F05023','#CE1126'],
+          borderRadius:3,borderWidth:0,barPercentage:.72}]
+      }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        scales:{x:{grid:GRID_D,ticks:{...TICK_D,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TICK_D,font:{size:9}}}},
+        plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+    }
+
+    function initStoryFoodCharts() {
+      new Chart(document.getElementById('cFoodSrc'), {type:'bar', data:{
+        labels:['Wet market','Sari-sari store','Supermarket','Ambulant peddlers','Large supermarket','Convenience store'],
+        datasets:[{data:[73.97,15.06,5.99,2.5,0.71,0.66],
+          backgroundColor:['#00A651','#009FDA','#D4A017','#F05023','#CE1126','#0038A8'],
+          borderRadius:3,borderWidth:0,barPercentage:.72}]
+      }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
+        plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+
+      new Chart(document.getElementById('cSSB'), {type:'bar', data:{
+        labels:['<10','10-17','18-24','25-44','45-64','65+'],
+        datasets:[
+          {label:'National',data:[78.56,91.44,93.08,94.27,90.08,82.78],backgroundColor:'#00A651',borderRadius:3,borderWidth:0},
+          {label:'Male',data:[80.12,92.31,93.85,94.90,90.65,83.42],backgroundColor:'#0038A8',borderRadius:3,borderWidth:0},
+          {label:'Female',data:[76.94,90.54,92.28,93.61,89.49,82.17],backgroundColor:'#CE1126',borderRadius:3,borderWidth:0}
+        ]
+      }, options:{responsive:true,maintainAspectRatio:false,
+        scales:{x:{grid:{display:false},ticks:TICK},y:{grid:GRID,min:0,max:100,ticks:{...TICK,callback:v=>v+'%'}}},
+        plugins:{legend:LEG,tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}}}});
+    }
+
+    function initStorySanitCharts() {
+      new Chart(document.getElementById('cToilet'), {type:'bar', data:{
+        labels:['Flush→sewage','Flush→septic','Pit latrine','Open defecation','Hanging toilet','No facility'],
+        datasets:[{data:[71.12,10.44,8.17,5.73,2.73,0.13],
+          backgroundColor:['#00A651','#009FDA','#D4A017','#CE1126','#F05023','#9FA0A4'],
+          borderRadius:3,borderWidth:0,barPercentage:.72}]
+      }, options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+        scales:{x:{grid:GRID,ticks:{...TICK,callback:v=>v+'%'}},y:{grid:{display:false},ticks:TICK}},
+        plugins:{legend:{display:false},tooltip:{...TOOLTIP,callbacks:{label:c=>` ${c.parsed.x}%`}}}}});
+    }
+
+    function initStoryViewsCharts() {
+      const el = document.getElementById('sankeySatEco');
+      if (!el || typeof d3 === 'undefined') return;
+      const selfLabels = ['1 Poorest','2nd','3 Middle','4th','5 Richest'];
+      const childLabels = ['1 Poorest','2nd','3 Middle','4th','5 Richest'];
+      const flow = [
+        [4.5, 3.9, 8.2, 1.5, 1.3],
+        [0.5, 9.5,16.4, 2.9, 1.9],
+        [0.1, 1.6,35.8, 6.9, 3.5],
+        [0.0, 0.0, 0.3, 0.5, 0.1],
+        [0.0, 0.0, 0.0, 0.1, 0.4]
+      ];
+      const selfColors = ['#CE1126','#F05023','#D4A017','#009FDA','#00A651'];
+      const childColors = ['#CE1126','#F05023','#D4A017','#009FDA','#00A651'];
+      const nodes = [
+        ...selfLabels.map((n,i) => ({name:'Self: '+n, color:selfColors[i]})),
+        ...childLabels.map((n,i) => ({name:'Child: '+n, color:childColors[i]}))
+      ];
+      const links = [];
+      for (let i=0; i<5; i++) for (let j=0; j<5; j++) if (flow[i][j] > 0.05) links.push({source:i, target:5+j, value:flow[i][j]});
+      const rect = el.getBoundingClientRect();
+      const rawW = rect.width || 500;
+      const W = Math.max(rawW, 500) + 360, H = rect.height || 460;
+      const ml = 140, mr = 160;
+      const svg = d3.select(el).append('svg').attr('viewBox',`0 0 ${W} ${H}`)
+        .attr('preserveAspectRatio','xMidYMid meet').attr('overflow','visible').style('overflow','visible');
+      const sankey = d3.sankey().nodeId(d=>d.index).nodeWidth(18).nodePadding(10)
+        .nodeAlign(d3.sankeyJustify).extent([[ml,30],[W-mr,H-10]]);
+      const {nodes:sNodes, links:sLinks} = sankey({nodes:nodes.map(d=>({...d})),links:links.map(d=>({...d}))});
+      svg.append('g').attr('fill','none').attr('stroke-opacity',0.6).selectAll('path')
+        .data(sLinks).join('path').attr('d',d3.sankeyLinkHorizontal())
+        .attr('stroke',d=>nodes[d.source.index].color).attr('stroke-width',d=>Math.max(2,d.width))
+        .append('title').text(d=>`${d.source.name} → ${d.target.name}: ${d.value}%`);
+      svg.append('g').selectAll('rect').data(sNodes).join('rect')
+        .attr('x',d=>d.x0).attr('y',d=>d.y0).attr('height',d=>Math.max(1,d.y1-d.y0))
+        .attr('width',d=>d.x1-d.x0).attr('fill',d=>d.color||'#009FDA').attr('rx',3)
+        .append('title').text(d=>`${d.name}: ${d3.format('.1f')(d.value)}%`);
+      svg.append('g').style('font-family',"'IBM Plex Mono',monospace").style('font-size','11px').style('font-weight','700')
+        .selectAll('text').data(sNodes).join('text')
+        .attr('x',d=>d.x0<W/2?d.x0-8:d.x1+8).attr('y',d=>(d.y0+d.y1)/2).attr('dy','0.35em')
+        .attr('text-anchor',d=>d.x0<W/2?'end':'start').attr('fill',d=>d.color||'#FFFFFF')
+        .text(d=>`${d.name} ${d3.format('.1f')(d.value)}%`);
+    }
+
+    // ============================================================================
+    // INITIALIZATION
+    // ============================================================================
+
+    function initCharts() {
+      initFieldworkChart();
+      initRegionalChart();
+      initModuleDurationChart();
+      initDurationDistributionChart();
+      initUrbanRuralChart();
+      initLanguageChart();
+      initHhPerPsuChart();
+      initUrbanRuralByRegionChart();
+    }
+
+    function initDemoCharts() {
+      initAgePyramidChart();
+      initHhsizeChart();
+      initRelationshipChart();
+      initMaritalChart();
+      initAgeGroupChart();
+      initRemittanceChart();
+      initGenderRegionChart();
+      initDependencyChart();
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', initCharts);
+
+    // Responsive resize handling
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        Object.values(charts).forEach(chart => {
+          if (chart && chart.resize) chart.resize();
+        });
+      }, 300);
+    });
+
+    /* ── Tab Capture (html2canvas) ── */
+    const TAB_NAMES = {
+      passport:'M00_passport', demographics:'M01_demographics', education:'M02_education',
+      employment:'M03_employment', income:'M04_income', finance:'M05_finance',
+      migration:'M06_migration', health:'M07_health', food:'M08_food',
+      hazards:'M09_hazards', dwelling:'M10_dwelling', sanitation:'M11_sanitation',
+      utilities:'M12_utilities', assets:'M13_assets', views:'M14_views'
+    };
+
+    function captureTab() {
+      const btn = document.getElementById('captureBtn');
+      const activeBtn = document.querySelector('.tab-button.active');
+      const tabId = activeBtn ? activeBtn.getAttribute('data-tab') : 'unknown';
+      const filename = (TAB_NAMES[tabId] || tabId) + '.png';
+
+      btn.classList.add('capturing');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Capturing...';
+
+      // Target only the active tab content
+      const target = document.getElementById(tabId);
+      if (!target) { resetBtn(); return; }
+
+      // Scroll to top so full tab is captured
+      window.scrollTo(0, 0);
+
+      // Small delay to let scroll settle, then capture just the active tab
+      setTimeout(() => {
+      html2canvas(target, {
+        backgroundColor: '#f5f0e8',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        windowWidth: target.scrollWidth,
+        windowHeight: target.scrollHeight
+      }).then(canvas => {
+        const dataUrl = canvas.toDataURL('image/png');
+        // Try to save to server (capture server), fallback to download
+        fetch('/save-capture', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({filename: filename, data: dataUrl})
+        }).then(r => r.json()).then(res => {
+          btn.classList.remove('capturing');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Saved ' + filename;
+          setTimeout(resetBtn, 3000);
+        }).catch(() => {
+          // Fallback: browser download
+          const link = document.createElement('a');
+          link.download = filename;
+          link.href = dataUrl;
+          link.click();
+          btn.classList.remove('capturing');
+          btn.innerHTML = 'Downloaded ' + filename;
+          setTimeout(resetBtn, 3000);
+        });
+      }).catch(err => {
+        console.error('Capture failed:', err);
+        btn.classList.remove('capturing');
+        btn.innerHTML = 'Capture failed';
+        setTimeout(resetBtn, 3000);
+      });
+      }, 300); // end setTimeout
+    }
+
+    function resetBtn() {
+      const btn = document.getElementById('captureBtn');
+      btn.classList.remove('capturing');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Capture Tab';
+    }
+  </script>
+
+</div><!-- /main-panel -->
+</div><!-- /app -->
+</body>
+</html>
