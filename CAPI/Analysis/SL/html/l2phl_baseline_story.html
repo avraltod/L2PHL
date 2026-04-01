@@ -189,6 +189,9 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 .repl-copy:hover{background:rgba(0,157,218,.3);color:#fff;}
 .repl-note{font-family:var(--mono);font-size:8px;color:var(--muted);padding:4px 14px 8px;opacity:.7;}
 
+/* Toggle: set display:none to hide all gradient sections, display:block to show */
+.wgrad-section { display: none; }
+
 /* WELFARE GRADIENT — Q1→Q5 bar strip design */
 .wgrad-eye{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#D4A017;font-weight:600;margin-bottom:8px;}
 .wgrad-sub{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#4A6278;margin-bottom:20px;}
@@ -498,7 +501,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
   </div>
 </div>
 
-<div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+<div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Poorer households are <em class="r">younger, larger</em>, and more likely to <em class="r">lack a PWD ID</em></h2>
@@ -774,7 +777,7 @@ wq_pct migind indw &quot;CH01_MIGRATE&quot; &quot;% considering migration (15+)&
     </div>
   </div>
 
-<div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+<div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Head education <em class="r">tracks wealth closely</em>: 47% of Q5 heads hold a degree vs <em class="b">2.7% in Q1</em></h2>
@@ -955,7 +958,7 @@ wq_mean ed_exp indw &quot;CH02_EXPENSE&quot; &quot;Mean annual ed expense (PHP)&
         </div>
       </div>
     </div>
-<div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+<div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">The wealth gap in work is a <em class="r">gender story</em>, poor women's employment is <em class="r">half</em> that of rich women</h2>
@@ -1186,7 +1189,7 @@ wq_pct female_emp indw &quot;CH03_FEMALE&quot; &quot;% female employed&quot;
     </div>
     </div>
   </div>
-  <div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+  <div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
     <div style="max-width:1100px;margin:0 auto;">
       <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
       <h2 class="hed" style="max-width:800px;">Financial inclusion is near zero in the lowest quintile: <em class="r">1% have a bank account</em>, <em class="r">0.2% can handle an emergency</em></h2>
@@ -1396,7 +1399,7 @@ wq_pct emerg hhw &quot;CH04_EMERGENCY&quot; &quot;% can cover emergency&quot;
         </div>
       </div>
     </div>
-<div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+<div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Q1 households have the <em class="r">lowest insurance rates</em> but face the <em class="r">highest hospital bills</em> relative to income</h2>
@@ -1583,7 +1586,7 @@ wq_pct hospitalized indw &quot;CH05_HOSPITAL&quot; &quot;% hospitalized&quot;
       </div>
     </div>
   </div>
-<div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+<div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Wet market use <em class="b">rises with wealth</em>, SSB consumption is <em class="r">similar across quintiles</em></h2>
@@ -1756,7 +1759,7 @@ wq_mean ssb_srv indw &quot;CH06_SSB_SERVINGS&quot; &quot;Mean SSB servings/week&
         </div>
       </div>
     </div>
-    <div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+    <div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
       <div style="max-width:1100px;margin:0 auto;">
         <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
         <h2 class="hed" style="max-width:800px;">Early warning receipt varies by welfare quintile: Q1 households are <em class="r">less likely to receive alerts</em> than <em class="b">Q5 households</em></h2>
@@ -1921,7 +1924,7 @@ wq_pct multi3 hhw &quot;CH07_MULTI3&quot; &quot;% exposed to 3+ hazards&quot;
     </div>
   </div>
 
-<div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+<div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Internet access varies widely by quintile: <em class="r">0.7%</em> in Q1 compared with <em class="b">30%</em> in Q5</h2>
@@ -2135,7 +2138,7 @@ wq_pct piped hhw &quot;CH08_PIPED&quot; &quot;% piped water&quot;
     </div>
   </div>
 
-<div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+<div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Asset ownership tracks wealth <em class="b">almost perfectly</em>, from <em class="r">1% fridge ownership</em> in Q1 to <em class="b">11%</em> in Q5</h2>
@@ -2461,7 +2464,7 @@ wq_pct has_phone hhw &quot;CH09_PHONE&quot; &quot;% own phone&quot;
       </div>
     </div>
 
-<div class="sec" style="background:#EEF5FA;padding:50px 40px;">
+<div class="sec wgrad-section" style="background:#EEF5FA;padding:50px 40px;">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="wgrad-eye">Welfare gradient · M5 PMT Quintile</div>
     <h2 class="hed" style="max-width:800px;">Life satisfaction varies little by quintile, but <em class="r">Q1 households report the largest decline in perceived well-being</em></h2>
