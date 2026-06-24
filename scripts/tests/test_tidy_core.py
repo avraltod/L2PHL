@@ -61,6 +61,11 @@ def test_classify_dir_keeps_normal():
     assert classify_dir("do") is None
     assert classify_dir("_attic") is None  # already correct
 
+def test_classify_dir_attic_not_overbroad():
+    assert classify_dir("AtticHelper") is None
+    assert classify_dir("Attican") is None
+    assert classify_dir("Attic") == "_attic"
+
 # append to scripts/tests/test_tidy_core.py
 from tidy_core import classify_dir_files
 
@@ -106,3 +111,12 @@ def test_plain_file_kept():
     res = actions_by_name(classify_dir_files(files))
     assert res["00_setup.do"][0] == "KEEP"
     assert res["README.md"][0] == "KEEP"
+
+def test_version_suffix_kept_without_base():
+    res = actions_by_name(classify_dir_files(["report_v2.do"]))
+    assert res["report_v2.do"][0] == "KEEP"
+
+def test_legit_names_not_treated_as_version_suffix():
+    files = ["interview.do", "renew.do", "survey_v2_final.do"]
+    res = actions_by_name(classify_dir_files(files))
+    assert all(v[0] == "KEEP" for v in res.values())

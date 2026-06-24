@@ -1,9 +1,9 @@
 # scripts/tidy_core.py
 """Pure classification logic for the L2PHL tidy tool. No disk or git side effects."""
 import re
+from collections import defaultdict
 from dataclasses import dataclass
 
-PROJECT_PREFIX = "L2PHL"
 CANONICAL_AUTHOR = "AP"
 ARCHIVE_DIR = "_attic"
 
@@ -63,11 +63,12 @@ def classify_dir(dirname):
         return None
     if dirname in ARCHIVE_ALIASES:
         return ARCHIVE_DIR
-    if dirname.startswith("Attic"):
+    # "Attic" archives always have a separator after the word (e.g. "Attic (Old versions)").
+    # Anchor on that so unrelated names like "AtticHelper" are not misclassified.
+    if dirname == "Attic" or dirname.startswith(("Attic ", "Attic_", "Attic(")):
         return ARCHIVE_DIR
     return None
 
-from collections import defaultdict
 
 @dataclass(frozen=True)
 class FileAction:
@@ -130,8 +131,10 @@ def classify_dir_files(filenames):
             else:
                 results.append(FileAction(f, "ARCHIVE", "superseded-date", ""))
         else:
-            # Non-@-pattern file: archive only if it is a version-suffixed variant.
-            if _version_suffix_stem(f) is not None:
+            # Non-@-pattern file: archive only if it is a version-suffixed variant
+            # AND its base sibling is present (don't archive a sole survivor).
+            base = _version_suffix_stem(f)
+            if base is not None and base in parsed:
                 results.append(FileAction(f, "ARCHIVE", "version-suffix", ""))
             else:
                 results.append(FileAction(f, "KEEP", "plain", ""))
