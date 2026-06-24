@@ -751,31 +751,37 @@ Expected: FAIL — `_stat_emit.do` does not exist (Stata batch errors; `out.json
 
 ```stata
 * CATI/Analysis/SL/_stat_emit.do
-* Accumulate stats and write nested JSON. Keys are dotted paths.
-* Usage: stat_open "path.json" ; stat_put "a.b" = expr ; stat_arr "k" v1 v2 ;
-*        stat_obj "k" lab1 v1 lab2 v2 ; stat_close
+* Accumulate stats and write a FLAT JSON object keyed by dotted paths.
+* build_story.py un-flattens dotted keys into nested form on load (Task 9).
+*
+* JSON quoting: Stata has NO \" string escape, so real double-quotes come from
+* char(34) ($SE_q), and every fragment carrying a quote is built and written
+* with compound double-quotes  `"..."'  (incl. the final file write and every
+* empty-string test on a quote-bearing local).
+
 cap program drop stat_open
 program define stat_open
-    global _SE_PATH `"`1'"'
-    global _SE_BODY ""
-    global _SE_KEYS ""
+    global SE_PATH `"`1'"'
+    global SE_BODY ""
+    global SE_KEYS ""
+    global SE_q = char(34)
 end
 
-cap program drop _se_guard
-program define _se_guard          /* fail on duplicate key */
+cap program drop _se_guard          /* fail on duplicate key */
+program define _se_guard
     args key
-    if strpos(" $_SE_KEYS ", " `key' ") {
+    if strpos(" $SE_KEYS ", " `key' ") {
         di as error "stat_emit: duplicate key `key'"
         exit 459
     }
-    global _SE_KEYS "$_SE_KEYS `key'"
+    global SE_KEYS "$SE_KEYS `key'"
 end
 
 cap program drop _se_append
 program define _se_append
     args frag
-    if "$_SE_BODY" == "" global _SE_BODY `"`frag'"'
-    else global _SE_BODY `"$_SE_BODY,`frag'"'
+    if `"$SE_BODY"' == "" global SE_BODY `"`frag'"'
+    else global SE_BODY `"$SE_BODY,`frag'"'
 end
 
 cap program drop stat_put
@@ -789,7 +795,7 @@ program define stat_put
         exit 459
     }
     _se_guard "`key'"
-    _se_append `"\"`key'\":`val'"'
+    _se_append `"${SE_q}`key'${SE_q}:`val'"'
 end
 
 cap program drop stat_arr
@@ -801,37 +807,35 @@ program define stat_arr
         else local arr "`arr',`v'"
     }
     _se_guard "`key'"
-    _se_append `"\"`key'\":[`arr']"'
+    _se_append `"${SE_q}`key'${SE_q}:[`arr']"'
 end
 
 cap program drop stat_obj
 program define stat_obj
     gettoken key 0 : 0
     local obj ""
-    while "`0'" != "" {
+    while `"`0'"' != "" {
         gettoken lab 0 : 0
         gettoken val 0 : 0
-        local pair `"\"`lab'\":`val'"'
-        if "`obj'" == "" local obj `"`pair'"'
+        local pair `"${SE_q}`lab'${SE_q}:`val'"'
+        if `"`obj'"' == "" local obj `"`pair'"'    /* compound: obj holds quotes */
         else local obj `"`obj',`pair'"'
     }
     _se_guard "`key'"
-    _se_append `"\"`key'\":{`obj'}"'
+    _se_append `"${SE_q}`key'${SE_q}:{`obj'}"'
 end
 
-* Nesting dotted keys purely in Stata is verbose, so write a FLAT JSON object
-* keyed by the dotted strings; build_story.py un-flattens on load (Task 9).
 cap program drop stat_close
 program define stat_close
     tempname fh
-    file open `fh' using "$_SE_PATH", write replace text
-    file write `fh' "{$_SE_BODY}" _n
+    file open `fh' using `"$SE_PATH"', write replace text
+    file write `fh' `"{$SE_BODY}"' _n
     file close `fh'
-    di as result "stat_emit: wrote $_SE_PATH"
+    di as result "stat_emit: wrote $SE_PATH"
 end
 ```
 
-This writes e.g. `{"fies.mod_sev_r1":41.0,"charts.food_trend":[41,...],"charts.sev_macro":{"NCR":66.3,...}}`. Un-flattening to nested form happens in Task 9's loader.
+This writes e.g. `{"fies.mod_sev_r1":41.0,"charts.food_trend":[41,...],"charts.sev_macro":{"NCR":66.3,...}}` — valid JSON. Un-flattening to nested form happens in Task 9's loader. (Verified by round-trip in licensed Stata: scalars, arrays, and multi-pair objects all survive. Two quoting bugs were caught here that an unrun emitter hides — `\"` is not a Stata escape, and a plain `if "\`obj'" == ""` test corrupts when the local already holds quotes.)
 
 - [ ] **Step 4: Adjust the test for flat output + nest in loader**
 
