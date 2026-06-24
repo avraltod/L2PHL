@@ -29,9 +29,13 @@ def parse_at_name(filename):
         return None
     stem, _, ext = filename.rpartition(".")
     parts = stem.split("@")
-    if len(parts) != 4:
+    if len(parts) == 4:
+        head, rnd, author, date = parts
+    elif len(parts) == 3:
+        head, author, date = parts
+        rnd = ""
+    else:
         return None
-    head, rnd, author, date = parts
     if not re.fullmatch(r"\d{8}", date):
         return None
     return ParsedName(head=head, round=rnd, author=author, date=date, ext=ext)

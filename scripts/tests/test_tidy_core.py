@@ -17,6 +17,15 @@ def test_parse_typo_prefix():
     assert p.head == "L2PH_CATI"
     assert p.author == "BB"
 
+def test_parse_roundless_name():
+    p = parse_at_name("hf_l2phl_analysis@AP@20260119.do")
+    assert p is not None
+    assert p.head == "hf_l2phl_analysis"
+    assert p.round == ""
+    assert p.author == "AP"
+    assert p.date == "20260119"
+    assert p.ext == "do"
+
 def test_parse_non_at_pattern_returns_none():
     assert parse_at_name("master_analysis.do") is None
     assert parse_at_name("sl_stats_v2.json") is None
