@@ -51,3 +51,14 @@ def needs_prefix_fix(parsed):
 def slot_key(parsed):
     """Identity of a logical slot, ignoring author and date."""
     return (normalize_head(parsed.head), parsed.round, parsed.ext)
+
+
+def classify_dir(dirname):
+    """Return '_attic' if this dir is an archive alias to rename, else None."""
+    if dirname == ARCHIVE_DIR:
+        return None
+    if dirname in ARCHIVE_ALIASES:
+        return ARCHIVE_DIR
+    if dirname.startswith("Attic"):
+        return ARCHIVE_DIR
+    return None

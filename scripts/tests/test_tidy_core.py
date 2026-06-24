@@ -37,3 +37,17 @@ def test_slot_key_ignores_author_and_date():
 def test_needs_prefix_fix():
     assert needs_prefix_fix(parse_at_name("L2PH_CATI@R02@AP@20251228.do")) is True
     assert needs_prefix_fix(parse_at_name("L2PHL_CATI@R02@AP@20251228.do")) is False
+
+# append to scripts/tests/test_tidy_core.py
+from tidy_core import classify_dir
+
+def test_classify_dir_aliases():
+    assert classify_dir("zzz") == "_attic"
+    assert classify_dir("zArc") == "_attic"
+    assert classify_dir("arch") == "_attic"
+    assert classify_dir("_DA") == "_attic"
+    assert classify_dir("Attic (Old versions)") == "_attic"
+
+def test_classify_dir_keeps_normal():
+    assert classify_dir("do") is None
+    assert classify_dir("_attic") is None  # already correct
