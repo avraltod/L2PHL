@@ -52,6 +52,16 @@ def test_parse_typo_prefix():
     assert p.head == "L2PH_CATI"
     assert p.author == "BB"
 
+def test_parse_roundless_name():
+    # Many analysis files omit the round segment: HEAD@AUTHOR@DATE.ext
+    p = parse_at_name("hf_l2phl_analysis@AP@20260119.do")
+    assert p is not None
+    assert p.head == "hf_l2phl_analysis"
+    assert p.round == ""
+    assert p.author == "AP"
+    assert p.date == "20260119"
+    assert p.ext == "do"
+
 def test_parse_non_at_pattern_returns_none():
     assert parse_at_name("master_analysis.do") is None
     assert parse_at_name("sl_stats_v2.json") is None
@@ -96,9 +106,14 @@ def parse_at_name(filename):
         return None
     stem, _, ext = filename.rpartition(".")
     parts = stem.split("@")
-    if len(parts) != 4:
+    # 4 segments = HEAD@ROUND@AUTHOR@DATE; 3 = roundless HEAD@AUTHOR@DATE.
+    if len(parts) == 4:
+        head, rnd, author, date = parts
+    elif len(parts) == 3:
+        head, author, date = parts
+        rnd = ""
+    else:
         return None
-    head, rnd, author, date = parts
     if not re.fullmatch(r"\d{8}", date):
         return None
     return ParsedName(head=head, round=rnd, author=author, date=date, ext=ext)
@@ -107,7 +122,7 @@ def parse_at_name(filename):
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd scripts && python3 -m pytest tests/test_tidy_core.py -q`
-Expected: PASS (3 passed)
+Expected: PASS (4 passed)
 
 - [ ] **Step 5: Commit**
 
@@ -174,7 +189,7 @@ def slot_key(parsed):
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd scripts && python3 -m pytest tests/test_tidy_core.py -q`
-Expected: PASS (6 passed)
+Expected: PASS (7 passed)
 
 - [ ] **Step 5: Commit**
 
@@ -233,7 +248,7 @@ def classify_dir(dirname):
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd scripts && python3 -m pytest tests/test_tidy_core.py -q`
-Expected: PASS (8 passed)
+Expected: PASS (9 passed)
 
 - [ ] **Step 5: Commit**
 
@@ -385,7 +400,7 @@ def classify_dir_files(filenames):
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd scripts && python3 -m pytest tests/test_tidy_core.py -q`
-Expected: PASS (14 passed)
+Expected: PASS (15 passed)
 
 - [ ] **Step 5: Commit**
 
@@ -807,7 +822,7 @@ This task produces the deliverable you approve before any real move. It is a run
 - [ ] **Step 1: Run the full test suite**
 
 Run: `cd /Users/avraa/iDrive/GitHub/PHL/L2PHL/scripts && python3 -m pytest tests/ -q`
-Expected: PASS (16 passed)
+Expected: PASS (17 passed)
 
 - [ ] **Step 2: Generate the real dry-run manifest**
 
