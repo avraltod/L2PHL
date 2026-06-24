@@ -32,3 +32,34 @@ def test_dry_run_writes_manifest(tmp_path):
     # the zzz directory becomes a RENAME-DIR action
     dir_actions = [row for row in rows if row["action"] == "RENAME-DIR"]
     assert any(row["path"].endswith("zzz") for row in dir_actions)
+
+def _run(args, cwd):
+    return subprocess.run([sys.executable, os.path.join(SCRIPTS, "tidy.py")] + args,
+                          capture_output=True, text=True, cwd=cwd)
+
+def test_apply_moves_and_is_idempotent(tmp_path):
+    root = _make_tree(str(tmp_path))
+    subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+    subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+    subprocess.run(["git", "-c", "user.email=t@t", "-c", "user.name=t",
+                    "commit", "-qm", "init"], cwd=root, check=True)
+
+    csv_out = os.path.join(root, "m.csv")
+    _run(["--dry-run", "--root", root, "--csv", csv_out, "--md", os.path.join(root, "m.md")], root)
+    r = _run(["--apply", "--root", root, "--csv", csv_out], root)
+    assert r.returncode == 0, r.stderr
+
+    do = os.path.join(root, "CATI", "Round02", "do")
+    assert os.path.exists(os.path.join(do, "L2PHL_CATI@R02@AP@20251228.do"))   # live stays
+    assert os.path.exists(os.path.join(do, "_attic", "L2PHL_CATI@R02@Claude@20251228.do"))
+    assert os.path.exists(os.path.join(do, "_attic", "L2PH_CATI@R02@BB@20251222.do"))
+    assert not os.path.exists(os.path.join(root, "CATI", "Round02", "zzz"))
+    assert os.path.exists(os.path.join(root, "CATI", "Round02", "_attic"))
+    assert os.path.exists(os.path.join(do, "_attic", ".tidy-log.csv"))
+
+    # Idempotent: a fresh dry-run now yields zero non-KEEP actions.
+    csv2 = os.path.join(root, "m2.csv")
+    _run(["--dry-run", "--root", root, "--csv", csv2, "--md", os.path.join(root, "m2.md")], root)
+    with open(csv2) as f:
+        rows = [row for row in csv.DictReader(f) if row["action"] != "KEEP"]
+    assert rows == []
