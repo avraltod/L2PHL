@@ -8,6 +8,7 @@ import argparse, json, os, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sl_build.injector import inject, InjectError
+from sl_build.loader import unflatten
 
 DEFAULT_HTML = "l2p_cati_story.html"
 DEFAULT_JSON = "sl_stats.json"
@@ -23,7 +24,7 @@ def main():
     args = ap.parse_args()
 
     with open(args.json, encoding="utf-8") as f:
-        data = json.load(f)
+        data = unflatten(json.load(f))
     with open(args.html, encoding="utf-8") as f:
         original = f.read()
 
