@@ -419,7 +419,7 @@ def classify_dir_files(filenames):
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd scripts && python3 -m pytest tests/test_tidy_core.py -q`
-Expected: PASS (17 passed)
+Expected: PASS (18 passed)
 
 - [ ] **Step 5: Commit**
 
@@ -841,7 +841,7 @@ This task produces the deliverable you approve before any real move. It is a run
 - [ ] **Step 1: Run the full test suite**
 
 Run: `cd /Users/avraa/iDrive/GitHub/PHL/L2PHL/scripts && python3 -m pytest tests/ -q`
-Expected: PASS (19 passed)
+Expected: PASS (20 passed)
 
 - [ ] **Step 2: Generate the real dry-run manifest**
 
