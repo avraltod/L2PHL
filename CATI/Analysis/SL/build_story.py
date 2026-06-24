@@ -6,7 +6,9 @@
 """
 import argparse, json, os, sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+_HERE = os.path.dirname(os.path.abspath(__file__))                      # CATI/Analysis/SL
+_REPO = os.path.dirname(os.path.dirname(os.path.dirname(_HERE)))         # repo root
+sys.path.insert(0, os.path.join(_REPO, "scripts"))
 from sl_build.injector import inject, InjectError
 from sl_build.loader import unflatten
 

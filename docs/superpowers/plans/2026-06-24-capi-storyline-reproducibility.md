@@ -172,6 +172,17 @@ def test_skips_header_separator_headings():
     assert all(not k.startswith(":") for k in d)
     assert "## §1 Roster (M01)" not in d
     assert len(d) == 5
+
+def test_pipe_in_label_keeps_id_and_value():
+    # A label containing '|' must NOT drop the row (first cell=ID, last=Value).
+    md = "| A03_X | broad (a1|a2) rate | 52.05 |\n"
+    assert parse_md(md) == {"A03_X": 52.05}
+
+def test_duplicate_id_raises():
+    import pytest
+    md = "| R01_POP | a | 1 |\n| R01_POP | b | 2 |\n"
+    with pytest.raises(ValueError, match="duplicate"):
+        parse_md(md)
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -201,11 +212,15 @@ def parse_md(text):
         if not line.startswith("|"):
             continue
         cells = [c.strip() for c in line.strip("|").split("|")]
-        if len(cells) != 3:
+        if len(cells) < 3:
+            continue                                # not a data row
+        # First cell = ID, last = Value. The label (middle) may itself contain a
+        # '|' (e.g. "broad (a1|a2) rate"); values are numeric, so first/last is robust.
+        key, val = cells[0], cells[-1]
+        if key == "ID" or set(key) <= set(":-"):    # header row or |:---| separator
             continue
-        key, _label, val = cells
-        if key == "ID" or set(key) <= set(":-"):   # header row or |:---| separator
-            continue
+        if key in out:
+            raise ValueError(f"md_parser: duplicate ID {key!r}")
         out[key] = _num(val)
     return out
 ```
@@ -213,7 +228,7 @@ def parse_md(text):
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd /Users/avraa/iDrive/GitHub/PHL/L2PHL && python3 -m pytest CAPI/Analysis/SL/tests/test_md_parser.py -q`
-Expected: PASS (2 passed)
+Expected: PASS (4 passed)
 
 - [ ] **Step 5: Commit**
 

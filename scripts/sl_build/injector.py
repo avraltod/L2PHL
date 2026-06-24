@@ -36,16 +36,17 @@ def _attr(name, attrs):
     return m.group(1) if m else None
 
 
-def inject(html, data, chart_key):
+def inject(html, data, chart_key=None):
     report = Report()
 
-    if chart_key not in data:
-        raise InjectError(f"chart-key not in sl_stats.json: {chart_key}")
-    if not _SLDATA.search(html):
-        raise InjectError('missing <script id="sl-data"> block')
-    # Escape "</" so a chart string containing </script> can't close the block.
-    block = json.dumps(data[chart_key], ensure_ascii=False).replace("</", "<\\/")
-    html = _SLDATA.sub(lambda m: m.group(1) + block + m.group(3), html, count=1)
+    if chart_key is not None:
+        if chart_key not in data:
+            raise InjectError(f"chart-key not in sl_stats.json: {chart_key}")
+        if not _SLDATA.search(html):
+            raise InjectError('missing <script id="sl-data"> block')
+        # Escape "</" so a chart string containing </script> can't close the block.
+        block = json.dumps(data[chart_key], ensure_ascii=False).replace("</", "<\\/")
+        html = _SLDATA.sub(lambda m: m.group(1) + block + m.group(3), html, count=1)
 
     matched = [0]
 

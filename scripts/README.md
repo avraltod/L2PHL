@@ -32,3 +32,11 @@ the GUI/MCP (licensed) Stata to refresh `sl_stats.json`, then run
 `python3 scripts/build_cati_story.py` (no `--stata`) to rebuild and verify the HTML.
 
 Run `python3 -m pytest scripts/tests/ -q` after editing.
+
+## build_capi_story.py — regenerate the CAPI baseline storyline (prose)
+
+```bash
+python3 scripts/build_capi_story.py           # rebuild prose from storyline_results_stata.md + verify
+python3 scripts/build_capi_story.py --check    # verify only
+```
+Prose numbers come from `CAPI/Analysis/SL/results/storyline_results_stata.md` (produced by `11_..._replication.do`). Charts are still hand-edited. Batch Stata is unlicensed here — run the replication do-file in your GUI/MCP Stata.

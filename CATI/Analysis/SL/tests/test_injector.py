@@ -77,3 +77,16 @@ def test_idempotent_with_comma_value():
     o1, _ = inject(h, data, chart_key="charts")
     o2, _ = inject(o1, data, chart_key="charts")
     assert ">2,470<" in o1 and o1 == o2
+
+def test_inject_no_chart_key_prose_only():
+    # No #sl-data block at all; chart_key=None must still bind spans and not error.
+    h = 'pop <span data-stat="R01_POP" data-fmt="millions1word">x</span> people'
+    out, rep = inject(h, {"R01_POP": 108667043}, chart_key=None)
+    assert ">108.7 million<" in out
+    assert rep.used_stat_keys == {"R01_POP"}
+
+def test_inject_no_chart_key_still_sweeps_unbound():
+    h = 'a <span data-stat="MISSING" data-fmt="int">x</span>'
+    import pytest
+    with pytest.raises(InjectError):
+        inject(h, {}, chart_key=None)

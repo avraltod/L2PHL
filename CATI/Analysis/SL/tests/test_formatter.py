@@ -17,3 +17,6 @@ def test_raw():           assert fmt("Sep–Oct 2025", "raw") == "Sep–Oct 2025
 def test_unknown_fmt_raises():
     with pytest.raises(ValueError, match="unknown data-fmt"):
         fmt(1, "bogus")
+def test_pct0word():     assert fmt(54.0, "pct0word") == "54 percent"
+def test_pct1word():     assert fmt(40.56, "pct1word") == "40.6 percent"
+def test_millions1word(): assert fmt(108667043, "millions1word") == "108.7 million"

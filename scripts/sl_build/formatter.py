@@ -25,4 +25,10 @@ def fmt(value, spec):
         return f"₱{_comma(float(value))}"
     if spec == "ppt":
         return str(int(round(float(value))))
+    if spec == "pct0word":
+        return f"{int(round(float(value)))} percent"
+    if spec == "pct1word":
+        return f"{float(value):.1f} percent"
+    if spec == "millions1word":
+        return f"{float(value) / 1_000_000:.1f} million"
     raise ValueError(f"unknown data-fmt: {spec!r}")
