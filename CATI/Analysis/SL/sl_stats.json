@@ -1,194 +1,242 @@
 {
-  "sample": {
-    "hh_per_round": {
-      "1": 1239,
-      "2": 1193,
-      "3": 1174,
-      "4": 1243,
-      "5": 967
-    },
-    "total_hh": 1917,
-    "dates": {
-      "1": "Nov 2025",
-      "2": "Dec 2025",
-      "3": "Jan 2026",
-      "4": "Feb 2026",
-      "5": "Mar 2026"
-    }
+  "_meta": {
+    "generated": "2026-06-24",
+    "rounds": "R1-R5",
+    "source": "l2phl_master_analysis.do",
+    "version": "v2",
+    "date": "March 2026",
+    "description": "Cross-validated statistics for L2PHL CATI story. All values from weighted microdata."
   },
-  "fies": {
-    "mod_sev_by_round": {
-      "1": 41.0,
-      "2": 31.0,
-      "3": 26.8,
-      "4": 21.5,
-      "5": 18.2
+  "charts": {
+    "food_trend": [40.99, 30.97, 26.82, 21.49, 18.2],
+    "shock_trend": [34.91, 22.63, 16.71, 14.28, 12.09],
+    "ls_trend": [2.83, 2.81, 2.79, 2.85, 2.88],
+    "fies": {
+      "Worried about not having enough food": 39.22,
+      "Ate less than thought should": 27.84,
+      "Ran out of food": 21.41,
+      "Hungry but did not eat": 14.78,
+      "Went without eating whole day": 6.47
     },
-    "mod_sev_r1": 41.0,
-    "mod_sev_r5": 18.2,
-    "change_ppt": 22.8,
-    "severe_r5": 3.7,
-    "severe_r1": 8.5,
-    "food_sec_r5": 52.4,
-    "food_sec_r1": 29.1,
-    "items_r5": {
-      "Worried about food": 39.2,
-      "Ate limited variety": 27.8,
-      "Ate fewer meals": 21.4,
-      "Hungry but did not eat": 14.8,
-      "Whole day without food": 6.5
+    "severity": {
+      "Food secure": 52.36,
+      "Mild": 29.44,
+      "Moderate": 14.53,
+      "Severe": 3.66
     },
-    "items_r1": {
-      "Worried about food": 57.4,
-      "Ate limited variety": 52.4,
-      "Ate fewer meals": 44.5,
-      "Hungry but did not eat": 32.1,
-      "Whole day without food": 14.8
+    "sev_macro": {
+      "NCR": 66.3,
+      "Luzon": 60.0,
+      "Visayas": 42.7,
+      "Mindanao": 37.0
     },
-    "by_region_r5": {
-      "NCR": 16.4,
-      "Luzon": 19.1,
-      "Visayas": 15.5,
-      "Mindanao": 14.3
-    }
-  },
-  "shocks": {
-    "any_shock_by_round": {
-      "1": 34.9,
-      "2": 22.6,
-      "3": 16.7,
-      "4": 14.3,
-      "5": 12.1
+    "shock_types": {
+      "Major illness": 4.5,
+      "Typhoons": 2.47,
+      "Unexpected loss of job": 1.83,
+      "Non-payment or delay in payment of income": 0.9,
+      "Major injury": 0.64,
+      "Floods/La Niña": 0.61,
+      "Inflation (increase of food/fuel/commodity prices)": 0.54,
+      "Death": 0.31,
+      "Major financial problem": 0.29,
+      "Food shortage": 0.22
     },
-    "shock_types_r5": {
-      "Illness/medical": 19.1,
-      "Death in family": 0.0,
-      "Crop/harvest failure": 3.6,
-      "Unexpected job loss": 0.0,
-      "Typhoon": 12.7,
-      "Flood/flashflood": 8.2,
-      "Price rise": 4.5,
-      "Food price shock": 37.3
+    "coping": {
+      "Borrowed from friends and family": 24.6,
+      "Received assistance from friends and family ": 13.84,
+      "Relied on savings": 9.84,
+      "Received assistance from government": 9.24,
+      "Increased hours of work": 7.85,
+      "Engaged in additional income generating activities": 6.65,
+      "Others, specify": 6.07,
+      "Consulted a medical professional": 4.82
     },
-    "coping_r5": {
-      "Used savings": 1.3,
-      "Borrowed from family/friends": 0.0,
-      "Reduced food consumption": 0.0,
-      "Sold assets": 0.0,
-      "Govt transfer": 0.0,
-      "Received remittance": 0.0,
-      "Worked more": 0.0
+    "shock_macro": {
+      "NCR": 16.3,
+      "Luzon (excl. NCR)": 14.0,
+      "Visayas": 14.7,
+      "Mindanao": 3.6
     },
-    "water_disruption_r5": 9.8,
-    "mean_water_days_r5": 4.2,
-    "mean_elec_hours_r5": 2.8,
-    "internet_disruption_r5": 15.0,
-    "by_region_r5": {
-      "NCR": 14.0,
-      "Luzon": 30.8,
-      "Visayas": 17.2,
-      "Mindanao": 7.4
-    }
-  },
-  "finance": {
-    "bank_deposit_by_round": {
-      "1": 3.8,
-      "2": 4.9,
-      "3": 5.0,
-      "4": 5.3,
-      "5": 4.1
+    "finance": {
+      "Mobile money acc (f18)": 49.93,
+      "Bought online (f15)": 23.59,
+      "Took loan (f7)": 18.09,
+      "Received remittance": 18.26,
+      "Used bank 30d (f3)": 12.92,
+      "Bank account (f17)": 12.10,
+      "Used mobile 30d (f6)": 3.46,
+      "Cover ₱300k (f16)": 3.25
     },
-    "mobile_money_by_round": {
-      "1": 14.9,
-      "2": 16.2,
-      "3": 18.7,
-      "4": 18.9,
-      "5": 20.8
+    "loan_purpose": {
+      "Medical/health": 30.04,
+      "Housing repair": 25.21,
+      "Business": 12.26,
+      "Agricultural input": 10.21,
+      "Debt repayment": 6.98,
+      "Food and other daily needs": 6.13,
+      "Education": 4.26
     },
-    "used_bank_by_round": {
-      "1": 13.3,
-      "2": 13.0,
-      "3": 13.6,
-      "4": 11.6,
-      "5": 12.9
+    "inc_macro": {
+      "NCR": 21566,
+      "Luzon (excl. NCR)": 13633,
+      "Visayas": 11787,
+      "Mindanao": 11341
     },
-    "bank_deposit_r5": 4.1,
-    "mobile_money_r5": 20.8,
-    "used_bank_r5": 12.9,
-    "used_mobile_r5": 3.5,
-    "took_loan_r5": 18.1,
-    "saved_r5": 17.0,
-    "loan_purpose_r5": {
-      "Medical/health": 6.3,
-      "Housing repair": 1.1,
-      "Business/livelihood": 0.4,
-      "Food/daily needs": 0.0,
-      "Education": 0.0,
-      "Ceremonial/personal": 0.0,
-      "Debt repayment": 0.0
-    }
-  },
-  "employment": {
-    "emp_rate_r1": 3.0,
-    "emp_rate_r3": 1.9,
-    "emp_by_round": {
-      "1": 3.0,
-      "2": 2.7,
-      "3": 1.9
+    "ph_type": {
+      "Not covered": 78.26,
+      "Member (no card)": 16.33,
+      "Member + card": 4.78,
+      "Dependent": 0.62
     },
-    "no_contract_r1": 7.8,
-    "written_contract_r1": 5.4,
-    "mean_hours_r1": 30.8,
-    "mean_income_earners_r1": 0.0,
-    "note": "Employment module (M04) structurally sparse in R4-R5 due to roster filter change. R1-R3 data used."
-  },
-  "health": {
-    "philhealth_r5": 21.7,
-    "philhealth_by_region_r5": {
+    "ph_macro": {
       "NCR": 31.2,
-      "Luzon": 27.2,
+      "Luzon (excl. NCR)": 27.2,
       "Visayas": 17.7,
       "Mindanao": 20.0
     },
-    "oop_rate_r5": 36.6,
-    "mean_oop_r5": 1.4,
-    "facility_r5": {
-      "Barangay health station": 37.1,
-      "Private clinic": 35.0,
-      "Public hospital": 11.5,
-      "Rural health unit": 10.8,
-      "Private hospital": 5.6
+    "facility": {
+      "Barangay Health Station": 36.99,
+      "Private Clinic": 34.22,
+      "Rural Health Unit": 12.55,
+      "Public Hospital": 11.55,
+      "Private Hospital": 4.69
     },
+    "contract": {
+      "Verbal agreement": 68.58,
+      "Written": 18.41,
+      "No contract": 7.23,
+      "Don't know": 5.78
+    },
+    "class_work": {
+      "Private HH": 28.81,
+      "Private establishment": 27.03,
+      "Self-employed": 18.25,
+      "Government": 7.5,
+      "Employer": 7.46,
+      "Family business (unpaid)": 2.2
+    },
+    "eco_change": {
+      "Same": 52.44,
+      "Somewhat worse": 23.89,
+      "Somewhat better": 9.96,
+      "Much worse": 8.4,
+      "Much better": 5.3
+    },
+    "likert": {
+      "Prices rising too fast": 44.49,
+      "Optimistic about economy": 31.8,
+      "More citizen participation in govt": 14.02,
+      "Worried: child education": 14.84,
+      "Worried: job loss": 33.73,
+      "Worried: political instability": 30.38,
+      "Digital services helpful (past month)": 25.97,
+      "Taxes well spent": 38.71,
+      "Govt fighting corruption well": 35.35,
+      "Country on right track": 40.25
+    },
+    "life_sat_dist": {
+      "1": 6.8,
+      "2": 24.57,
+      "3": 50.36,
+      "4": 9.85,
+      "5": 8.41
+    },
+    "fies_items_trend": {
+      "Worried about food": [57.43, 46.70, 46.17, 41.95, 39.22],
+      "Ate less than should": [52.44, 43.24, 39.43, 29.17, 27.84],
+      "Ran out of food": [44.48, 35.06, 29.08, 24.41, 21.41],
+      "Hungry, didn't eat": [32.05, 25.42, 21.70, 17.84, 14.78],
+      "Whole day without food": [14.79, 10.21, 8.40, 8.24, 6.47]
+    },
+    "fies_foodsec_trend": [29.08, 40.41, 44.68, 48.26, 52.36],
+    "shock_types_trend": {
+      "Typhoons": [17.63, 12.71, 7.14, 5.37, 2.37],
+      "Major illness": [7.48, 4.90, 3.87, 4.23, 4.31],
+      "Job loss": [2.30, 2.11, 2.30, 2.55, 1.64],
+      "Floods": [1.73, 0.66, 0.59, 0.37, 0.32]
+    },
+    "utilities_trend": {
+      "Water disrupted %": [25.79, 16.42, 14.07, 11.55, 9.83],
+      "Internet disrupted %": [46.66, 34.76, 39.62, 33.61, 29.69],
+      "Elec outage (hrs)": [14.24, 9.33, 8.64, 2.67, 2.59]
+    },
+    "finance_trend": {
+      "Has mobile money (f2) %": [14.95, 16.21, 18.67, 18.88, 20.83],
+      "Took loan (f7) %": [22.14, 19.83, 22.40, 21.04, 18.09],
+      "Used bank 30d (f3) %": [13.28, 13.04, 13.57, 11.60, 12.92],
+      "Used mobile 30d (f6) %": [3.71, 2.86, 2.31, 2.21, 3.46]
+    },
+    "eco_trend": {
+      "Worse": [36.17, 34.34, 36.58, 34.41, 32.29],
+      "Same": [45.37, 49.06, 49.46, 52.31, 52.44],
+      "Better": [18.46, 16.60, 13.96, 13.28, 15.27]
+    },
+    "perception_trend": {
+      "Economy will improve": [49.68, 49.11, 45.12, 37.56, 44.49],
+      "Things will get better": [27.94, 25.68, 29.99, 32.22, 30.38],
+      "Prices keep rising": [19.49, 16.80, 19.38, 15.01, 14.02],
+      "Satisfied with govt": [43.72, 43.86, 37.78, 43.42, 40.25]
+    }
+  },
+  "sample": {
+    "total_hh": 1917,
+    "hh_r1": 1239,
+    "hh_r2": 1193,
+    "hh_r3": 1174,
+    "hh_r4": 1243,
+    "hh_r5": 967
+  },
+  "fies": {
+    "mod_sev_r1": 41.0,
+    "mod_sev_r2": 31.0,
+    "mod_sev_r3": 26.8,
+    "mod_sev_r4": 21.5,
+    "mod_sev_r5": 18.2,
+    "change_ppt": 22.8,
+    "food_sec_r5": 52.4,
+    "mild_r5": 29.4,
+    "moderate_r5": 14.5,
+    "severe_r5": 3.7
+  },
+  "shocks": {
+    "any_shock_r1": 34.9,
+    "any_shock_r2": 22.6,
+    "any_shock_r3": 16.7,
+    "any_shock_r4": 14.3,
+    "any_shock_r5": 12.1,
+    "elec_r5_hrs": 2.6,
+    "water_disruption_r5": 9.8,
+    "mean_water_days_r5": 4.2,
+    "internet_disruption_r5": 29.7
+  },
+  "finance": {
+    "bank_acc_f17": 12.10,
+    "mobile_acc_f18": 49.93,
+    "used_bank_30d_f3": 12.92,
+    "used_mobile_30d_f6": 3.46,
+    "took_loan_f7": 18.09,
+    "bought_online_f15": 23.59,
+    "recv_remittance_f13a": 18.26,
+    "cover_300k_f16": 3.25
+  },
+  "health": {
+    "philhealth_r5": 21.7,
+    "oop_among_h9a_respondents": 71.5,
+    "oop_among_seekers_n81": 93.7,
     "total_individuals_r5": 4393
   },
+  "employment": {
+    "emp_status_r4": 35.7,
+    "emp_status_r5": 34.0,
+    "verbal_a16eq3": 68.58,
+    "written_a16eq1": 18.41,
+    "no_contract_a16eq2": 7.23,
+    "dont_know_a16eq99": 5.78
+  },
   "views": {
-    "life_sat_by_round": {
-      "1": 2.8,
-      "2": 2.8,
-      "3": 2.8,
-      "4": 2.8,
-      "5": 2.9
-    },
-    "econ_by_round": {
-      "1": 3.2,
-      "2": 3.2,
-      "3": 3.3,
-      "4": 3.3,
-      "5": 3.2
-    },
+    "life_sat_r5": 2.9,
     "life_pos_r5": 31.4,
-    "life_neg_r5": 18.3,
-    "v9_means_r5": {
-      "Economy will improve": 3.1,
-      "Job situation will improve": 3.1,
-      "Prices will rise": 3.7,
-      "Difficult to save money": 4.0,
-      "Income will increase": 3.2,
-      "Things will get better": 3.3,
-      "Children will have better lives": 3.3,
-      "Optimistic about health": 3.0,
-      "Community will improve": 3.2,
-      "Satisfied with government": 2.9
-    }
+    "life_neg_r5": 18.3
   }
 }
