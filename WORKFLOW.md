@@ -25,6 +25,13 @@ edit l2phl_master_analysis.do  →  run it in Stata  →  sl_stats.json  →  bu
    python3 scripts/build_cati_story.py --check     # CHECK OK, or fails loudly on drift
    ```
 
+### Data prerequisites for the Stata run (must run where the data lives)
+The reproducibility *tooling* is data-independent, but regenerating the numbers needs the full data environment — verified 2026-06-24 that neither runs end-to-end in a fresh checkout:
+- **CATI:** the master needs `CATI/Analysis/HF/l2phl_M08_fies.dta` (FIES-coded: `f08_a…f08_e`, `mod_sev`, `food_sec`, `fies_score`). The repo's `l2phl_M08_food.dta` does **not** contain those variables — build/place the FIES dataset or repoint the M08 section (do-file lines 140, 964).
+- **CAPI:** `11_…_replication.do` needs the baseline microdata in `CAPI/Round00/dta/` (`*_M01_roster.dta`, `*_M02_edu.dta`, …), which is gitignored and absent in a clean checkout. The wealth index (`CAPI/Analysis/SL/data/`) is present.
+
+Run each in your environment where these exist, then `build_*_story.py --check` surfaces the value diffs. See memory `repro-stata-data-prereqs`.
+
 ### Adding a new number to the story
 1. Add the key + value to `sl_stats.json` and document it in `CATI/Analysis/SL/docs/sl_stats_schema.md`.
 2. Emit it from the do-file: `stat_put` (scalar), `stat_arr` (array), `stat_obj` (label→value), or `stat_objarr_open/row/close` (object-of-arrays trend).
