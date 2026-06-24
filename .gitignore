@@ -36,11 +36,7 @@ CATI/Analysis/QC/cache/
 *~
 
 # ── Archive folders ────────────────────────────────────────────────────────────
-**/zzz/
-**/zArc/
-**/arch/
-**/arc/
-**/Attic*/
+**/_attic/
 
 # ── macOS system files ────────────────────────────────────────────────────────
 .DS_Store
