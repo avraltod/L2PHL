@@ -1,6 +1,8 @@
 # CATI/Analysis/SL/sl_build/formatter.py
 """Render a raw stat value as a display string per a data-fmt token."""
 
+# Note: round() uses banker's rounding (round-half-to-even), so 40.5 -> 40.
+
 
 def _comma(n):
     return f"{int(round(n)):,}"

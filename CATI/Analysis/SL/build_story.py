@@ -60,7 +60,8 @@ def main():
 
 def _orphans(data, used_stat_keys, chart_key):
     """Top-level leaf keys (outside chart_key and _meta) not referenced by any span.
-    Uses dotted prefixes: a key is covered if any used key starts with its path."""
+    Uses dotted prefixes: a key is covered if any used key starts with its path.
+    Assumes one level of nesting under each top-level group (e.g. fies.mod_sev_r1)."""
     out = []
     for top, val in data.items():
         if top in (chart_key, "_meta"):

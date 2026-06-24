@@ -36,3 +36,44 @@ def test_idempotent():
     out1, _ = inject(HTML, DATA, chart_key="charts")
     out2, _ = inject(out1, DATA, chart_key="charts")
     assert out1 == out2
+
+def test_fmt_before_stat_order():
+    # attribute order must not matter (silent-skip is a gate failure)
+    h = ('<script id="sl-data" type="application/json">{}</script>'
+         ' <span data-fmt="pct1" data-stat="fies.mod_sev_r5">OLD</span>')
+    out, rep = inject(h, DATA, chart_key="charts")
+    assert ">18.2%<" in out
+    assert "fies.mod_sev_r5" in rep.used_stat_keys
+
+def test_span_missing_fmt_raises():
+    h = ('<script id="sl-data" type="application/json">{}</script>'
+         ' <span data-stat="fies.mod_sev_r1">OLD</span>')
+    with pytest.raises(InjectError, match="data-fmt"):
+        inject(h, DATA, chart_key="charts")
+
+def test_unbound_span_sweep_raises():
+    # a data-stat span the matcher can't fully parse must ERROR, not silently skip
+    h = ('<script id="sl-data" type="application/json">{}</script>'
+         ' <span data-stat="fies.mod_sev_r1" data-fmt="pct0">OK</span>'
+         ' <span data-stat="fies.mod_sev_r5" data-fmt="pct1">NOCLOSE')
+    with pytest.raises(InjectError, match="did not bind"):
+        inject(h, DATA, chart_key="charts")
+
+def test_missing_chart_key_raises():
+    with pytest.raises(InjectError, match="chart-key"):
+        inject(HTML, DATA, chart_key="nope")
+
+def test_script_close_in_chart_data_escaped():
+    data = {"charts": {"lab": "x </script> y"}, "fies": {"mod_sev_r1": 1, "mod_sev_r5": 1}}
+    out, _ = inject(HTML, data, chart_key="charts")
+    assert "</script> y" not in out      # the data's </ was neutralized
+    assert "<\\/script> y" in out
+
+def test_idempotent_with_comma_value():
+    data = {"charts": {}, "fies": {"mod_sev_r1": 2470, "mod_sev_r5": 18.2}}
+    h = ('<script id="sl-data" type="application/json">{}</script>'
+         ' <span data-stat="fies.mod_sev_r1" data-fmt="intcomma">x</span>'
+         ' <span data-stat="fies.mod_sev_r5" data-fmt="pct1">y</span>')
+    o1, _ = inject(h, data, chart_key="charts")
+    o2, _ = inject(o1, data, chart_key="charts")
+    assert ">2,470<" in o1 and o1 == o2
