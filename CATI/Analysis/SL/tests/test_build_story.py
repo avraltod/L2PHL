@@ -31,3 +31,14 @@ def test_check_fails_on_drift(tmp_path):
     r = _run(["--html", h, "--json", j, "--chart-key", "charts", "--check"], str(tmp_path))
     assert r.returncode == 1
     assert "drift" in (r.stdout + r.stderr).lower()
+
+def test_check_orphan_is_warning_not_failure(tmp_path):
+    # A computed-but-unshown scalar is a warning, not a gate failure.
+    h = os.path.join(tmp_path, "story.html"); j = os.path.join(tmp_path, "s.json")
+    data = {"charts": {"t": [1, 2]}, "fies": {"mod_sev_r5": 18.2}, "extra": {"unused": 5}}
+    _write(h, HTML); _write(j, json.dumps(data))
+    _run(["--html", h, "--json", j, "--chart-key", "charts"], str(tmp_path))  # build (no drift)
+    r = _run(["--html", h, "--json", j, "--chart-key", "charts", "--check"], str(tmp_path))
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "orphan" in r.stdout.lower()
+    assert "CHECK OK" in r.stdout

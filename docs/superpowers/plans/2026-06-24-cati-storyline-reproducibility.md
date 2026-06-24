@@ -479,15 +479,15 @@ def main():
     orphans = _orphans(data, used, args.chart_key)
 
     if args.check:
-        problems = []
+        # Orphans (computed but not surfaced as prose — often shown only in a
+        # chart) are a WARNING, not a failure. Drift is the real error.
+        if orphans:
+            print(f"CHECK WARNING: {len(orphans)} orphan key(s) not shown in HTML:")
+            for o in orphans:
+                print("  orphan: " + o)
         if built != original:
-            problems.append("drift: HTML does not match sl_stats.json (rebuild needed)")
-        for o in orphans:
-            problems.append(f"orphan: sl_stats key never shown in HTML: {o}")
-        if problems:
             print("CHECK FAILED:")
-            for p in problems:
-                print("  " + p)
+            print("  drift: HTML does not match sl_stats.json (rebuild needed)")
             return 1
         print("CHECK OK")
         return 0
