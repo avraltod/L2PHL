@@ -87,3 +87,33 @@ program define stat_close
     file close `fh'
     di as result "stat_emit: wrote $SE_PATH"
 end
+
+* Object-of-arrays emitter for trend charts: {"label":[v1,...],"label2":[...]}.
+* Usage: stat_objarr_open "charts.fies_items_trend"
+*        stat_objarr_row  "Worried about food" 57.43 46.70 46.17 41.95 39.22
+*        ... (one row per series) ...
+*        stat_objarr_close
+cap program drop stat_objarr_open
+program define stat_objarr_open
+    global SE_OAKEY `"`1'"'
+    global SE_OABODY ""
+end
+
+cap program drop stat_objarr_row
+program define stat_objarr_row
+    gettoken lab 0 : 0
+    local arr ""
+    foreach v of local 0 {
+        if "`arr'" == "" local arr "`v'"
+        else local arr "`arr',`v'"
+    }
+    local pair `"${SE_q}`lab'${SE_q}:[`arr']"'
+    if `"$SE_OABODY"' == "" global SE_OABODY `"`pair'"'
+    else global SE_OABODY `"$SE_OABODY,`pair'"'
+end
+
+cap program drop stat_objarr_close
+program define stat_objarr_close
+    _se_guard "$SE_OAKEY"
+    _se_append `"${SE_q}$SE_OAKEY${SE_q}:{$SE_OABODY}"'
+end
