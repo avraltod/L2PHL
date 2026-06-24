@@ -20,3 +20,20 @@ def test_parse_typo_prefix():
 def test_parse_non_at_pattern_returns_none():
     assert parse_at_name("master_analysis.do") is None
     assert parse_at_name("sl_stats_v2.json") is None
+
+# append to scripts/tests/test_tidy_core.py
+from tidy_core import slot_key, needs_prefix_fix, normalize_head
+
+def test_normalize_head_fixes_typo():
+    assert normalize_head("L2PH_CATI") == "L2PHL_CATI"
+    assert normalize_head("L2PHL_CATI") == "L2PHL_CATI"
+    assert normalize_head("hf_l2phl_analysis") == "hf_l2phl_analysis"
+
+def test_slot_key_ignores_author_and_date():
+    a = parse_at_name("L2PHL_CATI@R02@AP@20251228.do")
+    b = parse_at_name("L2PH_CATI@R02@BB@20251222.do")
+    assert slot_key(a) == slot_key(b)  # same round/ext/normalized head = same slot
+
+def test_needs_prefix_fix():
+    assert needs_prefix_fix(parse_at_name("L2PH_CATI@R02@AP@20251228.do")) is True
+    assert needs_prefix_fix(parse_at_name("L2PHL_CATI@R02@AP@20251228.do")) is False

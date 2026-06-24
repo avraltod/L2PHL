@@ -35,3 +35,19 @@ def parse_at_name(filename):
     if not re.fullmatch(r"\d{8}", date):
         return None
     return ParsedName(head=head, round=rnd, author=author, date=date, ext=ext)
+
+
+def normalize_head(head):
+    """Fix the L2PH -> L2PHL prefix typo; leave other heads untouched."""
+    if head.startswith("L2PH_") and not head.startswith("L2PHL_"):
+        return "L2PHL_" + head[len("L2PH_"):]
+    return head
+
+
+def needs_prefix_fix(parsed):
+    return normalize_head(parsed.head) != parsed.head
+
+
+def slot_key(parsed):
+    """Identity of a logical slot, ignoring author and date."""
+    return (normalize_head(parsed.head), parsed.round, parsed.ext)
