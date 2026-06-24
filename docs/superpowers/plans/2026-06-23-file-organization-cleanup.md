@@ -222,6 +222,11 @@ def test_classify_dir_aliases():
 def test_classify_dir_keeps_normal():
     assert classify_dir("do") is None
     assert classify_dir("_attic") is None  # already correct
+
+def test_classify_dir_attic_not_overbroad():
+    assert classify_dir("AtticHelper") is None
+    assert classify_dir("Attican") is None
+    assert classify_dir("Attic") == "_attic"
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -240,7 +245,9 @@ def classify_dir(dirname):
         return None
     if dirname in ARCHIVE_ALIASES:
         return ARCHIVE_DIR
-    if dirname.startswith("Attic"):
+    # "Attic" archives always have a separator after the word (e.g. "Attic (Old versions)").
+    # Anchor on that so unrelated names like "AtticHelper" are not misclassified.
+    if dirname == "Attic" or dirname.startswith(("Attic ", "Attic_", "Attic(")):
         return ARCHIVE_DIR
     return None
 ```
@@ -248,7 +255,7 @@ def classify_dir(dirname):
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd scripts && python3 -m pytest tests/test_tidy_core.py -q`
-Expected: PASS (9 passed)
+Expected: PASS (10 passed)
 
 - [ ] **Step 5: Commit**
 
@@ -298,6 +305,16 @@ def test_version_suffix_archived():
     res = actions_by_name(classify_dir_files(files))
     assert res["sl_stats.json"][0] == "KEEP"
     assert res["sl_stats_v2.json"] == ("ARCHIVE", "version-suffix")
+
+def test_version_suffix_kept_without_base():
+    # A lone _v2 with no base sibling is NOT archived (don't empty the slot).
+    res = actions_by_name(classify_dir_files(["report_v2.do"]))
+    assert res["report_v2.do"][0] == "KEEP"
+
+def test_legit_names_not_treated_as_version_suffix():
+    files = ["interview.do", "renew.do", "survey_v2_final.do"]
+    res = actions_by_name(classify_dir_files(files))
+    assert all(v[0] == "KEEP" for v in res.values())
 
 def test_slot_with_no_ap_is_flagged():
     files = ["L2PHL_CATI@R02@BB@20251222.do", "L2PHL_CATI@R02@CV@20251231.do"]
@@ -389,8 +406,10 @@ def classify_dir_files(filenames):
             else:
                 results.append(FileAction(f, "ARCHIVE", "superseded-date", ""))
         else:
-            # Non-@-pattern file: archive only if it is a version-suffixed variant.
-            if _version_suffix_stem(f) is not None:
+            # Non-@-pattern file: archive a version-suffixed variant ONLY when its
+            # base file is also present (never archive a sole survivor).
+            base = _version_suffix_stem(f)
+            if base is not None and base in parsed:
                 results.append(FileAction(f, "ARCHIVE", "version-suffix", ""))
             else:
                 results.append(FileAction(f, "KEEP", "plain", ""))
@@ -400,7 +419,7 @@ def classify_dir_files(filenames):
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd scripts && python3 -m pytest tests/test_tidy_core.py -q`
-Expected: PASS (15 passed)
+Expected: PASS (17 passed)
 
 - [ ] **Step 5: Commit**
 
@@ -822,7 +841,7 @@ This task produces the deliverable you approve before any real move. It is a run
 - [ ] **Step 1: Run the full test suite**
 
 Run: `cd /Users/avraa/iDrive/GitHub/PHL/L2PHL/scripts && python3 -m pytest tests/ -q`
-Expected: PASS (17 passed)
+Expected: PASS (19 passed)
 
 - [ ] **Step 2: Generate the real dry-run manifest**
 
