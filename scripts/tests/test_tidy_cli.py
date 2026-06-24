@@ -63,3 +63,62 @@ def test_apply_moves_and_is_idempotent(tmp_path):
     with open(csv2) as f:
         rows = [row for row in csv.DictReader(f) if row["action"] != "KEEP"]
     assert rows == []
+
+def test_apply_skips_malformed_rows(tmp_path):
+    # A hand-edited manifest with a blank target must not crash; the file stays put.
+    root = str(tmp_path)
+    do = os.path.join(root, "CATI", "Round02", "do")
+    os.makedirs(do)
+    open(os.path.join(do, "keep.do"), "w").close()
+    csv_out = os.path.join(root, "m.csv")
+    with open(csv_out, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["action", "reason", "path", "target"])
+        w.writerow(["ARCHIVE", "non-ap-author", os.path.join(do, "keep.do"), ""])
+    r = _run(["--apply", "--root", root, "--csv", csv_out], root)
+    assert r.returncode == 0, r.stderr
+    assert os.path.exists(os.path.join(do, "keep.do"))   # not moved
+    assert "skip" in r.stdout.lower()
+
+def test_apply_merges_into_existing_attic(tmp_path):
+    # RENAME-DIR into an existing _attic merges contents; no _attic_1 fragment.
+    root = str(tmp_path)
+    base = os.path.join(root, "CATI", "Round03")
+    zzz = os.path.join(base, "zzz")
+    attic = os.path.join(base, "_attic")
+    os.makedirs(zzz); os.makedirs(attic)
+    open(os.path.join(zzz, "old1.do"), "w").close()
+    open(os.path.join(attic, "old0.do"), "w").close()
+    csv_out = os.path.join(root, "m.csv")
+    with open(csv_out, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["action", "reason", "path", "target"])
+        w.writerow(["RENAME-DIR", "archive-alias", zzz, attic])
+    r = _run(["--apply", "--root", root, "--csv", csv_out], root)
+    assert r.returncode == 0, r.stderr
+    assert not os.path.exists(zzz)                     # alias dir gone
+    assert not os.path.exists(attic + "_1")            # no fragmented archive
+    assert os.path.exists(os.path.join(attic, "old0.do"))  # pre-existing kept
+    assert os.path.exists(os.path.join(attic, "old1.do"))  # merged in
+
+def test_apply_collision_suffix_and_log(tmp_path):
+    # Archiving onto an existing name suffixes; the undo log records the real path.
+    root = str(tmp_path)
+    do = os.path.join(root, "CATI", "Round04", "do")
+    attic = os.path.join(do, "_attic")
+    os.makedirs(do); os.makedirs(attic)
+    open(os.path.join(do, "x@Claude@20260101.do"), "w").close()    # to archive
+    open(os.path.join(attic, "x@Claude@20260101.do"), "w").close() # collision
+    csv_out = os.path.join(root, "m.csv")
+    with open(csv_out, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["action", "reason", "path", "target"])
+        w.writerow(["ARCHIVE", "non-ap-author",
+                    os.path.join(do, "x@Claude@20260101.do"),
+                    os.path.join(attic, "x@Claude@20260101.do")])
+    r = _run(["--apply", "--root", root, "--csv", csv_out], root)
+    assert r.returncode == 0, r.stderr
+    assert os.path.exists(os.path.join(attic, "x@Claude@20260101_1.do"))
+    with open(os.path.join(attic, ".tidy-log.csv")) as f:
+        logrows = list(csv.DictReader(f))
+    assert any(row["to"].endswith("_1.do") for row in logrows)
