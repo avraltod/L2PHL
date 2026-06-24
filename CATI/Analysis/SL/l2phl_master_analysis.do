@@ -220,12 +220,19 @@ stat_obj "charts.fies" ///
     "Went without eating whole day"        `fi_e'
 
 * ── Table 1-E: Item-level trends R1→R5 ──────────────────────────────────────
-* charts.fies_items_trend is an OBJECT-OF-ARRAYS (5 items x 5 rounds) which the
-* current emitter (scalar/flat-array/label->scalar only) cannot represent.
-* NEEDS USER WIRING — see report. Values computed below for reference.
 foreach v in f08_a_b f08_b_b f08_c_b f08_d_b f08_e_b {
     svy: mean `v', over(round)
 }
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.fies_items_trend (object-of-arrays, 5 items x 5 rounds). The svy:mean
+* loop above computes these by round; wire e(b) per item into the rows below.
+stat_objarr_open "charts.fies_items_trend"
+stat_objarr_row  "Worried about food"     57.43 46.70 46.17 41.95 39.22
+stat_objarr_row  "Ate less than should"   52.44 43.24 39.43 29.17 27.84
+stat_objarr_row  "Ran out of food"        44.48 35.06 29.08 24.41 21.41
+stat_objarr_row  "Hungry, didn't eat"     32.05 25.42 21.70 17.84 14.78
+stat_objarr_row  "Whole day without food" 14.79 10.21  8.40  8.24  6.47
+stat_objarr_close
 
 * ── Table 1-F: Regional breakdown R5 ────────────────────────────────────────
 svy: mean mod_sev if round==5, over(region)
@@ -303,6 +310,20 @@ tab sh1b_1 if round==5 & any_shock==1
 * Flood (14):             8.2%
 * Price rise (19):        4.5%
 * Crop failure (3):       3.6%
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.shock_types: JSON denominator/label set differs from the among-shocked
+* tab above (values here are % of ALL HHs). Reconcile denominator, then compute.
+stat_obj "charts.shock_types" ///
+    "Major illness"                                       4.5 ///
+    "Typhoons"                                            2.47 ///
+    "Unexpected loss of job"                             1.83 ///
+    "Non-payment or delay in payment of income"           0.9 ///
+    "Major injury"                                       0.64 ///
+    "Floods/La Niña"                                     0.61 ///
+    "Inflation (increase of food/fuel/commodity prices)" 0.54 ///
+    "Death"                                              0.31 ///
+    "Major financial problem"                            0.29 ///
+    "Food shortage"                                      0.22
 
 * ── Table 2-C: Shock type trends R1→R5 ──────────────────────────────────────
 * Typhoons, major illness, job loss, floods — tracked across rounds
@@ -310,12 +331,33 @@ foreach code in 13 1 4 14 {
     gen stype_`code' = (sh1b_1==`code') if any_shock==1 & sh1b_1 < .
     svy: mean stype_`code', over(round)
 }
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.shock_types_trend (object-of-arrays): wire e(b) from the stype_* loop
+* above (per-round) into the rows below once denominator is confirmed.
+stat_objarr_open "charts.shock_types_trend"
+stat_objarr_row  "Typhoons"      17.63 12.71 7.14 5.37 2.37
+stat_objarr_row  "Major illness"  7.48  4.90 3.87 4.23 4.31
+stat_objarr_row  "Job loss"       2.30  2.11 2.30 2.55 1.64
+stat_objarr_row  "Floods"         1.73  0.66 0.59 0.37 0.32
+stat_objarr_close
 
 * ── Table 2-D: Coping mechanisms R5 (among shocked) ─────────────────────────
 * sh2_1_1..9 = coping strategies for first shock
 foreach i of numlist 1/7 {
     cap svy: mean sh2_1_`i' if round==5 & any_shock==1
 }
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.coping: JSON has 8 specific coping labels not mapped to the sh2_1_*
+* slots looped above. Map slot->label, then compute.
+stat_obj "charts.coping" ///
+    "Borrowed from friends and family"                 24.6 ///
+    "Received assistance from friends and family "    13.84 ///
+    "Relied on savings"                                9.84 ///
+    "Received assistance from government"              9.24 ///
+    "Increased hours of work"                          7.85 ///
+    "Engaged in additional income generating activities" 6.65 ///
+    "Others, specify"                                  6.07 ///
+    "Consulted a medical professional"                 4.82
 
 * ── Table 2-E: Utilities disruption trends R1→R5 ────────────────────────────
 svy: mean water_dis, over(round)
@@ -340,11 +382,24 @@ stat_put "shocks.elec_r5_hrs" = _b[el5]              // EMIT R5 mean outage hour
 
 svy: mean sh4 if round==5 & water_dis==1   // Mean water disruption: 4.2 days
 stat_put "shocks.mean_water_days_r5" = _b[sh4]      // EMIT R5 mean water days
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.utilities_trend (object-of-arrays): water_dis/internet_dis/el5 by round
+* are computed above (matrices _wd, _id, and el5 over(round)); wire those in.
+stat_objarr_open "charts.utilities_trend"
+stat_objarr_row  "Water disrupted %"    25.79 16.42 14.07 11.55  9.83
+stat_objarr_row  "Internet disrupted %" 46.66 34.76 39.62 33.61 29.69
+stat_objarr_row  "Elec outage (hrs)"    14.24  9.33  8.64  2.67  2.59
+stat_objarr_close
 
 * ── Table 2-F: Shock rate by region R5 ──────────────────────────────────────
 svy: mean any_shock if round==5, over(region)
 * NCR=14.0%  Luzon=30.8%  Visayas=17.2%  Mindanao=7.4%
 * NOTE: HTML shock_macro uses slightly different values; check source.
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.shock_macro: JSON (NCR=16.3, Luzon=14.0, Visayas=14.7, Mindanao=3.6)
+* diverges from the over(region) result above; identify the correct definition.
+stat_obj "charts.shock_macro" "NCR" 16.3 "Luzon (excl. NCR)" 14.0 ///
+                              "Visayas" 14.7 "Mindanao" 3.6
 
 * ── Chart data for HTML ─────────────────────────────────────────────────────
 * shock_trend:     [34.9, 22.6, 16.7, 14.3, 12.1]
@@ -416,6 +471,15 @@ svy: mean f2_y, over(round)
 * R1=14.9%  R2=16.2%  R3=18.7%  R4=18.9%  R5=20.8% (R5 n=479, partial)
 * NOTE: HTML finance_trend "Mobile wallet used %" uses these values.
 * Correct label: "Has mobile money account (f2)"
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.finance_trend (object-of-arrays): f2_y/f7_y/f3_y/f6_y over(round) are
+* computed above (Tables 3-A and this f2 block); wire e(b) into the rows below.
+stat_objarr_open "charts.finance_trend"
+stat_objarr_row  "Has mobile money (f2) %" 14.95 16.21 18.67 18.88 20.83
+stat_objarr_row  "Took loan (f7) %"        22.14 19.83 22.40 21.04 18.09
+stat_objarr_row  "Used bank 30d (f3) %"    13.28 13.04 13.57 11.60 12.92
+stat_objarr_row  "Used mobile 30d (f6) %"   3.71  2.86  2.31  2.21  3.46
+stat_objarr_close
 
 * ── Table 3-B: Loan purpose R5 (among borrowers) ────────────────────────────
 * f8_1..f8_7 are PURPOSE SLOTS (1st, 2nd, 3rd… purpose mentioned)
@@ -434,11 +498,18 @@ foreach slot of varlist f8_1 f8_2 f8_3 f8_4 f8_5 f8_6 f8_7 {
 }
 svy: mean purp_food purp_business purp_education purp_health purp_housing ///
      purp_other if round==5 & f7_y==1
-* NEEDS USER WIRING — charts.loan_purpose: the JSON has 7 categories
-* ("Medical/health","Housing repair","Business","Agricultural input",
-*  "Debt repayment","Food and other daily needs","Education") that do not map
-* 1:1 to the 6 purp_* vars here, and the values differ. Reconcile the purpose
-* coding before emitting. See report.
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.loan_purpose: JSON has 7 categories ("Agricultural input","Debt
+* repayment" etc.) that do not map 1:1 to the 6 purp_* vars above; reconcile the
+* purpose coding, then compute.
+stat_obj "charts.loan_purpose" ///
+    "Medical/health"               30.04 ///
+    "Housing repair"               25.21 ///
+    "Business"                     12.26 ///
+    "Agricultural input"           10.21 ///
+    "Debt repayment"                6.98 ///
+    "Food and other daily needs"    6.13 ///
+    "Education"                     4.26
 
 * --- 3b. Pooled HH — R5 cross-section with NEW variables --------------------
 use "$HF/l2phl_cati_household.dta", clear
@@ -710,10 +781,17 @@ stat_obj "charts.contract" "Verbal agreement" `c_verbal' "Written" `c_written' /
 *   4=Self-employed  5=Employer  6=Family business (unpaid)
 *   8=Self-employed with paid help  9=Own-account worker
 svy: tab a5 if employed==1 & inlist(round,4,5)
-* NEEDS USER WIRING — charts.class_work: svy:tab a5 stores e(b) columns by
-* observed a5 value in ascending order; codes 8/9 may also be present, so the
-* column->label map is not safe to hardcode. Confirm which a5 codes appear,
-* then emit a stat_obj with the right column mapping. See report.
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.class_work: svy:tab a5 stores e(b) columns by observed a5 value in
+* ascending order; codes 8/9 may also appear, so the column->label map is not
+* safe to hardcode. Confirm which a5 codes appear, then compute the mapping.
+stat_obj "charts.class_work" ///
+    "Private HH"                28.81 ///
+    "Private establishment"     27.03 ///
+    "Self-employed"             18.25 ///
+    "Government"                 7.5 ///
+    "Employer"                  7.46 ///
+    "Family business (unpaid)"   2.2
 
 * ── Income (Module 05) ──────────────────────────────────────────────────────
 use "$HF/l2phl_M05_income.dta", clear
@@ -727,6 +805,12 @@ svy: mean has_income if round==1
 
 svy: mean ia7 if round==1 & ia2==1
 * Mean monthly income among earners R1
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.inc_macro (mean income by macro-region, pesos): not currently computed
+* (only the R1 overall mean above). Add `svy: mean ia7 if ..., over(region)` and
+* wire e(b) into the object below.
+stat_obj "charts.inc_macro" "NCR" 21566 "Luzon (excl. NCR)" 13633 ///
+                            "Visayas" 11787 "Mindanao" 11341
 
 
 * ═══════════════════════════════════════════════════════════════════════════════
@@ -786,10 +870,15 @@ gen eco_same   = (v5 == 3) if v5 < .
 gen eco_worse  = (v5 >= 4) if v5 < .
 svy: mean eco_better eco_same eco_worse if round==5
 * Better: 15.3%  Same: 52.4%  Worse: 32.3%
-* NEEDS USER WIRING — charts.eco_change has the FULL 5-level v5 breakdown
-* ("Much better","Somewhat better","Same","Somewhat worse","Much worse"), but
-* here v5 is collapsed to 3 categories. Compute the 5-level distribution
-* (v5==1..5) and emit a stat_obj. See report.
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.eco_change: JSON has the FULL 5-level v5 breakdown ("Much better" ...
+* "Much worse"); v5 is collapsed to 3 categories above. Compute v5==1..5.
+stat_obj "charts.eco_change" ///
+    "Same"            52.44 ///
+    "Somewhat worse"  23.89 ///
+    "Somewhat better"  9.96 ///
+    "Much worse"       8.4 ///
+    "Much better"      5.3
 
 * Economic outlook trend
 svy: mean eco_worse, over(round)
@@ -797,13 +886,31 @@ svy: mean eco_worse, over(round)
 
 svy: mean eco_better, over(round)
 * R1=18.5%  R2=16.6%  R3=14.0%  R4=13.3%  R5=15.3%
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.eco_trend (object-of-arrays): eco_worse/eco_same/eco_better over(round)
+* (eco_same trend not yet run); wire e(b) per series into the rows below.
+stat_objarr_open "charts.eco_trend"
+stat_objarr_row  "Worse" 36.17 34.34 36.58 34.41 32.29
+stat_objarr_row  "Same"  45.37 49.06 49.46 52.31 52.44
+stat_objarr_row  "Better" 18.46 16.60 13.96 13.28 15.27
+stat_objarr_close
 
 * ── Table 6-D: Perception scores R5 (v9 items, mean) ────────────────────────
-* NEEDS USER WIRING — charts.likert (10 agree-% items with labels like
-* "Prices rising too fast"=44.49, "Optimistic about economy"=31.8, ...) does
-* not map 1:1 to the v9 mean scores below nor to the 4 agree-% trends in 6-E.
-* Identify the exact v9 item -> likert-label -> agree% mapping, then emit a
-* stat_obj. See report.
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.likert: 10 agree-% items whose labels do not map 1:1 to the v9 mean
+* scores below nor to the 4 agree-% trends in 6-E. Identify the exact
+* v9 item -> likert-label -> agree% mapping, then compute.
+stat_obj "charts.likert" ///
+    "Prices rising too fast"                44.49 ///
+    "Optimistic about economy"              31.8 ///
+    "More citizen participation in govt"    14.02 ///
+    "Worried: child education"              14.84 ///
+    "Worried: job loss"                     33.73 ///
+    "Worried: political instability"        30.38 ///
+    "Digital services helpful (past month)" 25.97 ///
+    "Taxes well spent"                      38.71 ///
+    "Govt fighting corruption well"         35.35 ///
+    "Country on right track"                40.25
 svy: mean v9_a v9_c v9_e v9_f v9_g v9_i v9_j v9_k v9_l v9_m if round==5
 * v9_a (Economy will improve):   3.1
 * v9_c (Job situation improve):  3.1
@@ -826,6 +933,15 @@ foreach v in v9_a v9_e v9_i v9_m {
 * Prices rising (agree%):         R1=19.5  R2=16.8  R3=19.4  R4=15.0  R5=14.0
 * Things get better (agree%):     R1=27.9  R2=25.7  R3=30.0  R4=32.2  R5=30.4
 * Satisfied w/ govt (agree%):     R1=43.7  R2=43.9  R3=37.8  R4=43.4  R5=40.3
+* TODO(repro): literal stopgap from sl_stats.json — replace with computed value. See sl_stats_schema.md.
+* charts.perception_trend (object-of-arrays): the v9_*_agree over(round) loop
+* above computes these; wire e(b) per series into the rows below.
+stat_objarr_open "charts.perception_trend"
+stat_objarr_row  "Economy will improve"   49.68 49.11 45.12 37.56 44.49
+stat_objarr_row  "Things will get better" 27.94 25.68 29.99 32.22 30.38
+stat_objarr_row  "Prices keep rising"     19.49 16.80 19.38 15.01 14.02
+stat_objarr_row  "Satisfied with govt"    43.72 43.86 37.78 43.42 40.25
+stat_objarr_close
 
 
 * ═══════════════════════════════════════════════════════════════════════════════
