@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Philippines L2P — Monthly Tracking · 5 Rounds</title>
+<title>Philippines L2P — Monthly Tracking · 7 Rounds (R1–R5 charted; R6–R7 update pending)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700;9..144,900&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -284,6 +284,30 @@ body.edit-mode #edit-bar{display:flex;}
 .callout.teal p strong{color:#B8E8E8;}
 .callout.cobalt p strong{color:#B8D4F8;}
 
+/* ── DATA QUALITY NOTES ── */
+.dq-note{border-left:4px solid var(--amber);background:rgba(196,122,26,.08);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:14px 18px;margin:14px 0;max-width:1040px;margin-left:auto;margin-right:auto;}
+.dq-note.dark{border-left-color:#F5C48A;background:rgba(245,196,138,.09);}
+.dq-hdr{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;display:flex;align-items:center;gap:6px;font-weight:600;}
+.dq-hdr.dark{color:#F5C48A;}
+.dq-items{display:flex;flex-direction:column;gap:8px;}
+.dq-item{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink2);line-height:1.55;}
+.dq-item.dark{color:rgba(255,255,255,.62);}
+.dq-item span:last-child strong{color:var(--ink);}
+.dq-item.dark span:last-child strong{color:rgba(255,255,255,.9);}
+.dq-tag{font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:white;border-radius:3px;padding:2px 7px;flex-shrink:0;margin-top:2px;font-weight:600;}
+.dq-tag.warn{background:var(--amber);}
+.dq-tag.err{background:var(--rose);}
+.dq-tag.ok{background:var(--forest);}
+/* Data Notes section blocks */
+.dq-section{background:var(--cream2);padding:40px 0;}
+.dq-block{max-width:1040px;margin:0 auto 28px;padding:22px 28px;background:var(--cream);border-radius:var(--radius);border:1px solid var(--rule);border-left:5px solid var(--amber);}
+.dq-block:last-child{margin-bottom:0;}
+.dq-block-title{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--amber);margin-bottom:12px;font-weight:700;}
+.dq-block p{font-size:14.5px;color:var(--ink2);line-height:1.65;margin-bottom:10px;}
+.dq-block p:last-child{margin-bottom:0;}
+.dq-block code{font-family:var(--mono);font-size:12px;background:var(--cream3);padding:1px 5px;border-radius:3px;}
+.dq-block .dq-items{margin-top:10px;gap:9px;}
+
 /* Trend badge (shows direction vs R1) */
 .trend-badge{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:3px 10px;font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.08em;margin-left:8px;}
 .trend-badge.up{background:rgba(74,222,128,.15);color:#16a34a;}
@@ -467,13 +491,14 @@ pre.stata-pre .op{color:#F5C48A;}
 
 <!-- TOP BAR -->
 <header class="topbar">
-  <div class="tb-brand"><span class="tb-flag">🇵🇭</span><div><div class="tb-name">L2P Philippines — Monthly Tracking</div><div class="tb-sub">CATI · 5 Rounds · Sep 2025 – Jan 2026</div></div></div>
+  <div class="tb-brand"><span class="tb-flag">🇵🇭</span><div><div class="tb-name">L2P Philippines — Monthly Tracking</div><div class="tb-sub">CATI · 7 Rounds · Nov 2025 – May 2026 (R6–R7 charts pending)</div></div></div>
   <nav class="tb-nav">
     <a href="#food">🍱 Food</a>
     <a href="#shocks">⚡ Shocks</a>
     <a href="#finance">💳 Finance</a>
     <a href="#health">🏥 Health</a>
     <a href="#views">💬 Views</a>
+    <a href="#data-notes" style="color:#F5C48A;">🔍 Data Notes</a>
   </nav>
 </header>
 
@@ -483,30 +508,30 @@ pre.stata-pre .op{color:#F5C48A;}
   <div class="hero-deco hero-deco-2"></div>
   <div class="hero-inner">
     <div>
-      <div class="hero-badge">📞 CATI Panel · Monthly · 5 rounds tracked</div>
+      <div class="hero-badge">📞 CATI Panel · Monthly · 7 rounds collected (charts show R1–R5)</div>
       <h1 class="hero-hed" data-ed="1" data-type="head">Five months.<br><em>One story of recovery.</em></h1>
-      <p class="hero-deck" data-ed="1" data-type="body">From September 2025 to January 2026, L2P called the same Filipino households every month. What they tracked — food stress, economic shocks, wellbeing, and resilience — tells a story of gradual but real improvement.</p>
-      <p class="hero-src">Listening to Philippines (L2P) · CATI Panel · M01–M09 · 5 rounds · ~1,200 HHs/round · Weighted microdata</p>
+      <p class="hero-deck" data-ed="1" data-type="body">From November 2025 to March 2026, L2P called the same Filipino households every month. What they tracked — food stress, economic shocks, wellbeing, and resilience — tells a story of gradual but real improvement. Charts below cover R1–R5; R6 (Apr) and R7 (May) update pending re-run of the master analysis do-file.</p>
+      <p class="hero-src">Listening to Philippines (L2P) · CATI Panel · M01–M09 · 7 rounds collected · ~1,200 HHs/round · Weighted microdata</p>
     </div>
     <div class="round-pills">
 <div class="rpill">
-  <div class="rpill-top"><span class="rpill-label">Round 1 · Sep</span><span class="rpill-num">1,239</span></div>
+  <div class="rpill-top"><span class="rpill-label">Round 1 · Sep</span><span class="rpill-num"><span data-stat="sample.hh_r1" data-fmt="intcomma">1,239</span></span></div>
   <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.40);" data-w="100"></div></div>
 </div>
 <div class="rpill">
-  <div class="rpill-top"><span class="rpill-label">Round 2 · Oct</span><span class="rpill-num">1,193</span></div>
+  <div class="rpill-top"><span class="rpill-label">Round 2 · Oct</span><span class="rpill-num"><span data-stat="sample.hh_r2" data-fmt="intcomma">1,193</span></span></div>
   <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.53);" data-w="96"></div></div>
 </div>
 <div class="rpill">
-  <div class="rpill-top"><span class="rpill-label">Round 3 · Nov</span><span class="rpill-num">1,174</span></div>
+  <div class="rpill-top"><span class="rpill-label">Round 3 · Nov</span><span class="rpill-num"><span data-stat="sample.hh_r3" data-fmt="intcomma">1,174</span></span></div>
   <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.66);" data-w="94"></div></div>
 </div>
 <div class="rpill">
-  <div class="rpill-top"><span class="rpill-label">Round 4 · Dec</span><span class="rpill-num">1,243</span></div>
+  <div class="rpill-top"><span class="rpill-label">Round 4 · Dec</span><span class="rpill-num"><span data-stat="sample.hh_r4" data-fmt="intcomma">1,243</span></span></div>
   <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.79);" data-w="100"></div></div>
 </div>
 <div class="rpill">
-  <div class="rpill-top"><span class="rpill-label">Round 5 · Jan</span><span class="rpill-num">967</span></div>
+  <div class="rpill-top"><span class="rpill-label">Round 5 · Jan</span><span class="rpill-num"><span data-stat="sample.hh_r5" data-fmt="intcomma">967</span></span></div>
   <div class="rpill-bar"><div class="rpill-fill" style="background:rgba(245,196,138,0.92);" data-w="78"></div></div>
 </div>
     </div>
@@ -519,14 +544,17 @@ pre.stata-pre .op{color:#F5C48A;}
 <!-- ROUND STRIP -->
 <div class="round-strip">
   <div class="rs-inner">
-    <div class="rs-label">5 rounds tracked</div>
+    <div class="rs-label">7 rounds collected</div>
     <div class="rs-rounds">
-<div class="rs-r"><div class="rs-rn">R1</div><div class="rs-rd">Sep 2025</div><div class="rs-hh">1,239 HHs</div></div>
-<div class="rs-r"><div class="rs-rn">R2</div><div class="rs-rd">Oct 2025</div><div class="rs-hh">1,193 HHs</div></div>
-<div class="rs-r"><div class="rs-rn">R3</div><div class="rs-rd">Nov 2025</div><div class="rs-hh">1,174 HHs</div></div>
-<div class="rs-r"><div class="rs-rn">R4</div><div class="rs-rd">Dec 2025</div><div class="rs-hh">1,243 HHs</div></div>
-<div class="rs-r"><div class="rs-rn">R5</div><div class="rs-rd">Jan 2025 2026</div><div class="rs-hh">967 HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R1</div><div class="rs-rd">Nov 2025</div><div class="rs-hh"><span data-stat="sample.hh_r1" data-fmt="intcomma">1,239</span> HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R2</div><div class="rs-rd">Dec 2025</div><div class="rs-hh"><span data-stat="sample.hh_r2" data-fmt="intcomma">1,193</span> HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R3</div><div class="rs-rd">Jan 2026</div><div class="rs-hh"><span data-stat="sample.hh_r3" data-fmt="intcomma">1,174</span> HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R4</div><div class="rs-rd">Feb 2026</div><div class="rs-hh"><span data-stat="sample.hh_r4" data-fmt="intcomma">1,243</span> HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R5</div><div class="rs-rd">Mar 2026</div><div class="rs-hh"><span data-stat="sample.hh_r5" data-fmt="intcomma">967</span> HHs</div></div>
+<div class="rs-r"><div class="rs-rn">R6</div><div class="rs-rd">Apr 2026</div><div class="rs-hh">1,157 HHs<sup>*</sup></div></div>
+<div class="rs-r"><div class="rs-rn">R7</div><div class="rs-rd">May 2026</div><div class="rs-hh">986 HHs<sup>*</sup></div></div>
     </div>
+    <div style="font-size:9px;color:rgba(255,255,255,.5);margin-top:6px;font-family:var(--mono)">*R6/R7 counts from raw M00 pool; pending re-run with master analysis methodology</div>
   </div>
 </div>
 
@@ -541,13 +569,13 @@ pre.stata-pre .op{color:#F5C48A;}
       <div class="arc-kpi">
         <div class="arc-kpi-arrow">🍱</div>
         <div class="arc-kpi-from" data-ed="1" data-type="body">Mod-severe food insecurity</div>
-        <div class="arc-kpi-change down" data-ed="1" data-type="number">41% → 18%</div>
+        <div class="arc-kpi-change down" data-ed="1" data-type="number"><span data-stat="fies.mod_sev_r1" data-fmt="pct0">41%</span> → <span data-stat="fies.mod_sev_r5" data-fmt="pct0">18%</span></div>
         <div class="arc-kpi-lbl" data-ed="1" data-type="body">R1 to R5 · –23 ppt</div>
       </div>
       <div class="arc-kpi">
         <div class="arc-kpi-arrow">⚡</div>
         <div class="arc-kpi-from" data-ed="1" data-type="body">Households hit by a shock</div>
-        <div class="arc-kpi-change down" data-ed="1" data-type="number">35% → 12%</div>
+        <div class="arc-kpi-change down" data-ed="1" data-type="number"><span data-stat="shocks.any_shock_r1" data-fmt="pct0">35%</span> → <span data-stat="shocks.any_shock_r5" data-fmt="pct0">12%</span></div>
         <div class="arc-kpi-lbl" data-ed="1" data-type="body">R1 to R5 · –23 ppt</div>
       </div>
       <div class="arc-kpi">
@@ -598,14 +626,14 @@ pre.stata-pre .op{color:#F5C48A;}
     <div class="two-col">
       <div class="rev">
         <span class="eyebrow terra">FIES trend</span>
-        <h2 class="hed" data-ed="1" data-type="head">Moderate-to-severe food insecurity fell from <em class="terra">41% to 18%</em> in five months</h2>
+        <h2 class="hed" data-ed="1" data-type="head">Moderate-to-severe food insecurity fell from <em class="terra"><span data-stat="fies.mod_sev_r1" data-fmt="pct0">41%</span> to <span data-stat="fies.mod_sev_r5" data-fmt="pct0">18%</span></em> in five months</h2>
         <div class="body-copy">
           <p data-ed="1" data-type="body">The Food Insecurity Experience Scale (FIES) asks households five progressively severe questions — from worry about food to going an entire day without eating. When 3 or more are answered "yes," the household is classified as moderately-to-severely food insecure.</p>
-          <p data-ed="1" data-type="body">In Round 1, 41% of households crossed that threshold. By Round 5, that figure had fallen to 18.2% — a drop of 23 percentage points. Severe food insecurity (all 5 items yes) fell from an estimated 6–8% to 3.7%. This is the clearest positive signal in the entire CATI dataset.</p>
+          <p data-ed="1" data-type="body">In Round 1, <span data-stat="fies.mod_sev_r1" data-fmt="pct0">41%</span> of households crossed that threshold. By Round 5, that figure had fallen to <span data-stat="fies.mod_sev_r5" data-fmt="pct1">18.2%</span> — a drop of <span data-stat="fies.change_ppt" data-fmt="ppt">23</span> percentage points. Severe food insecurity (all 5 items yes) fell from an estimated 6–8% to <span data-stat="fies.severe_r5" data-fmt="pct1">3.7%</span>. This is the clearest positive signal in the entire CATI dataset.</p>
           <p data-ed="1" data-type="body">Mindanao and Visayas remain the most food-insecure macro-regions: 23% and 23% moderate-severe respectively in Round 5. NCR is lowest at 9%.</p>
         </div>
         <div class="pull terra rev d1">
-          <p><strong>52.4%</strong> of households are now food secure (FIES=0) in Round 5. In Round 1, fewer than 6 in 10 were fully food secure.</p>
+          <p><strong><span data-stat="fies.food_sec_r5" data-fmt="pct1">52.4%</span></strong> of households are now food secure (FIES=0) in Round 5. In Round 1, fewer than 6 in 10 were fully food secure.</p>
         </div>
       </div>
       <div class="rev d2">
@@ -742,9 +770,9 @@ pre.stata-pre .op{color:#F5C48A;}
         <span class="eyebrow" style="color:#F5C48A;">Shock incidence<span style="width:18px;height:3px;background:#F5C48A;border-radius:2px;display:inline-block;margin-left:8px;"></span></span>
         <h2 class="hed light" data-ed="1" data-type="head">The shock burden fell sharply — but <em>illness remains the top driver</em></h2>
         <div class="body-copy light">
-          <p data-ed="1" data-type="body">In Round 1, 34.9% of households reported being hit by an economic or environmental shock in the past 30 days. By Round 5, only 12.1% reported a shock — a two-thirds reduction. This reflects both seasonal patterns and genuine resilience-building.</p>
-          <p data-ed="1" data-type="body">Major illness (4.5%) is the single largest shock type in Round 5, followed by typhoon exposure (2.5%) and unexpected job loss (1.8%). Visayas is worst-affected at 18.4%, while Mindanao is lowest at 2.1%.</p>
-          <p data-ed="1" data-type="body">Water disruption affected 9.8% of households in Round 5, with an average of 4.2 days disrupted. Electricity outages averaged 13.9 hours in the past week — a persistent service quality gap. Internet disruption in the past month was reported by 29.7%.</p>
+          <p data-ed="1" data-type="body">In Round 1, <span data-stat="shocks.any_shock_r1" data-fmt="pct1">34.9%</span> of households reported being hit by an economic or environmental shock in the past 30 days. By Round 5, only <span data-stat="shocks.any_shock_r5" data-fmt="pct1">12.1%</span> reported a shock — a two-thirds reduction. This reflects both seasonal patterns and genuine resilience-building.</p>
+          <p data-ed="1" data-type="body">Major illness (4.5%) is the single largest shock type in Round 5, followed by typhoon exposure (2.5%) and unexpected job loss (1.8%). NCR is worst-affected at 16.3%, while Mindanao is lowest at 3.6%.</p>
+          <p data-ed="1" data-type="body">Water disruption affected <span data-stat="shocks.water_disruption_r5" data-fmt="pct1">9.8%</span> of households in Round 5, with an average of <span data-stat="shocks.mean_water_days_r5" data-fmt="raw">4.2</span> days disrupted. Electricity outages averaged <span data-stat="shocks.elec_r5_hrs" data-fmt="raw">2.6</span> hours per week in R5, down sharply from 8.4 hours in R1. Internet disruption in the past month was reported by <span data-stat="shocks.internet_disruption_r5" data-fmt="pct1">29.7%</span>.</p>
         </div>
       </div>
       <div class="rev d2">
@@ -771,9 +799,9 @@ pre.stata-pre .op{color:#F5C48A;}
       </div>
     </div>
     <div class="sgrid sg3 rev" style="margin-top:12px;">
-      <div class="scell dk"><div class="scell-n" style="color:#f87171;" data-ed="1" data-type="number">9.8%</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Water disrupted (R5)</div></div>
-      <div class="scell dk"><div class="scell-n" style="color:#fbbf24;" data-ed="1" data-type="number">13.9 hrs</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Mean electricity outage/week</div></div>
-      <div class="scell dk"><div class="scell-n" style="color:#94a3b8;" data-ed="1" data-type="number">29.7%</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Internet disruption (past month)</div></div>
+      <div class="scell dk"><div class="scell-n" style="color:#f87171;" data-ed="1" data-type="number"><span data-stat="shocks.water_disruption_r5" data-fmt="pct1">9.8%</span></div><div class="scell-l" style="color:rgba(255,255,255,.45);">Water disrupted (R5)</div></div>
+      <div class="scell dk"><div class="scell-n" style="color:#fbbf24;" data-ed="1" data-type="number"><span data-stat="shocks.elec_r5_hrs" data-fmt="raw">2.6</span> hrs</div><div class="scell-l" style="color:rgba(255,255,255,.45);">Mean electricity outage/week (R5)</div></div>
+      <div class="scell dk"><div class="scell-n" style="color:#94a3b8;" data-ed="1" data-type="number"><span data-stat="shocks.internet_disruption_r5" data-fmt="pct1">29.7%</span></div><div class="scell-l" style="color:rgba(255,255,255,.45);">Internet disruption (past month)</div></div>
     </div>
     <div class="sec" style="padding-top:0;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
@@ -791,6 +819,13 @@ pre.stata-pre .op{color:#F5C48A;}
       </div>
     </div>
     <div class="src light">Source: M03_shock.dta · HH level, weighted by hhw · R1–R5</div>
+    <div class="dq-note dark">
+      <div class="dq-hdr dark">⚠️ Data quality notes — shocks &amp; utilities</div>
+      <div class="dq-items">
+        <div class="dq-item dark"><span class="dq-tag err">el5</span><span><strong>Electricity outage hours — R1/R2 outliers:</strong> 43 observations in R1 and 24 in R2 report &gt;100 hrs/week (impossible; max possible ≈ 168). These are likely data entry errors that inflate the R1 baseline. The large R1→R5 drop in outage hours partly reflects outlier removal, not only real service improvement. Clean with: <code style="background:rgba(255,255,255,.1);color:#F5C48A;font-size:11px;">replace el5=. if el5&gt;100 | el5==99 | el5&lt;0</code></span></div>
+        <div class="dq-item dark"><span class="dq-tag warn">n5</span><span><strong>Internet disruption — partial coverage from R3:</strong> Variable <em>n5</em> was asked of ~100% of households in R1–R2 but only ~50% in R3–R5 (questionnaire routing change). The R3–R5 internet disruption estimates are based on a non-random subset and are not directly comparable to R1–R2. The internet disruption trend line should be interpreted with caution from R3 onwards.</span></div>
+      </div>
+    </div>
     <div class="stata-drawer">
       <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 2 · SHOCKS</span></button>
       <div class="stata-code-wrap">
@@ -804,7 +839,7 @@ pre.stata-pre .op{color:#F5C48A;}
 <span class="kw">gen</span> any_shock = (sh1==<span class="nu">1</span>) <span class="kw">if</span> sh1 &lt; .
 
 <span class="co">* Clean electricity outage hours (negative values and 99 are errors)</span>
-<span class="kw">replace</span> el5 = . <span class="kw">if</span> el5 &lt; <span class="nu">0</span> | el5 == <span class="nu">99</span>
+<span class="kw">replace</span> el5 = . <span class="kw">if</span> el5 &lt; <span class="nu">0</span> | el5 == <span class="nu">99</span> | el5 &gt; <span class="nu">100</span>  <span class="co">// remove impossible values (43 in R1, 24 in R2)</span>
 
 <span class="kw">gen</span> internet_dis = (n5==<span class="nu">1</span>)  <span class="kw">if</span> n5  &lt; .   <span class="co">// internet disruption past month</span>
 <span class="kw">gen</span> water_dis    = (sh3==<span class="nu">1</span>) <span class="kw">if</span> sh3 &lt; .   <span class="co">// water disruption</span>
@@ -866,11 +901,11 @@ pre.stata-pre .op{color:#F5C48A;}
       <div class="two-col">
         <div class="rev">
           <span class="eyebrow amber">Financial access (R5)</span>
-          <h2 class="hed" data-ed="1" data-type="head">Mobile money at <em class="amber">50%.</em> Bank accounts at <em class="amber">12%.</em> Online shopping rising fast.</h2>
+          <h2 class="hed" data-ed="1" data-type="head">Mobile money at <em class="amber"><span data-stat="finance.mobile_acc_f18" data-fmt="pct0">50%</span>.</em> Bank accounts at <em class="amber"><span data-stat="finance.bank_acc_f17" data-fmt="pct0">12%</span>.</em> Online shopping rising fast.</h2>
           <div class="body-copy">
-            <p data-ed="1" data-type="body">Half of Filipino households now have a mobile money account (GCash, Maya or equivalent) — up sharply from the CAPI baseline of 18%. The gap between mobile money (50%) and formal bank accounts (12%) has never been wider, and it tells a story of fintech reaching where traditional banking hasn't.</p>
-            <p data-ed="1" data-type="body">34.2% used a bank in the past 30 days, and 41.7% used a mobile wallet for a transaction. 23.6% bought something online — a notable jump suggesting digital commerce is entering the mainstream even in lower-income households.</p>
-            <p data-ed="1" data-type="body">18.1% of households took a loan in the past 30 days. The top purpose: medical and health expenses (30%), housing repair (25%), and business needs (12%). Informal lenders remain common (16% of loan sources) despite the fintech growth.</p>
+            <p data-ed="1" data-type="body">Half of Filipino households now have a mobile money account (GCash, Maya or equivalent) — up sharply from the CAPI baseline of 18%. The gap between mobile money (<span data-stat="finance.mobile_acc_f18" data-fmt="pct0">50%</span>) and formal bank accounts (<span data-stat="finance.bank_acc_f17" data-fmt="pct0">12%</span>) has never been wider, and it tells a story of fintech reaching where traditional banking hasn't.</p>
+            <p data-ed="1" data-type="body">34.2% used a bank in the past 30 days, and 41.7% used a mobile wallet for a transaction. <span data-stat="finance.bought_online_f15" data-fmt="pct1">23.6%</span> bought something online — a notable jump suggesting digital commerce is entering the mainstream even in lower-income households.</p>
+            <p data-ed="1" data-type="body"><span data-stat="finance.took_loan_f7" data-fmt="pct1">18.1%</span> of households took a loan in the past 30 days. The top purpose: medical and health expenses (30%), housing repair (25%), and business needs (12%). Informal lenders remain common (16% of loan sources) despite the fintech growth.</p>
           </div>
           <div class="pull amber rev d1">
             <p>Only <strong>3.5%</strong> of households could absorb a ₱300,000 emergency expense. The financial buffer gap remains severe even as mobile access grows.</p>
@@ -904,7 +939,7 @@ pre.stata-pre .op{color:#F5C48A;}
           <div class="callout amber">
             <span class="callout-icon">💸</span>
             <div class="callout-lbl">Remittances</div>
-            <p><strong>18.3%</strong> of households received cash remittances from family members in the past 30 days. <strong>14.3%</strong> sent money via mobile phone — digital transfer is the new normal for family support.</p>
+            <p><strong><span data-stat="finance.recv_remittance_f13a" data-fmt="pct1">18.3%</span></strong> of households received cash remittances from family members in the past 30 days. <strong>14.3%</strong> sent money via mobile phone — digital transfer is the new normal for family support.</p>
           </div>
           <div class="sgrid sg2 rev d1" style="margin-top:10px;">
             <div class="scell am"><div class="scell-n" style="color:var(--amber);" data-ed="1" data-type="number">₱14,162</div><div class="scell-l">Mean income (earners)</div></div>
@@ -921,25 +956,41 @@ pre.stata-pre .op{color:#F5C48A;}
         </div>
       </div>
       <div class="src">Source: M05_income.dta (indw) + M06_finance.dta (hhw) · R5 latest · Oct 15 2025</div>
+      <div class="dq-note">
+        <div class="dq-hdr">⚠️ Data quality notes — finance module (R5)</div>
+        <div class="dq-items">
+          <div class="dq-item"><span class="dq-tag err">f1</span><span><strong>Formal bank usage — structural break in R5:</strong> The variable <em>f1</em> (used formal bank account past 30 days) is non-missing for only ~12% of sampled households in R5, versus ~100% in R1–R4. This is consistent with a questionnaire routing change. <strong>R5 bank usage estimates are not comparable to earlier rounds</strong> and the R5 data point is excluded from the bank trend line.</span></div>
+          <div class="dq-item"><span class="dq-tag warn">f2</span><span><strong>Mobile wallet usage — partial coverage in R5:</strong> Variable <em>f2</em> (used mobile money/e-wallet) is non-missing for ~50% of households in R5 (vs. 100% in R1–R4). The R5 figure in the trend chart treats non-responses as "No" (lower-bound estimate) and is marked with an asterisk. The true R5 mobile wallet prevalence may be higher.</span></div>
+        </div>
+      </div>
       <div class="stata-drawer">
         <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 3 · FINANCE</span></button>
         <div class="stata-code-wrap">
           <div class="stata-code-head"><span class="stata-code-lbl">l2phl_master_analysis.do · Section 3 — Finance &amp; Mobile Money (M06)</span><button class="stata-copy" onclick="copyCode(this)">📋 Copy</button></div>
-          <pre class="stata-pre"><code><span class="co">* ── SECTION 3: FINANCE &amp; MOBILE MONEY (Module 06) ─────────────────────────</span>
-<span class="kw">use</span> <span class="st">"$HF/l2phl_M06_finance.dta"</span>, <span class="kw">clear</span>
-<span class="kw">label values</span> round round_lbl
+          <pre class="stata-pre"><code><span class="co">* ── SECTION 3: FINANCE &amp; MOBILE MONEY (Module 06 + Pooled HH) ─────────────</span>
+<span class="co">* NOTE: f1/f2 have PARTIAL R5 coverage (routing change). Use f17/f18 for R5.</span>
+<span class="co">* For TRENDS: f3 (used bank 30d), f6 (used mobile 30d), f7 (loan) — full coverage.</span>
 
-<span class="co">* f1=bank deposit  f2=mobile money  f3=used bank  f6=mobile wallet  f7=loan  f10=saved</span>
-<span class="kw">foreach</span> v <span class="kw">of varlist</span> f1 f2 f3 f6 f7 f10 {
+<span class="co">* --- Module-level trends ---</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_M06_finance.dta"</span>, <span class="kw">clear</span>
+<span class="kw">foreach</span> v <span class="kw">of varlist</span> f3 f6 f7 {
     <span class="kw">gen</span> `v'_y = (`v'==<span class="nu">1</span>) <span class="kw">if</span> `v' &lt; .
 }
+<span class="cm">svyset</span> psu [pweight=hhw], strata(stratum)
+<span class="cm">svy:</span> <span class="cm">mean</span> f3_y f6_y f7_y, <span class="kw">over</span>(round)
 
+<span class="co">* --- R5 cross-section from pooled HH (f17=bank acc, f18=mobile acc) ---</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_cati_household.dta"</span>, <span class="kw">clear</span>
+<span class="kw">keep if</span> round==<span class="nu">5</span>
 <span class="cm">svyset</span> psu [pweight=hhw], strata(stratum)
 
-<span class="co">* Table 3-A: Key finance indicators R5</span>
-<span class="co">*   Bank deposit=4.1%  Mobile money=20.8%  Used bank=12.9%  Used mobile=3.5%</span>
-<span class="co">*   Took loan=18.1%    Managed to save=17.0%</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> f1_y f2_y f3_y f6_y f7_y f10_y <span class="kw">if</span> round==<span class="nu">5</span>
+<span class="co">* Table 3-A: R5 finance cross-section</span>
+<span class="co">*   Bank acc (f17)=12.1%  Mobile acc (f18)=49.9%  Used bank 30d (f3)=12.9%</span>
+<span class="co">*   Used mobile 30d (f6)=3.5%  Took loan (f7)=18.1%  Cover ₱300k (f16≤2)=3.3%</span>
+<span class="kw">gen</span> bank_acc = (f17==<span class="nu">1</span>) <span class="kw">if</span> f17 &lt; .
+<span class="kw">gen</span> mobile_acc = (f18==<span class="nu">1</span>) <span class="kw">if</span> f18 &lt; .
+<span class="kw">gen</span> cover_300k = (f16 &lt;= <span class="nu">2</span>) <span class="kw">if</span> f16 &lt; .
+<span class="cm">svy:</span> <span class="cm">mean</span> bank_acc mobile_acc cover_300k
 
 <span class="co">* Table 3-B: Mobile money trend R1–R5  →  14.9% → 16.2% → 18.7% → 18.9% → 20.8%</span>
 <span class="cm">svy:</span> <span class="cm">mean</span> f2_y, <span class="kw">over</span>(round)
@@ -996,7 +1047,7 @@ pre.stata-pre .op{color:#F5C48A;}
   <div class="chap-hdr" style="background:var(--rose-bg);">
     <div class="chap-in">
       <div class="chap-stamp" style="background:white;color:var(--rose);">🏥</div>
-      <div><div class="chap-mod" style="color:var(--rose);">Module 07 · Health</div><div class="chap-title" data-ed="1" data-type="head">Health — PhilHealth at 55%, but Out-of-Pocket is the Norm</div></div>
+      <div><div class="chap-mod" style="color:var(--rose);">Module 07 · Health</div><div class="chap-title" data-ed="1" data-type="head">Health — PhilHealth at <span data-stat="health.philhealth_r5" data-fmt="pct1">21.7%</span>, Out-of-Pocket is the Norm</div></div>
     </div>
     <div class="chap-rule" style="background:linear-gradient(90deg,var(--rose),transparent);"></div>
   </div>
@@ -1004,11 +1055,11 @@ pre.stata-pre .op{color:#F5C48A;}
     <div class="two-col">
       <div class="rev">
         <span class="eyebrow rose">Health access (R5)</span>
-        <h2 class="hed" data-ed="1" data-type="head">54.9% have PhilHealth — <em class="terra">but 59% pay out-of-pocket</em> for consultations</h2>
+        <h2 class="hed" data-ed="1" data-type="head">Only <span data-stat="health.philhealth_r5" data-fmt="pct1">21.7%</span> have PhilHealth — <em class="terra">and most pay out-of-pocket</em> for consultations</h2>
         <div class="body-copy">
-          <p data-ed="1" data-type="body">PhilHealth coverage reaches 54.9% of the panel — a meaningful improvement from the CAPI baseline of 46.1%. NCR leads at 71.8%, while Luzon (excl. NCR) trails at 52.3%. Only 4.8% of households reported needing health care in the past 30 days, and 88.9% of those who needed it managed to access it.</p>
-          <p data-ed="1" data-type="body">Despite coverage gains, out-of-pocket payments remain endemic: 59.3% of those who consulted paid cash, with a mean outlay of ₱1,198 — modest per visit but catastrophic when repeated. Hospitalization hit 5.8% of members, with a mean bill of ₱36,717 and ₱9,009 out-of-pocket.</p>
-          <p data-ed="1" data-type="body">The most-used facility is the Barangay Health Station (37%), followed by public hospitals (34%). Private options serve just 16% of visits.</p>
+          <p data-ed="1" data-type="body">PhilHealth coverage reaches only <span data-stat="health.philhealth_r5" data-fmt="pct1">21.7%</span> of the panel — well below the CAPI baseline of 46.1%. The vast majority (78.3%) report no PhilHealth coverage at all. NCR leads at 31.2%, while Visayas trails at 17.7%. Only 4.8% of households reported needing health care in the past 30 days, and 88.9% of those who needed it managed to access it.</p>
+          <p data-ed="1" data-type="body">Out-of-pocket payments remain endemic among those who sought care. Hospitalization hit 5.8% of members, with a mean bill of ₱36,717 and ₱9,009 out-of-pocket.</p>
+          <p data-ed="1" data-type="body">The most-used facility is the Barangay Health Station (37%), followed by private clinics (34%). Public hospitals serve 11.6% of visits, with private hospitals at 4.7%.</p>
         </div>
       </div>
       <div class="rev d2">
@@ -1033,7 +1084,7 @@ pre.stata-pre .op{color:#F5C48A;}
       </div>
     </div>
     <div class="sgrid sg4 rev" style="margin-top:16px;">
-      <div class="scell tr"><div class="scell-n" style="color:var(--terra);" data-ed="1" data-type="number">59.3%</div><div class="scell-l">Pay OOP for consultation</div></div>
+      <div class="scell tr"><div class="scell-n" style="color:var(--terra);" data-ed="1" data-type="number"><span data-stat="health.oop_among_h9a_respondents" data-fmt="pct1">71.5%</span></div><div class="scell-l">Pay OOP for consultation</div></div>
       <div class="scell cr"><div class="scell-n" data-ed="1" data-type="number">₱1,198</div><div class="scell-l">Mean OOP consult cost</div></div>
       <div class="scell am"><div class="scell-n" style="color:var(--amber);" data-ed="1" data-type="number">₱36,717</div><div class="scell-l">Mean hospital bill</div></div>
       <div class="scell fo"><div class="scell-n" style="color:var(--forest);" data-ed="1" data-type="number">88.9%</div><div class="scell-l">Access rate (needed care)</div></div>
@@ -1065,12 +1116,13 @@ pre.stata-pre .op{color:#F5C48A;}
 <span class="co">* Table 4-B: Care-seeking rate (only ~4–5% sought outpatient care in past 30 days)</span>
 <span class="cm">svy:</span> <span class="cm">mean</span> sought_care
 
-<span class="co">* Table 4-C: OOP payment rate among care-seekers  →  36.6%</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> paid_oop <span class="kw">if</span> sought_care==<span class="nu">1</span>
+<span class="co">* Table 4-C: OOP (h9a respondents n=771; among seekers n=81 → 93.7%)</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> paid_oop
 
-<span class="co">* Table 4-D: Facility type distribution among care-seekers</span>
-<span class="co">*   1=Barangay health 37.1%   4=Private clinic 35.0%   3=Public hosp 11.5%</span>
-<span class="cm">tab</span> h4 <span class="kw">if</span> sought_care==<span class="nu">1</span>
+<span class="co">* Table 4-D: Facility type (h4, n=771; all who reported a facility)</span>
+<span class="co">*   1=Barangay 37.0%  4=Private clinic 34.2%  2=Rural health 12.6%</span>
+<span class="co">*   3=Public hospital 11.6%  5=Private hospital 4.7%</span>
+<span class="cm">svy:</span> <span class="cm">tab</span> h4
 
 <span class="co">* Table 4-E: Hospitalization rate</span>
 <span class="cm">svy:</span> <span class="cm">mean</span> hosp12</code></pre>
@@ -1084,7 +1136,7 @@ pre.stata-pre .op{color:#F5C48A;}
   <div class="chap-hdr" style="background:var(--cream2);">
     <div class="chap-in">
       <div class="chap-stamp" style="background:var(--cobalt-bg);color:var(--cobalt);">💼</div>
-      <div><div class="chap-mod" style="color:var(--cobalt);">Modules 04–05 · Employment &amp; Income</div><div class="chap-title" data-ed="1" data-type="head">Employment — 34% Rate, Informality Dominates</div></div>
+      <div><div class="chap-mod" style="color:var(--cobalt);">Modules 04–05 · Employment &amp; Income</div><div class="chap-title" data-ed="1" data-type="head">Employment — <span data-stat="employment.emp_status_r5" data-fmt="pct0">34%</span> Rate, Informality Dominates</div></div>
     </div>
     <div class="chap-rule" style="background:linear-gradient(90deg,var(--cobalt),transparent);"></div>
   </div>
@@ -1092,10 +1144,10 @@ pre.stata-pre .op{color:#F5C48A;}
     <div class="two-col">
       <div class="rev">
         <span class="eyebrow cobalt">Labour market (R4–R5)</span>
-        <h2 class="hed" data-ed="1" data-type="head">Employment at 34% — <em class="cobalt">68.6% have no contract</em></h2>
+        <h2 class="hed" data-ed="1" data-type="head">Employment at <span data-stat="employment.emp_status_r5" data-fmt="pct0">34%</span> — <em class="cobalt"><span data-stat="employment.verbal_a16eq3" data-fmt="pct1">68.6%</span> on verbal agreements only</em></h2>
         <div class="body-copy">
           <p data-ed="1" data-type="body">Employment rate in rounds 4–5 is 34–36% (using the composite emp_status indicator). This measures formal employment engagement rather than all work activity. Workers average 39.3 hours per week — full-time for those employed.</p>
-          <p data-ed="1" data-type="body">Job quality remains fragile: 68.6% of employed workers have no contract, only 18.4% have a written agreement. Employer pension contributions cover just 16.4% of workers. Gig work is rare at 0.7% — most informal work is traditional rather than platform-based.</p>
+          <p data-ed="1" data-type="body">Job quality remains fragile: <span data-stat="employment.verbal_a16eq3" data-fmt="pct1">68.6%</span> of employed workers have only verbal agreements, with just <span data-stat="employment.written_a16eq1" data-fmt="pct1">18.4%</span> holding a written contract and <span data-stat="employment.no_contract_a16eq2" data-fmt="pct1">7.2%</span> having no contract at all. Employer pension contributions cover just 16.4% of workers. Gig work is rare at 0.7% — most informal work is traditional rather than platform-based.</p>
           <p data-ed="1" data-type="body">Private household work (29%) and private establishment employment (27%) are the top job types. Self-employment stands at 18.3%. Government jobs provide security for 7.5%.</p>
         </div>
       </div>
@@ -1119,34 +1171,30 @@ pre.stata-pre .op{color:#F5C48A;}
       <button class="stata-btn" onclick="toggleStata(this)">▶ Stata replication code <span class="sb-pill">SECTION 5 · EMPLOYMENT</span></button>
       <div class="stata-code-wrap">
         <div class="stata-code-head"><span class="stata-code-lbl">l2phl_master_analysis.do · Section 5 — Employment &amp; Income (M04 + M05)</span><button class="stata-copy" onclick="copyCode(this)">📋 Copy</button></div>
-        <pre class="stata-pre"><code><span class="co">* ── SECTION 5: EMPLOYMENT &amp; INCOME (Modules 04 + 05) ───────────────────────</span>
-<span class="co">* IMPORTANT: M04 structurally sparse in R4–R5 (roster filter change).</span>
-<span class="co">*            Use R1–R3 only for employment estimates.</span>
-<span class="kw">use</span> <span class="st">"$HF/l2phl_M04_employment.dta"</span>, <span class="kw">clear</span>
-<span class="kw">label values</span> round round_lbl
+        <pre class="stata-pre"><code><span class="co">* ── SECTION 5: EMPLOYMENT &amp; INCOME (M04 + Pooled Individual + M05) ──────────</span>
+<span class="co">* STRUCTURAL BREAK: M04 sparse in R4–R5 (roster filter change).</span>
+<span class="co">* → Use a1 for R1–R3, emp_status (pooled individual) for R4–R5.</span>
 
-<span class="co">* a1=worked last 7 days   a16=contract type   a8=gig work   a11=hours last week</span>
-<span class="kw">gen</span> worked      = (a1==<span class="nu">1</span>)   <span class="kw">if</span> a1  &lt; .
-<span class="kw">gen</span> no_contract = (a16==<span class="nu">2</span>)  <span class="kw">if</span> a16 &lt; .   <span class="co">// no written contract</span>
-<span class="kw">gen</span> gig_work    = (a8==<span class="nu">1</span>)   <span class="kw">if</span> a8  &lt; .   <span class="co">// platform/gig work</span>
-<span class="kw">gen</span> hours       = a11        <span class="kw">if</span> a1==<span class="nu">1</span>     <span class="co">// hours worked last week</span>
-
+<span class="co">* --- 5a. R4–R5 from pooled individual (emp_status) --------------------------</span>
+<span class="kw">use</span> <span class="st">"$HF/l2phl_cati_individual.dta"</span>, <span class="kw">clear</span>
+<span class="kw">gen</span> employed = (emp_status==<span class="nu">1</span>) <span class="kw">if</span> emp_status &lt; .
 <span class="cm">svyset</span> psu [pweight=indw], strata(stratum)
 
-<span class="co">* Table 5-A: Employment rate R1–R3 (note: denominator = all HH members)</span>
-<span class="co">*   R1=3.0%  R2=2.7%  R3=1.9%  (R4–R5 unreliable — DO NOT USE)</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> worked <span class="kw">if</span> round&lt;=<span class="nu">3</span>, <span class="kw">over</span>(round)
+<span class="co">* Employment rate R4–R5  →  R4=35.7%  R5=34.0%</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> employed <span class="kw">if</span> round==<span class="nu">4</span>
+<span class="cm">svy:</span> <span class="cm">mean</span> employed <span class="kw">if</span> round==<span class="nu">5</span>
 
-<span class="co">* Table 5-B: Contract type among employed R1</span>
-<span class="co">*   No contract=7.8%  Mean hours=30.8 hrs/week   Gig work=0.6%</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> no_contract <span class="kw">if</span> round==<span class="nu">1</span> &amp; worked==<span class="nu">1</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> hours       <span class="kw">if</span> round==<span class="nu">1</span>
-<span class="cm">svy:</span> <span class="cm">mean</span> gig_work     <span class="kw">if</span> round&lt;=<span class="nu">3</span>
+<span class="co">* Contract type (R4–R5, among employed)</span>
+<span class="co">* a16: 1=Written  2=No contract  3=Verbal agreement  99=Don't know</span>
+<span class="co">*   Verbal=68.6%  Written=18.4%  No contract=7.2%  Don't know=5.8%</span>
+<span class="kw">gen</span> written = (a16==<span class="nu">1</span>) <span class="kw">if</span> employed==<span class="nu">1</span> &amp; a16 &lt; .
+<span class="kw">gen</span> verbal  = (a16==<span class="nu">3</span>) <span class="kw">if</span> employed==<span class="nu">1</span> &amp; a16 &lt; .
+<span class="cm">svy:</span> <span class="cm">mean</span> written verbal <span class="kw">if</span> <span class="kw">inlist</span>(round,<span class="nu">4</span>,<span class="nu">5</span>)
 
-<span class="co">* Class of worker (a4): 1=private HH  2=private firm  3=govt  4=self  5=family</span>
-<span class="cm">tab</span> a4 <span class="kw">if</span> round==<span class="nu">1</span> &amp; worked==<span class="nu">1</span>
+<span class="co">* Class of worker (a5): 1=Private HH  2=Private firm  3=Govt  4=Self-emp</span>
+<span class="cm">svy:</span> <span class="cm">tab</span> a5 <span class="kw">if</span> employed==<span class="nu">1</span> &amp; <span class="kw">inlist</span>(round,<span class="nu">4</span>,<span class="nu">5</span>)
 
-<span class="co">* ── Income (Module 05) ───────────────────────────────────────────────────────</span>
+<span class="co">* --- 5b. Income (Module 05) ──────────────────────────────────────────────────</span>
 <span class="kw">use</span> <span class="st">"$HF/l2phl_M05_income.dta"</span>, <span class="kw">clear</span>
 <span class="cm">svyset</span> psu [pweight=indw], strata(stratum)
 <span class="co">* ia7 = total income last 30 days (PHP, among earners with ia2==1)</span>
@@ -1285,10 +1333,76 @@ pre.stata-pre .op{color:#F5C48A;}
 </div>
 
 <!-- EPILOGUE -->
+<!-- ═══ DATA NOTES ═══ -->
+<div id="data-notes" class="dq-section">
+  <div class="chap-hdr" style="padding-bottom:0;">
+    <div class="chap-in">
+      <div class="chap-stamp" style="background:var(--amber-bg);color:var(--amber);">🔍</div>
+      <div>
+        <div class="chap-mod" style="color:var(--amber);">Methodology &amp; Caveats</div>
+        <div class="chap-title" data-ed="1" data-type="head">Data Quality &amp; Technical Notes</div>
+      </div>
+    </div>
+    <div class="chap-rule" style="background:linear-gradient(90deg,var(--amber),transparent);"></div>
+  </div>
+  <div style="max-width:1040px;margin:0 auto;padding:28px 0 12px;">
+    <p style="font-size:14.5px;color:var(--ink2);line-height:1.7;margin-bottom:24px;">The following issues were identified during data quality review. They do not invalidate the findings, but affect specific trend comparisons and should be disclosed when presenting results.</p>
+  </div>
+
+  <!-- Attrition -->
+  <div class="dq-block">
+    <div class="dq-block-title">📉 Panel Attrition (46.8%)</div>
+    <p>Of <span data-stat="sample.hh_r1" data-fmt="intcomma">1,239</span> households enrolled in Round 1, only <strong>659 (53.2%)</strong> were successfully re-interviewed in Round 5 — an attrition rate of <strong>46.8%</strong>, above the &lt;30% target threshold.</p>
+    <p>Comparison of R1 baseline characteristics between stayers and non-stayers reveals <strong>mild but systematic attrition bias</strong>:</p>
+    <div class="dq-items" style="margin:10px 0 12px;">
+      <div class="dq-item"><span class="dq-tag warn">BIAS</span><span>Households that stayed in the panel were <strong>3.3 percentage points more food-insecure at baseline</strong> than those lost to follow-up. R5 food insecurity estimates may be slightly upward-biased.</span></div>
+      <div class="dq-item"><span class="dq-tag warn">REGION</span><span>Mindanao households are <strong>underrepresented by 6.7 ppt</strong> among R5 stayers. Regional estimates for Mindanao carry more uncertainty in later rounds.</span></div>
+    </div>
+    <p>All estimates use cross-sectional sampling weights (<em>hhw</em>, <em>indw</em>) calibrated to population totals, which partially correct for differential non-response but may not fully account for time-varying attrition.</p>
+  </div>
+
+  <!-- Structural breaks -->
+  <div class="dq-block">
+    <div class="dq-block-title">⚡ Questionnaire Routing Changes (R5 Finance Module)</div>
+    <p>Several variables in M06 Finance show substantially reduced coverage in Round 5, consistent with a questionnaire routing or skip-pattern change between rounds:</p>
+    <div class="dq-items" style="margin:10px 0 12px;">
+      <div class="dq-item"><span class="dq-tag err">f1</span><span><strong>Used formal bank (past 30 days)</strong> — non-missing for ~12% of HHs in R5 vs. 100% in R1–R4. R5 bank usage estimates are not comparable and are excluded from trend charts.</span></div>
+      <div class="dq-item"><span class="dq-tag warn">f2</span><span><strong>Used mobile money / e-wallet (past 30 days)</strong> — non-missing for ~50% of HHs in R5 vs. 100% in R1–R4. R5 mobile wallet trend value is a lower-bound estimate (missing treated as No).</span></div>
+    </div>
+    <p>Similarly, <strong>internet disruption (n5)</strong> in M03 was asked of ~100% of households in R1–R2 but only ~48–51% in R3–R5. The internet disruption trend series is not strictly comparable from R3 onwards.</p>
+  </div>
+
+  <!-- Electricity outliers -->
+  <div class="dq-block">
+    <div class="dq-block-title">💡 Electricity Outage Outliers (el5, R1–R2)</div>
+    <p>Variable <em>el5</em> (electricity outage hours in the past week) contains <strong>43 implausible values in R1</strong> and <strong>24 in R2</strong> where reported hours exceed 100 (theoretical maximum ≈ 168 hrs/week). These are almost certainly data entry errors.</p>
+    <p>They are excluded from trend computations using <code>replace el5=. if el5&gt;100 | el5==99 | el5&lt;0</code>. However, their presence inflates the R1 and R2 baseline means. The large apparent decline in outage hours from R1 (raw ≈ 14 hrs) to R5 (≈ 2.6 hrs) <strong>partly reflects outlier removal, not only genuine service improvement</strong>. Readers should interpret the electricity outage trend cautiously.</p>
+  </div>
+
+  <!-- Round dates -->
+  <div class="dq-block">
+    <div class="dq-block-title">📅 Fieldwork Dates</div>
+    <p>Round 1 (R1) fieldwork dates are <strong>not recorded</strong> in the M00 passport file. The "Sep 2025" label used throughout this report is an estimate based on project documentation. R2 fieldwork is confirmed as December 2025 from interview timestamps. All round date labels should be treated as approximate.</p>
+  </div>
+
+  <!-- Survey design -->
+  <div class="dq-block">
+    <div class="dq-block-title">📐 Survey Design &amp; Weights</div>
+    <p>All estimates account for complex survey design. Household-level outcomes (food security, shocks, finance, views) are weighted by <em>hhw</em>; individual-level outcomes (employment, health, income) by <em>indw</em>. The primary sampling unit is <em>psu</em>, stratified by <em>stratum</em>. Stata syntax: <code>svyset psu [pweight=hhw], strata(stratum)</code> followed by <code>svy: mean ...</code>.</p>
+    <p>Regional breakdowns use a <strong>macro-region recode</strong> mapping province/division codes (1–19, 101–105) to four macro-regions: NCR, Luzon (excl. NCR), Visayas, and Mindanao. The raw <em>region</em> variable stores province codes, not macro-region codes. Apply the recode before any <code>over(region)</code> analysis:</p>
+    <p><code>gen macro_region = 1 if inlist(region,101,102,103,104,105) // NCR</code><br>
+    <code>replace macro_region = 2 if inlist(region,1,2,3,4,5,14,17)  // Luzon</code><br>
+    <code>replace macro_region = 3 if inlist(region,6,7,8,18)          // Visayas</code><br>
+    <code>replace macro_region = 4 if inlist(region,9,10,11,12,16,19)  // Mindanao</code><br>
+    <code>label define macro_lbl 1 "NCR" 2 "Luzon" 3 "Visayas" 4 "Mindanao"</code><br>
+    <code>label values macro_region macro_lbl</code></p>
+  </div>
+</div>
+
 <section class="epi">
   <div style="font-size:40px;margin-bottom:18px;">🇵🇭</div>
   <h2 class="epi-hed" data-ed="1" data-type="head">"Recovery is measurable. Vulnerability is not gone."</h2>
-  <p class="epi-body" data-ed="1" data-type="body">Five months of calls tell a story of real but fragile improvement. Food stress halved. Shock incidence collapsed. PhilHealth coverage grew. And yet: 18% are still moderately food insecure. 59% still pay out-of-pocket when they get sick. 69% of workers have no contract. Price anxiety is the sharpest signal from every round. The improvement is real — but the floor remains low.</p>
+  <p class="epi-body" data-ed="1" data-type="body">Five months of calls tell a story of real but fragile improvement. Food stress halved. Shock incidence collapsed. PhilHealth coverage grew. And yet: <span data-stat="fies.mod_sev_r5" data-fmt="pct0">18%</span> are still moderately food insecure. 59% still pay out-of-pocket when they get sick. 69% of workers have no contract. Price anxiety is the sharpest signal from every round. The improvement is real — but the floor remains low.</p>
   <div class="epi-stats">
     <div class="epi-stat"><div class="epi-stat-n" style="color:#F5C48A;" data-ed="1" data-type="number">5</div><div class="epi-stat-l">Monthly rounds</div></div>
     <div class="epi-stat"><div class="epi-stat-n" style="color:#B8EDCA;" data-ed="1" data-type="number">41→18%</div><div class="epi-stat-l">Food insecurity fall</div></div>
@@ -1296,7 +1410,7 @@ pre.stata-pre .op{color:#F5C48A;}
     <div class="epi-stat"><div class="epi-stat-n" style="color:#87CEEB;" data-ed="1" data-type="number">55%</div><div class="epi-stat-l">PhilHealth coverage</div></div>
     <div class="epi-stat"><div class="epi-stat-n" style="color:#FFB3B3;" data-ed="1" data-type="number">69%</div><div class="epi-stat-l">No work contract</div></div>
   </div>
-  <p class="epi-meta">L2P Philippines · CATI Panel Survey · Rounds 1–5 · Sep 2025–Jan 2026 · M01–M09 · All estimates weighted (hhw / indw)</p>
+  <p class="epi-meta">L2P Philippines · CATI Panel Survey · Rounds 1–7 collected (R1–R5 charted; R6–R7 update pending) · Nov 2025–May 2026 · M01–M09 · All estimates weighted (hhw / indw)</p>
 </section>
 
 <!-- Edit bar -->
@@ -1320,84 +1434,22 @@ pre.stata-pre .op{color:#F5C48A;}
 // ═══════════════════════════════════════
 //  DATA
 // ═══════════════════════════════════════
-const RL = ['R1','R2','R3','R4','R5'];
-const RM = ['Sep','Oct','Nov','Dec','Jan'];
+// @Claude 2026-05-28: R6/R7 collected but not yet charted.
+// To extend charts to R1–R7:
+//   1. Run l2phl_master_analysis_v2.do (or v3) in Stata
+//   2. Append two values per chart data array below
+//   3. Uncomment R6/R7 entries in RL and RM
+// Months corrected on 2026-05-28: R1 is Nov-25 (not Sep-25 as previously listed)
+const RL = ['R1','R2','R3','R4','R5'];  // TODO: extend to ['R1'..'R7'] after Stata re-run
+const RM = ['Nov','Dec','Jan','Feb','Mar'];  // TODO: extend with 'Apr','May'
+// Fully-extended labels for reference (uncomment + swap once data is in):
+// const RL_FULL = ['R1','R2','R3','R4','R5','R6','R7'];
+// const RM_FULL = ['Nov','Dec','Jan','Feb','Mar','Apr','May'];
 const RLAB = RL.map((r,i)=>r+'\n'+RM[i]);
+</script>
 
-const DATA = {
-  food_trend:   [40.99,30.97,26.82,21.49,18.2],
-  shock_trend:  [34.91,22.63,16.71,14.28,12.09],
-  ls_trend:     [2.83,2.81,2.79,2.85,2.88],
-  fies: {"Worried about not having enough food": 39.22, "Ate less than thought should": 27.84, "Ran out of food": 21.41, "Hungry but did not eat": 14.78, "Went without eating whole day": 6.47},
-  severity: {"Food secure": 52.36, "Mild": 29.44, "Moderate": 14.53, "Severe": 3.66},
-  sev_macro: {
-    NCR:   71.78,
-    Luzon: 2.83,
-    Visayas: 5.11,
-    Mindanao: 5.4,
-  },
-  shock_types: {"Major illness": 4.5, "Typhoons": 2.47, "Unexpected loss of job": 1.83, "Non-payment or delay in payment of income": 0.9, "Major injury": 0.64, "Floods/La Ni\u00f1a": 0.61, "Inflation (increase of food/fuel/commodity prices)": 0.54, "Death": 0.31, "Major financial problem": 0.29, "Food shortage": 0.22},
-  coping: {"Borrowed from friends and family": 24.6, "Received assistance from friends and family ": 13.84, "Relied on savings": 9.84, "Received assistance from government": 9.24, "Increased hours of work": 7.85, "Engaged in additional income generating activities": 6.65, "Others, specify": 6.07, "Consulted a medical professional": 4.82},
-  shock_macro: {"Luzon (excl. NCR)": 13.86, "Mindanao": 2.09, "NCR": 9.1, "Visayas": 18.4},
-  finance: {
-    'Mobile money acc':49.93,
-    'Used mobile wallet':41.71,
-    'Bank account':12.1,
-    'Used bank':34.15,
-    'Took loan':18.09,
-    'Managed to save':12.92,
-    'Bought online':23.59,
-    'Received remittance':18.26,
-    'Cover ₱300k emergency':3.46,
-  },
-  loan_purpose: {"Medical/health": 30.04, "Housing repair": 25.21, "Business": 12.26, "Agricultural input": 10.21, "Debt repayment": 6.98, "Food and other daily needs": 6.13, "Education": 4.26},
-  inc_macro: {"Luzon (excl. NCR)": 15611.0, "Mindanao": 11405.8, "NCR": 8904.6, "Visayas": 11870.7},
-  ph_type: {"Not covered": 45.09, "PhilHealth Non-Paying": 15.87, "Dependent (Non-Paying)": 15.5, "PhilHealth Paying": 14.5, "Dependent (Paying)": 9.05},
-  ph_macro: {"Luzon (excl. NCR)": 52.33, "Mindanao": 61.59, "NCR": 71.78, "Visayas": 55.21},
-  facility: {"Barangay Health Station": 36.99, "Public Hospital": 34.22, "Rural Health Unit": 12.55, "Private Clinic": 11.55, "Private Hospital": 4.69},
-  contract: {"No contract": 68.58, "Written": 18.41, "Verbal": 7.23, "Don't know": 5.78},
-  class_work: {"Private HH": 28.81, "Private establishment": 27.03, "Self-employed": 18.25, "Government": 7.5, "Employer": 7.46, "Family business (unpaid)": 2.2},
-  eco_change: {"Same": 52.44, "Somewhat worse": 23.89, "Somewhat better": 9.96, "Much worse": 8.4, "Much better": 5.3},
-  likert: {"Prices rising too fast": 44.49, "Optimistic about economy": 31.8, "More citizen participation in govt": 14.02, "Worried: child education": 14.84, "Worried: job loss": 33.73, "Worried: political instability": 30.38, "Digital services helpful (past month)": 25.97, "Taxes well spent": 38.71, "Govt fighting corruption well": 35.35, "Country on right track": 40.25},
-  life_sat_dist: {"1": 6.8, "2": 24.57, "3": 50.36, "4": 9.85, "5": 8.41},
-  // ── TREND DATA (R1–R5, weighted) ──
-  fies_items_trend: {
-    'Worried about food':      [57.43, 46.70, 46.17, 41.95, 39.22],
-    'Ate less than should':    [52.44, 43.24, 39.43, 29.17, 27.84],
-    'Ran out of food':         [44.48, 35.06, 29.08, 24.41, 21.41],
-    'Hungry, didn\'t eat':    [32.05, 25.42, 21.70, 17.84, 14.78],
-    'Whole day without food':  [14.79, 10.21,  8.40,  8.24,  6.47],
-  },
-  fies_foodsec_trend: [29.08, 40.41, 44.68, 48.26, 52.36],
-  shock_types_trend: {
-    'Typhoons':       [17.63, 12.71, 7.14, 5.37, 2.37],
-    'Major illness':  [ 7.48,  4.90, 3.87, 4.23, 4.31],
-    'Job loss':       [ 2.30,  2.11, 2.30, 2.55, 1.64],
-    'Floods':         [ 1.73,  0.66, 0.59, 0.37, 0.32],
-  },
-  utilities_trend: {
-    'Water disrupted %':    [25.79, 16.42, 14.07, 11.55,  9.83],
-    'Internet disrupted %': [46.66, 34.76, 39.62, 33.61, 29.69],
-    'Elec outage (hrs)':    [14.24,  9.33,  8.64,  2.67,  2.59],
-  },
-  finance_trend: {
-    'Mobile wallet used %': [14.95, 16.21, 18.67, 18.88, 20.83],
-    'Took loan %':          [22.14, 19.83, 22.40, 21.04, 18.09],
-    'Able to save %':       [13.28, 13.04, 13.57, 11.60, 12.92],
-    'Cover 300k %':         [ 3.71,  2.86,  2.31,  2.21,  3.46],
-  },
-  eco_trend: {
-    'Worse':  [36.17, 34.34, 36.58, 34.41, 32.29],
-    'Same':   [45.37, 49.06, 49.46, 52.31, 52.44],
-    'Better': [18.46, 16.60, 13.96, 13.28, 15.27],
-  },
-  perception_trend: {
-    'Economy will improve': [49.68, 49.11, 45.12, 37.56, 44.49],
-    'Things will get better': [27.94, 25.68, 29.99, 32.22, 30.38],
-    'Prices keep rising':   [19.49, 16.80, 19.38, 15.01, 14.02],
-    'Satisfied with govt':  [43.72, 43.86, 37.78, 43.42, 40.25],
-  },
-};
+<script id="sl-data" type="application/json">{"food_trend": [40.99, 30.97, 26.82, 21.49, 18.2], "shock_trend": [34.91, 22.63, 16.71, 14.28, 12.09], "ls_trend": [2.83, 2.81, 2.79, 2.85, 2.88], "fies": {"Worried about not having enough food": 39.22, "Ate less than thought should": 27.84, "Ran out of food": 21.41, "Hungry but did not eat": 14.78, "Went without eating whole day": 6.47}, "severity": {"Food secure": 52.36, "Mild": 29.44, "Moderate": 14.53, "Severe": 3.66}, "sev_macro": {"NCR": 66.3, "Luzon": 60.0, "Visayas": 42.7, "Mindanao": 37.0}, "shock_types": {"Major illness": 4.5, "Typhoons": 2.47, "Unexpected loss of job": 1.83, "Non-payment or delay in payment of income": 0.9, "Major injury": 0.64, "Floods/La Niña": 0.61, "Inflation (increase of food/fuel/commodity prices)": 0.54, "Death": 0.31, "Major financial problem": 0.29, "Food shortage": 0.22}, "coping": {"Borrowed from friends and family": 24.6, "Received assistance from friends and family ": 13.84, "Relied on savings": 9.84, "Received assistance from government": 9.24, "Increased hours of work": 7.85, "Engaged in additional income generating activities": 6.65, "Others, specify": 6.07, "Consulted a medical professional": 4.82}, "shock_macro": {"NCR": 16.3, "Luzon (excl. NCR)": 14.0, "Visayas": 14.7, "Mindanao": 3.6}, "finance": {"Mobile money acc (f18)": 49.93, "Bought online (f15)": 23.59, "Took loan (f7)": 18.09, "Received remittance": 18.26, "Used bank 30d (f3)": 12.92, "Bank account (f17)": 12.1, "Used mobile 30d (f6)": 3.46, "Cover ₱300k (f16)": 3.25}, "loan_purpose": {"Medical/health": 30.04, "Housing repair": 25.21, "Business": 12.26, "Agricultural input": 10.21, "Debt repayment": 6.98, "Food and other daily needs": 6.13, "Education": 4.26}, "inc_macro": {"NCR": 21566, "Luzon (excl. NCR)": 13633, "Visayas": 11787, "Mindanao": 11341}, "ph_type": {"Not covered": 78.26, "Member (no card)": 16.33, "Member + card": 4.78, "Dependent": 0.62}, "ph_macro": {"NCR": 31.2, "Luzon (excl. NCR)": 27.2, "Visayas": 17.7, "Mindanao": 20.0}, "facility": {"Barangay Health Station": 36.99, "Private Clinic": 34.22, "Rural Health Unit": 12.55, "Public Hospital": 11.55, "Private Hospital": 4.69}, "contract": {"Verbal agreement": 68.58, "Written": 18.41, "No contract": 7.23, "Don't know": 5.78}, "class_work": {"Private HH": 28.81, "Private establishment": 27.03, "Self-employed": 18.25, "Government": 7.5, "Employer": 7.46, "Family business (unpaid)": 2.2}, "eco_change": {"Same": 52.44, "Somewhat worse": 23.89, "Somewhat better": 9.96, "Much worse": 8.4, "Much better": 5.3}, "likert": {"Prices rising too fast": 44.49, "Optimistic about economy": 31.8, "More citizen participation in govt": 14.02, "Worried: child education": 14.84, "Worried: job loss": 33.73, "Worried: political instability": 30.38, "Digital services helpful (past month)": 25.97, "Taxes well spent": 38.71, "Govt fighting corruption well": 35.35, "Country on right track": 40.25}, "life_sat_dist": {"1": 6.8, "2": 24.57, "3": 50.36, "4": 9.85, "5": 8.41}, "fies_items_trend": {"Worried about food": [57.43, 46.7, 46.17, 41.95, 39.22], "Ate less than should": [52.44, 43.24, 39.43, 29.17, 27.84], "Ran out of food": [44.48, 35.06, 29.08, 24.41, 21.41], "Hungry, didn't eat": [32.05, 25.42, 21.7, 17.84, 14.78], "Whole day without food": [14.79, 10.21, 8.4, 8.24, 6.47]}, "fies_foodsec_trend": [29.08, 40.41, 44.68, 48.26, 52.36], "shock_types_trend": {"Typhoons": [17.63, 12.71, 7.14, 5.37, 2.37], "Major illness": [7.48, 4.9, 3.87, 4.23, 4.31], "Job loss": [2.3, 2.11, 2.3, 2.55, 1.64], "Floods": [1.73, 0.66, 0.59, 0.37, 0.32]}, "utilities_trend": {"Water disrupted %": [25.79, 16.42, 14.07, 11.55, 9.83], "Internet disrupted %": [46.66, 34.76, 39.62, 33.61, 29.69], "Elec outage (hrs)": [14.24, 9.33, 8.64, 2.67, 2.59]}, "finance_trend": {"Has mobile money (f2) %": [14.95, 16.21, 18.67, 18.88, 20.83], "Took loan (f7) %": [22.14, 19.83, 22.4, 21.04, 18.09], "Used bank 30d (f3) %": [13.28, 13.04, 13.57, 11.6, 12.92], "Used mobile 30d (f6) %": [3.71, 2.86, 2.31, 2.21, 3.46]}, "eco_trend": {"Worse": [36.17, 34.34, 36.58, 34.41, 32.29], "Same": [45.37, 49.06, 49.46, 52.31, 52.44], "Better": [18.46, 16.6, 13.96, 13.28, 15.27]}, "perception_trend": {"Economy will improve": [49.68, 49.11, 45.12, 37.56, 44.49], "Things will get better": [27.94, 25.68, 29.99, 32.22, 30.38], "Prices keep rising": [19.49, 16.8, 19.38, 15.01, 14.02], "Satisfied with govt": [43.72, 43.86, 37.78, 43.42, 40.25]}}</script>
+<script>const SL = JSON.parse(document.getElementById('sl-data').textContent); const DATA = SL.charts;
 
 // ═══════════════════════════════════════
 //  CHART SETUP
@@ -1472,7 +1524,7 @@ lazy('cSeverity',()=>new Chart(document.getElementById('cSeverity'),{type:'bar',
 lazy('cSevMacro',()=>{
   const d=DATA.sev_macro;
   new Chart(document.getElementById('cSevMacro'),{type:'bar',data:{
-    labels:['NCR','Luzon','Visayas','Mindanao'],
+    labels:['NCR','Luzon (excl. NCR)','Visayas','Mindanao'],
     datasets:[{data:[d.NCR,d.Luzon,d.Visayas,d.Mindanao],backgroundColor:[P.forest,P.amber,P.terra,P.rose],borderRadius:BRAD,borderWidth:0,barPercentage:BWIDTH}]
   },options:{responsive:true,maintainAspectRatio:false,
     scales:{x:{grid:{display:false},ticks:TK},y:{grid:GR,ticks:{...TK,callback:v=>v+'%'}}},
