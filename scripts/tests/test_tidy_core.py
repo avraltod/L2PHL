@@ -60,3 +60,49 @@ def test_classify_dir_aliases():
 def test_classify_dir_keeps_normal():
     assert classify_dir("do") is None
     assert classify_dir("_attic") is None  # already correct
+
+# append to scripts/tests/test_tidy_core.py
+from tidy_core import classify_dir_files
+
+def actions_by_name(results):
+    return {r.name: (r.action, r.reason) for r in results}
+
+def test_latest_ap_is_live_others_archived():
+    files = [
+        "hf_l2phl_analysis@AP@20260119.do",
+        "hf_l2phl_analysis@AP@20260520.do",
+        "hf_l2phl_analysis@Claude@20260520.do",
+    ]
+    res = actions_by_name(classify_dir_files(files))
+    assert res["hf_l2phl_analysis@AP@20260520.do"][0] == "KEEP"
+    assert res["hf_l2phl_analysis@AP@20260119.do"] == ("ARCHIVE", "superseded-date")
+    assert res["hf_l2phl_analysis@Claude@20260520.do"] == ("ARCHIVE", "non-ap-author")
+
+def test_prefix_typo_rename():
+    files = ["L2PH_CATI@R02@AP@20251228.do"]
+    res = actions_by_name(classify_dir_files(files))
+    assert res["L2PH_CATI@R02@AP@20251228.do"][0] == "RENAME"
+    assert res["L2PH_CATI@R02@AP@20251228.do"][1] == "prefix-typo"
+
+def test_version_suffix_archived():
+    files = ["sl_stats.json", "sl_stats_v2.json"]
+    res = actions_by_name(classify_dir_files(files))
+    assert res["sl_stats.json"][0] == "KEEP"
+    assert res["sl_stats_v2.json"] == ("ARCHIVE", "version-suffix")
+
+def test_slot_with_no_ap_is_flagged():
+    files = ["L2PHL_CATI@R02@BB@20251222.do", "L2PHL_CATI@R02@CV@20251231.do"]
+    res = actions_by_name(classify_dir_files(files))
+    assert all(v[0] == "FLAG" for v in res.values())
+
+def test_two_live_same_date_flagged():
+    files = ["x@R01@AP@20260101.do", "x@R01@AP@20260101.R"]  # diff ext = diff slot, both live
+    res = actions_by_name(classify_dir_files(files))
+    assert res["x@R01@AP@20260101.do"][0] == "KEEP"
+    assert res["x@R01@AP@20260101.R"][0] == "KEEP"
+
+def test_plain_file_kept():
+    files = ["00_setup.do", "README.md"]
+    res = actions_by_name(classify_dir_files(files))
+    assert res["00_setup.do"][0] == "KEEP"
+    assert res["README.md"][0] == "KEEP"
