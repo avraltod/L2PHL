@@ -9,15 +9,18 @@ What it verifies:
   CATI storyline : build_cati_story.py --check  (HTML vs sl_stats.json)
   CAPI storyline : build_capi_story.py --check  (HTML vs storyline_results_stata.md)
 
-Data prerequisites for the FULL end-to-end run (regenerate numbers from data):
-  CATI : CATI/Analysis/HF/l2phl_M08_fies.dta   (FIES module — currently missing)
-  CAPI : CAPI/Round00/dta/*.dta                (baseline microdata — gitignored/absent)
+Root cause of the end-to-end gap (NOT missing data — the data is all present):
+  CATI : the master references l2phl_M08_fies.dta but the FIES items (f08_a-e) are
+         in l2phl_M08_food.dta, and more variables drifted in the 2026-05-29 re-pool
+         (e.g. sh1b_1). The master needs a variable-name reconciliation pass.
+  CAPI : the baseline .dta live in CAPI/Round00/dta/<date>/ (dated subfolder), where
+         the replication's $dta/$date already point — it should run as-is.
 See memory `repro-stata-data-prereqs` and WORKFLOW.md.
 """
 import os, glob, subprocess, sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FIES = os.path.join(REPO, "CATI", "Analysis", "HF", "l2phl_M08_fies.dta")
+FIES = os.path.join(REPO, "CATI", "Analysis", "HF", "l2phl_M08_food.dta")  # FIES items f08_a-e live here
 R00 = os.path.join(REPO, "CAPI", "Round00", "dta")
 CATI_BUILD = os.path.join(REPO, "scripts", "build_cati_story.py")
 CAPI_BUILD = os.path.join(REPO, "scripts", "build_capi_story.py")
@@ -46,11 +49,11 @@ def main():
 
     print("\nData for the full end-to-end run (regenerate numbers from .dta):")
     fies_ok = os.path.exists(FIES)
-    r00_ok = bool(glob.glob(os.path.join(R00, "*.dta")))
-    _line("CATI FIES dataset (l2phl_M08_fies.dta)", fies_ok,
-          "present" if fies_ok else "MISSING — CATI master can't run end-to-end")
-    _line("CAPI Round00 microdata (CAPI/Round00/dta/*.dta)", r00_ok,
-          "present" if r00_ok else "MISSING — CAPI replication can't run")
+    r00_ok = bool(glob.glob(os.path.join(R00, "*", "*.dta")))  # baseline .dta sit in a dated subfolder
+    _line("CATI FIES items (l2phl_M08_food.dta: f08_a-e)", fies_ok,
+          "present (master references the old _fies name + has variable drift vs re-pooled data)" if fies_ok else "missing")
+    _line("CAPI Round00 microdata (CAPI/Round00/dta/<date>/*.dta)", r00_ok,
+          "present — replication should run" if r00_ok else "missing")
 
     print("\nNext steps:")
     if fies_ok:
