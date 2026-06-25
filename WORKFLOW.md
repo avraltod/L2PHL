@@ -32,6 +32,8 @@ The reproducibility *tooling* is data-independent, but regenerating the numbers 
 
 Run each in your environment where these exist, then `build_*_story.py --check` surfaces the value diffs. See memory `repro-stata-data-prereqs`.
 
+**One-command status:** `python3 scripts/verify_repro.py` runs both drift gates, reports whether the FIES + Round00 datasets are present, and prints the exact next step — re-run it after dropping the data in.
+
 ### Adding a new number to the story
 1. Add the key + value to `sl_stats.json` and document it in `CATI/Analysis/SL/docs/sl_stats_schema.md`.
 2. Emit it from the do-file: `stat_put` (scalar), `stat_arr` (array), `stat_obj` (label→value), or `stat_objarr_open/row/close` (object-of-arrays trend).
