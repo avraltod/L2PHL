@@ -3,7 +3,6 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
-VERDICTS = ("A1", "A2", "B", "C", "D", "REVIEW")
 OWNER = {
     "A1": "firm-questionnaire",   # Kobo skip logic wrong/missing
     "A2": "firm-field",           # gate correct but response violates it
@@ -12,6 +11,7 @@ OWNER = {
     "D":  "expected",             # structural / not a real issue
     "REVIEW": "unassigned",
 }
+VERDICTS = tuple(OWNER)           # derived from OWNER keys so it can't drift
 OPEN_STATES   = {"new", "acknowledged", "fix-pending", "reopened"}
 CLOSED_STATES = {"resolved", "wontfix", "accepted"}
 
@@ -57,8 +57,10 @@ class Issue:
     owner: Optional[str] = None
     status: str = "new"
     report_to_firm: bool = False
-    rounds: dict = field(default_factory=dict)
+    rounds: dict = field(default_factory=dict)   # optional per-round status overrides {round: status}, applied by the registry
     registry_notes: str = ""
+    def __post_init__(self):
+        self.key = self.flag.key
     @property
     def effective_verdict(self) -> str:
         return self.verdict or self.proposed_verdict
