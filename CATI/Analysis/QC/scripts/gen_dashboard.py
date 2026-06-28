@@ -2452,8 +2452,12 @@ function buildOverview(){
   const mg = document.getElementById('mod-grid');
   mg.innerHTML = MODULES.map(m=>{
     const s = DQ.module_summary[m]||{};
-    const rag = s.rag||'green';
     const iss = ISUM[m] || {strip:{}, headline:'green', open:0, closed:0, by_owner:{}};
+    const _miss = s.max_missing_pct || 0;
+    const _missSig = _miss >= 30 ? 'red' : (_miss >= 10 ? 'yellow' : 'green');
+    const _ord = {green:0, yellow:1, red:2};
+    const _ih = iss.headline || 'green';
+    const rag = _ord[_ih] >= _ord[_missSig] ? _ih : _missSig;   // worst of open-issue status + missing%
     const istrip = [1,2,3,4,5,6,7,8].map(r=>{
       const st = iss.strip[String(r)] || 'green';
       const ch = st==='red' ? '!' : (st==='closed' ? '·' : '');
@@ -2470,18 +2474,10 @@ function buildOverview(){
     const droppedQ = rows.filter(r=>r.status&&r.status.startsWith('Dropped')).length;
     const changedQ = rows.filter(r=>r.title_changes||r.skip_changes||r.option_changes).length;
 
-    // Build "why" triggers list
+    // Build "why" triggers list (open-issue + missing-data driven)
     const triggers = [];
-    if(rag==='red'){
-      if((s.n_skip_violations||0)>100) triggers.push(`skip violations (${s.n_skip_violations}) > 100`);
-      if((s.n_mandatory_missing||0)>100) triggers.push(`mandatory missing (${s.n_mandatory_missing}) > 100`);
-      if((s.max_missing_pct||0)>=30) triggers.push(`worst variable ${s.max_missing_pct}% ≥ 30%`);
-    } else if(rag==='yellow'){
-      if((s.n_skip_violations||0)>0) triggers.push(`${s.n_skip_violations} skip violation${s.n_skip_violations>1?'s':''}`);
-      if((s.n_mandatory_missing||0)>0) triggers.push(`${s.n_mandatory_missing} mandatory missing`);
-      if((s.n_oor_values||0)>0) triggers.push(`${s.n_oor_values} out-of-range`);
-      if((s.max_missing_pct||0)>=10) triggers.push(`worst variable ${s.max_missing_pct}% ≥ 10%`);
-    }
+    if(iss.open > 0) triggers.push(`${iss.open} open issue${iss.open>1?'s':''}`);
+    if(_miss >= 10) triggers.push(`worst variable ${_miss.toFixed(0)}% missing`);
     const triggerHtml = triggers.length
       ? `<div style="margin-top:4px;padding:4px 6px;background:${rag==='red'?'rgba(231,76,60,0.12)':'rgba(243,156,18,0.12)'};border-radius:4px;font-size:10.5px;color:${rag==='red'?'#e74c3c':'#f39c12'}"><strong>Why ${rag}:</strong> ${triggers.join(' · ')}</div>`
       : '';
