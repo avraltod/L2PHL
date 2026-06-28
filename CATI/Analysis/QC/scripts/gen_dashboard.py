@@ -2345,7 +2345,10 @@ function renderIssues(){
   const byMod = {};
   rows.forEach(r=>{ (byMod[r.module]=byMod[r.module]||[]).push(r); });
   const counts = Object.values(ISUM||{}).reduce((a,s)=>{a.open+=s.open||0;a.closed+=s.closed||0;return a;},{open:0,closed:0});
-  let html = `<div class="mstat">Showing ${rows.length} issue(s) · ${counts.open} open / ${counts.closed} closed total</div>`;
+  const vc = {}; ISSUES.forEach(r=>{ vc[r.verdict] = (vc[r.verdict]||0)+1; });
+  const vcLine = Object.keys(vc).sort().map(v=>`${v}:${vc[v]}`).join(' · ');
+  let html = `<div class="mstat">Showing ${rows.length} issue(s) · ${counts.open} open / ${counts.closed} closed total</div>`
+           + `<div class="mstat">By verdict: ${vcLine}</div>`;
   Object.keys(byMod).sort().forEach(m=>{
     html += `<h2 style="margin-top:16px">${m} – ${MOD_NAMES[m]||''}</h2>`;
     byMod[m].forEach((r,i)=>{
