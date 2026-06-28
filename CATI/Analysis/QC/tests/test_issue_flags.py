@@ -16,3 +16,14 @@ def test_extracts_skip_and_oor():
 def test_ignores_zero_count_entries():
     dq = {"x":[{"module":"M03","variable":"sh2","rule":"r","counts_by_round":{"1":0,"2":0}}]}
     assert extract_flags(dq) == []
+
+def test_kind_mandatory_and_dedup():
+    dq = {"a":[
+        {"module":"M01","variable":"d5","rule":"D5 must be filled for all members",
+         "counts_by_round":{"3":4}},
+        {"module":"M01","variable":"d5","rule":"D5 must be filled for all members",  # duplicate node
+         "counts_by_round":{"3":4}},
+    ]}
+    flags = extract_flags(dq)
+    assert len(flags) == 1                     # dedup by key
+    assert flags[0].kind == "mandatory"        # "must be" -> mandatory
