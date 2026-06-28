@@ -25,16 +25,17 @@ def _norm_refs(expr_or_list):
     return set(x.lower() for x in (expr_or_list or []))
 
 def rule_C(f, ev):
-    """Our check's declared gate disagrees with the Kobo relevant for that round."""
-    check_refs = set(ev.data.get("check_gate_refs", []) or [])
-    if not check_refs:
-        return None
-    own_base = re.sub(r"_\d+$", "", f.variable.lower())   # d26_2 -> d26: a sibling sub-question is not a gate
-    for _, rel in sorted((ev.kobo.get("relevant_by_round") or {}).items()):
-        kobo_refs = _norm_refs(rel)
-        extra = {r for r in (kobo_refs - check_refs) if re.sub(r"_\d+$", "", r) != own_base}
-        if extra:                                    # Kobo gates on vars our check ignores
-            return ("C", "high", "check-vs-kobo")
+    """Our check's declared gate disagrees with the Kobo relevant.
+
+    DORMANT (verified false-positive). The set-difference of gate variables
+    (`check_gate_refs` vs the Kobo relevant's refs) cannot tell an OR-alternative
+    from a missed conjunct. Stata-verified on a18/a19: Kobo gates on
+    (A1=1 OR A24=1 OR A26=1 OR A27=1) AND (A6.. OR A16..); our check fixes A1=1,
+    so A24/A26/A27 are moot — the violations are genuine A2, not C. Reliable C
+    needs the Kobo expression's boolean structure AND the check's fixed-vs-excluded
+    semantics, not just the variable set. `check_gate_refs` is still populated in
+    evidence (and shown in the dashboard drill-in) for manual inspection.
+    """
     return None
 
 def rule_B(f, ev):
