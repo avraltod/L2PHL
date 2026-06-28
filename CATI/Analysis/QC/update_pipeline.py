@@ -754,11 +754,10 @@ def rebuild_dofiles(do_files):
 # ── STEP 4b — Build issue intelligence ───────────────────────────────────────
 def rebuild_issues():
     step("4b", "Building issue intelligence (issues.json)")
-    r = subprocess.run([sys.executable, str(SCRIPTS / 'build_issues.py')],
-                       capture_output=True, text=True)
-    if r.returncode != 0:
-        log(f"build_issues failed:\n{r.stderr[-800:]}", 'ERROR'); return False
-    log(r.stdout.strip() or "issues.json written", 'OK'); return True
+    ok = run_script('build_issues.py')
+    if ok:
+        log("cache/issues.json written", 'OK')
+    return ok
 
 
 # ── STEP 5 — Regenerate HTML dashboard ───────────────────────────────────────
