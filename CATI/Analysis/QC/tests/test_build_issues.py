@@ -33,3 +33,26 @@ def test_build_with_registry_decision():
     assert rec["verdict"] == "A1"
     assert rec["status"] == "acknowledged"
     assert rec["notes"] == "confirmed skip logic gap"
+
+def test_review_excludes_structural_D():
+    # high-confidence structural D should NOT clutter the review queue
+    dq = {"x":[{"module":"M01","variable":"d25_oth","rule":"D25=96 but D25_oth missing",
+                "counts_by_round":{"2":11}}]}
+    out = build(dq_data=dq, kobo={"M01":{"variables":[]}}, do_modules={}, var_universe=set(), registry={})
+    rec = out["issues"][0]
+    assert rec["proposed_verdict"] == "D" and rec["review"] is False
+
+def test_review_includes_review_verdict():
+    # an OOR check whose var IS in Kobo -> REVIEW verdict -> needs human review
+    dq = {"x":[{"module":"M03","variable":"sh4","label":"out of range","counts":{"5":3}}]}
+    kobo = {"M03":{"variables":[{"name":"sh4","rules_by_round":{"5":{"relevant":"${SH1}=1"}}}]}}
+    out = build(dq_data=dq, kobo=kobo, do_modules={}, var_universe={"sh1","sh4"}, registry={})
+    rec = out["issues"][0]
+    assert rec["proposed_verdict"] == "REVIEW" and rec["review"] is True
+
+def test_review_excludes_adjudicated_actionable():
+    # a firm issue already acknowledged is adjudicated -> out of the review queue
+    dq = {"x":[{"module":"M01","variable":"d5","rule":"D5 missing","counts_by_round":{"2":3}}]}
+    registry = {"M01/d5/d5-missing": {"verdict": "A1", "status": "acknowledged"}}
+    out = build(dq_data=dq, kobo={}, do_modules={}, var_universe=set(), registry=registry)
+    assert out["issues"][0]["review"] is False

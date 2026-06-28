@@ -41,13 +41,17 @@ def build(dq_data, kobo, do_modules, var_universe, registry):
             "status": it.status, "report_to_firm": it.report_to_firm,
             "rounds": it.rounds, "notes": it.registry_notes,
             "evidence": {"data": it.evidence.data, "kobo": it.evidence.kobo, "dofile": it.evidence.dofile},
-            "review": it.status == "new" or it.confidence == "low" or it.proposed_verdict == "REVIEW",
+            # needs human review: an unadjudicated actionable issue, or genuinely uncertain.
+            # Confident structural D is the suppression category, not a review item.
+            "review": (it.effective_verdict in ("A1", "A2", "B", "C") and it.status == "new")
+                      or it.confidence == "low" or it.effective_verdict == "REVIEW",
         })
     return {"issues": records, "changes": changes}
 
 def main():
     dq = json.load(open(os.path.join(_CACHE, "dq_data.json")))
-    kobo = json.load(open(os.path.join(_CACHE, "kobo_skip_logic.json")))
+    kobo_path = os.path.join(_CACHE, "kobo_skip_logic.json")
+    kobo = json.load(open(kobo_path)) if os.path.exists(kobo_path) else {}   # cold-cache: degrade gracefully
     do_path = os.path.join(_CACHE, "do_modules.json")
     do_modules = json.load(open(do_path)) if os.path.exists(do_path) else {}
     reg = load_registry()
