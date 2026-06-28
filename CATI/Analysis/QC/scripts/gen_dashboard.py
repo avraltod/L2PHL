@@ -1768,6 +1768,13 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
 </div>
 <div class="card">
   <h2>Module-Level Quality Summary <span class="badge badge-blue">Click a card to view details</span></h2>
+  <div style="margin:2px 0 10px;font-size:11px;color:#555">
+    Per-round strip:
+    <span class="idot red" style="display:inline-block;vertical-align:middle">!</span> open firm issue
+    &nbsp;<span class="idot yellow" style="display:inline-block;vertical-align:middle"></span> open
+    &nbsp;<span class="idot closed" style="display:inline-block;vertical-align:middle">·</span> closed
+    &nbsp;<span class="idot green" style="display:inline-block;vertical-align:middle;border:1px solid #cfe8d6"></span> clean
+  </div>
   <div id="mod-grid" class="mod-grid"></div>
 </div>
 <div class="card">
