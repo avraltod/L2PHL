@@ -2399,6 +2399,13 @@ function buildOverview(){
   mg.innerHTML = MODULES.map(m=>{
     const s = DQ.module_summary[m]||{};
     const rag = s.rag||'green';
+    const iss = ISUM[m] || {strip:{}, headline:'green', open:0, closed:0, by_owner:{}};
+    const istrip = [1,2,3,4,5,6,7,8].map(r=>{
+      const st = iss.strip[String(r)] || 'green';
+      const ch = st==='red' ? '!' : (st==='closed' ? '·' : '');
+      return `<span class="idot ${st}" title="R${r}: ${st}">${ch}</span>`;
+    }).join('');
+    const ownerBits = Object.entries(iss.by_owner||{}).map(([o,n])=>`${n} ${o.replace('firm-','')}`).join(' · ');
     const ragLabel = {red:'⚠ Issues',yellow:'⚡ Watch',green:'✓ OK'};
     const ragChipBg = {red:'#fde',yellow:'#fff3cd',green:'#d4edda'};
     const ragChipColor = {red:'#c0392b',yellow:'#856404',green:'#155724'};
@@ -2428,6 +2435,8 @@ function buildOverview(){
     return `<div class="mod-card ${rag}" onclick="showPage('mod-${m}')">
       <div class="rag-chip" style="background:${ragChipBg[rag]};color:${ragChipColor[rag]}">${ragLabel[rag]}</div>
       <div class="mname">${m} – ${MOD_NAMES[m]}</div>
+      <div class="istrip" title="Per-round status (open issues only)">${istrip}</div>
+      <div class="mstat">Issues: ${iss.open} open${ownerBits?` (${ownerBits})`:''} · ${iss.closed} closed</div>
       <div class="mstat ${s.n_skip_violations>0?'warn':''}">Skip violations: ${s.n_skip_violations||0}</div>
       <div class="mstat ${s.n_mandatory_missing>0?'warn':''}">Mandatory missing: ${s.n_mandatory_missing||0}</div>
       <div class="mstat">Max missing: ${(s.max_missing_pct||0).toFixed(1)}% · Avg: ${(s.avg_missing_pct||0).toFixed(1)}%</div>
