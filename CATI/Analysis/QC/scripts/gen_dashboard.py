@@ -1768,6 +1768,13 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
 </div>
 <div class="card">
   <h2>Module-Level Quality Summary <span class="badge badge-blue">Click a card to view details</span></h2>
+  <div style="margin:2px 0 10px;font-size:11px;color:#555">
+    Per-round strip:
+    <span class="idot red" style="display:inline-block;vertical-align:middle">!</span> open firm issue
+    &nbsp;<span class="idot yellow" style="display:inline-block;vertical-align:middle"></span> open
+    &nbsp;<span class="idot closed" style="display:inline-block;vertical-align:middle">·</span> closed
+    &nbsp;<span class="idot green" style="display:inline-block;vertical-align:middle;border:1px solid #cfe8d6"></span> clean
+  </div>
   <div id="mod-grid" class="mod-grid"></div>
 </div>
 <div class="card">
@@ -2338,7 +2345,10 @@ function renderIssues(){
   const byMod = {};
   rows.forEach(r=>{ (byMod[r.module]=byMod[r.module]||[]).push(r); });
   const counts = Object.values(ISUM||{}).reduce((a,s)=>{a.open+=s.open||0;a.closed+=s.closed||0;return a;},{open:0,closed:0});
-  let html = `<div class="mstat">Showing ${rows.length} issue(s) · ${counts.open} open / ${counts.closed} closed total</div>`;
+  const vc = {}; ISSUES.forEach(r=>{ vc[r.verdict] = (vc[r.verdict]||0)+1; });
+  const vcLine = Object.keys(vc).sort().map(v=>`${v}:${vc[v]}`).join(' · ');
+  let html = `<div class="mstat">Showing ${rows.length} issue(s) · ${counts.open} open / ${counts.closed} closed total</div>`
+           + `<div class="mstat">By verdict: ${vcLine}</div>`;
   Object.keys(byMod).sort().forEach(m=>{
     html += `<h2 style="margin-top:16px">${m} – ${MOD_NAMES[m]||''}</h2>`;
     byMod[m].forEach((r,i)=>{
@@ -2452,8 +2462,12 @@ function buildOverview(){
   const mg = document.getElementById('mod-grid');
   mg.innerHTML = MODULES.map(m=>{
     const s = DQ.module_summary[m]||{};
-    const rag = s.rag||'green';
     const iss = ISUM[m] || {strip:{}, headline:'green', open:0, closed:0, by_owner:{}};
+    const _miss = s.max_missing_pct || 0;
+    const _missSig = _miss >= 30 ? 'red' : (_miss >= 10 ? 'yellow' : 'green');
+    const _ord = {green:0, yellow:1, red:2};
+    const _ih = iss.headline || 'green';
+    const rag = _ord[_ih] >= _ord[_missSig] ? _ih : _missSig;   // worst of open-issue status + missing%
     const istrip = [1,2,3,4,5,6,7,8].map(r=>{
       const st = iss.strip[String(r)] || 'green';
       const ch = st==='red' ? '!' : (st==='closed' ? '·' : '');
@@ -2470,18 +2484,10 @@ function buildOverview(){
     const droppedQ = rows.filter(r=>r.status&&r.status.startsWith('Dropped')).length;
     const changedQ = rows.filter(r=>r.title_changes||r.skip_changes||r.option_changes).length;
 
-    // Build "why" triggers list
+    // Build "why" triggers list (open-issue + missing-data driven)
     const triggers = [];
-    if(rag==='red'){
-      if((s.n_skip_violations||0)>100) triggers.push(`skip violations (${s.n_skip_violations}) > 100`);
-      if((s.n_mandatory_missing||0)>100) triggers.push(`mandatory missing (${s.n_mandatory_missing}) > 100`);
-      if((s.max_missing_pct||0)>=30) triggers.push(`worst variable ${s.max_missing_pct}% ≥ 30%`);
-    } else if(rag==='yellow'){
-      if((s.n_skip_violations||0)>0) triggers.push(`${s.n_skip_violations} skip violation${s.n_skip_violations>1?'s':''}`);
-      if((s.n_mandatory_missing||0)>0) triggers.push(`${s.n_mandatory_missing} mandatory missing`);
-      if((s.n_oor_values||0)>0) triggers.push(`${s.n_oor_values} out-of-range`);
-      if((s.max_missing_pct||0)>=10) triggers.push(`worst variable ${s.max_missing_pct}% ≥ 10%`);
-    }
+    if(iss.open > 0) triggers.push(`${iss.open} open issue${iss.open>1?'s':''}`);
+    if(_miss >= 10) triggers.push(`worst variable ${_miss.toFixed(0)}% missing`);
     const triggerHtml = triggers.length
       ? `<div style="margin-top:4px;padding:4px 6px;background:${rag==='red'?'rgba(231,76,60,0.12)':'rgba(243,156,18,0.12)'};border-radius:4px;font-size:10.5px;color:${rag==='red'?'#e74c3c':'#f39c12'}"><strong>Why ${rag}:</strong> ${triggers.join(' · ')}</div>`
       : '';
