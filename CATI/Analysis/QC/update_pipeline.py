@@ -99,10 +99,17 @@ def detect_files():
         log(f"  {f.name}")
 
     # Do-files in CATI/Round*/do/
+    # Match both the AP master naming (L2PHL_CATI@…) and the firm delivery
+    # naming (L2PH_CATI@…, e.g. R08's L2PH_CATI@R08@CB@…). Round dedup below
+    # still prefers @AP when present, so R1–R7 stay on their AP masters.
     do_files = []
     for rdir in sorted(CATI.glob('Round*/do')):
-        for df in sorted(rdir.glob('L2PHL_CATI@*.do')):
-            do_files.append(df)
+        seen = set()
+        for pat in ('L2PHL_CATI@*.do', 'L2PH_CATI@*.do'):
+            for df in sorted(rdir.glob(pat)):
+                if df not in seen:
+                    seen.add(df)
+                    do_files.append(df)
     log(f"Do-files in CATI/Round*/do/: {len(do_files)}", 'OK' if do_files else 'WARN')
     for f in do_files:
         log(f"  {f.parent.parent.name}/{f.name}")
@@ -153,6 +160,140 @@ def rebuild_interviewer(dta_files):
     return ok
 
 
+# ── Kobo utilities ────────────────────────────────────────────────────────────
+def normalize_kobo_varname(var_name):
+    """
+    Normalize Kobo variable names to match module_tables format.
+    - Strip trailing underscores
+    - Remove numeric suffixes (_1, _2, etc.)
+    - Remove _oth, _new suffixes
+    - Uppercase
+    Example: ED16_1_ → ED16, SH1b_ → SH1B, F17_new → F17
+    """
+    v = str(var_name).strip()
+    # Strip trailing underscores
+    v = v.rstrip('_')
+    # Remove numeric suffixes like _1, _2, _oth, _new
+    v = re.sub(r'_[0-9]+$', '', v)
+    v = re.sub(r'_(oth|new)$', '', v, flags=re.IGNORECASE)
+    return v.upper()
+
+def parse_kobo_variable_order():
+    """
+    Parse all 5 Kobo XLSForm files and extract variable order per module.
+    Returns: {mod: [var1, var2, ...]} where vars are normalized to uppercase.
+    """
+    KOBO_DIR = CATI / 'KOBO'
+    if not KOBO_DIR.exists():
+        log(f"KOBO directory not found at {KOBO_DIR}", 'WARN')
+        return {}
+
+    # Map Kobo group names to modules
+    GROUP_TO_MOD = {
+        'group_intro': 'M00',
+        'group_demogs': 'M01',
+        'group_educ': 'M02',
+        'group_shocks': 'M03',
+        'group_employment': 'M04',
+        'group_employment_new': 'M04',
+        'group_income': 'M05',
+        'group_income_new': 'M05',
+        'group_finance': 'M06',
+        'group_health': 'M07',
+        'group_h9': 'M07',
+        'group_H12toH16': 'M07',
+        'group_f08': 'M08',
+        'group_opinions-views': 'M09',
+        'group_opinions_views': 'M09',
+    }
+
+    kobo_files = list(KOBO_DIR.glob('*.xlsx'))
+    if not kobo_files:
+        log(f"No Kobo files found in {KOBO_DIR}", 'WARN')
+        return {}
+
+    # Extract variable order from all Kobo files
+    # Use R5 (latest) as primary, fill gaps from earlier rounds
+    import openpyxl
+    kobo_var_order = defaultdict(lambda: defaultdict(list))
+
+    for kobo_path in sorted(kobo_files):
+        # Detect round
+        fname_lower = kobo_path.name.lower()
+        if 'r5' in fname_lower or 'r05' in fname_lower:
+            rnd = 'R5'
+        elif 'r4' in fname_lower or 'r04' in fname_lower:
+            rnd = 'R4'
+        elif 'r3' in fname_lower or 'r03' in fname_lower:
+            rnd = 'R3'
+        elif 'r2' in fname_lower or 'r02' in fname_lower or 'follow-up_r2' in fname_lower:
+            rnd = 'R2'
+        elif 'r1' in fname_lower or 'r01' in fname_lower or 'follow-up1' in fname_lower or 'phase 1' in fname_lower:
+            rnd = 'R1'
+        else:
+            continue
+
+        try:
+            wb = openpyxl.load_workbook(str(kobo_path), read_only=True, data_only=True)
+            if 'survey' not in wb.sheetnames:
+                continue
+
+            ws = wb['survey']
+            rows = list(ws.values)
+            current_group = None
+
+            for row in rows:
+                if not row or len(row) < 2:
+                    continue
+
+                row_type = str(row[0]).strip().lower() if row[0] else ''
+                row_name = str(row[1]).strip() if row[1] else ''
+
+                if row_type == 'begin_group':
+                    current_group = row_name.lower()
+                elif row_type == 'end_group':
+                    current_group = None
+                elif current_group and row_name and row_type:
+                    # Skip non-question types
+                    if row_type in ('begin_group', 'end_group', 'begin_repeat', 'end_repeat',
+                                   'start', 'end', 'deviceid', 'calculate', 'note'):
+                        continue
+
+                    # Map group to module
+                    mod = GROUP_TO_MOD.get(current_group, None)
+                    if mod:
+                        norm_var = normalize_kobo_varname(row_name)
+                        if norm_var not in kobo_var_order[mod][rnd]:
+                            kobo_var_order[mod][rnd].append(norm_var)
+
+            wb.close()
+            log(f"  {kobo_path.name} ({rnd}): parsed")
+
+        except Exception as e:
+            log(f"Error parsing {kobo_path.name}: {e}", 'WARN')
+
+    # Build master ordering: use R5 as primary, fill gaps from earlier rounds
+    kobo_master = {}
+    for mod in ['M00', 'M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08', 'M09']:
+        master_order = []
+        seen = set()
+        # R5 (latest) first
+        for var in kobo_var_order[mod].get('R5', []):
+            if var not in seen:
+                master_order.append(var)
+                seen.add(var)
+        # Fill gaps from earlier rounds
+        for rnd in ['R4', 'R3', 'R2', 'R1']:
+            for var in kobo_var_order[mod].get(rnd, []):
+                if var not in seen:
+                    master_order.append(var)
+                    seen.add(var)
+        if master_order:
+            kobo_master[mod] = master_order
+
+    return kobo_master
+
+
 # ── STEP 3 — Re-parse questionnaire Excel files ───────────────────────────────
 def rebuild_questionnaire(quest_files):
     step(3, "Parsing questionnaire Excel files")
@@ -168,6 +309,8 @@ def rebuild_questionnaire(quest_files):
         'R3': ['r3 questionnaire', 'cati r3'],
         'R4': ['r4 questionnaire', 'cati r4'],
         'R5': ['r5 questionnaire', 'cati r5'],
+        'R6': ['r6 questionnaire', 'cati r6'],
+        'R7': ['r7 questionnaire', 'cati r7'],
     }
     SHEETS = {
         'Introduction': 'M00', 'Demographics': 'M01', 'Education': 'M02',
@@ -220,7 +363,8 @@ def rebuild_questionnaire(quest_files):
                 header_idx = i
                 break
         headers = [str(c).strip() if c else f'col_{j}' for j, c in enumerate(rows[header_idx])]
-        qnum_col  = get_col(headers, 'Q#', 'Q #') or 1
+        _qc = get_col(headers, 'Q#', 'Q #')
+        qnum_col  = _qc if _qc is not None else 1
         title_col = get_col(headers, 'QUESTION TITLE', 'TITLE')
         prog_col  = get_col(headers, 'PROGRAMMING')
         type_col  = get_col(headers, 'TYPE OF QUESTION', 'TYPE')
@@ -283,6 +427,15 @@ def rebuild_questionnaire(quest_files):
         json.dump(all_qs, f, indent=2)
     log(f"cache/all_questions.json written ({(CACHE/'all_questions.json').stat().st_size//1024} KB)", 'OK')
 
+    # R8 stand-in: no R8 questionnaire is in the repo yet (only on Drive), and the
+    # R8 Kobo form is the R7 clone — so mirror R7 as R8 for the question tracker /
+    # change panels so every section shows R8 (= R7). Replace when the real R8
+    # questionnaire is added. (all_questions.json above stays truthful R1–R7.)
+    if 'R7' in all_qs and 'R8' not in all_qs:
+        all_qs['R8'] = all_qs['R7']
+        if 'R8' not in ROUNDS:
+            ROUNDS = sorted(ROUNDS + ['R8'])
+
     # Build module_tables
     MODULES = ['M00', 'M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08', 'M09']
     module_tables = {}
@@ -299,6 +452,7 @@ def rebuild_questionnaire(quest_files):
         for v in order:
             row = {'variable': v, 'first_round': seen[v]}
             titles = {}; types = {}; skips = {}; eng = {}; codes = {}; remarks = {}; checks = {}
+            full_codes = {}  # Store actual code lists per round for change detection
             for r in ROUNDS:
                 q = next((x for x in all_qs.get(r, {}).get(mod, []) if x['qnum'].upper() == v), None)
                 row[f'in_{r}'] = '✓' if q else ''
@@ -308,6 +462,7 @@ def rebuild_questionnaire(quest_files):
                     skips[r]   = '; '.join(q.get('skip_rules', []))[:200]
                     eng[r]     = q.get('english', '')[:200]
                     codes[r]   = len(q.get('codes', []))
+                    full_codes[r] = q.get('codes', [])  # [{code, label}, ...]
                     remarks[r] = q.get('remarks', '')
                     checks[r]  = q.get('data_check', '')
             def best(d): return next((d[r] for r in reversed(ROUNDS) if d.get(r, '')), '')
@@ -333,6 +488,29 @@ def rebuild_questionnaire(quest_files):
                     elif s_pr and not s_r: skip_changes.append(f"Removed in {r}")
                     else:                  skip_changes.append(f"Changed {pr}→{r}")
             row['skip_changes'] = ' | '.join(skip_changes)
+            # ── Response option changes ──
+            option_changes = []
+            for i, r in enumerate(ROUNDS[1:], 1):
+                pr = ROUNDS[i - 1]
+                fc_r = full_codes.get(r, []); fc_pr = full_codes.get(pr, [])
+                if not fc_r and not fc_pr: continue
+                codes_r  = {str(c.get('code','')): c.get('label','') for c in fc_r}
+                codes_pr = {str(c.get('code','')): c.get('label','') for c in fc_pr}
+                added   = [c for c in codes_r  if c not in codes_pr]
+                removed = [c for c in codes_pr if c not in codes_r]
+                relabeled = [c for c in codes_r if c in codes_pr and codes_r[c] != codes_pr[c]]
+                parts = []
+                for c in added:
+                    parts.append(f"{r}: +Code {c} '{codes_r[c]}'")
+                for c in removed:
+                    parts.append(f"{r}: -Code {c} '{codes_pr[c]}'")
+                for c in relabeled:
+                    parts.append(f"{r}: Code {c} relabeled '{codes_pr[c]}' → '{codes_r[c]}'")
+                option_changes.extend(parts)
+            row['option_changes'] = ' | '.join(option_changes)
+            # Store full codes per round for dashboard display
+            for r in ROUNDS:
+                row[f'full_codes_{r.lower()}'] = full_codes.get(r, [])
             present = [r for r in ROUNDS if row.get(f'in_{r}') == '✓']
             if not present:             row['status'] = 'NOT FOUND'
             elif present == ROUNDS:     row['status'] = 'All rounds'
@@ -343,9 +521,144 @@ def rebuild_questionnaire(quest_files):
             rows_out.append(row)
         module_tables[mod] = rows_out
 
+    # ── Reorder variables by Kobo XLSForm order ─────────────────────────────────────
+    log("Parsing Kobo XLSForm files for variable ordering...")
+    kobo_master = parse_kobo_variable_order()
+    if kobo_master:
+        reordered_count = 0
+        for mod in module_tables:
+            if mod in kobo_master:
+                kobo_order = kobo_master[mod]
+                # Build a map of variables in kobo_order with their positions
+                kobo_positions = {var: i for i, var in enumerate(kobo_order)}
+                # Separate rows into ordered and unordered
+                ordered_rows = []
+                unordered_rows = []
+                for row in module_tables[mod]:
+                    if row['variable'] in kobo_positions:
+                        ordered_rows.append((kobo_positions[row['variable']], row))
+                    else:
+                        unordered_rows.append(row)
+                # Sort by Kobo position
+                ordered_rows.sort(key=lambda x: x[0])
+                # Combine: Kobo-ordered variables first, then unmatched variables
+                reordered = [row for _, row in ordered_rows] + unordered_rows
+                module_tables[mod] = reordered
+                n_ordered = len(ordered_rows)
+                n_total = len(module_tables[mod])
+                reordered_count += n_ordered
+                if n_ordered > 0:
+                    log(f"  {mod}: {n_ordered}/{n_total} vars reordered by Kobo", 'OK')
+        if reordered_count > 0:
+            log(f"Total variables reordered by Kobo: {reordered_count}", 'OK')
+    else:
+        log("No Kobo variable ordering found — using questionnaire order", 'WARN')
+
+    # ── Round-presence overrides ──────────────────────────────────────────────
+    # Variables that exist in the data for a given round but were not an explicit
+    # question row in the questionnaire workbook (e.g., backfilled from baseline,
+    # derived in Kobo, or present under a different label).
+    ROUND_OVERRIDES = {
+        ('M00', 'FMID'): {'R1': True},   # FMID present in R1 data (Kobo: member_called / derived)
+    }
+    for (mod, var), rounds_to_add in ROUND_OVERRIDES.items():
+        if mod not in module_tables:
+            continue
+        row = next((r for r in module_tables[mod] if r['variable'].upper() == var.upper()), None)
+        if row:
+            for rnd, present in rounds_to_add.items():
+                if present:
+                    row[f'in_{rnd}'] = '✓'
+            # Recalculate first_round and status
+            present_rounds = [r for r in ROUNDS if row.get(f'in_{r}') == '✓']
+            if present_rounds:
+                row['first_round'] = present_rounds[0]
+                if present_rounds == ROUNDS:
+                    row['status'] = 'All rounds'
+                elif present_rounds[0] != ROUNDS[0]:
+                    row['status'] = f'New in {present_rounds[0]}'
+                elif present_rounds[-1] != ROUNDS[-1]:
+                    row['status'] = f'Dropped after {present_rounds[-1]}'
+                else:
+                    row['status'] = 'All rounds'
+            log(f"  Override: {mod}.{var} now present in {list(rounds_to_add.keys())}", 'OK')
+
+    # ── M01 sub-variable expansion ───────────────────────────────────────────
+    # The questionnaire has aggregate questions (D25, D26, M10, M13) but the
+    # pooled data splits them into sub-variables (_oth, _1/_2/_3). Expand so
+    # the tracker matches the DQ panels.
+    if 'M01' in module_tables:
+        def _clone_row(parent_row, new_var, new_title, new_type=None):
+            """Clone a parent tracker row with a new variable name and title."""
+            r = dict(parent_row)
+            r['variable'] = new_var
+            r['question_title'] = new_title
+            if new_type:
+                r['question_type'] = new_type
+            return r
+
+        M01_EXPANSIONS = {
+            # parent_var: [(new_var, title, type_override), ...]
+            'D25': [('D25_OTH', 'OTHER REASON FOR LEAVING', 'Open-end')],
+            'D26': [
+                ('D26_1', 'COUNTRY WHERE MOVED', None),
+                ('D26_2', 'PROVINCE WHERE MOVED', None),
+                ('D26_3', 'CITY WHERE MOVED', None),
+            ],
+            'M13': [('M13_OTH', 'OTHER REASON FOR MOVING IN', 'Open-end')],
+            'M10': [
+                ('M10_1', 'COUNTRY WHERE CAME FROM', None),
+                ('M10_2', 'PROVINCE WHERE CAME FROM', None),
+                ('M10_3', 'CITY WHERE CAME FROM', None),
+            ],
+        }
+
+        new_m01 = []
+        for row in module_tables['M01']:
+            v = row['variable'].upper()
+            if v in ('D26', 'M10'):
+                # Replace parent with sub-variables
+                for new_var, title, typ in M01_EXPANSIONS[v]:
+                    new_m01.append(_clone_row(row, new_var, title, typ))
+            else:
+                new_m01.append(row)
+                if v in M01_EXPANSIONS:
+                    for new_var, title, typ in M01_EXPANSIONS[v]:
+                        new_m01.append(_clone_row(row, new_var, title, typ))
+        module_tables['M01'] = new_m01
+        log(f"  M01: expanded D25/D26/M10/M13 into sub-variables ({len(new_m01)} rows)", 'OK')
+
     with open(CACHE / 'module_tables.json', 'w') as f:
         json.dump(module_tables, f, indent=2)
     log(f"cache/module_tables.json written ({(CACHE/'module_tables.json').stat().st_size//1024} KB)", 'OK')
+    return True
+
+
+# ── STEP 3b — Parse Kobo XLSForm skip logic ──────────────────────────────────
+def rebuild_kobo_skip_logic():
+    """Parse all Kobo XLSForm files and extract skip logic, mandatory, and constraint rules."""
+    kobo_dir = CATI / 'KOBO'
+    if not kobo_dir.exists():
+        log("No CATI/KOBO/ directory found — skipping Kobo skip logic", 'WARN')
+        return False
+    kobo_script = Path(__file__).parent / 'scripts' / 'parse_kobo.py'
+    if not kobo_script.exists():
+        log("scripts/parse_kobo.py not found — skipping Kobo skip logic", 'WARN')
+        return False
+    import subprocess
+    result = subprocess.run(
+        ['python3', str(kobo_script)],
+        capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        log(f"parse_kobo.py failed: {result.stderr[:300]}", 'WARN')
+        return False
+    # parse_kobo.py writes directly to CACHE/kobo_skip_logic.json
+    dst = CACHE / 'kobo_skip_logic.json'
+    if not dst.exists():
+        log("kobo_skip_logic.json not generated", 'WARN')
+        return False
+    log(f"cache/kobo_skip_logic.json written ({dst.stat().st_size//1024} KB)", 'OK')
     return True
 
 
@@ -408,15 +721,21 @@ def rebuild_dofiles(do_files):
             result[mod]['vars'] = sorted(result[mod]['vars'])
         return result
 
-    # Map by round number — prefer the @AP file, use most recent if multiple
+    # Map by round number — prefer the @AP master, else the most recent firm
+    # delivery (rank = (is_AP, date)). R1–R7 have an @AP file so it always wins;
+    # R08 ships only firm files (L2PH_CATI@R08@CB@{0611,0619,0626}) so the latest
+    # date (20260626, matching the pooled master's R8) is chosen.
+    DATE_RE = re.compile(r'@(\d{8})\.do$', re.I)
+    def _rank(fp):
+        fl = fp.name.lower()
+        dm = DATE_RE.search(fp.name)
+        return (1 if '@ap@' in fl else 0, int(dm.group(1)) if dm else 0)
     do_map = {}
     for fpath in do_files:
         m = ROUND_RE.search(fpath.name)
         if m:
             rnd = f"R{int(m.group(1))}"
-            fl = fpath.name.lower()
-            # Prefer @AP files (as-processed), skip @CV
-            if rnd not in do_map or ('@ap' in fl and '@cv' in do_map[rnd].name.lower()):
+            if rnd not in do_map or _rank(fpath) > _rank(do_map[rnd]):
                 do_map[rnd] = fpath
 
     do_modules = {}
@@ -430,6 +749,15 @@ def rebuild_dofiles(do_files):
         json.dump(do_modules, f, indent=2)
     log(f"cache/do_modules.json written ({(CACHE/'do_modules.json').stat().st_size//1024} KB)", 'OK')
     return True
+
+
+# ── STEP 4b — Build issue intelligence ───────────────────────────────────────
+def rebuild_issues():
+    step("4b", "Building issue intelligence (issues.json)")
+    ok = run_script('build_issues.py')
+    if ok:
+        log("cache/issues.json written", 'OK')
+    return ok
 
 
 # ── STEP 5 — Regenerate HTML dashboard ───────────────────────────────────────
@@ -479,10 +807,12 @@ if __name__ == '__main__':
 
     if do_q:
         if not rebuild_questionnaire(quest_files): errors.append('Questionnaire parse failed')
+        rebuild_kobo_skip_logic()  # Parse Kobo XLSForms for skip logic map (non-blocking)
 
     if do_do:
         if not rebuild_dofiles(do_files): errors.append('Do-file parse failed')
 
+    if not rebuild_issues():     errors.append('Issue intelligence build failed')
     if not rebuild_dashboard(): errors.append('Dashboard generation failed')
     if not rebuild_excel():     errors.append('Excel report generation failed')
 
