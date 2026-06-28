@@ -2355,6 +2355,9 @@ function renderIssues(){
       const ev = r.evidence||{}; const k=ev.kobo||{}; const d=ev.dofile||{}; const da=ev.data||{};
       const rel = Object.entries(k.relevant_by_round||{}).slice(-1).map(([rd,x])=>`R${rd}: ${x||'(none)'}`).join('');
       const miss = (k.gate_refs_missing||[]).length ? '  ·  gate refs absent from data: '+k.gate_refs_missing.join(', ') : '';
+      const cg = da.check_gate_refs || [];
+      const ignored = (k.gate_refs||[]).filter(x=>!cg.includes(x));
+      const checkLine = cg.length ? `\nCheck   · gate ${cg.join(', ')}${r.rule_fired==='check-vs-kobo'&&ignored.length?'  ·  IGNORES Kobo refs: '+ignored.join(', '):''}` : '';
       const note = r.notes ? '  ·  Note: '+r.notes : '';
       const cnts = Object.entries(r.counts_by_round||{}).map(([rd,n])=>`R${rd}:${n}`).join('  ');
       const did = `iss-${m}-${i}`;
@@ -2368,7 +2371,7 @@ function renderIssues(){
           <span style="float:right;font-size:10.5px;color:#888">${cnts}</span>
         </div>
         <div id="${did}" style="display:none"><div class="evbox">Data    · ${da.total||0} total · kind ${da.kind||''}
-Kobo    · ${rel||'(var not in Kobo)'}${miss}
+Kobo    · ${rel||'(var not in Kobo)'}${miss}${checkLine}
 Do-file · ${d.ever_touched?'touched by a round do-file':'not touched by any do-file'}
 Verdict · ${r.verdict} via ${r.rule_fired} (confidence ${r.confidence})${note}</div></div>
       </div>`;
