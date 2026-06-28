@@ -222,6 +222,11 @@ if _os.path.exists(_kobo_path):
 else:
     kobo_raw = {}
 
+_issues_path = _os.path.join(_CACHE, 'issues.json')
+issues_raw = json.load(open(_issues_path)) if _os.path.exists(_issues_path) else []
+_isum_path = _os.path.join(_CACHE, 'issue_summary.json')
+isum_raw = json.load(open(_isum_path)) if _os.path.exists(_isum_path) else {}
+
 # ── M01 Kobo variable reorder ───────────────────────────────────────────
 # The Kobo XLSForm has D33 after demogs_end (physical form position).
 # Reorder to match the Question-Level Cross-Round Tracker order, and
@@ -1419,6 +1424,8 @@ AQ   = json.dumps(all_qs,        separators=(',',':'))
 PAN  = json.dumps(panel_raw,     separators=(',',':'))
 IVIEW= json.dumps(iview_raw,     separators=(',',':'))
 KOBO = json.dumps(kobo_raw,      separators=(',',':'))
+ISSUES = json.dumps(issues_raw,  separators=(',',':'))
+ISUM   = json.dumps(isum_raw,     separators=(',',':'))
 
 HTML = r"""<!DOCTYPE html>
 <html lang="en">
@@ -1528,6 +1535,13 @@ h1{font-size:21px;font-weight:700;margin-bottom:4px}
 .mod-card .mstat{font-size:11.5px;color:#555;margin:1px 0;line-height:1.4}
 .mod-card .mstat.warn{color:#c0392b;font-weight:600}
 .rag-chip{position:absolute;top:8px;right:8px;font-size:9.5px;padding:2px 6px;border-radius:10px;font-weight:700}
+.istrip{display:flex;gap:3px;margin:4px 0}
+.idot{width:13px;height:13px;border-radius:3px;font-size:8px;text-align:center;line-height:13px;color:#fff}
+.idot.red{background:#e74c3c}.idot.yellow{background:#f1c40f;color:#5b4a00}.idot.green{background:#cfe8d6;color:#cfe8d6}.idot.closed{background:#d6d6d6;color:#888}
+.vbadge{display:inline-block;font-size:9px;font-weight:700;border-radius:3px;padding:1px 5px;color:#fff}
+.vbadge.A1,.vbadge.A2{background:#c0392b}.vbadge.B{background:#e67e22}.vbadge.C{background:#8e44ad}.vbadge.D{background:#95a5a6}.vbadge.REVIEW{background:#34495e}
+.schip{display:inline-block;font-size:9px;border-radius:8px;padding:1px 6px;background:#ecf0f1;color:#34495e;margin-left:4px}
+.evbox{background:#f7f9fb;border-left:3px solid #4db8ff;padding:8px 11px;margin-top:5px;font-size:11px;font-family:monospace;line-height:1.5;white-space:pre-wrap}
 
 /* ── LEGEND ── */
 .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;margin-bottom:10px}
@@ -1686,9 +1700,23 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
   <a href="#" onclick="return showPage('changes')" id="nav-changes">
     <span class="dot" style="background:#f1c40f"></span>All Changes by Round
   </a>
+  <div class="nav-section">Issue Intelligence</div>
+  <a href="#" onclick="return showPage('issues')" id="nav-issues">
+    <span class="dot" style="background:#e74c3c"></span>Issues &amp; Root Cause
+  </a>
 </nav>
 
 <div id="main">
+<!-- ═══════ ISSUE INTELLIGENCE ═══════ -->
+<div id="page-issues" class="page">
+<h1>Issue Intelligence</h1>
+<p class="subtitle">Every flag root-caused to a layer · A1 questionnaire · A2 field · B firm do-file · C our check · D structural</p>
+<div style="margin:8px 0;font-size:12px">
+  <label><input type="checkbox" id="iss-firm-only" onchange="renderIssues()"> Firm report only (A1/A2/B, open)</label>
+  &nbsp;&nbsp;<label><input type="checkbox" id="iss-review-only" onchange="renderIssues()"> Review queue only</label>
+</div>
+<div id="issues-body"></div>
+</div>
 <!-- ═══════ OVERVIEW ═══════ -->
 <div id="page-overview" class="page active">
 <h1>Data Quality Overview</h1>
@@ -2042,6 +2070,8 @@ const AQ   = """ + AQ   + """;
 const PAN  = """ + PAN  + """;
 const IVIEW= """ + IVIEW+ """;
 const KOBO = """ + KOBO + """;
+const ISSUES = """ + ISSUES + """;
+const ISUM   = """ + ISUM + """;
 
 const ROUNDS = [1,2,3,4,5,6,7,8];
 const RLABELS = {1:'R1 (Nov)',2:'R2 (Dec)',3:'R3 (Jan)',4:'R4 (Feb)',5:'R5 (Mar)',6:'R6 (Apr)',7:'R7 (May)',8:'R8 (Jun)'};
@@ -2298,6 +2328,45 @@ function _varSort(v, vmap){ if(!vmap) return 999; const e=vmap[(v||'').toLowerCa
 
 // ── ROUTING ──────────────────────────────────────────────────────────────────
 let currentPage = 'overview';
+function renderIssues(){
+  const firmOnly = document.getElementById('iss-firm-only') && document.getElementById('iss-firm-only').checked;
+  const revOnly  = document.getElementById('iss-review-only') && document.getElementById('iss-review-only').checked;
+  const OWN = {A1:'firm-questionnaire',A2:'firm-field',B:'firm-dofile',C:'us',D:'expected',REVIEW:'unassigned'};
+  let rows = ISSUES.slice();
+  if(firmOnly) rows = rows.filter(r=>['A1','A2','B'].includes(r.verdict) && ['new','acknowledged','fix-pending','reopened'].includes(r.status));
+  if(revOnly)  rows = rows.filter(r=>r.review);
+  const byMod = {};
+  rows.forEach(r=>{ (byMod[r.module]=byMod[r.module]||[]).push(r); });
+  const counts = Object.values(ISUM||{}).reduce((a,s)=>{a.open+=s.open||0;a.closed+=s.closed||0;return a;},{open:0,closed:0});
+  let html = `<div class="mstat">Showing ${rows.length} issue(s) · ${counts.open} open / ${counts.closed} closed total</div>`;
+  Object.keys(byMod).sort().forEach(m=>{
+    html += `<h2 style="margin-top:16px">${m} – ${MOD_NAMES[m]||''}</h2>`;
+    byMod[m].forEach((r,i)=>{
+      const ev = r.evidence||{}; const k=ev.kobo||{}; const d=ev.dofile||{}; const da=ev.data||{};
+      const rel = Object.entries(k.relevant_by_round||{}).slice(-1).map(([rd,x])=>`R${rd}: ${x||'(none)'}`).join('');
+      const miss = (k.gate_refs_missing||[]).length ? '  ·  gate refs absent from data: '+k.gate_refs_missing.join(', ') : '';
+      const note = r.notes ? '  ·  Note: '+r.notes : '';
+      const cnts = Object.entries(r.counts_by_round||{}).map(([rd,n])=>`R${rd}:${n}`).join('  ');
+      const did = `iss-${m}-${i}`;
+      html += `<div style="border:1px solid #e3e3e3;border-radius:5px;padding:7px 10px;margin:5px 0">
+        <div style="cursor:pointer" onclick="var e=document.getElementById('${did}');e.style.display=e.style.display==='none'?'block':'none'">
+          <span class="vbadge ${r.verdict}">${r.verdict}</span>
+          <span class="schip">${r.status}</span>
+          <span class="schip">${OWN[r.verdict]||''}</span>
+          <strong style="font-size:12px">&nbsp;${r.variable}</strong>
+          <span style="font-size:11px;color:#666">&nbsp;${(r.label||'').slice(0,70)}</span>
+          <span style="float:right;font-size:10.5px;color:#888">${cnts}</span>
+        </div>
+        <div id="${did}" style="display:none"><div class="evbox">Data    · ${da.total||0} total · kind ${da.kind||''}
+Kobo    · ${rel||'(var not in Kobo)'}${miss}
+Do-file · ${d.ever_touched?'touched by a round do-file':'not touched by any do-file'}
+Verdict · ${r.verdict} via ${r.rule_fired} (confidence ${r.confidence})${note}</div></div>
+      </div>`;
+    });
+  });
+  document.getElementById('issues-body').innerHTML = html || '<p>No issues.</p>';
+}
+
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('#sidebar a').forEach(a=>a.classList.remove('active'));
@@ -2305,6 +2374,7 @@ function showPage(id){
   if(pg) pg.classList.add('active');
   const nav = document.getElementById('nav-'+id);
   if(nav) nav.classList.add('active');
+  if(id==='issues') renderIssues();
   currentPage = id;
   return false;
 }
@@ -2383,6 +2453,13 @@ function buildOverview(){
   mg.innerHTML = MODULES.map(m=>{
     const s = DQ.module_summary[m]||{};
     const rag = s.rag||'green';
+    const iss = ISUM[m] || {strip:{}, headline:'green', open:0, closed:0, by_owner:{}};
+    const istrip = [1,2,3,4,5,6,7,8].map(r=>{
+      const st = iss.strip[String(r)] || 'green';
+      const ch = st==='red' ? '!' : (st==='closed' ? '·' : '');
+      return `<span class="idot ${st}" title="R${r}: ${st}">${ch}</span>`;
+    }).join('');
+    const ownerBits = Object.entries(iss.by_owner||{}).map(([o,n])=>`${n} ${o.replace('firm-','')}`).join(' · ');
     const ragLabel = {red:'⚠ Issues',yellow:'⚡ Watch',green:'✓ OK'};
     const ragChipBg = {red:'#fde',yellow:'#fff3cd',green:'#d4edda'};
     const ragChipColor = {red:'#c0392b',yellow:'#856404',green:'#155724'};
@@ -2412,6 +2489,8 @@ function buildOverview(){
     return `<div class="mod-card ${rag}" onclick="showPage('mod-${m}')">
       <div class="rag-chip" style="background:${ragChipBg[rag]};color:${ragChipColor[rag]}">${ragLabel[rag]}</div>
       <div class="mname">${m} – ${MOD_NAMES[m]}</div>
+      <div class="istrip" title="Per-round status (open issues only)">${istrip}</div>
+      <div class="mstat">Issues: ${iss.open} open${ownerBits?` (${ownerBits})`:''} · ${iss.closed} closed</div>
       <div class="mstat ${s.n_skip_violations>0?'warn':''}">Skip violations: ${s.n_skip_violations||0}</div>
       <div class="mstat ${s.n_mandatory_missing>0?'warn':''}">Mandatory missing: ${s.n_mandatory_missing||0}</div>
       <div class="mstat">Max missing: ${(s.max_missing_pct||0).toFixed(1)}% · Avg: ${(s.avg_missing_pct||0).toFixed(1)}%</div>
