@@ -27,4 +27,18 @@ def test_gate_ref_absent_from_data():
 def test_data_passthrough():
     f = Flag("M04", "a10", "rid", "skip", {"8": 3})
     ev = assemble_evidence(f, make_ctx())
-    assert ev.data == {"counts_by_round": {"8": 3}, "total": 3, "kind": "skip"}
+    assert ev.data == {"counts_by_round": {"8": 3}, "total": 3, "kind": "skip", "check_gate_refs": []}
+
+def test_check_gate_refs_from_rule_antecedent():
+    from issue_evidence import _check_gate_refs
+    f = Flag("M04", "a18", "rid", "skip", {"8": 5},
+             label="A1=1, not eligible for A18 (A6 not in {1,2,3}; R4+ also A16 not in {3,99}) but A18 is filled")
+    refs = _check_gate_refs(f)
+    assert "a1" in refs and "a6" in refs and "a16" in refs    # gate vars
+    assert "a18" not in refs                                   # the variable itself excluded
+    assert "r4" not in refs                                    # round token excluded
+
+def test_assemble_evidence_sets_check_gate_refs():
+    f = Flag("M04", "a18", "rid", "skip", {"8": 5}, label="A1=1 but A18 filled")
+    ev = assemble_evidence(f, make_ctx())
+    assert ev.data["check_gate_refs"] == ["a1"]

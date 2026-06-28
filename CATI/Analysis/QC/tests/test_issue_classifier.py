@@ -54,3 +54,10 @@ def test_review_when_unknown():
     f = Flag("MX","zz","rid","skip",{"8":1})
     v,c,r = classify(f, ev())
     assert v=="REVIEW"
+
+def test_C_ignores_sibling_subquestion():
+    f = Flag("M01","d26_2","rid","skip",{"8":5})
+    e = ev(kobo={"relevant_by_round":{"8":"${D5A}=2 and ${D26_1}=1"}})
+    e.data = {"check_gate_refs":["d5a"]}
+    v,c,r = classify(f, e)
+    assert v != "C"     # D26_1 is a sibling sub-question of D26_2, not a gate our check ignores

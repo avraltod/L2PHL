@@ -29,9 +29,11 @@ def rule_C(f, ev):
     check_refs = set(ev.data.get("check_gate_refs", []) or [])
     if not check_refs:
         return None
+    own_base = re.sub(r"_\d+$", "", f.variable.lower())   # d26_2 -> d26: a sibling sub-question is not a gate
     for _, rel in sorted((ev.kobo.get("relevant_by_round") or {}).items()):
         kobo_refs = _norm_refs(rel)
-        if kobo_refs and kobo_refs - check_refs:     # Kobo references vars our check ignores
+        extra = {r for r in (kobo_refs - check_refs) if re.sub(r"_\d+$", "", r) != own_base}
+        if extra:                                    # Kobo gates on vars our check ignores
             return ("C", "high", "check-vs-kobo")
     return None
 
