@@ -8,8 +8,8 @@ stop colouring past rounds. Status precedence per (module, round):
   green  if no issue has a count there
 """
 from collections import Counter
+from issue_model import OPEN_STATES   # single source of truth for lifecycle states
 
-OPEN_STATES   = {"new", "acknowledged", "fix-pending", "reopened"}
 FIRM_VERDICTS = {"A1", "A2", "B"}
 
 
