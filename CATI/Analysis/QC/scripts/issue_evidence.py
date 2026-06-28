@@ -18,6 +18,20 @@ def _kobo_var(mod, var, kobo):
 def _refs(expr):
     return [m.lower() for m in re.findall(r"\$\{([A-Za-z0-9_]+)\}", expr or "")]
 
+def _check_gate_refs(flag):
+    """Gate variables our QC check declares, parsed from the rule antecedent (before 'but')."""
+    ant = re.split(r"\bbut\b", flag.label or "", maxsplit=1)[0]
+    own = flag.variable.lower().rstrip("_")
+    refs = set()
+    for tok in re.findall(r"\b([A-Za-z]{1,6}\d[A-Za-z0-9_]*)\b", ant):
+        t = tok.lower()
+        if re.fullmatch(r"r\d+", t):          # round token e.g. R4
+            continue
+        if t.rstrip("_") == own:              # the variable being checked itself
+            continue
+        refs.add(t)
+    return sorted(refs)
+
 def assemble_evidence(flag, ctx: Context) -> Evidence:
     ev = Evidence()
     kv = _kobo_var(flag.module, flag.variable, ctx.kobo)
@@ -40,5 +54,6 @@ def assemble_evidence(flag, ctx: Context) -> Evidence:
         vlist = [x.lower() for x in (mods.get(flag.module, {}) or {}).get("vars", [])]
         touched[rnd] = flag.variable.lower() in vlist
     ev.dofile = {"touched_by_round": touched, "ever_touched": any(touched.values())}
-    ev.data = {"counts_by_round": flag.counts_by_round, "total": flag.total, "kind": flag.kind}
+    ev.data = {"counts_by_round": flag.counts_by_round, "total": flag.total, "kind": flag.kind,
+               "check_gate_refs": _check_gate_refs(flag)}
     return ev
