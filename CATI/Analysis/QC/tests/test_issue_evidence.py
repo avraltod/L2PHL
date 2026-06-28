@@ -23,3 +23,8 @@ def test_gate_ref_absent_from_data():
     ev = assemble_evidence(f, make_ctx())
     assert "fmida1" in ev.kobo["gate_refs_missing"]     # ${fmidA1} not in universe
     assert ev.dofile["touched_by_round"]["R8"] is True
+
+def test_data_passthrough():
+    f = Flag("M04", "a10", "rid", "skip", {"8": 3})
+    ev = assemble_evidence(f, make_ctx())
+    assert ev.data == {"counts_by_round": {"8": 3}, "total": 3, "kind": "skip"}

@@ -27,13 +27,13 @@ def assemble_evidence(flag, ctx: Context) -> Evidence:
             rel = (rule or {}).get("relevant") if rule else None
             rel_by_round[r] = rel
             for ref in _refs(rel):
-                if ref != flag.variable.lower():
+                if ref != flag.variable.lower().rstrip("_"):
                     refs.add(ref)
     ev.kobo = {
         "in_kobo": kv is not None,
         "relevant_by_round": rel_by_round,
         "gate_refs": sorted(refs),
-        "gate_refs_missing": sorted(r for r in refs if r not in ctx.var_universe),
+        "gate_refs_missing": sorted(g for g in refs if g not in ctx.var_universe),
     }
     touched = {}
     for rnd, mods in (ctx.do_modules or {}).items():
