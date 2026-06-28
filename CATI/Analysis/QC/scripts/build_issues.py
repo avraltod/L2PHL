@@ -6,6 +6,7 @@ from issue_flags import extract_flags
 from issue_evidence import Context, assemble_evidence
 from issue_classifier import classify
 from issue_registry import load_registry, save_registry, merge_decisions, apply_changes_to_registry
+from issue_rollup import rollup
 
 _HERE = os.path.dirname(__file__)
 _CACHE = os.path.join(_HERE, "..", "cache")
@@ -52,6 +53,8 @@ def main():
     reg = load_registry()
     out = build(dq, kobo, do_modules, _var_universe(), reg)
     json.dump(out["issues"], open(os.path.join(_CACHE, "issues.json"), "w"), indent=2)
+    summ = rollup(out["issues"])
+    json.dump(summ, open(os.path.join(_CACHE, "issue_summary.json"), "w"), indent=2)
     if out["changes"]:
         save_registry(apply_changes_to_registry(reg, out["changes"]))
     n_review = sum(1 for r in out["issues"] if r["review"])

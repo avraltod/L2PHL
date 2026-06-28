@@ -222,6 +222,11 @@ if _os.path.exists(_kobo_path):
 else:
     kobo_raw = {}
 
+_issues_path = _os.path.join(_CACHE, 'issues.json')
+issues_raw = json.load(open(_issues_path)) if _os.path.exists(_issues_path) else []
+_isum_path = _os.path.join(_CACHE, 'issue_summary.json')
+isum_raw = json.load(open(_isum_path)) if _os.path.exists(_isum_path) else {}
+
 # ── M01 Kobo variable reorder ───────────────────────────────────────────
 # The Kobo XLSForm has D33 after demogs_end (physical form position).
 # Reorder to match the Question-Level Cross-Round Tracker order, and
@@ -1419,6 +1424,8 @@ AQ   = json.dumps(all_qs,        separators=(',',':'))
 PAN  = json.dumps(panel_raw,     separators=(',',':'))
 IVIEW= json.dumps(iview_raw,     separators=(',',':'))
 KOBO = json.dumps(kobo_raw,      separators=(',',':'))
+ISSUES = json.dumps(issues_raw,  separators=(',',':'))
+ISUM   = json.dumps(isum_raw,     separators=(',',':'))
 
 HTML = r"""<!DOCTYPE html>
 <html lang="en">
@@ -1528,6 +1535,13 @@ h1{font-size:21px;font-weight:700;margin-bottom:4px}
 .mod-card .mstat{font-size:11.5px;color:#555;margin:1px 0;line-height:1.4}
 .mod-card .mstat.warn{color:#c0392b;font-weight:600}
 .rag-chip{position:absolute;top:8px;right:8px;font-size:9.5px;padding:2px 6px;border-radius:10px;font-weight:700}
+.istrip{display:flex;gap:3px;margin:4px 0}
+.idot{width:13px;height:13px;border-radius:3px;font-size:8px;text-align:center;line-height:13px;color:#fff}
+.idot.red{background:#e74c3c}.idot.yellow{background:#f1c40f;color:#5b4a00}.idot.green{background:#cfe8d6;color:#cfe8d6}.idot.closed{background:#d6d6d6;color:#888}
+.vbadge{display:inline-block;font-size:9px;font-weight:700;border-radius:3px;padding:1px 5px;color:#fff}
+.vbadge.A1,.vbadge.A2{background:#c0392b}.vbadge.B{background:#e67e22}.vbadge.C{background:#8e44ad}.vbadge.D{background:#95a5a6}.vbadge.REVIEW{background:#34495e}
+.schip{display:inline-block;font-size:9px;border-radius:8px;padding:1px 6px;background:#ecf0f1;color:#34495e;margin-left:4px}
+.evbox{background:#f7f9fb;border-left:3px solid #4db8ff;padding:8px 11px;margin-top:5px;font-size:11px;font-family:monospace;line-height:1.5;white-space:pre-wrap}
 
 /* ── LEGEND ── */
 .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;margin-bottom:10px}
@@ -2042,6 +2056,8 @@ const AQ   = """ + AQ   + """;
 const PAN  = """ + PAN  + """;
 const IVIEW= """ + IVIEW+ """;
 const KOBO = """ + KOBO + """;
+const ISSUES = """ + ISSUES + """;
+const ISUM   = """ + ISUM + """;
 
 const ROUNDS = [1,2,3,4,5,6,7,8];
 const RLABELS = {1:'R1 (Nov)',2:'R2 (Dec)',3:'R3 (Jan)',4:'R4 (Feb)',5:'R5 (Mar)',6:'R6 (Apr)',7:'R7 (May)',8:'R8 (Jun)'};
