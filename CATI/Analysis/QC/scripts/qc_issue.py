@@ -31,6 +31,7 @@ def main():
     s = sub.add_parser("set"); s.add_argument("key"); s.add_argument("status")
     s.add_argument("--notes"); s.add_argument("--verdict"); s.add_argument("--report", action="store_true")
     sub.add_parser("review"); lp = sub.add_parser("list"); lp.add_argument("--open", action="store_true")
+    sub.add_parser("firm-report")
     a = ap.parse_args()
     if a.cmd == "set":
         set_status(a.key, a.status, a.notes, a.verdict, a.report or None)
@@ -43,6 +44,9 @@ def main():
         for r in _issues():
             if a.open and r["status"] not in OPEN_STATES: continue
             print(f"  {r['status']:12} {r['verdict']:3} {r['key']}")
+    elif a.cmd == "firm-report":
+        import build_firm_report
+        build_firm_report.main()
 
 if __name__ == "__main__":
     main()
