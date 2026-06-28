@@ -1700,9 +1700,23 @@ hr{border:none;border-top:1px solid #eee;margin:14px 0}
   <a href="#" onclick="return showPage('changes')" id="nav-changes">
     <span class="dot" style="background:#f1c40f"></span>All Changes by Round
   </a>
+  <div class="nav-section">Issue Intelligence</div>
+  <a href="#" onclick="return showPage('issues')" id="nav-issues">
+    <span class="dot" style="background:#e74c3c"></span>Issues &amp; Root Cause
+  </a>
 </nav>
 
 <div id="main">
+<!-- ═══════ ISSUE INTELLIGENCE ═══════ -->
+<div id="page-issues" class="page">
+<h1>Issue Intelligence</h1>
+<p class="subtitle">Every flag root-caused to a layer · A1 questionnaire · A2 field · B firm do-file · C our check · D structural</p>
+<div style="margin:8px 0;font-size:12px">
+  <label><input type="checkbox" id="iss-firm-only" onchange="renderIssues()"> Firm report only (A1/A2/B, open)</label>
+  &nbsp;&nbsp;<label><input type="checkbox" id="iss-review-only" onchange="renderIssues()"> Review queue only</label>
+</div>
+<div id="issues-body"></div>
+</div>
 <!-- ═══════ OVERVIEW ═══════ -->
 <div id="page-overview" class="page active">
 <h1>Data Quality Overview</h1>
@@ -2314,6 +2328,45 @@ function _varSort(v, vmap){ if(!vmap) return 999; const e=vmap[(v||'').toLowerCa
 
 // ── ROUTING ──────────────────────────────────────────────────────────────────
 let currentPage = 'overview';
+function renderIssues(){
+  const firmOnly = document.getElementById('iss-firm-only') && document.getElementById('iss-firm-only').checked;
+  const revOnly  = document.getElementById('iss-review-only') && document.getElementById('iss-review-only').checked;
+  const OWN = {A1:'firm-questionnaire',A2:'firm-field',B:'firm-dofile',C:'us',D:'expected',REVIEW:'unassigned'};
+  let rows = ISSUES.slice();
+  if(firmOnly) rows = rows.filter(r=>['A1','A2','B'].includes(r.verdict) && ['new','acknowledged','fix-pending','reopened'].includes(r.status));
+  if(revOnly)  rows = rows.filter(r=>r.review);
+  const byMod = {};
+  rows.forEach(r=>{ (byMod[r.module]=byMod[r.module]||[]).push(r); });
+  const counts = Object.values(ISUM||{}).reduce((a,s)=>{a.open+=s.open||0;a.closed+=s.closed||0;return a;},{open:0,closed:0});
+  let html = `<div class="mstat">Showing ${rows.length} issue(s) · ${counts.open} open / ${counts.closed} closed total</div>`;
+  Object.keys(byMod).sort().forEach(m=>{
+    html += `<h2 style="margin-top:16px">${m} – ${MOD_NAMES[m]||''}</h2>`;
+    byMod[m].forEach((r,i)=>{
+      const ev = r.evidence||{}; const k=ev.kobo||{}; const d=ev.dofile||{}; const da=ev.data||{};
+      const rel = Object.entries(k.relevant_by_round||{}).slice(-1).map(([rd,x])=>`R${rd}: ${x||'(none)'}`).join('');
+      const miss = (k.gate_refs_missing||[]).length ? '  ·  gate refs absent from data: '+k.gate_refs_missing.join(', ') : '';
+      const note = r.notes ? '  ·  Note: '+r.notes : '';
+      const cnts = Object.entries(r.counts_by_round||{}).map(([rd,n])=>`R${rd}:${n}`).join('  ');
+      const did = `iss-${m}-${i}`;
+      html += `<div style="border:1px solid #e3e3e3;border-radius:5px;padding:7px 10px;margin:5px 0">
+        <div style="cursor:pointer" onclick="var e=document.getElementById('${did}');e.style.display=e.style.display==='none'?'block':'none'">
+          <span class="vbadge ${r.verdict}">${r.verdict}</span>
+          <span class="schip">${r.status}</span>
+          <span class="schip">${OWN[r.verdict]||''}</span>
+          <strong style="font-size:12px">&nbsp;${r.variable}</strong>
+          <span style="font-size:11px;color:#666">&nbsp;${(r.label||'').slice(0,70)}</span>
+          <span style="float:right;font-size:10.5px;color:#888">${cnts}</span>
+        </div>
+        <div id="${did}" style="display:none"><div class="evbox">Data    · ${da.total||0} total · kind ${da.kind||''}
+Kobo    · ${rel||'(var not in Kobo)'}${miss}
+Do-file · ${d.ever_touched?'touched by a round do-file':'not touched by any do-file'}
+Verdict · ${r.verdict} via ${r.rule_fired} (confidence ${r.confidence})${note}</div></div>
+      </div>`;
+    });
+  });
+  document.getElementById('issues-body').innerHTML = html || '<p>No issues.</p>';
+}
+
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('#sidebar a').forEach(a=>a.classList.remove('active'));
@@ -2321,6 +2374,7 @@ function showPage(id){
   if(pg) pg.classList.add('active');
   const nav = document.getElementById('nav-'+id);
   if(nav) nav.classList.add('active');
+  if(id==='issues') renderIssues();
   currentPage = id;
   return false;
 }
