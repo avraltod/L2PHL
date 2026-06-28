@@ -33,6 +33,7 @@ def main():
     sub.add_parser("review"); lp = sub.add_parser("list"); lp.add_argument("--open", action="store_true")
     sub.add_parser("firm-report")
     dp = sub.add_parser("delivery"); dp.add_argument("--rebuild", action="store_true")
+    gp = sub.add_parser("grounding"); gp.add_argument("--check", action="store_true")
     a = ap.parse_args()
     if a.cmd == "set":
         set_status(a.key, a.status, a.notes, a.verdict, a.report or None)
@@ -51,6 +52,9 @@ def main():
     elif a.cmd == "delivery":
         import new_delivery
         new_delivery.run(rebuild=a.rebuild)
+    elif a.cmd == "grounding":
+        import build_grounding
+        sys.exit(build_grounding.run(check=a.check))
 
 if __name__ == "__main__":
     main()
