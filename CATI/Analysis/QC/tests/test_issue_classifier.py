@@ -43,6 +43,13 @@ def test_A1_gate_missing_in_kobo():
     v,c,r = classify(f, e)
     assert v=="A1" and r=="gate-missing"
 
+def test_D_beats_B_priority():
+    # qualifies for B (in_kobo, gate_refs_missing, never touched) AND D (preload token) -> D must win
+    f = Flag("M05","ia3","rid","missing",{"8":10})
+    e = ev(kobo={"in_kobo":True,"gate_refs_missing":["round_lastint_ia"]}, dofile={"ever_touched":False})
+    v,c,r = classify(f, e)
+    assert v=="D" and r=="structural-preload"
+
 def test_review_when_unknown():
     f = Flag("MX","zz","rid","skip",{"8":1})
     v,c,r = classify(f, ev())

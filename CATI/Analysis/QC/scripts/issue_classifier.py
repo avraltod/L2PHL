@@ -1,4 +1,5 @@
 """Priority-ordered root-cause classifier. First matching rule wins."""
+import re
 
 # Structural (D) patterns
 PRELOAD_TOKENS = ("fmid", "round_lastint", "fmid_employment")
@@ -14,12 +15,11 @@ def rule_D(f, ev):
     if v.endswith("_oth"):                               return ("D", "high", "structural-oth")
     if v in DERIVED_EXACT or v.endswith(DERIVED_SUFFIX): return ("D", "high", "structural-derived")
     if _is_preload_missing(ev):                          return ("D", "high", "structural-preload")
-    if not ev.kobo.get("in_kobo", True) and ev.kobo.get("relevant_by_round") == {}:
+    if not ev.kobo.get("in_kobo", True) and not ev.kobo.get("relevant_by_round"):
         return ("D", "med", "structural-not-in-kobo")
     return None
 
 def _norm_refs(expr_or_list):
-    import re
     if isinstance(expr_or_list, str):
         return set(m.lower() for m in re.findall(r"\$\{([A-Za-z0-9_]+)\}", expr_or_list))
     return set(x.lower() for x in (expr_or_list or []))
@@ -47,7 +47,7 @@ def rule_A1_A2(f, ev):
     if f.kind != "skip" or not ev.kobo.get("in_kobo"):
         return None
     rels = ev.kobo.get("relevant_by_round") or {}
-    has_gate = any(rels.get(r) for r in rels)
+    has_gate = any(rels.values())
     if not has_gate:
         return ("A1", "med", "gate-missing")
     return ("A2", "med", "gate-correct-violated")
