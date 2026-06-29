@@ -27,13 +27,19 @@
         <div class="scell"><div class="scell-n"><span data-stat="food.drop" data-fmt="ppt">OLD</span></div><div class="scell-l">point drop, R1→R8</div></div>
       </div>
 
-      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="region" data-round="8">
-        A national average hides where hunger sits. Broken out by region, the chart separates into
-        two bands. Metro Manila and the rest of Luzon began near a third of households and fell into
-        the high teens. The Visayas and Mindanao began above half and, despite the steepest declines,
-        stayed near a quarter through Round 8.
+      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="quintile" data-round="8">
+        A national average hides who carries the burden. Switch the chart to income quintile, using
+        each household's baseline welfare rank, and a gradient appears. The poorest fifth began above
+        55 percent and ended near a quarter. The richest fifth began below 30 percent and stayed in
+        the high teens. The poorest carried roughly half again the food insecurity of the richest in
+        every round, and the gap did not close.
       </p>
-      <blockquote class="rev">The recovery reached every region. It did not close the distance between them.</blockquote>
+      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="region" data-round="8">
+        The same divide runs across geography. Broken out by region, Metro Manila and the rest of
+        Luzon began near a third of households; the Visayas and Mindanao began above half and, despite
+        the steepest declines, stayed near a quarter through Round 8.
+      </p>
+      <blockquote class="rev">The recovery reached every household. It did not close the distance between them.</blockquote>
 
       <p class="body-copy rev" data-indicator="any_shock" data-breakdown="overall" data-round="8">
         Exposure to shocks follows the same arc. In the first round,
@@ -51,6 +57,7 @@
         <h3>Moderate-to-severe food insecurity</h3>
         <div class="chips-bd">
           <button class="chip on" data-bd="overall">Overall</button>
+          <button class="chip" data-bd="quintile">Income quintile</button>
           <button class="chip" data-bd="region">Region</button>
           <button class="chip" data-bd="urbrur">Urban/rural</button>
         </div>

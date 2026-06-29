@@ -6,7 +6,8 @@
 // =============================================================================
 // Build storyline breakdown vars on the dataset in memory (needs hhid, region,
 // urban): inc_q (baseline welfare quintile, merged), reg4 (macro-region), urbrur.
-// $QX must point at the folder holding _quintiles_temp.dta.
+// inc_q merges on hhid == stg_id via _quintiles_stgid.dta (built by
+// _make_quintile_xwalk.do); $QXI must point at that file.
 
 	version 18
 
@@ -29,9 +30,9 @@
 
 	* --- baseline welfare quintile (merge on hhid; graceful if crosswalk absent) ---
 	glo HAS_INCQ = 0
-	cap confirm file "$QX/_quintiles_temp.dta"
+	cap confirm file "$QXI"
 	if _rc == 0 {
-		merge m:1 hhid using "$QX/_quintiles_temp.dta", ///
+		merge m:1 hhid using "$QXI", ///
 			keep(master match) keepusing(welfare_m5_q5) nogen
 		cap drop inc_q
 		gen byte inc_q = welfare_m5_q5
@@ -44,5 +45,5 @@
 	else {
 		cap drop inc_q
 		gen byte inc_q = .
-		di as error "breakdowns: $QX/_quintiles_temp.dta not found — inc_q skipped"
+		di as error "breakdowns: $QXI not found — inc_q skipped"
 	}

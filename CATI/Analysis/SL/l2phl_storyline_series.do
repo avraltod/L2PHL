@@ -19,7 +19,7 @@
 	else                    glo root "/Users/avraa/iDrive/GitHub/PHL/L2PHL"   // MacOSX / Unix
 	glo wd  "$root/CATI/Analysis/SL"
 	glo HF  "$root/CATI/Analysis/HF"            // pooled HF masters
-	glo QX  "$root/CAPI/Analysis/SL/data"       // baseline welfare-quintile crosswalk
+	glo QXI "$wd/data/_quintiles_stgid.dta"     // baseline welfare quintile re-keyed to stg_id
 	cd "$wd"
 
 	* --- date stamp ---

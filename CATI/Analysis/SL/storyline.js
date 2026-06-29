@@ -14,6 +14,20 @@ export function seriesFor(entry, breakdown){
 }
 export function clampRound(r,n){ return Math.max(1, Math.min(r,n)); }
 export function sliceTo(arr,maxRound){ return arr.slice(0, maxRound); }
+// Reconstruct nested per-indicator series from the flat dotted #sl-series JSON.
+// Keys: series.<name>.{rounds|overall|label|unit} (3 parts) or
+//       series.<name>.by_<bd>.<level> (4+ parts; level may contain spaces/parens).
+export function parseSeries(flat){
+  const S={};
+  for(const k in flat){
+    if(!k.startsWith("series.")) continue;
+    const p=k.split(".");
+    const name=p[1]; S[name]=S[name]||{};
+    if(p.length===3){ S[name][p[2]]=flat[k]; }
+    else { const leaf=p[2], level=p.slice(3).join("."); (S[name][leaf]=S[name][leaf]||{})[level]=flat[k]; }
+  }
+  return S;
+}
 
 // ---- DOM wiring (browser only) ----
 function isBrowser(){ return typeof document!=="undefined" && typeof window!=="undefined"; }
@@ -28,8 +42,7 @@ function initStoryline(){
   if(!isBrowser()) return;
   const seriesEl=document.getElementById("sl-series");
   if(!seriesEl) return;
-  const flat=JSON.parse(seriesEl.textContent);
-  const SERIES={}; for(const k in flat){ if(k.startsWith("series.")){ const [, name, leaf]=k.split("."); (SERIES[name]=SERIES[name]||{})[leaf]=flat[k]; } }
+  const SERIES=parseSeries(JSON.parse(seriesEl.textContent));
   const card=document.getElementById("sl-chart"); if(!card) return;
   const ctx=card.querySelector("canvas"); const title=card.querySelector("h3");
   const chips=card.querySelector(".chips-bd"); const scrub=card.querySelector('input[type=range]');

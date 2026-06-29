@@ -326,13 +326,19 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
         <div class="scell"><div class="scell-n"><span data-stat="food.drop" data-fmt="ppt">20</span></div><div class="scell-l">point drop, R1→R8</div></div>
       </div>
 
-      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="region" data-round="8">
-        A national average hides where hunger sits. Broken out by region, the chart separates into
-        two bands. Metro Manila and the rest of Luzon began near a third of households and fell into
-        the high teens. The Visayas and Mindanao began above half and, despite the steepest declines,
-        stayed near a quarter through Round 8.
+      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="quintile" data-round="8">
+        A national average hides who carries the burden. Switch the chart to income quintile, using
+        each household's baseline welfare rank, and a gradient appears. The poorest fifth began above
+        55 percent and ended near a quarter. The richest fifth began below 30 percent and stayed in
+        the high teens. The poorest carried roughly half again the food insecurity of the richest in
+        every round, and the gap did not close.
       </p>
-      <blockquote class="rev">The recovery reached every region. It did not close the distance between them.</blockquote>
+      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="region" data-round="8">
+        The same divide runs across geography. Broken out by region, Metro Manila and the rest of
+        Luzon began near a third of households; the Visayas and Mindanao began above half and, despite
+        the steepest declines, stayed near a quarter through Round 8.
+      </p>
+      <blockquote class="rev">The recovery reached every household. It did not close the distance between them.</blockquote>
 
       <p class="body-copy rev" data-indicator="any_shock" data-breakdown="overall" data-round="8">
         Exposure to shocks follows the same arc. In the first round,
@@ -350,6 +356,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
         <h3>Moderate-to-severe food insecurity</h3>
         <div class="chips-bd">
           <button class="chip on" data-bd="overall">Overall</button>
+          <button class="chip" data-bd="quintile">Income quintile</button>
           <button class="chip" data-bd="region">Region</button>
           <button class="chip" data-bd="urbrur">Urban/rural</button>
         </div>
@@ -361,7 +368,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
   </div>
 </section>
 </main>
-<script id="sl-series" type="application/json">{"series.food_insecurity.label": "Moderate-to-severe food insecurity", "series.food_insecurity.unit": "pct", "series.food_insecurity.rounds": [1, 2, 3, 4, 5, 6, 7, 8], "series.food_insecurity.overall": [41.0, 31.0, 26.8, 21.5, 19.0, 22.8, 20.5, 21.0], "series.food_insecurity.by_region.NCR": [31.0, 22.1, 23.0, 15.0, 11.2, 15.8, 15.8, 16.9], "series.food_insecurity.by_region.Luzon": [31.0, 23.7, 21.2, 19.6, 16.3, 20.8, 17.3, 18.6], "series.food_insecurity.by_region.Visayas": [53.6, 41.6, 34.9, 21.6, 21.7, 28.2, 24.2, 24.1], "series.food_insecurity.by_region.Mindanao": [56.2, 41.7, 33.5, 28.9, 26.7, 26.3, 26.3, 25.5], "series.food_insecurity.by_urbrur.Urban": [38.6, 30.1, 25.6, 20.2, 14.9, 20.4, 17.5, 18.8], "series.food_insecurity.by_urbrur.Rural": [44.0, 32.1, 28.3, 23.1, 24.0, 25.7, 24.1, 23.7], "series.any_shock.label": "Households reporting any shock", "series.any_shock.unit": "pct", "series.any_shock.rounds": [1, 2, 3, 4, 5, 6, 7, 8], "series.any_shock.overall": [34.9, 22.6, 16.7, 14.3, 12.8, 22.5, 20.7, 16.4], "series.any_shock.by_region.NCR": [34.3, 24.5, 22.8, 11.3, 15.9, 15.0, 12.9, 15.2], "series.any_shock.by_region.Luzon": [30.8, 23.0, 18.6, 14.5, 15.7, 20.3, 17.3, 13.0], "series.any_shock.by_region.Visayas": [43.3, 29.6, 14.8, 19.2, 14.8, 27.7, 26.9, 17.7], "series.any_shock.by_region.Mindanao": [36.6, 15.0, 11.0, 11.5, 3.7, 27.1, 26.9, 22.9], "series.any_shock.by_urbrur.Urban": [32.9, 19.4, 14.2, 13.3, 11.4, 20.2, 18.3, 15.9], "series.any_shock.by_urbrur.Rural": [37.4, 26.6, 19.7, 15.4, 14.5, 25.4, 23.6, 17.0]}</script>
+<script id="sl-series" type="application/json">{"series.food_insecurity.label": "Moderate-to-severe food insecurity", "series.food_insecurity.unit": "pct", "series.food_insecurity.rounds": [1, 2, 3, 4, 5, 6, 7, 8], "series.food_insecurity.overall": [41.0, 31.0, 26.8, 21.5, 19.0, 22.8, 20.5, 21.0], "series.food_insecurity.by_quintile.Q1 (poorest)": [55.9, 44.6, 33.4, 31.9, 28.0, 28.5, 24.1, 26.5], "series.food_insecurity.by_quintile.Q2": [44.3, 30.6, 27.2, 23.3, 18.0, 20.8, 22.6, 20.5], "series.food_insecurity.by_quintile.Q3": [39.8, 31.2, 25.1, 21.3, 17.4, 21.9, 19.2, 22.2], "series.food_insecurity.by_quintile.Q4": [33.7, 25.2, 26.4, 19.4, 15.7, 20.5, 18.1, 18.1], "series.food_insecurity.by_quintile.Q5 (richest)": [28.5, 21.8, 20.8, 9.8, 15.3, 22.1, 18.0, 17.4], "series.food_insecurity.by_region.NCR": [31.0, 22.1, 23.0, 15.0, 11.2, 15.8, 15.8, 16.9], "series.food_insecurity.by_region.Luzon": [31.0, 23.7, 21.2, 19.6, 16.3, 20.8, 17.3, 18.6], "series.food_insecurity.by_region.Visayas": [53.6, 41.6, 34.9, 21.6, 21.7, 28.2, 24.2, 24.1], "series.food_insecurity.by_region.Mindanao": [56.2, 41.7, 33.5, 28.9, 26.7, 26.3, 26.3, 25.5], "series.food_insecurity.by_urbrur.Urban": [38.6, 30.1, 25.6, 20.2, 14.9, 20.4, 17.5, 18.8], "series.food_insecurity.by_urbrur.Rural": [44.0, 32.1, 28.3, 23.1, 24.0, 25.7, 24.1, 23.7], "series.any_shock.label": "Households reporting any shock", "series.any_shock.unit": "pct", "series.any_shock.rounds": [1, 2, 3, 4, 5, 6, 7, 8], "series.any_shock.overall": [34.9, 22.6, 16.7, 14.3, 12.8, 22.5, 20.7, 16.4], "series.any_shock.by_quintile.Q1 (poorest)": [45.0, 26.0, 15.6, 16.6, 15.8, 29.8, 29.5, 15.1], "series.any_shock.by_quintile.Q2": [35.2, 20.6, 15.6, 14.0, 13.0, 24.3, 20.3, 17.3], "series.any_shock.by_quintile.Q3": [33.3, 29.2, 15.8, 15.4, 12.9, 20.3, 16.8, 20.4], "series.any_shock.by_quintile.Q4": [30.9, 21.2, 17.7, 14.1, 10.2, 21.3, 21.0, 16.6], "series.any_shock.by_quintile.Q5 (richest)": [28.9, 14.9, 19.2, 10.8, 11.8, 16.4, 15.5, 12.0], "series.any_shock.by_region.NCR": [34.3, 24.5, 22.8, 11.3, 15.9, 15.0, 12.9, 15.2], "series.any_shock.by_region.Luzon": [30.8, 23.0, 18.6, 14.5, 15.7, 20.3, 17.3, 13.0], "series.any_shock.by_region.Visayas": [43.3, 29.6, 14.8, 19.2, 14.8, 27.7, 26.9, 17.7], "series.any_shock.by_region.Mindanao": [36.6, 15.0, 11.0, 11.5, 3.7, 27.1, 26.9, 22.9], "series.any_shock.by_urbrur.Urban": [32.9, 19.4, 14.2, 13.3, 11.4, 20.2, 18.3, 15.9], "series.any_shock.by_urbrur.Rural": [37.4, 26.6, 19.7, 15.4, 14.5, 25.4, 23.6, 17.0]}</script>
 <script id="sl-data" type="application/json">{"food_trend": [40.99, 30.97, 26.82, 21.49, 18.2], "shock_trend": [34.91, 22.63, 16.71, 14.28, 12.09], "ls_trend": [2.83, 2.81, 2.79, 2.85, 2.88], "fies": {"Worried about not having enough food": 39.22, "Ate less than thought should": 27.84, "Ran out of food": 21.41, "Hungry but did not eat": 14.78, "Went without eating whole day": 6.47}, "severity": {"Food secure": 52.36, "Mild": 29.44, "Moderate": 14.53, "Severe": 3.66}, "sev_macro": {"NCR": 66.3, "Luzon": 60.0, "Visayas": 42.7, "Mindanao": 37.0}, "shock_types": {"Major illness": 4.5, "Typhoons": 2.47, "Unexpected loss of job": 1.83, "Non-payment or delay in payment of income": 0.9, "Major injury": 0.64, "Floods/La Niña": 0.61, "Inflation (increase of food/fuel/commodity prices)": 0.54, "Death": 0.31, "Major financial problem": 0.29, "Food shortage": 0.22}, "coping": {"Borrowed from friends and family": 24.6, "Received assistance from friends and family ": 13.84, "Relied on savings": 9.84, "Received assistance from government": 9.24, "Increased hours of work": 7.85, "Engaged in additional income generating activities": 6.65, "Others, specify": 6.07, "Consulted a medical professional": 4.82}, "shock_macro": {"NCR": 16.3, "Luzon (excl. NCR)": 14.0, "Visayas": 14.7, "Mindanao": 3.6}, "finance": {"Mobile money acc (f18)": 49.93, "Bought online (f15)": 23.59, "Took loan (f7)": 18.09, "Received remittance": 18.26, "Used bank 30d (f3)": 12.92, "Bank account (f17)": 12.1, "Used mobile 30d (f6)": 3.46, "Cover ₱300k (f16)": 3.25}, "loan_purpose": {"Medical/health": 30.04, "Housing repair": 25.21, "Business": 12.26, "Agricultural input": 10.21, "Debt repayment": 6.98, "Food and other daily needs": 6.13, "Education": 4.26}, "inc_macro": {"NCR": 21566, "Luzon (excl. NCR)": 13633, "Visayas": 11787, "Mindanao": 11341}, "ph_type": {"Not covered": 78.26, "Member (no card)": 16.33, "Member + card": 4.78, "Dependent": 0.62}, "ph_macro": {"NCR": 31.2, "Luzon (excl. NCR)": 27.2, "Visayas": 17.7, "Mindanao": 20.0}, "facility": {"Barangay Health Station": 36.99, "Private Clinic": 34.22, "Rural Health Unit": 12.55, "Public Hospital": 11.55, "Private Hospital": 4.69}, "contract": {"Verbal agreement": 68.58, "Written": 18.41, "No contract": 7.23, "Don't know": 5.78}, "class_work": {"Private HH": 28.81, "Private establishment": 27.03, "Self-employed": 18.25, "Government": 7.5, "Employer": 7.46, "Family business (unpaid)": 2.2}, "eco_change": {"Same": 52.44, "Somewhat worse": 23.89, "Somewhat better": 9.96, "Much worse": 8.4, "Much better": 5.3}, "likert": {"Prices rising too fast": 44.49, "Optimistic about economy": 31.8, "More citizen participation in govt": 14.02, "Worried: child education": 14.84, "Worried: job loss": 33.73, "Worried: political instability": 30.38, "Digital services helpful (past month)": 25.97, "Taxes well spent": 38.71, "Govt fighting corruption well": 35.35, "Country on right track": 40.25}, "life_sat_dist": {"1": 6.8, "2": 24.57, "3": 50.36, "4": 9.85, "5": 8.41}, "fies_items_trend": {"Worried about food": [57.43, 46.7, 46.17, 41.95, 39.22], "Ate less than should": [52.44, 43.24, 39.43, 29.17, 27.84], "Ran out of food": [44.48, 35.06, 29.08, 24.41, 21.41], "Hungry, didn't eat": [32.05, 25.42, 21.7, 17.84, 14.78], "Whole day without food": [14.79, 10.21, 8.4, 8.24, 6.47]}, "fies_foodsec_trend": [29.08, 40.41, 44.68, 48.26, 52.36], "shock_types_trend": {"Typhoons": [17.63, 12.71, 7.14, 5.37, 2.37], "Major illness": [7.48, 4.9, 3.87, 4.23, 4.31], "Job loss": [2.3, 2.11, 2.3, 2.55, 1.64], "Floods": [1.73, 0.66, 0.59, 0.37, 0.32]}, "utilities_trend": {"Water disrupted %": [25.79, 16.42, 14.07, 11.55, 9.83], "Internet disrupted %": [46.66, 34.76, 39.62, 33.61, 29.69], "Elec outage (hrs)": [14.24, 9.33, 8.64, 2.67, 2.59]}, "finance_trend": {"Has mobile money (f2) %": [14.95, 16.21, 18.67, 18.88, 20.83], "Took loan (f7) %": [22.14, 19.83, 22.4, 21.04, 18.09], "Used bank 30d (f3) %": [13.28, 13.04, 13.57, 11.6, 12.92], "Used mobile 30d (f6) %": [3.71, 2.86, 2.31, 2.21, 3.46]}, "eco_trend": {"Worse": [36.17, 34.34, 36.58, 34.41, 32.29], "Same": [45.37, 49.06, 49.46, 52.31, 52.44], "Better": [18.46, 16.6, 13.96, 13.28, 15.27]}, "perception_trend": {"Economy will improve": [49.68, 49.11, 45.12, 37.56, 44.49], "Things will get better": [27.94, 25.68, 29.99, 32.22, 30.38], "Prices keep rising": [19.49, 16.8, 19.38, 15.01, 14.02], "Satisfied with govt": [43.72, 43.86, 37.78, 43.42, 40.25]}}</script>
 <script>/* scrollytelling engine */
 // CATI/Analysis/SL/storyline.js — shared scrollytelling + interactive-chart engine.
@@ -380,6 +387,20 @@ function seriesFor(entry, breakdown){
 }
 function clampRound(r,n){ return Math.max(1, Math.min(r,n)); }
 function sliceTo(arr,maxRound){ return arr.slice(0, maxRound); }
+// Reconstruct nested per-indicator series from the flat dotted #sl-series JSON.
+// Keys: series.<name>.{rounds|overall|label|unit} (3 parts) or
+//       series.<name>.by_<bd>.<level> (4+ parts; level may contain spaces/parens).
+function parseSeries(flat){
+  const S={};
+  for(const k in flat){
+    if(!k.startsWith("series.")) continue;
+    const p=k.split(".");
+    const name=p[1]; S[name]=S[name]||{};
+    if(p.length===3){ S[name][p[2]]=flat[k]; }
+    else { const leaf=p[2], level=p.slice(3).join("."); (S[name][leaf]=S[name][leaf]||{})[level]=flat[k]; }
+  }
+  return S;
+}
 
 // ---- DOM wiring (browser only) ----
 function isBrowser(){ return typeof document!=="undefined" && typeof window!=="undefined"; }
@@ -394,8 +415,7 @@ function initStoryline(){
   if(!isBrowser()) return;
   const seriesEl=document.getElementById("sl-series");
   if(!seriesEl) return;
-  const flat=JSON.parse(seriesEl.textContent);
-  const SERIES={}; for(const k in flat){ if(k.startsWith("series.")){ const [, name, leaf]=k.split("."); (SERIES[name]=SERIES[name]||{})[leaf]=flat[k]; } }
+  const SERIES=parseSeries(JSON.parse(seriesEl.textContent));
   const card=document.getElementById("sl-chart"); if(!card) return;
   const ctx=card.querySelector("canvas"); const title=card.querySelector("h3");
   const chips=card.querySelector(".chips-bd"); const scrub=card.querySelector('input[type=range]');
