@@ -1,0 +1,55 @@
+<!-- Chapter content for topic 'mood'. The builder prepends the .chap band + a
+     <div data-chapter="mood"> wrapper; this fragment is the .sec content. -->
+<div class="sec cream-bg">
+  <div class="sec" style="padding:60px 40px 30px;max-width:1100px;margin:0 auto;">
+    <span class="eyebrow t">Views</span>
+    <h2 class="hed">The national mood held steady, <em class="t">until the Middle East crisis</em></h2>
+    <div class="two-col">
+      <div>
+        <p class="body-copy rev" data-indicator="life_satisfaction" data-breakdown="overall" data-round="8">
+          Life satisfaction is the panel's broadest measure of how households feel. It held near
+          <span data-stat="sat.r1" data-fmt="raw">OLD</span> out of five through the first five rounds.
+          Then it slipped, to <span data-stat="sat.r8" data-fmt="raw">OLD</span> by Round 8. The decline
+          is small, and it lines up with the rounds when the Middle East crisis dominated the news.
+        </p>
+
+        <div class="sgrid sgrid-3 rev d1">
+          <div class="scell"><div class="scell-n"><span data-stat="sat.r1" data-fmt="raw">OLD</span></div><div class="scell-l">satisfaction /5 · R1</div></div>
+          <div class="scell"><div class="scell-n"><span data-stat="sat.r8" data-fmt="raw">OLD</span></div><div class="scell-l">satisfaction /5 · R8</div></div>
+          <div class="scell"><div class="scell-n"><span data-stat="worse.peak" data-fmt="pct0">OLD</span></div><div class="scell-l">felt worse off · R6 peak</div></div>
+        </div>
+
+        <p class="body-copy rev" data-indicator="worse_off" data-breakdown="overall" data-round="8">
+          The same turn shows in how households judged their own finances. The share saying their
+          economic situation had worsened sat in the teens for months, near
+          <span data-stat="worse.r1" data-fmt="pct0">OLD</span>, then jumped to
+          <span data-stat="worse.peak" data-fmt="pct0">OLD</span> at Round 6 before easing to
+          <span data-stat="worse.r8" data-fmt="pct0">OLD</span>. The mood did not drift, it reacted,
+          because the price of fuel and food moved at the same time.
+        </p>
+        <blockquote class="rev">The mood did not drift. It reacted.</blockquote>
+
+        <p class="body-copy rev" data-indicator="life_satisfaction" data-breakdown="quintile" data-round="8">
+          The dip was not confined to one group. Switch the chart to income quintile and every line
+          bends down together around Round 6. A shock that arrives through prices reaches the mood of
+          richer and poorer households alike, because they buy in the same market.
+        </p>
+      </div>
+
+      <div style="position:sticky;top:24px">
+        <div class="cbox sl-chart">
+          <h3>Life satisfaction (1–5)</h3>
+          <div class="chips-bd">
+            <button class="chip on" data-bd="overall">Overall</button>
+            <button class="chip" data-bd="quintile">Income quintile</button>
+            <button class="chip" data-bd="region">Region</button>
+            <button class="chip" data-bd="urbrur">Urban/rural</button>
+          </div>
+          <div class="chart-wrap"><canvas></canvas></div>
+          <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
+          <div class="src">Source: M09 views · weighted · life satisfaction 1–5, worse-off share · hover any point</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

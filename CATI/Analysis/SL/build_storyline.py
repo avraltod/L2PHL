@@ -64,7 +64,8 @@ def _engine_inline():
 # R5-start indicators (mobile_money/bank_account) get r5/r8.
 _DERIVE_MAP = {"food_insecurity": "food", "any_shock": "shock",
                "mobile_money": "mm", "bank_account": "bank", "no_contract": "work",
-               "me_concern": "mec", "me_impact": "mei"}
+               "me_concern": "mec", "me_impact": "mei",
+               "life_satisfaction": "sat", "worse_off": "worse"}
 def _derive_pointstats(series_path, indicators):
     nested = load_series(series_path)
     out = {}
@@ -79,7 +80,8 @@ def _derive_pointstats(series_path, indicators):
         if not nn:
             continue
         out[grp] = {"r1": round(nn[0], 1), "r5": round(nn[0], 1),
-                    "r8": round(nn[-1], 1), "drop": round(nn[0] - nn[-1], 1)}
+                    "r8": round(nn[-1], 1), "drop": round(nn[0] - nn[-1], 1),
+                    "peak": round(max(nn), 1)}
     return out
 
 def _series_for_story(indicators):

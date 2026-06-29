@@ -65,12 +65,14 @@ function initChart(card, SERIES){
     state.maxRound=clampRound(state.maxRound, e.rounds.length);
     const labels=sliceTo(e.rounds.map(r=>"R"+r), state.maxRound);
     const datasets=buildDatasets(e, state.breakdown, state.maxRound);
+    // format by the indicator's unit: "pct" -> "%" (0-based); anything else -> a /5 score axis
+    const unit=(e.unit||"pct"), suf=(unit==="pct"?"%":""), ymax=(unit==="pct"?undefined:5);
     if(chart) chart.destroy();
     chart=new Chart(ctx,{type:"line",data:{labels,datasets},
       options:{responsive:true,maintainAspectRatio:false,
-        scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v+"%"}}},
+        scales:{x:{grid:{display:false}},y:{beginAtZero:true,max:ymax,ticks:{callback:v=>v+suf}}},
         plugins:{legend:{display:datasets.length>1,position:"bottom",labels:{boxWidth:10,font:{size:10}}},
-                 tooltip:{callbacks:{label:c=>`${c.dataset.label} · R${c.dataIndex+1}: ${c.parsed.y}%`}}}}});
+                 tooltip:{callbacks:{label:c=>`${c.dataset.label} · R${c.dataIndex+1}: ${c.parsed.y}${suf}`}}}}});
     if(chips){ const avail=availableBreakdowns(e);
       chips.querySelectorAll(".chip").forEach(ch=>{
         const bd=ch.dataset.bd; ch.disabled=!avail.includes(bd); ch.classList.toggle("on",bd===state.breakdown);});

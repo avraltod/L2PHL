@@ -21,5 +21,5 @@ TOPICS = [
   {"slug":"health","nav":"Health","title":"Health under pressure","modules":"Health · Shocks",
    "headline":"Coverage & out-of-pocket","accent":"#002244","live":False,"indicators":[]},
   {"slug":"mood","nav":"Mood","title":"The national mood","modules":"Views",
-   "headline":"Satisfaction 2.85/5 · AI worry","accent":"#FCD116","live":False,"indicators":[]},
+   "headline":"Satisfaction dipped at R6","accent":"#FCD116","live":True,"indicators":["life_satisfaction","worse_off"]},
 ]

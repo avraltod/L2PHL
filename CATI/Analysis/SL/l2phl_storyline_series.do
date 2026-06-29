@@ -103,5 +103,20 @@
 		label("Reporting a moderate-to-severe impact") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
+	***************************************************************************
+	**# 6. The national mood (M09) — life satisfaction (/5) & worse-off (%), R1–R8 (hhw)
+	***************************************************************************
+	use "$HF/l2phl_M09_views.dta", clear
+	gen life_sat = v1 if inrange(v1,1,5)                          // life satisfaction, 1=low..5=high
+	gen byte worse_off = inlist(v5,1,2) if inlist(v5,1,2,3,4,5)   // economic situation worsened
+	svyset psu [pweight=hhw], strata(stratum)
+	do "$wd/_breakdowns.do"
+	series_emit life_satisfaction life_sat, round(round) ///
+		label("Life satisfaction (1–5)") unit("score") scale(1) ///
+		quintile(inc_q) region(reg4) urbrur(urbrur)
+	series_emit worse_off worse_off, round(round) ///
+		label("Feeling economically worse off") unit("pct") ///
+		quintile(inc_q) region(reg4) urbrur(urbrur)
+
 	stat_close
 	di as result "storyline series written: $wd/sl_series.json"
