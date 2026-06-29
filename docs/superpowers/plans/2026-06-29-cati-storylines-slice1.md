@@ -353,7 +353,7 @@ git commit -m "feat(sl): _breakdowns.do — baseline income quintile + region4 +
 
 **Contract.** The do-file (author register = survey pipeline; full portable preamble per `/avraa-stata`):
 1. Preamble + path globals (mirror `l2phl_master_analysis.do`; `$dta` points at the HF masters dir).
-2. **Food insecurity** — load `l2phl_M08_fies.dta`, recode FIES, `gen mod_sev = (fies_score>=3)`, `svyset psu [pweight=hhw], strata(stratum)`, `include _breakdowns.do`. `stat_open "$wd/sl_series.json"`. `series_emit food_insecurity mod_sev, label("Moderate-to-severe food insecurity") unit("pct") round(round) quintile(inc_q) region(reg4) urbrur(urbrur)`.
+2. **Food insecurity** — load `l2phl_M08_food_nonfood.dta` (the M08 master holding the FIES items; confirm item vars with `codebook`), recode FIES, `gen mod_sev = (fies_score>=3)`, `svyset psu [pweight=hhw], strata(stratum)`, `include _breakdowns.do`. `stat_open "$wd/sl_series.json"`. `series_emit food_insecurity mod_sev, label("Moderate-to-severe food insecurity") unit("pct") round(round) quintile(inc_q) region(reg4) urbrur(urbrur)`.
 3. **Any shock** — load `l2phl_M03_shock.dta`, `gen any_shock = (sh1==1)` (sh1 = M03 "experienced any shock" gate per the grounding map; confirm with `codebook sh1` on the master and adjust the coding if needed), `svyset psu [pweight=hhw], strata(stratum)`, `include _breakdowns.do`, `series_emit any_shock any_shock, label("Households reporting any shock") unit("pct") round(round) quintile(inc_q) region(reg4) urbrur(urbrur)`.
 4. `stat_close`.
 
