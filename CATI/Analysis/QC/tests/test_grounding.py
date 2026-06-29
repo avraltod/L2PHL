@@ -39,3 +39,25 @@ def test_ground_non_round_uses_headline():
     isum = {"M06": {"strip": {}, "headline": "yellow"}}
     rows = ground(["finance.bank_acc_f17"], isum, [])
     assert rows[0]["round"] is None and rows[0]["qc_status"] == "yellow"
+
+def test_variable_level_excludes_mismatched_var():
+    # claim about a16 (contract type); open firm issue is on a18 (pension) -> NOT a caveat
+    isum = {"M04": {"strip": {}, "headline": "yellow"}}
+    issues = [{"key":"M04/a18/r","module":"M04","variable":"a18","verdict":"A2","status":"acknowledged","counts_by_round":{"8":9}}]
+    rows = ground(["employment.no_contract_a16eq2"], isum, issues)
+    assert rows[0]["claim_var"] == "a16"
+    assert rows[0]["grounded"] is True and rows[0]["open_firm_issues"] == []
+
+def test_variable_level_matches_same_var():
+    # an open firm issue on a16 DOES caveat an a16 claim
+    isum = {"M04": {"strip": {}, "headline": "yellow"}}
+    issues = [{"key":"M04/a16/r","module":"M04","variable":"a16","verdict":"A1","status":"new","counts_by_round":{"8":4}}]
+    rows = ground(["employment.no_contract_a16eq2"], isum, issues)
+    assert rows[0]["grounded"] is False and rows[0]["open_firm_issues"] == ["M04/a16/r"]
+
+def test_aggregate_claim_falls_back_to_module():
+    # 'hh_r1' embeds no variable -> module-level: any open firm issue in M01/R1 caveats it
+    isum = {"M01": {"strip": {"1":"red"}, "headline":"red"}}
+    issues = [{"key":"M01/d26_2/r","module":"M01","variable":"d26_2","verdict":"B","status":"acknowledged","counts_by_round":{"1":5}}]
+    rows = ground(["sample.hh_r1"], isum, issues)
+    assert rows[0]["claim_var"] is None and rows[0]["grounded"] is False
