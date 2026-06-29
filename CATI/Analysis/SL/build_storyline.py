@@ -98,7 +98,7 @@ def build_hub(outdir, check=False):
 <title>L2Phl CATI Panel — Storylines</title>{FONT}<style>{css}</style></head><body>
 <div class="hero"><div class="kicker">Listening to the Philippines · CATI Panel · Rounds 1–8</div>
 <h1>Recovery is measurable. Vulnerability is not gone.</h1>
-<p>Eight monthly rounds: food stress halved and shocks collapsed — yet savings, secure work, and confidence barely moved.</p>
+<p>Across eight monthly rounds, food stress halved and shocks collapsed, yet savings, secure work, and confidence barely moved.</p>
 <div class="chips"><span>2,470 households</span><span>Nov 2025 → Jun 2026</span><span>18 regions</span></div></div>
 <div class="storywrap"><div class="hubgrid">{''.join(cards)}</div></div></body></html>"""
     out = os.path.join(outdir,"l2p_cati_hub.html")
