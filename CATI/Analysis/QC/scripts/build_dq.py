@@ -1596,6 +1596,9 @@ EXCL = {
     'urban','age','age_grp','gender','isfmid','hhsize','relationship',
     # Other processing artifacts
     'trailer_tag','sample','excess_int','round_lastint',
+    # Duration and derived non-question vars (not survey questions — exclude from all modules)
+    'dur_f_nf',             # interview duration for Food/NonFood block
+    'pcinc_imp_mean',       # imputed per-capita income (derived/merged, not a Kobo question)
     # M00 derived/PII vars
     'call_result',          # Always 1 in clean data (only completed interviews)
     'new_address_str',      # PII — contains actual respondent addresses
@@ -1915,6 +1918,7 @@ KOBO_VAR_ORDER = {
     ],
     'M08': [
         'f08_a', 'f08_b', 'f08_c', 'f08_d', 'f08_e',
+        'f08_f', 'f08_g', 'f08_h',   # R6+ FIES items
     ],
     'M09': [
         'v1', 'v5',
@@ -2107,6 +2111,9 @@ DISPLAY_NAMES = {
         'f08_c':      'F08_C (f08_c)',
         'f08_d':      'F08_D (f08_d)',
         'f08_e':      'F08_E (f08_e)',
+        'f08_f':      'F08_F (f08_f)',   # R6+
+        'f08_g':      'F08_G (f08_g)',   # R6+
+        'f08_h':      'F08_H (f08_h)',   # R6+
     },
     'M09': {
         'v1':         'V1 (v1)',
@@ -2342,10 +2349,12 @@ def heatmap(df, keep=25, module=None):
         excl |= M01_EDUCATION_VARS  # ed15/ed16 belong in M02, not M01
         excl |= M01_DUPLICATE_VARS  # member_leftreason_other (now harmonized to _oth)
     elif module == 'M02':
-        # M02 authoritative list includes hhid, fmid, age, gender + ed15/ed16/ed16_oth
-        # Un-exclude the ones we want; keep only authoritative vars
-        excl -= M02_EDUCATION_KEEP
-        excl |= ROSTER_QUESTIONS - M02_EDUCATION_KEEP  # exclude other roster vars (isfmid, hhsize)
+        # M02 authoritative list: hhid, fmid, age, gender, ed15, ed16, ed16_oth (7 vars).
+        # Restrict heatmap to exactly these — exclude everything else (ed17, ed18, ed19_*,
+        # ed20, ed2, dur_educ, dur_emp, pcinc_imp_mean, etc.) by adding all other df
+        # columns to excl.
+        excl -= M02_EDUCATION_KEEP          # un-exclude the 7 authoritative vars
+        excl |= {c for c in df.columns if c not in M02_EDUCATION_KEEP}  # exclude all others
     elif module == 'M05':
         excl |= ROSTER_QUESTIONS | M05_DERIVED   # drop derived income totals (not Kobo questions)
     else:
@@ -2353,7 +2362,8 @@ def heatmap(df, keep=25, module=None):
     # Other-specify (_oth) fields are ~100% missing by design (only filled when
     # "other" is picked) — never a meaningful DQ signal, so exclude from the heatmap.
     cols = [c for c in df.columns if c not in excl
-            and not c.startswith(('wt','w_','_')) and not c.endswith('_oth') and c != 'round']
+            and not c.startswith(('wt','w_','_'))
+            and (not c.endswith('_oth') or c == 'ed16_oth') and c != 'round']
 
     # Detect select-all-that-apply families (base_1, base_2, ...)
     sata_families, sata_members = _detect_sata_families(cols)

@@ -353,6 +353,13 @@ if 'M00' in module_tables:
             _ordered_m00.append(_row)
     module_tables['M00'] = _ordered_m00
 
+    # ── M00 lifecycle correction: D3 (audit 2026-06-28) ─────────────────
+    # D3 (CURRENT DATE) was not collected in R1; added from R2 onward.
+    for _row in module_tables['M00']:
+        if _row.get('variable', '').lower() == 'd3':
+            _row['in_R1'] = ''
+            _row['first_round'] = 'R2'
+
     # ── 5. Enrich empty skip_r* from Kobo relevant conditions ───────────
     _M00_KOBO_SKIP = {
         'Z16':     '${call_status1}=1',
@@ -599,7 +606,8 @@ if 'M01' in dq_raw.get('heatmap_data', {}):
 # ed16_N split dummies and dur_edu are injected via MODULE_VAR_ORDER augmentation.
 if 'M02' in dq_raw.get('heatmap_data', {}):
     import re as _re
-    _m02_hm_buckets = {v.lower(): [] for v in _M02_AUTHORITATIVE}
+    _M02_HM_KEYS = ['hhid', 'fmid', 'age', 'gender'] + [v.lower() for v in _M02_AUTHORITATIVE]
+    _m02_hm_buckets = {k: [] for k in _M02_HM_KEYS}
     for _r in dq_raw['heatmap_data']['M02']:
         _var = _r.get('var', '')
         if '(multi)' in _var:
@@ -615,8 +623,8 @@ if 'M02' in dq_raw.get('heatmap_data', {}):
                 _m02_hm_buckets[_auth.lower()].append(_r)
                 break
     _m02_hm_ordered = []
-    for _v in _M02_AUTHORITATIVE:
-        _m02_hm_ordered.extend(_m02_hm_buckets.get(_v.lower(), []))
+    for _v in _M02_HM_KEYS:
+        _m02_hm_ordered.extend(_m02_hm_buckets.get(_v, []))
     dq_raw['heatmap_data']['M02'] = _m02_hm_ordered
 
 # ── M03 Shocks + Natural Hazards standardisation ────────────────────────
@@ -696,6 +704,17 @@ if 'M03' in module_tables:
             _r['variable'] = _v
             _ordered_m03.append(_r)
     module_tables['M03'] = _ordered_m03
+
+    # ── M03 lifecycle correction: NH/N block (audit 2026-06-28) ─────────
+    # NH and N blocks were collected in R3 (Typhoon Kristine window) and
+    # R6 (Middle East crisis window) ONLY. Tracker derived from Kobo
+    # shows false positives for R7 and R8.
+    _M03_NH_VARS = {'nh2', 'nh3', 'nh7', 'nh10', 'nh14', 'nh15', 'nh16', 'nh17', 'n1', 'n3'}
+    for _row in module_tables['M03']:
+        if _row.get('variable', '').lower() in _M03_NH_VARS:
+            for _r in range(1, 9):
+                _row[f'in_R{_r}'] = '✓' if _r in (3, 6) else ''
+            _row['first_round'] = 'R3'
 
 # ── M03 Kobo: drop non-auth vars, reorder ─────────────────────────────
 if 'M03' in kobo_raw and 'variables' in kobo_raw.get('M03', {}):
@@ -1179,6 +1198,19 @@ if 'M07' in module_tables:
             _ordered_m07.append(_r)
     module_tables['M07'] = _ordered_m07
 
+    # ── M07 lifecycle correction (audit 2026-06-28) ──────────────────────
+    # Expansion vars (H4+) are present in R5 and R8 ONLY (HF master l2phl_M07_health.dta:
+    # h4 R8 n=852, h12 R8 n=4,599). module_tables (questionnaire Excel) shows R5-R8
+    # (R6/R7 false positives); kobo_skip_logic (placeholder R08 form) misses R8.
+    _M07_EXPANSION = {'h4','h4_oth','h7','h8','h8_amt','h9a','h9b','h9c','h10',
+                      'h11a','h11b','h11b_oth','h12','h13','h13_oth','h14','h15',
+                      'h16','h16_oth','h17'}
+    for _row in module_tables['M07']:
+        if _row.get('variable','').lower() in _M07_EXPANSION:
+            for _r in range(1, 9):
+                _row[f'in_R{_r}'] = '✓' if _r in (5, 8) else ''
+            _row['first_round'] = 'R5'
+
 if 'M07' in kobo_raw and 'variables' in kobo_raw.get('M07', {}):
     _m07_kobo_lookup = {}
     for _v in kobo_raw['M07']['variables']:
@@ -1237,7 +1269,7 @@ if 'M07' in dq_raw.get('heatmap_data', {}):
 
 # ── M08 Food/FIES standardisation ──────────────────────────────────────
 # Authoritative list: 5 vars (Kobo order: F08_A through F08_E)
-_M08_AUTHORITATIVE = ['f08_a', 'f08_b', 'f08_c', 'f08_d', 'f08_e']
+_M08_AUTHORITATIVE = ['f08_a', 'f08_b', 'f08_c', 'f08_d', 'f08_e', 'f08_f', 'f08_g', 'f08_h']
 _M08_AUTH_SET = {v.upper() for v in _M08_AUTHORITATIVE}
 
 if 'M08' in module_tables:
@@ -1253,6 +1285,9 @@ if 'M08' in module_tables:
         'f08_c': 'ATE ONLY A FEW KINDS OF FOOD',
         'f08_d': 'HAD TO SKIP A MEAL',
         'f08_e': 'DID NOT EAT FOR A WHOLE DAY',
+        'f08_f': 'F08_F (R6+ — verify R08 form)',
+        'f08_g': 'F08_G (R6+ — verify R08 form)',
+        'f08_h': 'F08_H (R6+ — verify R08 form)',
     }
     _template_row = module_tables['M08'][0] if module_tables['M08'] else {}
     # If template is from the F08 aggregate, use it as base
@@ -1327,6 +1362,8 @@ _M09_AUTHORITATIVE = [
     'v9_a', 'v9_b', 'v9_c', 'v9_e', 'v9_f', 'v9_g',
     'v9_i', 'v9_j', 'v9_k', 'v9_l', 'v9_m',
     'v11', 'v12',
+    # Middle East crisis block (R6–R8): added 2026-06-28 audit
+    'v13', 'v14', 'v15', 'v16', 'v17', 'v18',
 ]
 _M09_AUTH_SET = {v.upper() for v in _M09_AUTHORITATIVE}
 
@@ -1338,17 +1375,19 @@ if 'M09' in module_tables:
     ]
     _m09_existing = {r['variable'].upper() for r in module_tables['M09']}
     _V9_LABELS = {
-        'v9_a': 'AGREE: LIFE IN GENERAL IS SATISFYING',
-        'v9_b': 'AGREE: AI WILL TAKE AWAY JOBS',
-        'v9_c': 'AGREE: CLIMATE CHANGE WILL AFFECT LIVELIHOOD',
-        'v9_e': 'AGREE: GENDER EQUALITY IN EDUCATION',
-        'v9_f': 'AGREE: CHILDREN SHOULD GO TO SCHOOL',
-        'v9_g': 'AGREE: GOVERNMENT HANDLES ECONOMY WELL',
-        'v9_i': 'AGREE: VACCINES ARE SAFE AND EFFECTIVE',
-        'v9_j': 'AGREE: FILIPINOS WORK HARD',
-        'v9_k': 'AGREE: MY COMMUNITY IS SAFE',
-        'v9_l': 'AGREE: EASY TO ACCESS HEALTH SERVICES',
-        'v9_m': 'AGREE: DIGITAL TECHNOLOGY IMPROVES LIFE',
+        # Real statement text from CATI M09 Kobo R01 (audit 2026-06-28)
+        # Previous labels were from CAPI M14 and are incorrect for this questionnaire.
+        'v9_a': 'V9a. Prices for the things I buy are rising too quickly',
+        'v9_b': 'V9b. Now is a good time to find a job where I live',
+        'v9_c': 'V9c. I am optimistic about the economic future of the country',
+        'v9_e': 'V9e. Citizens should have more say in important government decisions',
+        'v9_f': 'V9f. I am worried about being able to give my children a good education',
+        'v9_g': 'V9g. I am worried about losing my job (or not finding a job)',
+        'v9_i': 'V9i. I am worried about political instability in my country',
+        'v9_j': 'V9j. Digital public services helped me save time or cost over the past month',
+        'v9_k': 'V9k. The taxes that I pay are being well spent on priorities to help the country',
+        'v9_l': 'V9l. The national government doing a good job fighting corruption',
+        'v9_m': 'V9m. The country is generally on the right track on political, social, and economic reforms',
     }
     _template = module_tables['M09'][0] if module_tables['M09'] else {}
     for _var in _M09_AUTHORITATIVE:
