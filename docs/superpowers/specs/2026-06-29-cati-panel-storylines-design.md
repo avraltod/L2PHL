@@ -20,6 +20,7 @@ World Bank poverty/operational staff **and government counterparts** (PSA, NEDA,
 - **Breakdowns:** overall · **income quintile** (from baseline `pcinc_imp_mean`) · **region** (PSGC) · **urban/rural** · **sex/age**. Each chart declares which breakdowns it supports (sex/age only for individual-level indicators).
 - **Palette:** official WBG — Navy `#002244`, Blue `#009FDA`, Green `#00A651` (positive), PH Red `#CE1126` (alerts), PH Gold `#FCD116` (highlights), cream `#f5f0e8` (paper).
 - **Build:** hand-authored topic narratives + **one shared scrollytelling/chart engine** inlined into each **self-contained** HTML at build time (matches the project's "self-contained single file" convention). Not a spec-generator, not a single mega-app.
+- **Visual template (added 2026-06-29):** each topic page adopts the **baseline story chapter template** — `CAPI/Analysis/SL/html/l2phl_baseline_story.html` (`#ch-roster`). Its editorial serif design system (Playfair Display / Source Serif 4 / IBM Plex Mono, cream paper, `.chap/.eyebrow/.hed/.two-col/.body-copy/.sgrid/.cbox/.rev`) is extracted into the shared `storyline.css`, then extended with the interactive R1–R8 breakdown chart. A CATI topic should read as a sibling chapter of the baseline story.
 
 ## Information architecture
 
