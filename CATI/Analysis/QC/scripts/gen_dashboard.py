@@ -1281,14 +1281,16 @@ if 'M08' in module_tables:
     ]
     _m08_existing = {r['variable'].upper() for r in module_tables['M08']}
     _FIES_LABELS = {
+        # CATI FIES order (verified against the real R08 form 2026-06-28):
+        # A–E = worried + the 4 SEVERE items; F/G/H = the 3 MODERATE items added R6+.
         'f08_a': 'WORRIED ABOUT NOT HAVING ENOUGH FOOD',
-        'f08_b': 'UNABLE TO EAT HEALTHY/NUTRITIOUS FOOD',
-        'f08_c': 'ATE ONLY A FEW KINDS OF FOOD',
-        'f08_d': 'HAD TO SKIP A MEAL',
-        'f08_e': 'DID NOT EAT FOR A WHOLE DAY',
-        'f08_f': 'F08_F (R6+ — verify R08 form)',
-        'f08_g': 'F08_G (R6+ — verify R08 form)',
-        'f08_h': 'F08_H (R6+ — verify R08 form)',
+        'f08_b': 'ATE LESS THAN YOU SHOULD',
+        'f08_c': 'RAN OUT OF FOOD',
+        'f08_d': 'WERE HUNGRY BUT DID NOT EAT',
+        'f08_e': 'WENT WITHOUT EATING FOR A WHOLE DAY',
+        'f08_f': 'UNABLE TO EAT HEALTHY/NUTRITIOUS FOOD (R6+)',
+        'f08_g': 'ATE ONLY A FEW KINDS OF FOOD (R6+)',
+        'f08_h': 'HAD TO SKIP A MEAL (R6+)',
     }
     _template_row = module_tables['M08'][0] if module_tables['M08'] else {}
     # If template is from the F08 aggregate, use it as base
