@@ -10,12 +10,12 @@ def test_round_of():
 
 def test_ground_caveat_on_open_firm_issue_in_round():
     isum = {"M04": {"strip": {"5": "red"}, "headline": "yellow"}}
-    issues = [{"key": "M04/a18/r", "module": "M04", "verdict": "A2",
+    issues = [{"key": "M04/a1/r", "module": "M04", "variable": "a1", "verdict": "A2",
                "status": "acknowledged", "counts_by_round": {"5": 9}}]
-    rows = ground(["employment.emp_status_r5"], isum, issues)
+    rows = ground(["employment.emp_status_r5"], isum, issues)   # emp_status -> {a1, emp_status}
     r = rows[0]
     assert r["module"] == "M04" and r["round"] == "5" and r["qc_status"] == "red"
-    assert r["open_firm_issues"] == ["M04/a18/r"] and r["grounded"] is False
+    assert r["open_firm_issues"] == ["M04/a1/r"] and r["grounded"] is False
 
 def test_ground_clean_claim():
     isum = {"M08": {"strip": {"5": "green"}, "headline": "green"}}
@@ -55,9 +55,25 @@ def test_variable_level_matches_same_var():
     rows = ground(["employment.no_contract_a16eq2"], isum, issues)
     assert rows[0]["grounded"] is False and rows[0]["open_firm_issues"] == ["M04/a16/r"]
 
-def test_aggregate_claim_falls_back_to_module():
-    # 'hh_r1' embeds no variable -> module-level: any open firm issue in M01/R1 caveats it
+def test_curated_count_is_grounded():
+    # sample.hh_r1 -> structural count (KEY_VARS=[]) -> NOT caveated by a migration issue
     isum = {"M01": {"strip": {"1":"red"}, "headline":"red"}}
-    issues = [{"key":"M01/d26_2/r","module":"M01","variable":"d26_2","verdict":"B","status":"acknowledged","counts_by_round":{"1":5}}]
+    issues = [{"key":"M01/d26_2/r","module":"M01","variable":"d26_2","verdict":"B",
+               "status":"acknowledged","counts_by_round":{"1":5}}]
     rows = ground(["sample.hh_r1"], isum, issues)
+    assert rows[0]["grounded"] is True and rows[0]["open_firm_issues"] == []
+
+def test_curated_fies_matches_f08_item():
+    isum = {"M08": {"strip": {"5":"red"}, "headline":"red"}}
+    issues = [{"key":"M08/f08_c/r","module":"M08","variable":"f08_c","verdict":"A2",
+               "status":"new","counts_by_round":{"5":7}}]
+    rows = ground(["fies.mod_sev_r5"], isum, issues)            # fies -> {f08_a..e}
+    assert rows[0]["grounded"] is False and "M08/f08_c/r" in rows[0]["open_firm_issues"]
+
+def test_unmapped_aggregate_falls_back_to_module():
+    # 'philhealth_r5' has no embedded var AND no curated entry -> module-level fallback
+    isum = {"M07": {"strip": {"5":"red"}, "headline":"red"}}
+    issues = [{"key":"M07/h4/r","module":"M07","variable":"h4","verdict":"A2",
+               "status":"new","counts_by_round":{"5":3}}]
+    rows = ground(["health.philhealth_r5"], isum, issues)
     assert rows[0]["claim_var"] is None and rows[0]["grounded"] is False
