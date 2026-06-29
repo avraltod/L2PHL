@@ -88,5 +88,20 @@
 		label("Workers with no written contract") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
+	***************************************************************************
+	**# 5. The Middle East crisis (M09) — concern & impact, R6–R8 (hhw)
+	***************************************************************************
+	use "$HF/l2phl_M09_views.dta", clear
+	gen byte me_concern = inlist(v14,3,4) if inlist(v14,1,2,3,4)   // somewhat/very concerned
+	gen byte me_impact  = inlist(v13,3,4) if inlist(v13,1,2,3,4)   // moderate/severe impact
+	svyset psu [pweight=hhw], strata(stratum)
+	do "$wd/_breakdowns.do"
+	series_emit me_concern me_concern, round(round) ///
+		label("Concerned about the Middle East crisis") unit("pct") ///
+		quintile(inc_q) region(reg4) urbrur(urbrur)
+	series_emit me_impact me_impact, round(round) ///
+		label("Reporting a moderate-to-severe impact") unit("pct") ///
+		quintile(inc_q) region(reg4) urbrur(urbrur)
+
 	stat_close
 	di as result "storyline series written: $wd/sl_series.json"

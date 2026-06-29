@@ -63,7 +63,8 @@ def _engine_inline():
 # Prose binds to numbers DERIVED from the series. nn = non-null endpoints, so
 # R5-start indicators (mobile_money/bank_account) get r5/r8.
 _DERIVE_MAP = {"food_insecurity": "food", "any_shock": "shock",
-               "mobile_money": "mm", "bank_account": "bank", "no_contract": "work"}
+               "mobile_money": "mm", "bank_account": "bank", "no_contract": "work",
+               "me_concern": "mec", "me_impact": "mei"}
 def _derive_pointstats(series_path, indicators):
     nested = load_series(series_path)
     out = {}

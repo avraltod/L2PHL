@@ -1,0 +1,53 @@
+<!-- Chapter content for topic 'mideast'. The builder prepends the .chap band + a
+     <div data-chapter="mideast"> wrapper; this fragment is the .sec content. -->
+<div class="sec cream-bg">
+  <div class="sec" style="padding:60px 40px 30px;max-width:1100px;margin:0 auto;">
+    <span class="eyebrow t">Views</span>
+    <h2 class="hed">The Middle East crisis reached nearly every household, <em class="t">through the price of fuel and food</em></h2>
+    <div class="two-col">
+      <div>
+        <p class="body-copy rev" data-indicator="me_concern" data-breakdown="overall" data-round="8">
+          The panel began asking about the Middle East crisis at Round 6, after the fighting disrupted
+          shipping and oil. The answer was nearly unanimous. <span data-stat="mec.r1" data-fmt="pct0">OLD</span>
+          of households said they were at least somewhat concerned, and the share held near that level
+          through Round 8 at <span data-stat="mec.r8" data-fmt="pct0">OLD</span>. Few external events in
+          the panel reached so many households so quickly.
+        </p>
+
+        <div class="sgrid sgrid-3 rev d1">
+          <div class="scell"><div class="scell-n"><span data-stat="mec.r1" data-fmt="pct0">OLD</span></div><div class="scell-l">concerned · R6</div></div>
+          <div class="scell"><div class="scell-n"><span data-stat="mei.r1" data-fmt="pct0">OLD</span></div><div class="scell-l">moderate-severe impact · R6</div></div>
+          <div class="scell"><div class="scell-n">R6</div><div class="scell-l">first asked</div></div>
+        </div>
+
+        <p class="body-copy rev" data-indicator="me_impact" data-breakdown="overall" data-round="8">
+          Concern was not abstract. <span data-stat="mei.r1" data-fmt="pct0">OLD</span> of households
+          reported a moderate-to-severe impact on their own finances, because a distant conflict reaches
+          a Filipino household through the price of fuel and goods before anything else.
+        </p>
+        <blockquote class="rev">A war an ocean away arrived at the pump and the market stall.</blockquote>
+
+        <p class="body-copy rev" data-indicator="me_concern" data-breakdown="quintile" data-round="8">
+          The worry crossed every income group. Switch the chart to income quintile and the lines sit
+          close together, all well above 85 percent. A price shock from abroad does not sort households
+          by wealth the way a job loss does, because it reaches the whole market at once.
+        </p>
+      </div>
+
+      <div style="position:sticky;top:24px">
+        <div class="cbox sl-chart">
+          <h3>Concerned about the Middle East crisis</h3>
+          <div class="chips-bd">
+            <button class="chip on" data-bd="overall">Overall</button>
+            <button class="chip" data-bd="quintile">Income quintile</button>
+            <button class="chip" data-bd="region">Region</button>
+            <button class="chip" data-bd="urbrur">Urban/rural</button>
+          </div>
+          <div class="chart-wrap"><canvas></canvas></div>
+          <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
+          <div class="src">Source: M09 views · weighted · Middle East block, R6–R8 · hover any point</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
