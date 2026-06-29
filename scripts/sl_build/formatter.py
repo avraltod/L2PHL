@@ -11,6 +11,8 @@ def _comma(n):
 def fmt(value, spec):
     if spec == "raw":
         return str(value)
+    if spec == "dec1":                       # 1-decimal score (e.g. a /5 mean), no unit
+        return f"{float(value):.1f}"
     if spec == "int":
         return str(int(round(float(value))))
     if spec == "intcomma":

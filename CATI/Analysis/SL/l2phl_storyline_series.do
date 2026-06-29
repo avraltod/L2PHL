@@ -47,7 +47,7 @@
 	gen byte mod_sev = (fies_score >= 3) if _nm > 0        // moderate-to-severe; drop not-asked
 	svyset psu [pweight=hhw], strata(stratum)
 	do "$wd/_breakdowns.do"
-	series_emit food_insecurity mod_sev, round(round) ///
+	series_emit food_insecurity mod_sev, round(round) group(food) ///
 		label("Moderate-to-severe food insecurity") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
@@ -58,7 +58,7 @@
 	gen byte any_shock = (sh1==1) if inlist(sh1,1,2)
 	svyset psu [pweight=hhw], strata(stratum)
 	do "$wd/_breakdowns.do"
-	series_emit any_shock any_shock, round(round) ///
+	series_emit any_shock any_shock, round(round) group(shock) ///
 		label("Households reporting any shock") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
@@ -70,10 +70,10 @@
 	gen byte bank_account = (f17==1) if inlist(f17,1,2)        // has formal bank account
 	svyset psu [pweight=hhw], strata(stratum)
 	do "$wd/_breakdowns.do"
-	series_emit mobile_money mobile_money, round(round) ///
+	series_emit mobile_money mobile_money, round(round) group(mm) ///
 		label("Has a mobile-money account") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
-	series_emit bank_account bank_account, round(round) ///
+	series_emit bank_account bank_account, round(round) group(bank) ///
 		label("Has a formal bank account") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
@@ -84,7 +84,7 @@
 	gen byte no_contract = (a16==3) if inlist(a16,1,2,3)      // 3 = no written contract (among asked)
 	svyset psu [pweight=indw], strata(stratum)
 	do "$wd/_breakdowns.do"
-	series_emit no_contract no_contract, round(round) ///
+	series_emit no_contract no_contract, round(round) group(work) ///
 		label("Workers with no written contract") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
@@ -96,10 +96,10 @@
 	gen byte me_impact  = inlist(v13,3,4) if inlist(v13,1,2,3,4)   // moderate/severe impact
 	svyset psu [pweight=hhw], strata(stratum)
 	do "$wd/_breakdowns.do"
-	series_emit me_concern me_concern, round(round) ///
+	series_emit me_concern me_concern, round(round) group(mec) ///
 		label("Concerned about the Middle East crisis") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
-	series_emit me_impact me_impact, round(round) ///
+	series_emit me_impact me_impact, round(round) group(mei) ///
 		label("Reporting a moderate-to-severe impact") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
@@ -111,10 +111,10 @@
 	gen byte worse_off = inlist(v5,1,2) if inlist(v5,1,2,3,4,5)   // economic situation worsened
 	svyset psu [pweight=hhw], strata(stratum)
 	do "$wd/_breakdowns.do"
-	series_emit life_satisfaction life_sat, round(round) ///
+	series_emit life_satisfaction life_sat, round(round) group(sat) ///
 		label("Life satisfaction (1–5)") unit("score") scale(1) ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
-	series_emit worse_off worse_off, round(round) ///
+	series_emit worse_off worse_off, round(round) group(worse) ///
 		label("Feeling economically worse off") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
@@ -126,7 +126,7 @@
 	replace got_remit = . if round < 3                       // f13 denominator changed at R3 (Kobo gate)
 	svyset psu [pweight=hhw], strata(stratum)
 	do "$wd/_breakdowns.do"
-	series_emit got_remit got_remit, round(round) ///
+	series_emit got_remit got_remit, round(round) group(remit) ///
 		label("Received money via a transfer service") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
@@ -137,7 +137,7 @@
 	gen byte oop = (h8==1) if inlist(h8,1,2,3)               // 1 = paid out-of-pocket
 	svyset psu [pweight=indw], strata(stratum)
 	do "$wd/_breakdowns.do"
-	series_emit oop oop, round(round) ///
+	series_emit oop oop, round(round) group(oop) ///
 		label("Paid out-of-pocket for a consultation") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 

@@ -41,6 +41,7 @@
 		qui count if !missing(inc_q)
 		if r(N) > 0 glo HAS_INCQ = 1
 		di as result "breakdowns: inc_q matched for `r(N)' rows (HAS_INCQ=$HAS_INCQ)"
+		assert r(N) > 5000   // guard silent key-drift: ~2083 HH x rounds should match (not a near-zero merge)
 	}
 	else {
 		cap drop inc_q

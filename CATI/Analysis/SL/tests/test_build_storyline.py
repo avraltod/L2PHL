@@ -16,6 +16,8 @@ def test_build_story_single_file(tmp_path):
     assert "chart.umd.js" in html
     assert 'id="sl-series"' in html
     assert "export function" not in html
+    # point-stats are Stata-emitted + bound into prose; the dead #sl-data embed stays gone
+    assert 'id="sl-data"' not in html
     # tabbed masthead + hero + epilogue (baseline-comparable shell)
     assert '<header class="mast">' in html and 'class="mast-nav"' in html
     assert 'class="hero"' in html and 'class="epi"' in html

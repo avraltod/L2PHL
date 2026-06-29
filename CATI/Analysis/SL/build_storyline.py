@@ -5,7 +5,7 @@ import argparse, json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from build_story import inject            # reuse the data-stat injector
-from series import load_series
+from series import load_series, validate_series
 from topics_registry import TOPICS
 
 OUTNAME = "l2phl_cati_story.html"
@@ -60,37 +60,20 @@ def _engine_inline():
     js = re.sub(r'^import\s+.*$', '', js, flags=re.M)
     return "/* scrollytelling engine */\n" + js
 
-# Prose binds to numbers DERIVED from the series. nn = non-null endpoints, so
-# R5-start indicators (mobile_money/bank_account) get r5/r8.
+# Prose point-stats are EMITTED BY STATA (series_emit's group() option writes
+# <grp>.r1/r5/r8/drop/peak/q1_r8/q5_r8 into sl_series.json). This binds only —
+# no statistic is computed in Python (single-source-of-truth rule).
 _DERIVE_MAP = {"food_insecurity": "food", "any_shock": "shock",
                "mobile_money": "mm", "bank_account": "bank", "no_contract": "work",
                "me_concern": "mec", "me_impact": "mei",
                "life_satisfaction": "sat", "worse_off": "worse",
                "got_remit": "remit", "oop": "oop"}
-def _derive_pointstats(series_path, indicators):
-    nested = load_series(series_path)
+def _load_pointstats(nested, indicators):
     out = {}
     for ind in indicators:
         grp = _DERIVE_MAP.get(ind)
-        if not grp:
-            continue
-        e = nested.get("series", {}).get(ind)
-        if not e:
-            continue
-        nn = [x for x in (e.get("overall") or []) if x is not None]
-        if not nn:
-            continue
-        out[grp] = {"r1": round(nn[0], 1), "r5": round(nn[0], 1),
-                    "r8": round(nn[-1], 1), "drop": round(nn[0] - nn[-1], 1),
-                    "peak": round(max(nn), 1)}
-        # poorest/richest quintile endpoints (last non-null), for the equity synthesis
-        bq = e.get("by_quintile") or {}
-        lo = next((v for k, v in bq.items() if "poorest" in k.lower()), None)
-        hi = next((v for k, v in bq.items() if "richest" in k.lower()), None)
-        lonn = [x for x in (lo or []) if x is not None]
-        hinn = [x for x in (hi or []) if x is not None]
-        if lonn: out[grp]["q1_r8"] = round(lonn[-1], 1)
-        if hinn: out[grp]["q5_r8"] = round(hinn[-1], 1)
+        if grp and grp in nested:
+            out[grp] = nested[grp]
     return out
 
 def _series_for_story(indicators):
@@ -114,11 +97,10 @@ def build_story(outdir, check=False):
     css  = _read(os.path.join(HERE,"storyline.css"))
     live = [t for t in TOPICS if t["live"]]
     all_inds = [i for t in live for i in t.get("indicators", [])]
+    nested = load_series(os.path.join(HERE,"sl_series.json"))
+    validate_series(nested)                       # fail loud on a malformed series
     series = _series_for_story(all_inds)
-    bind = _derive_pointstats(os.path.join(HERE,"sl_series.json"), all_inds)
-    stats_path = os.path.join(HERE,"sl_stats.json")
-    if os.path.exists(stats_path):
-        bind.update(json.load(open(stats_path, encoding="utf-8")))
+    bind = _load_pointstats(nested, all_inds)      # Stata-emitted point-stats only
     chapters = []
     for i, t in enumerate(live, 1):
         frag = _read(os.path.join(HERE,"topics",f"{t['slug']}.html"))
@@ -137,10 +119,9 @@ def build_story(outdir, check=False):
 {''.join(chapters)}
 {EPILOGUE}
 <script id="sl-series" type="application/json">{json.dumps(series).replace('</','<\\/')}</script>
-<script id="sl-data" type="application/json">{json.dumps(bind).replace('</','<\\/')}</script>
 <script>{_engine_inline()}</script>
 </body></html>"""
-    built, _report = inject(doc, bind, "charts")
+    built, _report = inject(doc, bind)            # bind data-stat spans; no #sl-data
     out = os.path.join(outdir, OUTNAME)
     if check:
         prev = _read(out) if os.path.exists(out) else ""

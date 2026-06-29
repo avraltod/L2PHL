@@ -48,6 +48,9 @@ program define stat_put
         di as error "stat_emit: missing value for `key'"
         exit 459
     }
+    local val = string(`val', "%18.0g")                       // full precision
+    if substr("`val'",1,1)=="."       local val = "0`val'"     // JSON needs a leading 0 (.17 -> 0.17)
+    else if substr("`val'",1,2)=="-." local val = "-0" + substr("`val'",2,.)
     _se_guard "`key'"
     _se_append `"${SE_q}`key'${SE_q}:`val'"'
 end
