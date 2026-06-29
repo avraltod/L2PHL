@@ -1,0 +1,63 @@
+<!-- Topic 1 · Recovery is measurable · Food · Shocks. Built on the baseline chapter template. -->
+<header class="chap">
+  <div class="chap-n">01</div>
+  <div>
+    <span class="eyebrow">Theme 1 · Food · Shocks</span>
+    <h2 class="hed" style="color:#fff;margin:0">Recovery is measurable</h2>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="two-col">
+    <!-- LEFT: editorial prose + a stat grid -->
+    <div>
+      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="overall" data-round="8">
+        When the panel began in November, <span data-stat="food.r1" data-fmt="pct0">OLD</span> of
+        households were cutting meals or eating less because they could not afford enough food.
+        That share fell through the winter, to about 19 percent by March. The decline then stalled
+        and partly reversed. By Round 8 food insecurity stood at
+        <span data-stat="food.r8" data-fmt="pct0">OLD</span>, a drop of
+        <span data-stat="food.drop" data-fmt="ppt">OLD</span> points from the first round but above
+        the March low. The data suggest a recovery that is real and unfinished.
+      </p>
+
+      <div class="sgrid sgrid-3 rev d1">
+        <div class="scell"><div class="scell-n"><span data-stat="food.r1" data-fmt="pct0">OLD</span></div><div class="scell-l">food insecure · R1</div></div>
+        <div class="scell"><div class="scell-n"><span data-stat="food.r8" data-fmt="pct0">OLD</span></div><div class="scell-l">food insecure · R8</div></div>
+        <div class="scell"><div class="scell-n"><span data-stat="food.drop" data-fmt="ppt">OLD</span></div><div class="scell-l">point drop, R1→R8</div></div>
+      </div>
+
+      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="region" data-round="8">
+        A national average hides where hunger sits. Broken out by region, the chart separates into
+        two bands. Metro Manila and the rest of Luzon began near a third of households and fell into
+        the high teens. The Visayas and Mindanao began above half and, despite the steepest declines,
+        stayed near a quarter through Round 8.
+      </p>
+      <blockquote class="rev">The recovery reached every region. It did not close the distance between them.</blockquote>
+
+      <p class="body-copy rev" data-indicator="any_shock" data-breakdown="overall" data-round="8">
+        Exposure to shocks follows the same arc. In the first round,
+        <span data-stat="shock.r1" data-fmt="pct0">OLD</span> of households reported a recent shock —
+        a lost job, an illness, a storm, a price spike. That share fell to
+        <span data-stat="shock.r8" data-fmt="pct0">OLD</span> by Round 8, with the same winter dip and
+        spring rebound. Food stress and shocks move together, because a shock that cuts a household's
+        income is also what pushes it to cut meals.
+      </p>
+    </div>
+
+    <!-- RIGHT: interactive chart in a sticky .cbox -->
+    <div style="position:sticky;top:24px">
+      <div class="cbox" id="sl-chart">
+        <h3>Moderate-to-severe food insecurity</h3>
+        <div class="chips-bd">
+          <button class="chip on" data-bd="overall">Overall</button>
+          <button class="chip" data-bd="region">Region</button>
+          <button class="chip" data-bd="urbrur">Urban/rural</button>
+        </div>
+        <div class="chart-wrap"><canvas></canvas></div>
+        <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
+        <div class="src">Source: FIES &amp; shock module · weighted · hover any point for the value</div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,21 @@
+"""The 9 storyline themes. Slice 1 builds only those with live=True."""
+TOPICS = [
+  {"slug":"recovery","title":"Recovery is measurable","modules":"Food · Shocks",
+   "headline":"Food stress 41% → 21%","accent":"#00A651","spark":"food_insecurity","live":True},
+  {"slug":"vulnerability","title":"Vulnerability hasn't moved","modules":"Finance · Employment · Shocks",
+   "headline":"~2% can cover an emergency","accent":"#CE1126","spark":None,"live":False},
+  {"slug":"digital","title":"The digital shift","modules":"Finance",
+   "headline":"Mobile money → 50%","accent":"#009FDA","spark":None,"live":False},
+  {"slug":"work","title":"Work without security","modules":"Employment · Income",
+   "headline":"72% have no contract","accent":"#002244","spark":None,"live":False},
+  {"slug":"lifelines","title":"Lifelines","modules":"Migration · Finance",
+   "headline":"24% got a Dec remittance","accent":"#FCD116","spark":None,"live":False},
+  {"slug":"mideast","title":"The Middle East crisis","modules":"Views · Migration · Finance",
+   "headline":"Exposure & remittance risk","accent":"#CE1126","spark":None,"live":False},
+  {"slug":"uneven","title":"Uneven recovery","modules":"ALL · by income & region",
+   "headline":"The equity lens","accent":"#009FDA","spark":None,"live":False},
+  {"slug":"health","title":"Health under pressure","modules":"Health · Shocks",
+   "headline":"Coverage & out-of-pocket","accent":"#002244","spark":None,"live":False},
+  {"slug":"mood","title":"The national mood","modules":"Views",
+   "headline":"Satisfaction 2.85/5 · AI worry","accent":"#FCD116","spark":None,"live":False},
+]
