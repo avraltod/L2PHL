@@ -417,6 +417,10 @@ _M02_AUTHORITATIVE = [
     'ed16_11', 'ed16_12', 'ed16_13', 'ed16_14', 'ed16_96',
     'ed16_oth',
     'dur_edu',
+    # R8-only education-expenditure block (firm's R08 Kobo form delivered 2026-06-27)
+    'ed17', 'ed2',
+    'ed19_a', 'ed19_b', 'ed19_c', 'ed19_d', 'ed19_e',
+    'ed19_f', 'ed19_g', 'ed19_h', 'ed19_i',
 ]
 _M02_AUTH_SET = {v.upper() for v in _M02_AUTHORITATIVE}
 
@@ -451,6 +455,18 @@ if 'M02' in module_tables:
     _M02_INJECT = {
         'ed16_oth': ('OTHER REASON (SPECIFY)',     'Text'),
         'dur_edu':  ('EDUCATION DURATION (MIN)',    'Decimal'),
+        # R8-only education-expenditure block (firm's R08 Kobo form delivered 2026-06-27)
+        'ed17':    ('ED17. ENROLLED IN CURRENT ACADEMIC YEAR', 'Categorical'),
+        'ed2':     ('ED2. SCHOOL TYPE (PUBLIC/PRIVATE)',        'Categorical'),
+        'ed19_a':  ('ED19a. SPEND: SCHOOL FEES & TUITION',     'Decimal'),
+        'ed19_b':  ('ED19b. SPEND: UNIFORMS & FOOTWEAR',       'Decimal'),
+        'ed19_c':  ('ED19c. SPEND: TEXTBOOKS & MATERIALS',     'Decimal'),
+        'ed19_d':  ('ED19d. SPEND: EDUCATIONAL SUPPLIES',      'Decimal'),
+        'ed19_e':  ('ED19e. SPEND: MEALS/LODGING',             'Decimal'),
+        'ed19_f':  ('ED19f. SPEND: BUILDING/EQUIPMENT',        'Decimal'),
+        'ed19_g':  ('ED19g. SPEND: GIFTS TO TEACHERS',         'Decimal'),
+        'ed19_h':  ('ED19h. SPEND: TRANSPORTATION',            'Decimal'),
+        'ed19_i':  ('ED19i. SPEND: OTHER',                     'Decimal'),
     }
     # Add all ed16_N dummies
     for _code, _label in _ED16_REASONS.items():
@@ -463,6 +479,13 @@ if 'M02' in module_tables:
             _synth['question_title'] = _title
             _synth['question_type'] = _type
             _set_round_presence(_synth, _var)
+            # ed19_* Kobo names use no underscore separator (Kobo: ED19a vs Stata: ed19_a),
+            # so _set_round_presence fails to find them in the Kobo index. Override: R8 only.
+            if _var.startswith('ed19_') and not _synth.get('in_R8'):
+                for _r in range(1, 9):
+                    _synth[f'in_R{_r}'] = '✓' if _r == 8 else ''
+                _synth['first_round'] = 'R8'
+                _synth['status'] = 'R8 only'
             module_tables['M02'].append(_synth)
 
     # ── 3. Reorder tracker to match authoritative order ─────────────────
