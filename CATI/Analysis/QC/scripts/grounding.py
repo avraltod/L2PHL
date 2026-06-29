@@ -8,6 +8,19 @@ GROUP_TO_MODULE = {
 }
 FIRM_VERDICTS = {"A1", "A2", "B"}
 
+# Underlying Kobo variable(s) for aggregate stat keys that embed none
+# (from l2phl_master_analysis.do). [] = a structural count (no data variable).
+KEY_VARS = {
+    "sample": [],
+    "fies": ["f08_a", "f08_b", "f08_c", "f08_d", "f08_e"],
+    "views": ["v1"],
+    "employment.emp_status": ["a1", "emp_status"],
+    "shocks.any_shock": ["sh1"],
+    "shocks.water_disruption": ["sh3"],
+    "shocks.mean_water_days": ["sh3"],
+    "health.total_individuals": [],
+}
+
 def _round_of(subkey):
     """'emp_status_r5' -> '5'; 'bank_acc_f17' -> None."""
     m = re.search(r"_r(\d+)", subkey or "")
@@ -22,6 +35,15 @@ def _var_of(subkey):
 
 def _base(v):
     return re.sub(r"_\d+$", "", (v or "").lower())
+
+def _curated_vars(key):
+    """Longest-prefix match in KEY_VARS -> var list (possibly []); None if unmapped."""
+    best_p, best_v = None, None
+    for p, vs in KEY_VARS.items():
+        if (key == p or key.startswith(p + ".") or key.startswith(p + "_")) \
+                and (best_p is None or len(p) > len(best_p)):
+            best_p, best_v = p, vs
+    return best_v
 
 def ground(stat_keys, issue_summary, issues=None):
     """stat_keys: iterable of 'group.subkey'. -> one grounding row per key.
@@ -41,6 +63,14 @@ def ground(stat_keys, issue_summary, issues=None):
                          "qc_status": "unmapped", "open_firm_issues": [], "grounded": True})
             continue
         cvar = _var_of(sub)
+        if cvar:
+            match_vars, scoped = {_base(cvar)}, True
+        else:
+            cv = _curated_vars(key)
+            if cv is not None:
+                match_vars, scoped = {_base(v) for v in cv}, True   # incl. [] = never matches
+            else:
+                match_vars, scoped = None, False                     # unmapped -> module fallback
         hits = []
         for r in firm_issues:
             if r["module"] != mod:
@@ -50,7 +80,7 @@ def ground(stat_keys, issue_summary, issues=None):
                 continue
             if not rd and not any(cb.values()):
                 continue
-            if cvar and _base(r.get("variable")) != _base(cvar):   # variable-level filter
+            if scoped and _base(r.get("variable")) not in match_vars:   # variable-level filter
                 continue
             hits.append(r["key"])
         firm = sorted(set(hits))
