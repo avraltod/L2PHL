@@ -34,6 +34,7 @@ def main():
     sub.add_parser("firm-report")
     dp = sub.add_parser("delivery"); dp.add_argument("--rebuild", action="store_true")
     gp = sub.add_parser("grounding"); gp.add_argument("--check", action="store_true")
+    bp = sub.add_parser("storyline-badges"); bp.add_argument("--clear", action="store_true")
     a = ap.parse_args()
     if a.cmd == "set":
         set_status(a.key, a.status, a.notes, a.verdict, a.report or None)
@@ -55,6 +56,9 @@ def main():
     elif a.cmd == "grounding":
         import build_grounding
         sys.exit(build_grounding.run(check=a.check))
+    elif a.cmd == "storyline-badges":
+        import build_storyline_badges
+        build_storyline_badges.run(clear=a.clear)
 
 if __name__ == "__main__":
     main()
