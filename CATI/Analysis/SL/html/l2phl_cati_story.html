@@ -509,10 +509,11 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
           <div class="scell"><div class="scell-n">R3</div><div class="scell-l">tracked consistently from</div></div>
         </div>
 
-        <p class="body-copy rev" data-indicator="got_remit" data-breakdown="quintile" data-round="8">
-          Transfers reach across the income distribution. Switch the chart to income quintile and the
-          lines run close together, because a remittance follows a family tie more than a wealth rank.
-          A relative abroad sends to kin, and kin sit in every quintile.
+        <p class="body-copy rev" data-indicator="got_remit" data-breakdown="urbrur" data-round="8">
+          The inflow looks different by place. Switch the chart to urban and rural. City households saw
+          the larger spike at the January peak, while rural households received transfers more steadily
+          through the spring, so by Round 8 the rural share sat above the urban one. The channel reaches
+          both, on different rhythms.
         </p>
         <blockquote class="rev">A transfer is a family tie, paid monthly.</blockquote>
       </div>
@@ -522,13 +523,11 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
           <h3>Received money via a transfer service</h3>
           <div class="chips-bd">
             <button class="chip on" data-bd="overall">Overall</button>
-            <button class="chip" data-bd="quintile">Income quintile</button>
-            <button class="chip" data-bd="region">Region</button>
             <button class="chip" data-bd="urbrur">Urban/rural</button>
           </div>
           <div class="chart-wrap"><canvas></canvas></div>
           <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
-          <div class="src">Source: M06 finance · weighted · tracked consistently from R3 · hover any point</div>
+          <div class="src">Source: M06 finance · weighted · tracked consistently from R3 (income-quintile cells too thin to show) · hover any point</div>
         </div>
       </div>
     </div>
@@ -669,9 +668,11 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
         </div>
 
         <p class="body-copy rev" data-indicator="oop" data-breakdown="quintile" data-round="8">
-          The cost did not fall evenly. Switch the chart to income quintile to see who still pays from
-          their own pocket. Out-of-pocket payment is the gap between what care costs and what insurance
-          covers, so it presses hardest where coverage is thinnest and savings are smallest.
+          Who pays out of pocket runs against intuition. Switch the chart to income quintile. The
+          richest fifth was the most likely to pay from its own pocket, the poorest the least, because
+          better-off households use private care they pay for directly, while poorer households lean on
+          public facilities or go without. A low out-of-pocket rate at the bottom can mark unmet need,
+          not better protection.
         </p>
         <blockquote class="rev">Coverage on paper is not the same as care without a bill.</blockquote>
       </div>
