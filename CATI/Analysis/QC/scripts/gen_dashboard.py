@@ -286,7 +286,7 @@ _M00_AUTHORITATIVE = [
     'Z0_first', 'Z0_last', 'int_id', 'hhid', 'D3', 'Z6', 'Z7', 'Z8',
     'member_called', 'call_status1', 'Z16', 'Z17', 'member_talkedto',
     'n_Z17', 'Z9', 'Z18', 'Z18_oth', 'Z19', 'backgound_audio',
-    'Z20', 'Z1', 'Z2', 'Z3', 'Z4', 'Z5',
+    'Z20', 'Z1', 'Z2', 'Z3', 'Z4', 'Z4_txt', 'Z5',
 ]
 _M00_AUTH_SET = {v.upper() for v in _M00_AUTHORITATIVE}
 
@@ -324,6 +324,7 @@ if 'M00' in module_tables:
         'n_Z17':           ('COUNT OF Z17 SELECTIONS',   'Integer'),
         'backgound_audio': ('BACKGROUND AUDIO CHECK',    'Categorical'),
         'Z18_oth':         ('OTHER REFUSAL REASON',      'Text'),
+        'Z4_txt':          ('Z4. BARANGAY (free text, gated ${Z20}=2)', 'Text'),
     }
     # Use first existing row as template for round structure
     _template = module_tables['M00'][0] if module_tables['M00'] else {}
@@ -383,7 +384,7 @@ if 'M00' in module_tables:
                     _row[_key] = _kobo_skip
 
 # ── M00 Kobo panel: drop non-authoritative vars + reorder ──────────────
-_M00_KOBO_DROP = {'Z21', 'HHSIZE_WRONG', 'REPLACEMENT_HHID', 'Z4_TXT'}
+_M00_KOBO_DROP = {'Z21', 'HHSIZE_WRONG', 'REPLACEMENT_HHID'}   # Z4_txt now surfaced (R5-R8 free-text barangay, gated ${Z20}=2)
 if 'M00' in kobo_raw and 'variables' in kobo_raw.get('M00', {}):
     kobo_raw['M00']['variables'] = [
         v for v in kobo_raw['M00']['variables']

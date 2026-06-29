@@ -214,6 +214,29 @@ def merge_rounds():
             print(f"Error parsing R{round_num}: {e}")
             raise
 
+    # Reassign root-level "UNKNOWN" vars to their canonical module. A variable that
+    # sits inside a module group in one round but moves to the survey root in later
+    # rounds (e.g. M09 V1/V5/V11/V12 leave group_opinions-views at R2+) would otherwise
+    # be lost from that module for the later rounds. Merge its per-round rules into the
+    # module that owns the same variable name.
+    unknown = all_variables.get("UNKNOWN", {})
+    if unknown:
+        name_to_mod = {}
+        for _m, _vars in all_variables.items():
+            if _m == "UNKNOWN":
+                continue
+            for _nm in _vars:
+                name_to_mod.setdefault(_nm, _m)
+        for _nm, _udata in unknown.items():
+            _canon = name_to_mod.get(_nm)
+            if not _canon:
+                continue
+            _tgt = all_variables[_canon][_nm]
+            for _r, _rule in _udata["rules_by_round"].items():
+                _tgt["rules_by_round"][_r] = _rule
+            for _r, _onm in _udata["original_names"].items():
+                _tgt["original_names"][_r] = _onm
+
     # Build output structure
     output = {}
 
