@@ -1,0 +1,48 @@
+<!-- Chapter content for topic 'health'. The builder prepends the .chap band + a
+     <div data-chapter="health"> wrapper; this fragment is the .sec content. -->
+<div class="sec cream-bg">
+  <div class="sec" style="padding:60px 40px 30px;max-width:1100px;margin:0 auto;">
+    <span class="eyebrow t">Health</span>
+    <h2 class="hed">Out-of-pocket health spending eased, <em class="t">but still touched two in five</em></h2>
+    <div class="two-col">
+      <div>
+        <p class="body-copy rev" data-indicator="oop" data-breakdown="overall" data-round="8">
+          The health questions ran in only two rounds, March and June, so the panel offers a before and
+          after rather than a trend. In March, <span data-stat="oop.r1" data-fmt="pct0">OLD</span> of
+          people who sought care paid out of pocket for the consultation. By June the share had fallen
+          to <span data-stat="oop.r8" data-fmt="pct0">OLD</span>, a drop of
+          <span data-stat="oop.drop" data-fmt="ppt">OLD</span> points. Out-of-pocket payment eased, and
+          it still reached more than two in five.
+        </p>
+
+        <div class="sgrid sgrid-3 rev d1">
+          <div class="scell"><div class="scell-n"><span data-stat="oop.r1" data-fmt="pct0">OLD</span></div><div class="scell-l">paid out-of-pocket · R5 (Mar)</div></div>
+          <div class="scell"><div class="scell-n"><span data-stat="oop.r8" data-fmt="pct0">OLD</span></div><div class="scell-l">paid out-of-pocket · R8 (Jun)</div></div>
+          <div class="scell"><div class="scell-n">2</div><div class="scell-l">deep rounds (R5, R8)</div></div>
+        </div>
+
+        <p class="body-copy rev" data-indicator="oop" data-breakdown="quintile" data-round="8">
+          The cost did not fall evenly. Switch the chart to income quintile to see who still pays from
+          their own pocket. Out-of-pocket payment is the gap between what care costs and what insurance
+          covers, so it presses hardest where coverage is thinnest and savings are smallest.
+        </p>
+        <blockquote class="rev">Coverage on paper is not the same as care without a bill.</blockquote>
+      </div>
+
+      <div style="position:sticky;top:24px">
+        <div class="cbox sl-chart">
+          <h3>Paid out-of-pocket for a consultation</h3>
+          <div class="chips-bd">
+            <button class="chip on" data-bd="overall">Overall</button>
+            <button class="chip" data-bd="quintile">Income quintile</button>
+            <button class="chip" data-bd="region">Region</button>
+            <button class="chip" data-bd="urbrur">Urban/rural</button>
+          </div>
+          <div class="chart-wrap"><canvas></canvas></div>
+          <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
+          <div class="src">Source: M07 health · weighted · two deep rounds (R5 &amp; R8) · hover any point</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

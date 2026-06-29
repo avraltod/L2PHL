@@ -23,9 +23,8 @@ def test_build_story_single_file(tmp_path):
     assert 'href="#ch-recovery"' in html and 'href="#ch-digital"' in html
     assert 'id="ch-recovery"' in html and 'id="ch-digital"' in html
     assert 'data-chapter="recovery"' in html and 'data-chapter="digital"' in html
-    assert 'class="soon"' in html
-    # one interactive chart per chapter (>= 2 live)
-    assert html.count("sl-chart") >= 2
+    # one interactive chart per live chapter
+    assert html.count("cbox sl-chart") >= 6
     # numbers bound, no placeholders
     assert ">OLD<" not in html
 

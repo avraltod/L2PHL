@@ -65,7 +65,8 @@ def _engine_inline():
 _DERIVE_MAP = {"food_insecurity": "food", "any_shock": "shock",
                "mobile_money": "mm", "bank_account": "bank", "no_contract": "work",
                "me_concern": "mec", "me_impact": "mei",
-               "life_satisfaction": "sat", "worse_off": "worse"}
+               "life_satisfaction": "sat", "worse_off": "worse",
+               "got_remit": "remit", "oop": "oop"}
 def _derive_pointstats(series_path, indicators):
     nested = load_series(series_path)
     out = {}

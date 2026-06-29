@@ -118,5 +118,28 @@
 		label("Feeling economically worse off") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
+	***************************************************************************
+	**# 7. Lifelines (M06) — received money via a transfer service, R3–R8 (hhw)
+	***************************************************************************
+	use "$HF/l2phl_M06_finance.dta", clear
+	gen byte got_remit = (f13_b==1) if inlist(f13_b,1,2)
+	replace got_remit = . if round < 3                       // f13 denominator changed at R3 (Kobo gate)
+	svyset psu [pweight=hhw], strata(stratum)
+	do "$wd/_breakdowns.do"
+	series_emit got_remit got_remit, round(round) ///
+		label("Received money via a transfer service") unit("pct") ///
+		quintile(inc_q) region(reg4) urbrur(urbrur)
+
+	***************************************************************************
+	**# 8. Health (M07) — out-of-pocket payment, R5 & R8 only (indw)
+	***************************************************************************
+	use "$HF/l2phl_M07_health.dta", clear
+	gen byte oop = (h8==1) if inlist(h8,1,2,3)               // 1 = paid out-of-pocket
+	svyset psu [pweight=indw], strata(stratum)
+	do "$wd/_breakdowns.do"
+	series_emit oop oop, round(round) ///
+		label("Paid out-of-pocket for a consultation") unit("pct") ///
+		quintile(inc_q) region(reg4) urbrur(urbrur)
+
 	stat_close
 	di as result "storyline series written: $wd/sl_series.json"
