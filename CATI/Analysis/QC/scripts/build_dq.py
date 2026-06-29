@@ -1636,7 +1636,15 @@ M00_HEATMAP_EXCL = {
 }
 
 # M02 Education: authoritative vars that are in EXCL/ROSTER_QUESTIONS but ARE primary M02 questions
-M02_EDUCATION_KEEP = {'hhid', 'fmid', 'age', 'gender', 'ed15', 'ed16', 'ed16_oth'}
+# R8-only ed17/ed2/ed19_* added 2026-06-28 after firm delivered real R08 Kobo form.
+M02_EDUCATION_KEEP = {
+    'hhid', 'fmid', 'age', 'gender',
+    'ed15', 'ed16', 'ed16_oth',
+    # R8-only education-expenditure block (firm's R08 Kobo form delivered 2026-06-27)
+    'ed17', 'ed2',
+    'ed19_a', 'ed19_b', 'ed19_c', 'ed19_d', 'ed19_e',
+    'ed19_f', 'ed19_g', 'ed19_h', 'ed19_i',
+}
 
 # M05 Income: derived/calculated totals (not Kobo questions). Their "missing" means
 # "no income of that type" (e.g. 98% of HHs have no seasonal income), not a
@@ -1715,6 +1723,11 @@ CONDITIONAL_GATES = {
     ('M02','ed16_oth'):('__compound__', [('__age__', [5, 17]), ('ed15', [2])]),      # age 5-17 & ED15=2
     ('M02','ed16_1'): ('__compound__', [('__age__', [5, 17]), ('ed15', [2])]),       # age 5-17 & ED15=2
     ('M02','ed16_2'): ('__compound__', [('__age__', [5, 17]), ('ed15', [2])]),       # age 5-17 & ED15=2
+    # R8-only education-expenditure block (firm's R08 Kobo form delivered 2026-06-27)
+    # ed17 = enrollment filter (roster member gate); ed2 = school type; ed19_* = cost items
+    ('M02','ed17'):   ('__round__', [8]),                               # ED17 enrollment filter — R8 only
+    ('M02','ed2'):    ('__compound__', [('__round__', [8]), ('ed17', [1, 2])]),      # ED2 school type — R8, among enrolled
+    ('M02','ed19_'):  ('__compound__', [('__round__', [8]), ('ed17', [1, 2])]),      # ED19a-i — R8, enrolled students only
 
     # ── M03 Shocks & Natural Hazards ──
     ('M03','sh1b'):  ('sh1', [1]),
@@ -2182,6 +2195,7 @@ GATE_LABEL_MAP = {
     'moved_in_reason':      'M13',
     # M02 Education
     'ed15':                 'ED15',
+    'ed17':                 'ED17',
     # M03 Shocks
     'sh1':                  'SH1',
     'sh3':                  'SH3',
@@ -2475,14 +2489,8 @@ def heatmap(df, keep=25, module=None):
         if module and (module, lookup_name) in PRELOAD_GATED:
             row['conditional'] = True
             row.setdefault('gate', 'preload gate (prior-round) — not in pooled data')
-        # R8-new education-expenditure vars (ed19_*, ed20) are absent from the
-        # R1–R7 Kobo forms (R8's form is the R7 clone), so they can't be gated
-        # yet — their high "missing" is un-gated new questions, not a collection
-        # failure. Annotate + keep out of module max-missing until the firm's real
-        # R08 XLSForm arrives (see r08-kobo-form-pending). Drop this once gated.
-        if module == 'M02' and (lookup_name.startswith('ed19') or lookup_name == 'ed20'):
-            row['conditional'] = True
-            row.setdefault('gate', 'R8-new — gate pending real R08 form')
+        # Note: ed17/ed2/ed19_* are now gated via CONDITIONAL_GATES (see M02 section).
+        # The __round__=8 gate suppresses R1-R7 (None) and marks them conditional.
         rows.append(row)
     return rows
 
