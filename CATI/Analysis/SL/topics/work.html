@@ -1,0 +1,45 @@
+<!-- Chapter content for topic 'work'. The builder prepends the .chap band + a
+     <div data-chapter="work"> wrapper; this fragment is the .sec content. -->
+<div class="sec cream-bg">
+  <div class="sec" style="padding:60px 40px 30px;max-width:1100px;margin:0 auto;">
+    <span class="eyebrow t">Employment</span>
+    <h2 class="hed">Four in five workers have no contract, <em class="t">and it has not moved</em></h2>
+    <div class="two-col">
+      <div>
+        <p class="body-copy rev" data-indicator="no_contract" data-breakdown="overall" data-round="8">
+          Recovery reached food and shocks. It did not reach the terms of work. In the first round,
+          <span data-stat="work.r1" data-fmt="pct0">OLD</span> of employed Filipinos worked without a
+          written contract. By Round 8 the share was <span data-stat="work.r8" data-fmt="pct0">OLD</span>.
+          Across eight rounds it never left the high seventies and low eighties. The data suggest that
+          contract-free work is not a phase of the downturn but a standing feature of the labor market.
+        </p>
+
+        <div class="sgrid sgrid-3 rev d1">
+          <div class="scell"><div class="scell-n"><span data-stat="work.r1" data-fmt="pct0">OLD</span></div><div class="scell-l">no contract · R1</div></div>
+          <div class="scell"><div class="scell-n"><span data-stat="work.r8" data-fmt="pct0">OLD</span></div><div class="scell-l">no contract · R8</div></div>
+          <div class="scell"><div class="scell-n">flat</div><div class="scell-l">trend across 8 rounds</div></div>
+        </div>
+
+        <p class="body-copy rev" data-indicator="no_contract" data-breakdown="urbrur" data-round="8">
+          The burden is heavier in the countryside. Switch the chart to urban and rural. Rural workers
+          ran several points above urban workers in most rounds, because farm and informal work rarely
+          come with a written agreement. Neither line trended down.
+        </p>
+        <blockquote class="rev">The economy recovered. The contract did not arrive.</blockquote>
+      </div>
+
+      <div style="position:sticky;top:24px">
+        <div class="cbox sl-chart">
+          <h3>Workers with no written contract</h3>
+          <div class="chips-bd">
+            <button class="chip on" data-bd="overall">Overall</button>
+            <button class="chip" data-bd="urbrur">Urban/rural</button>
+          </div>
+          <div class="chart-wrap"><canvas></canvas></div>
+          <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
+          <div class="src">Source: M04 employment · weighted · among employed workers asked · hover any point</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

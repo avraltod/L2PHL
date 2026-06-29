@@ -77,5 +77,16 @@
 		label("Has a formal bank account") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
+	***************************************************************************
+	**# 4. Work without security (M04) — no written contract, R1–R8 (indw)
+	***************************************************************************
+	use "$HF/l2phl_M04_employment.dta", clear
+	gen byte no_contract = (a16==3) if inlist(a16,1,2,3)      // 3 = no written contract (among asked)
+	svyset psu [pweight=indw], strata(stratum)
+	do "$wd/_breakdowns.do"
+	series_emit no_contract no_contract, round(round) ///
+		label("Workers with no written contract") unit("pct") ///
+		quintile(inc_q) region(reg4) urbrur(urbrur)
+
 	stat_close
 	di as result "storyline series written: $wd/sl_series.json"

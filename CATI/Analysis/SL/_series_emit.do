@@ -22,6 +22,7 @@
 		if "`unit'" == "" local unit "pct"
 		qui levelsof `round', local(RDS)
 		tempvar sp
+		local mincell 30                              // suppress cells with <30 obs (methodology rule)
 
 		* --- meta + rounds ---
 		_se_guard "series.`nm'.label"
@@ -34,7 +35,7 @@
 		local ov ""
 		foreach r of local RDS {
 			qui count if `round'==`r' & !missing(`ind')
-			if r(N) == 0 {
+			if r(N) < `mincell' {
 				local ov "`ov' null"
 			}
 			else {
@@ -62,7 +63,7 @@
 				local arr ""
 				foreach r of local RDS {
 					qui count if `round'==`r' & `bv'==`L' & !missing(`ind')
-					if r(N) == 0 {
+					if r(N) < `mincell' {
 						local arr "`arr' null"
 					}
 					else {
