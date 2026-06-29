@@ -1,4 +1,6 @@
-"""Assemble self-contained CATI storyline pages (topics + hub) from templates + JSON."""
+"""Assemble the single-file, tabbed CATI panel story (l2phl_cati_story.html) — a
+sibling of the CAPI baseline story: sticky masthead nav, hero cover, one chapter
+per live topic (each with its own interactive R1-R8 breakdown chart), epilogue."""
 import argparse, json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -6,40 +8,64 @@ from build_story import inject            # reuse the data-stat injector
 from series import load_series
 from topics_registry import TOPICS
 
+OUTNAME = "l2phl_cati_story.html"
 CHARTJS = '<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>'
 FONT = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
         '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900'
         '&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600'
         '&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">')
 
+PH_FLAG = ('<svg viewBox="0 0 900 450" width="38" height="19" role="img" aria-label="Philippines" '
+           'style="flex-shrink:0;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.2)">'
+           '<rect width="900" height="225" fill="#0038A8"/><rect y="225" width="900" height="225" fill="#CE1126"/>'
+           '<polygon points="0,0 433,225 0,450" fill="#FFF"/>'
+           '<circle cx="120" cy="225" r="32" fill="none" stroke="#FCD116" stroke-width="7"/></svg>')
+
+HERO = """<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <p class="hero-eye">Philippines 2025–2026</p>
+      <div style="font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#FFFFFF;margin-bottom:18px;border:1px solid rgba(255,255,255,.7);display:inline-block;padding:6px 16px;border-radius:4px;background:rgba(0,159,218,.25);font-weight:600;">L2Phl Monthly Phone Survey · Nov 2025 – Jun 2026</div>
+      <h1 class="hero-hed">Listening to the Philippines:<br><em>Monthly Phone Survey</em></h1>
+      <p class="hero-deck">An eight-round phone panel that follows the baseline households month by month, tracking food security, shocks, finance, and how Filipino households are faring through 2025 and 2026.</p>
+      <p class="hero-src">Listening to the Philippines (L2Phl) · CATI Panel · Rounds 1–8</p>
+    </div>
+    <div class="hero-kpis">
+      <div class="hkpi r"><div class="hkpi-n">2,470</div><div class="hkpi-l">Households tracked</div></div>
+      <div class="hkpi b"><div class="hkpi-n">8</div><div class="hkpi-l">Monthly rounds</div></div>
+      <div class="hkpi g"><div class="hkpi-n">18</div><div class="hkpi-l">Regions</div></div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll to explore</div>
+</section>"""
+
+EPILOGUE = """<section class="epi">
+  <h2 class="epi-hed">"Recovery is measurable. Vulnerability is not gone."</h2>
+  <p class="epi-body">Across eight monthly rounds, food stress halved and shocks collapsed, yet the gains were uneven and, by Round 8, fragile. Mobile money reached half of households while formal banking lagged. The phone panel shows a recovery that is real, unequal, and unfinished.</p>
+  <div class="epi-nums">
+    <div class="epi-n"><div class="epi-n-val" style="color:var(--green);">41→21%</div><div class="epi-n-lbl">Food insecurity R1→R8</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:#40B4E5;">2,470</div><div class="epi-n-lbl">Households</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:var(--gold);">8</div><div class="epi-n-lbl">Monthly rounds</div></div>
+    <div class="epi-n"><div class="epi-n-val" style="color:#009FDA;">55%</div><div class="epi-n-lbl">Mobile money R8</div></div>
+  </div>
+  <p class="epi-meta">L2Phl · Listening to the Philippines · CATI Monthly Phone Survey · Nov 2025 – Jun 2026</p>
+</section>"""
+
 def _read(p):
     with open(p, encoding="utf-8") as f: return f.read()
 
 def _engine_inline():
-    """storyline.js minus ESM import/export so it runs as a plain inline script."""
     js = _read(os.path.join(HERE,"storyline.js"))
-    js = re.sub(r'^export\s+', '', js, flags=re.M)          # drop 'export'
-    js = re.sub(r'^import\s+.*$', '', js, flags=re.M)        # drop any imports
+    js = re.sub(r'^export\s+', '', js, flags=re.M)
+    js = re.sub(r'^import\s+.*$', '', js, flags=re.M)
     return "/* scrollytelling engine */\n" + js
 
-def _topic_indicators(slug):
-    t = next((x for x in TOPICS if x["slug"] == slug), None)
-    return (t or {}).get("indicators") or []
-
-def _series_for_topic(slug):
-    """Embed only the series THIS topic uses (its registry indicator list)."""
-    path = os.path.join(HERE,"sl_series.json")
-    flat = json.load(open(path, encoding="utf-8"))
-    inds = _topic_indicators(slug)
-    keep = lambda k: k == "_meta" or any(k.startswith(f"series.{i}.") for i in inds)
-    return {k:v for k,v in flat.items() if keep(k)}
-
-# Prose binds to numbers DERIVED from the series (single source of truth). nn = the
-# non-null endpoints, so R5-start indicators (mobile_money/bank_account) get r5/r8.
+# Prose binds to numbers DERIVED from the series. nn = non-null endpoints, so
+# R5-start indicators (mobile_money/bank_account) get r5/r8.
 _DERIVE_MAP = {"food_insecurity": "food", "any_shock": "shock",
                "mobile_money": "mm", "bank_account": "bank"}
 def _derive_pointstats(series_path, indicators):
-    nested = load_series(series_path)                 # {'series': {...}, '_meta': ...}
+    nested = load_series(series_path)
     out = {}
     for ind in indicators:
         grp = _DERIVE_MAP.get(ind)
@@ -55,75 +81,70 @@ def _derive_pointstats(series_path, indicators):
                     "r8": round(nn[-1], 1), "drop": round(nn[0] - nn[-1], 1)}
     return out
 
-def build_topic(slug, outdir, check=False):
-    frag = _read(os.path.join(HERE,"topics",f"{slug}.html"))
+def _series_for_story(indicators):
+    """Embed only the live topics' indicator series."""
+    flat = json.load(open(os.path.join(HERE,"sl_series.json"), encoding="utf-8"))
+    keep = lambda k: k == "_meta" or any(k.startswith(f"series.{i}.") for i in indicators)
+    return {k:v for k,v in flat.items() if keep(k)}
+
+def _masthead(topics):
+    tabs = []
+    for t in topics:
+        if t["live"]:
+            tabs.append(f'<a href="#ch-{t["slug"]}">{t["nav"]}</a>')
+        else:
+            tabs.append(f'<span class="soon">{t["nav"]}</span>')
+    return (f'<header class="mast"><div><div class="mast-logo" style="display:flex;align-items:center;gap:14px;">'
+            f'{PH_FLAG}<span>Listening to the Philippines</span></div></div>'
+            f'<nav class="mast-nav">{"".join(tabs)}</nav></header>')
+
+def build_story(outdir, check=False):
     css  = _read(os.path.join(HERE,"storyline.css"))
-    series = _series_for_topic(slug)
-    bind = _derive_pointstats(os.path.join(HERE,"sl_series.json"), _topic_indicators(slug))
-    if os.path.exists(os.path.join(HERE,"sl_stats.json")):
-        bind.update(json.load(open(os.path.join(HERE,"sl_stats.json"), encoding="utf-8")))
+    live = [t for t in TOPICS if t["live"]]
+    all_inds = [i for t in live for i in t.get("indicators", [])]
+    series = _series_for_story(all_inds)
+    bind = _derive_pointstats(os.path.join(HERE,"sl_series.json"), all_inds)
+    stats_path = os.path.join(HERE,"sl_stats.json")
+    if os.path.exists(stats_path):
+        bind.update(json.load(open(stats_path, encoding="utf-8")))
+    chapters = []
+    for i, t in enumerate(live, 1):
+        frag = _read(os.path.join(HERE,"topics",f"{t['slug']}.html"))
+        chapters.append(
+            f'<div class="chap" id="ch-{t["slug"]}"><span class="chap-n">{i:02d}</span>'
+            f'<span class="chap-r"></span><span class="chap-l">{t["title"]}</span></div>\n'
+            f'<div data-chapter="{t["slug"]}">{frag}</div>')
     doc = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>L2Phl CATI Panel — {slug}</title>{FONT}{CHARTJS}
-<style>{css}</style></head><body>
-<main class="storywrap">{frag}</main>
+<title>Listening to the Philippines — Monthly Phone Survey (CATI Panel R1–R8)</title>{FONT}{CHARTJS}
+<style>{css}
+.mast-nav .soon{{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.32);padding:4px 10px;border:1px solid rgba(255,255,255,.13);border-radius:2px;}}
+</style></head><body>
+{_masthead(TOPICS)}
+{HERO}
+{''.join(chapters)}
+{EPILOGUE}
 <script id="sl-series" type="application/json">{json.dumps(series).replace('</','<\\/')}</script>
 <script id="sl-data" type="application/json">{json.dumps(bind).replace('</','<\\/')}</script>
 <script>{_engine_inline()}</script>
 </body></html>"""
     built, _report = inject(doc, bind, "charts")
-    out = os.path.join(outdir, f"l2p_cati_{slug}.html")
+    out = os.path.join(outdir, OUTNAME)
     if check:
         prev = _read(out) if os.path.exists(out) else ""
         if prev != built:
             print("CHECK FAILED: drift: rebuild needed"); return 1
         print("CHECK OK"); return 0
     os.makedirs(outdir, exist_ok=True)
-    with open(out,"w",encoding="utf-8") as f: f.write(built)
-    print(f"Built {out}"); return 0
-
-def build_hub(outdir, check=False):
-    css = _read(os.path.join(HERE,"storyline.css"))
-    cards=[]
-    for t in TOPICS:
-        cls = "tcard" if t["live"] else "tcard soon"
-        inner = (f'<div class="t">{t["title"]}</div>'
-                 f'<div class="m" style="color:{t["accent"]}">{t["modules"]}</div>'
-                 f'<div class="h">{t["headline"]}</div>')
-        cards.append(f'<a class="{cls}" style="border-top-color:{t["accent"]}" '
-                     f'href="l2p_cati_{t["slug"]}.html">{inner}</a>' if t["live"]
-                     else f'<div class="{cls}" style="border-top-color:{t["accent"]}">{inner}</div>')
-    doc = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>L2Phl CATI Panel — Storylines</title>{FONT}<style>{css}</style></head><body>
-<div class="hero"><div class="kicker">Listening to the Philippines · CATI Panel · Rounds 1–8</div>
-<h1>Recovery is measurable. Vulnerability is not gone.</h1>
-<p>Across eight monthly rounds, food stress halved and shocks collapsed, yet savings, secure work, and confidence barely moved.</p>
-<div class="chips"><span>2,470 households</span><span>Nov 2025 → Jun 2026</span><span>18 regions</span></div></div>
-<div class="storywrap"><div class="hubgrid">{''.join(cards)}</div></div></body></html>"""
-    out = os.path.join(outdir,"l2p_cati_hub.html")
-    if check:
-        prev = _read(out) if os.path.exists(out) else ""
-        print("CHECK OK" if prev==doc else "CHECK FAILED: drift: rebuild needed")
-        return 0 if prev==doc else 1
-    os.makedirs(outdir, exist_ok=True)
-    with open(out,"w",encoding="utf-8") as f: f.write(doc)
+    with open(out, "w", encoding="utf-8") as f: f.write(built)
     print(f"Built {out}"); return 0
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--topic"); ap.add_argument("--hub", action="store_true")
     ap.add_argument("--outdir", default=os.path.join(HERE,"html"))
     ap.add_argument("--check", action="store_true")
     a = ap.parse_args()
-    rc = 0
-    if a.topic: rc |= build_topic(a.topic, a.outdir, a.check)
-    if a.hub:   rc |= build_hub(a.outdir, a.check)
-    if not a.topic and not a.hub:
-        for t in TOPICS:
-            if t["live"]: rc |= build_topic(t["slug"], a.outdir, a.check)
-        rc |= build_hub(a.outdir, a.check)
-    sys.exit(rc)
+    sys.exit(build_story(a.outdir, a.check))
 
 if __name__ == "__main__":
     main()

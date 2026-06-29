@@ -43,14 +43,25 @@ function initStoryline(){
   const seriesEl=document.getElementById("sl-series");
   if(!seriesEl) return;
   const SERIES=parseSeries(JSON.parse(seriesEl.textContent));
-  const card=document.getElementById("sl-chart"); if(!card) return;
-  const ctx=card.querySelector("canvas"); const title=card.querySelector("h3");
-  const chips=card.querySelector(".chips-bd"); const scrub=card.querySelector('input[type=range]');
+  // One interactive chart per chapter (each .sl-chart cbox), scoped to that
+  // chapter's beats so multiple charts coexist in the single-file story.
+  document.querySelectorAll(".sl-chart").forEach(card => initChart(card, SERIES));
+  // baseline-style scroll reveal: .rev -> .vis (the baseline's CSS sets .rev{opacity:0})
+  const revObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){
+    e.target.classList.add("vis"); revObs.unobserve(e.target); }}),{threshold:.15});
+  document.querySelectorAll(".rev").forEach(el=>revObs.observe(el));
+}
+function initChart(card, SERIES){
+  const ctx=card.querySelector("canvas"); if(!ctx) return;
+  const title=card.querySelector("h3");
+  const chips=card.querySelector(".chips-bd");
+  const scrub=card.querySelector('input[type=range]');
+  const scope=card.closest("[data-chapter]") || document;   // beats belonging to THIS chapter only
   let state={indicator:null, breakdown:"overall", maxRound:8};
   let chart=null;
   function render(){
     const e=SERIES[state.indicator]; if(!e) return;
-    title.textContent=e.label||state.indicator;
+    if(title) title.textContent=e.label||state.indicator;
     state.maxRound=clampRound(state.maxRound, e.rounds.length);
     const labels=sliceTo(e.rounds.map(r=>"R"+r), state.maxRound);
     const datasets=buildDatasets(e, state.breakdown, state.maxRound);
@@ -71,12 +82,8 @@ function initStoryline(){
   const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){
     const b=e.target.dataset; if(b.indicator) state.indicator=b.indicator;
     if(b.breakdown) state.breakdown=b.breakdown; if(b.round) state.maxRound=+b.round; render(); }}),{threshold:.55});
-  document.querySelectorAll("[data-indicator]").forEach(b=>io.observe(b));
-  const first=document.querySelector("[data-indicator]"); if(first){ const b=first.dataset;
+  scope.querySelectorAll("[data-indicator]").forEach(b=>io.observe(b));
+  const first=scope.querySelector("[data-indicator]"); if(first){ const b=first.dataset;
     state.indicator=b.indicator; state.breakdown=b.breakdown||"overall"; state.maxRound=+(b.round||8); render(); }
-  // baseline-style scroll reveal: .rev -> .vis (the baseline's CSS sets .rev{opacity:0})
-  const revObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){
-    e.target.classList.add("vis"); revObs.unobserve(e.target); }}),{threshold:.15});
-  document.querySelectorAll(".rev").forEach(el=>revObs.observe(el));
 }
 if(isBrowser()) window.addEventListener("DOMContentLoaded", initStoryline);

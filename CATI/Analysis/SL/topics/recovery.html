@@ -1,70 +1,67 @@
-<!-- Topic 1 · Recovery is measurable · Food · Shocks. Built on the baseline chapter template. -->
-<header class="chap">
-  <div class="chap-n">01</div>
-  <div>
-    <span class="eyebrow">Theme 1 · Food · Shocks</span>
-    <h2 class="hed" style="color:#fff;margin:0">Recovery is measurable</h2>
-  </div>
-</header>
+<!-- Chapter content for topic 'recovery'. The builder prepends the .chap band + a
+     <div data-chapter="recovery"> wrapper; this fragment is the .sec content. -->
+<div class="sec cream-bg">
+  <div class="sec" style="padding:60px 40px 30px;max-width:1100px;margin:0 auto;">
+    <span class="eyebrow t">Food · Shocks</span>
+    <h2 class="hed">Recovery is measurable, <em class="t">but it stalled by Round 8</em></h2>
+    <div class="two-col">
+      <!-- LEFT: editorial prose + a stat grid -->
+      <div>
+        <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="overall" data-round="8">
+          When the panel began in November, <span data-stat="food.r1" data-fmt="pct0">OLD</span> of
+          households were cutting meals or eating less because they could not afford enough food.
+          That share fell through the winter, to about 19 percent by March. The decline then stalled
+          and partly reversed. By Round 8 food insecurity stood at
+          <span data-stat="food.r8" data-fmt="pct0">OLD</span>, a drop of
+          <span data-stat="food.drop" data-fmt="ppt">OLD</span> points from the first round but above
+          the March low. The data suggest a recovery that is real and unfinished.
+        </p>
 
-<section class="sec">
-  <div class="two-col">
-    <!-- LEFT: editorial prose + a stat grid -->
-    <div>
-      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="overall" data-round="8">
-        When the panel began in November, <span data-stat="food.r1" data-fmt="pct0">OLD</span> of
-        households were cutting meals or eating less because they could not afford enough food.
-        That share fell through the winter, to about 19 percent by March. The decline then stalled
-        and partly reversed. By Round 8 food insecurity stood at
-        <span data-stat="food.r8" data-fmt="pct0">OLD</span>, a drop of
-        <span data-stat="food.drop" data-fmt="ppt">OLD</span> points from the first round but above
-        the March low. The data suggest a recovery that is real and unfinished.
-      </p>
-
-      <div class="sgrid sgrid-3 rev d1">
-        <div class="scell"><div class="scell-n"><span data-stat="food.r1" data-fmt="pct0">OLD</span></div><div class="scell-l">food insecure · R1</div></div>
-        <div class="scell"><div class="scell-n"><span data-stat="food.r8" data-fmt="pct0">OLD</span></div><div class="scell-l">food insecure · R8</div></div>
-        <div class="scell"><div class="scell-n"><span data-stat="food.drop" data-fmt="ppt">OLD</span></div><div class="scell-l">point drop, R1→R8</div></div>
-      </div>
-
-      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="quintile" data-round="8">
-        A national average hides who carries the burden. Switch the chart to income quintile, using
-        each household's baseline welfare rank, and a gradient appears. The poorest fifth began above
-        55 percent and ended near a quarter. The richest fifth began below 30 percent and stayed in
-        the high teens. The poorest carried roughly half again the food insecurity of the richest in
-        every round, and the gap did not close.
-      </p>
-      <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="region" data-round="8">
-        The same divide runs across geography. Broken out by region, Metro Manila and the rest of
-        Luzon began near a third of households, while the Visayas and Mindanao began above half and,
-        despite the steepest declines, stayed near a quarter through Round 8.
-      </p>
-      <blockquote class="rev">The recovery reached every household. It did not close the distance between them.</blockquote>
-
-      <p class="body-copy rev" data-indicator="any_shock" data-breakdown="overall" data-round="8">
-        Exposure to shocks follows the same arc. In the first round,
-        <span data-stat="shock.r1" data-fmt="pct0">OLD</span> of households reported a recent shock, most
-        often a lost job, an illness, a storm, or a price spike. That share fell to
-        <span data-stat="shock.r8" data-fmt="pct0">OLD</span> by Round 8, with the same winter dip and
-        spring rebound. Food stress and shocks move together, because a shock that cuts a household's
-        income is also what pushes it to cut meals.
-      </p>
-    </div>
-
-    <!-- RIGHT: interactive chart in a sticky .cbox -->
-    <div style="position:sticky;top:24px">
-      <div class="cbox" id="sl-chart">
-        <h3>Moderate-to-severe food insecurity</h3>
-        <div class="chips-bd">
-          <button class="chip on" data-bd="overall">Overall</button>
-          <button class="chip" data-bd="quintile">Income quintile</button>
-          <button class="chip" data-bd="region">Region</button>
-          <button class="chip" data-bd="urbrur">Urban/rural</button>
+        <div class="sgrid sgrid-3 rev d1">
+          <div class="scell"><div class="scell-n"><span data-stat="food.r1" data-fmt="pct0">OLD</span></div><div class="scell-l">food insecure · R1</div></div>
+          <div class="scell"><div class="scell-n"><span data-stat="food.r8" data-fmt="pct0">OLD</span></div><div class="scell-l">food insecure · R8</div></div>
+          <div class="scell"><div class="scell-n"><span data-stat="food.drop" data-fmt="ppt">OLD</span></div><div class="scell-l">point drop, R1→R8</div></div>
         </div>
-        <div class="chart-wrap"><canvas></canvas></div>
-        <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
-        <div class="src">Source: FIES &amp; shock module · weighted · hover any point for the value</div>
+
+        <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="quintile" data-round="8">
+          A national average hides who carries the burden. Switch the chart to income quintile, using
+          each household's baseline welfare rank, and a gradient appears. The poorest fifth began above
+          55 percent and ended near a quarter. The richest fifth began below 30 percent and stayed in
+          the high teens. The poorest carried roughly half again the food insecurity of the richest in
+          every round, and the gap did not close.
+        </p>
+        <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="region" data-round="8">
+          The same divide runs across geography. Broken out by region, Metro Manila and the rest of
+          Luzon began near a third of households, while the Visayas and Mindanao began above half and,
+          despite the steepest declines, stayed near a quarter through Round 8.
+        </p>
+        <blockquote class="rev">The recovery reached every household. It did not close the distance between them.</blockquote>
+
+        <p class="body-copy rev" data-indicator="any_shock" data-breakdown="overall" data-round="8">
+          Exposure to shocks follows the same arc. In the first round,
+          <span data-stat="shock.r1" data-fmt="pct0">OLD</span> of households reported a recent shock, most
+          often a lost job, an illness, a storm, or a price spike. That share fell to
+          <span data-stat="shock.r8" data-fmt="pct0">OLD</span> by Round 8, with the same winter dip and
+          spring rebound. Food stress and shocks move together, because a shock that cuts a household's
+          income is also what pushes it to cut meals.
+        </p>
+      </div>
+
+      <!-- RIGHT: interactive chart in a sticky .cbox -->
+      <div style="position:sticky;top:24px">
+        <div class="cbox sl-chart">
+          <h3>Moderate-to-severe food insecurity</h3>
+          <div class="chips-bd">
+            <button class="chip on" data-bd="overall">Overall</button>
+            <button class="chip" data-bd="quintile">Income quintile</button>
+            <button class="chip" data-bd="region">Region</button>
+            <button class="chip" data-bd="urbrur">Urban/rural</button>
+          </div>
+          <div class="chart-wrap"><canvas></canvas></div>
+          <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
+          <div class="src">Source: FIES &amp; shock module · weighted · hover any point for the value</div>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>
