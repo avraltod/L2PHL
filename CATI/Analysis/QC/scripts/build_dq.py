@@ -1639,7 +1639,7 @@ M00_HEATMAP_EXCL = {
 # R8-only ed17/ed2/ed19_* added 2026-06-28 after firm delivered real R08 Kobo form.
 M02_EDUCATION_KEEP = {
     'hhid', 'fmid', 'age', 'gender',
-    'ed15', 'ed16', 'ed16_oth',
+    'ed15', 'ed16',   # ed16_oth dropped: sparse other-specify (gate selected(ed16,'96')), not completeness-monitorable at R4+
     # R8-only education-expenditure block (firm's R08 Kobo form delivered 2026-06-27)
     'ed17', 'ed2',
     'ed19_a', 'ed19_b', 'ed19_c', 'ed19_d', 'ed19_e',
@@ -1719,8 +1719,12 @@ CONDITIONAL_GATES = {
 
     # ── M02 Education ──
     ('M02','ed15'):   ('__age__', [5, 17]),                            # school-age children
-    ('M02','ed16'):   ('__compound__', [('__age__', [5, 17]), ('ed15', [2])]),       # age 5-17 & ED15=2
-    ('M02','ed16_oth'):('__compound__', [('__age__', [5, 17]), ('ed15', [2])]),      # age 5-17 & ED15=2
+    # ed16 ("what is member doing now") asked of anyone no longer attending (ED15=2),
+    # regardless of age. Its data splits by round: aggregate ed16 filled R1–R3, but
+    # R4–R8 the answer lives in the dummies ed16_1/ed16_2 (aggregate empty). The
+    # heatmap "filled" check for ed16 therefore looks at aggregate OR dummies (see
+    # the ED16 derived-indicator path in heatmap()), so missing ≈ 0% among ED15=2.
+    ('M02','ed16'):   ('ed15', [2]),                                                 # ED15=2 (no longer attending)
     ('M02','ed16_1'): ('__compound__', [('__age__', [5, 17]), ('ed15', [2])]),       # age 5-17 & ED15=2
     ('M02','ed16_2'): ('__compound__', [('__age__', [5, 17]), ('ed15', [2])]),       # age 5-17 & ED15=2
     # R8-only education-expenditure block (firm's R08 Kobo form delivered 2026-06-27)
@@ -2377,7 +2381,7 @@ def heatmap(df, keep=25, module=None):
     # "other" is picked) — never a meaningful DQ signal, so exclude from the heatmap.
     cols = [c for c in df.columns if c not in excl
             and not c.startswith(('wt','w_','_'))
-            and (not c.endswith('_oth') or c == 'ed16_oth') and c != 'round']
+            and not c.endswith('_oth') and c != 'round']
 
     # Detect select-all-that-apply families (base_1, base_2, ...)
     sata_families, sata_members = _detect_sata_families(cols)
@@ -2449,6 +2453,18 @@ def heatmap(df, keep=25, module=None):
                     row[str(r)] = round((~any_answered).mean()*100, 1)
             else:
                 filled = is_filled(sub[var_name])
+                # ED16 derived indicator: the select_multiple "what is the member
+                # doing now" splits across columns by round. The aggregate ed16
+                # column holds data R1–R3, but R4–R8 the answer lives in the split
+                # dummies ed16_1/ed16_2 (aggregate empty). A respondent has answered
+                # if the aggregate OR any dummy is filled — otherwise the bare ed16
+                # column shows a spurious 100% missing R4+. (Dummies are excluded
+                # from the M02 keep-set so they're not in `cols`, but the gated
+                # `sub` frame still carries them.)
+                if module == 'M02' and lookup_name == 'ed16':
+                    for _d in ('ed16_1', 'ed16_2'):
+                        if _d in sub.columns:
+                            filled = filled | sub[_d].notna()
                 n_filled = filled.sum()
                 if n_filled == 0:
                     # All values are missing/empty this round.
