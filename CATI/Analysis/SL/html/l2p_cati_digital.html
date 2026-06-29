@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>L2Phl CATI Panel — Storylines</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><style>:root {
+<title>L2Phl CATI Panel — digital</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>:root {
   --ink:#002244; --paper:#f5f0e8; --cream:#e8eef7; --rule:#b8cce0;
   --red:#CE1126; --blue:#009FDA; --gold:#D4A017; --green:#00A651;
   --orange:#F05023; --purple:#0038A8; --teal:#00B8C8;
@@ -296,8 +297,148 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 .hero .chips{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;}
 .hero .chips span{background:rgba(255,255,255,.15);padding:4px 11px;border-radius:2px;}
 </style></head><body>
-<div class="hero"><div class="kicker">Listening to the Philippines · CATI Panel · Rounds 1–8</div>
-<h1>Recovery is measurable. Vulnerability is not gone.</h1>
-<p>Eight monthly rounds: food stress halved and shocks collapsed — yet savings, secure work, and confidence barely moved.</p>
-<div class="chips"><span>2,470 households</span><span>Nov 2025 → Jun 2026</span><span>18 regions</span></div></div>
-<div class="storywrap"><div class="hubgrid"><a class="tcard" style="border-top-color:#00A651" href="l2p_cati_recovery.html"><div class="t">Recovery is measurable</div><div class="m" style="color:#00A651">Food · Shocks</div><div class="h">Food stress 41% → 21%</div></a><div class="tcard soon" style="border-top-color:#CE1126"><div class="t">Vulnerability hasn't moved</div><div class="m" style="color:#CE1126">Finance · Employment · Shocks</div><div class="h">~2% can cover an emergency</div></div><a class="tcard" style="border-top-color:#009FDA" href="l2p_cati_digital.html"><div class="t">The digital shift</div><div class="m" style="color:#009FDA">Finance</div><div class="h">Mobile money → 55%</div></a><div class="tcard soon" style="border-top-color:#002244"><div class="t">Work without security</div><div class="m" style="color:#002244">Employment · Income</div><div class="h">72% have no contract</div></div><div class="tcard soon" style="border-top-color:#FCD116"><div class="t">Lifelines</div><div class="m" style="color:#FCD116">Migration · Finance</div><div class="h">24% got a Dec remittance</div></div><div class="tcard soon" style="border-top-color:#CE1126"><div class="t">The Middle East crisis</div><div class="m" style="color:#CE1126">Views · Migration · Finance</div><div class="h">Exposure & remittance risk</div></div><div class="tcard soon" style="border-top-color:#009FDA"><div class="t">Uneven recovery</div><div class="m" style="color:#009FDA">ALL · by income & region</div><div class="h">The equity lens</div></div><div class="tcard soon" style="border-top-color:#002244"><div class="t">Health under pressure</div><div class="m" style="color:#002244">Health · Shocks</div><div class="h">Coverage & out-of-pocket</div></div><div class="tcard soon" style="border-top-color:#FCD116"><div class="t">The national mood</div><div class="m" style="color:#FCD116">Views</div><div class="h">Satisfaction 2.85/5 · AI worry</div></div></div></div></body></html>
+<main class="storywrap"><!-- Topic 3 · The digital shift · Finance. Built on the baseline chapter template. -->
+<header class="chap">
+  <div class="chap-n">03</div>
+  <div>
+    <span class="eyebrow">Theme 3 · Finance</span>
+    <h2 class="hed" style="color:#fff;margin:0">The digital shift</h2>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="two-col">
+    <div>
+      <p class="body-copy rev" data-indicator="mobile_money" data-breakdown="overall" data-round="8">
+        The panel began tracking financial accounts at Round 5. From the first measurement, about
+        half of households already held a mobile-money account — <span data-stat="mm.r5" data-fmt="pct0">49%</span>
+        — and the share rose to <span data-stat="mm.r8" data-fmt="pct0">54%</span> by Round 8. Mobile money
+        is the one part of the financial system that reached most households quickly.
+      </p>
+
+      <div class="sgrid sgrid-3 rev d1">
+        <div class="scell"><div class="scell-n"><span data-stat="mm.r8" data-fmt="pct0">54%</span></div><div class="scell-l">mobile-money account · R8</div></div>
+        <div class="scell"><div class="scell-n"><span data-stat="bank.r8" data-fmt="pct0">16%</span></div><div class="scell-l">formal bank account · R8</div></div>
+        <div class="scell"><div class="scell-n">R5</div><div class="scell-l">accounts first tracked</div></div>
+      </div>
+
+      <p class="body-copy rev" data-indicator="bank_account" data-breakdown="overall" data-round="8">
+        Formal banking did not follow. A bank account stayed near a sixth of households across the same
+        rounds — <span data-stat="bank.r5" data-fmt="pct0">12%</span> at Round 5 and
+        <span data-stat="bank.r8" data-fmt="pct0">16%</span> at Round 8. Households did not move from cash
+        to banks. They moved from cash to the phone, because a mobile wallet needs only a SIM and a
+        sari-sari store, not a branch and a minimum balance.
+      </p>
+      <blockquote class="rev">The leap in access went to the phone, while the bank stayed out of reach.</blockquote>
+
+      <p class="body-copy rev" data-indicator="mobile_money" data-breakdown="quintile" data-round="8">
+        The shift is not even. Switch the chart to income quintile, ranked on baseline welfare, and the
+        gradient is plain: the richest fifth runs above 60 percent, the poorest fifth below 50. Mobile
+        money widened access to the financial system, and it carried the income gradient with it.
+      </p>
+    </div>
+
+    <div style="position:sticky;top:24px">
+      <div class="cbox" id="sl-chart">
+        <h3>Has a mobile-money account</h3>
+        <div class="chips-bd">
+          <button class="chip on" data-bd="overall">Overall</button>
+          <button class="chip" data-bd="quintile">Income quintile</button>
+          <button class="chip" data-bd="region">Region</button>
+          <button class="chip" data-bd="urbrur">Urban/rural</button>
+        </div>
+        <div class="chart-wrap"><canvas></canvas></div>
+        <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
+        <div class="src">Source: M06 finance · weighted · accounts tracked R5–R8 · hover any point for the value</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<script id="sl-series" type="application/json">{"series.mobile_money.label": "Has a mobile-money account", "series.mobile_money.unit": "pct", "series.mobile_money.rounds": [1, 2, 3, 4, 5, 6, 7, 8], "series.mobile_money.overall": [null, null, null, null, 49.2, 53.6, 54.3, 54.5], "series.mobile_money.by_quintile.Q1 (poorest)": [null, null, null, null, 40.8, 46.3, 44.1, 47.7], "series.mobile_money.by_quintile.Q2": [null, null, null, null, 48.5, 49.4, 50.0, 50.7], "series.mobile_money.by_quintile.Q3": [null, null, null, null, 48.6, 56.2, 56.0, 59.9], "series.mobile_money.by_quintile.Q4": [null, null, null, null, 52.9, 57.1, 59.2, 51.4], "series.mobile_money.by_quintile.Q5 (richest)": [null, null, null, null, 56.9, 60.1, 62.7, 63.5], "series.mobile_money.by_region.NCR": [null, null, null, null, 65.0, 60.1, 58.3, 61.4], "series.mobile_money.by_region.Luzon": [null, null, null, null, 47.9, 51.9, 52.4, 51.5], "series.mobile_money.by_region.Visayas": [null, null, null, null, 45.6, 50.4, 57.4, 54.8], "series.mobile_money.by_region.Mindanao": [null, null, null, null, 45.9, 56.0, 53.0, 56.4], "series.mobile_money.by_urbrur.Urban": [null, null, null, null, 56.4, 59.3, 60.2, 59.5], "series.mobile_money.by_urbrur.Rural": [null, null, null, null, 40.4, 46.7, 47.0, 48.4], "series.bank_account.label": "Has a formal bank account", "series.bank_account.unit": "pct", "series.bank_account.rounds": [1, 2, 3, 4, 5, 6, 7, 8], "series.bank_account.overall": [null, null, null, null, 11.9, 14.6, 16.1, 16.5], "series.bank_account.by_quintile.Q1 (poorest)": [null, null, null, null, 5.6, 9.7, 12.3, 12.5], "series.bank_account.by_quintile.Q2": [null, null, null, null, 7.3, 12.7, 12.2, 14.8], "series.bank_account.by_quintile.Q3": [null, null, null, null, 11.7, 11.5, 14.6, 13.6], "series.bank_account.by_quintile.Q4": [null, null, null, null, 12.7, 12.3, 11.9, 14.7], "series.bank_account.by_quintile.Q5 (richest)": [null, null, null, null, 24.2, 28.4, 30.3, 28.1], "series.bank_account.by_region.NCR": [null, null, null, null, 21.3, 13.4, 19.2, 16.1], "series.bank_account.by_region.Luzon": [null, null, null, null, 12.0, 11.9, 12.5, 14.4], "series.bank_account.by_region.Visayas": [null, null, null, null, 7.6, 16.8, 16.0, 16.8], "series.bank_account.by_region.Mindanao": [null, null, null, null, 9.8, 18.8, 21.3, 20.7], "series.bank_account.by_urbrur.Urban": [null, null, null, null, 13.3, 16.0, 19.2, 16.9], "series.bank_account.by_urbrur.Rural": [null, null, null, null, 10.2, 12.7, 12.3, 16.1]}</script>
+<script id="sl-data" type="application/json">{"food_trend": [40.99, 30.97, 26.82, 21.49, 18.2], "shock_trend": [34.91, 22.63, 16.71, 14.28, 12.09], "ls_trend": [2.83, 2.81, 2.79, 2.85, 2.88], "fies": {"Worried about not having enough food": 39.22, "Ate less than thought should": 27.84, "Ran out of food": 21.41, "Hungry but did not eat": 14.78, "Went without eating whole day": 6.47}, "severity": {"Food secure": 52.36, "Mild": 29.44, "Moderate": 14.53, "Severe": 3.66}, "sev_macro": {"NCR": 66.3, "Luzon": 60.0, "Visayas": 42.7, "Mindanao": 37.0}, "shock_types": {"Major illness": 4.5, "Typhoons": 2.47, "Unexpected loss of job": 1.83, "Non-payment or delay in payment of income": 0.9, "Major injury": 0.64, "Floods/La Niña": 0.61, "Inflation (increase of food/fuel/commodity prices)": 0.54, "Death": 0.31, "Major financial problem": 0.29, "Food shortage": 0.22}, "coping": {"Borrowed from friends and family": 24.6, "Received assistance from friends and family ": 13.84, "Relied on savings": 9.84, "Received assistance from government": 9.24, "Increased hours of work": 7.85, "Engaged in additional income generating activities": 6.65, "Others, specify": 6.07, "Consulted a medical professional": 4.82}, "shock_macro": {"NCR": 16.3, "Luzon (excl. NCR)": 14.0, "Visayas": 14.7, "Mindanao": 3.6}, "finance": {"Mobile money acc (f18)": 49.93, "Bought online (f15)": 23.59, "Took loan (f7)": 18.09, "Received remittance": 18.26, "Used bank 30d (f3)": 12.92, "Bank account (f17)": 12.1, "Used mobile 30d (f6)": 3.46, "Cover ₱300k (f16)": 3.25}, "loan_purpose": {"Medical/health": 30.04, "Housing repair": 25.21, "Business": 12.26, "Agricultural input": 10.21, "Debt repayment": 6.98, "Food and other daily needs": 6.13, "Education": 4.26}, "inc_macro": {"NCR": 21566, "Luzon (excl. NCR)": 13633, "Visayas": 11787, "Mindanao": 11341}, "ph_type": {"Not covered": 78.26, "Member (no card)": 16.33, "Member + card": 4.78, "Dependent": 0.62}, "ph_macro": {"NCR": 31.2, "Luzon (excl. NCR)": 27.2, "Visayas": 17.7, "Mindanao": 20.0}, "facility": {"Barangay Health Station": 36.99, "Private Clinic": 34.22, "Rural Health Unit": 12.55, "Public Hospital": 11.55, "Private Hospital": 4.69}, "contract": {"Verbal agreement": 68.58, "Written": 18.41, "No contract": 7.23, "Don't know": 5.78}, "class_work": {"Private HH": 28.81, "Private establishment": 27.03, "Self-employed": 18.25, "Government": 7.5, "Employer": 7.46, "Family business (unpaid)": 2.2}, "eco_change": {"Same": 52.44, "Somewhat worse": 23.89, "Somewhat better": 9.96, "Much worse": 8.4, "Much better": 5.3}, "likert": {"Prices rising too fast": 44.49, "Optimistic about economy": 31.8, "More citizen participation in govt": 14.02, "Worried: child education": 14.84, "Worried: job loss": 33.73, "Worried: political instability": 30.38, "Digital services helpful (past month)": 25.97, "Taxes well spent": 38.71, "Govt fighting corruption well": 35.35, "Country on right track": 40.25}, "life_sat_dist": {"1": 6.8, "2": 24.57, "3": 50.36, "4": 9.85, "5": 8.41}, "fies_items_trend": {"Worried about food": [57.43, 46.7, 46.17, 41.95, 39.22], "Ate less than should": [52.44, 43.24, 39.43, 29.17, 27.84], "Ran out of food": [44.48, 35.06, 29.08, 24.41, 21.41], "Hungry, didn't eat": [32.05, 25.42, 21.7, 17.84, 14.78], "Whole day without food": [14.79, 10.21, 8.4, 8.24, 6.47]}, "fies_foodsec_trend": [29.08, 40.41, 44.68, 48.26, 52.36], "shock_types_trend": {"Typhoons": [17.63, 12.71, 7.14, 5.37, 2.37], "Major illness": [7.48, 4.9, 3.87, 4.23, 4.31], "Job loss": [2.3, 2.11, 2.3, 2.55, 1.64], "Floods": [1.73, 0.66, 0.59, 0.37, 0.32]}, "utilities_trend": {"Water disrupted %": [25.79, 16.42, 14.07, 11.55, 9.83], "Internet disrupted %": [46.66, 34.76, 39.62, 33.61, 29.69], "Elec outage (hrs)": [14.24, 9.33, 8.64, 2.67, 2.59]}, "finance_trend": {"Has mobile money (f2) %": [14.95, 16.21, 18.67, 18.88, 20.83], "Took loan (f7) %": [22.14, 19.83, 22.4, 21.04, 18.09], "Used bank 30d (f3) %": [13.28, 13.04, 13.57, 11.6, 12.92], "Used mobile 30d (f6) %": [3.71, 2.86, 2.31, 2.21, 3.46]}, "eco_trend": {"Worse": [36.17, 34.34, 36.58, 34.41, 32.29], "Same": [45.37, 49.06, 49.46, 52.31, 52.44], "Better": [18.46, 16.6, 13.96, 13.28, 15.27]}, "perception_trend": {"Economy will improve": [49.68, 49.11, 45.12, 37.56, 44.49], "Things will get better": [27.94, 25.68, 29.99, 32.22, 30.38], "Prices keep rising": [19.49, 16.8, 19.38, 15.01, 14.02], "Satisfied with govt": [43.72, 43.86, 37.78, 43.42, 40.25]}}</script>
+<script>/* scrollytelling engine */
+// CATI/Analysis/SL/storyline.js — shared scrollytelling + interactive-chart engine.
+// Pure helpers are ESM-exported for tests; DOM wiring runs only in a browser.
+const PALETTE = ["#002244","#009FDA","#00A651","#CE1126","#FCD116","#40B4E5","#7E57C2"];
+const BD_LABEL = {quintile:"Income quintile", region:"Region", urbrur:"Urban/rural", sexage:"Sex/age"};
+
+function availableBreakdowns(entry){
+  const out=["overall"];
+  for(const k of Object.keys(entry)) if(k.startsWith("by_")) out.push(k.slice(3));
+  return out;
+}
+function seriesFor(entry, breakdown){
+  if(breakdown==="overall") return {Overall: entry.overall};
+  return entry["by_"+breakdown] || {Overall: entry.overall};
+}
+function clampRound(r,n){ return Math.max(1, Math.min(r,n)); }
+function sliceTo(arr,maxRound){ return arr.slice(0, maxRound); }
+// Reconstruct nested per-indicator series from the flat dotted #sl-series JSON.
+// Keys: series.<name>.{rounds|overall|label|unit} (3 parts) or
+//       series.<name>.by_<bd>.<level> (4+ parts; level may contain spaces/parens).
+function parseSeries(flat){
+  const S={};
+  for(const k in flat){
+    if(!k.startsWith("series.")) continue;
+    const p=k.split(".");
+    const name=p[1]; S[name]=S[name]||{};
+    if(p.length===3){ S[name][p[2]]=flat[k]; }
+    else { const leaf=p[2], level=p.slice(3).join("."); (S[name][leaf]=S[name][leaf]||{})[level]=flat[k]; }
+  }
+  return S;
+}
+
+// ---- DOM wiring (browser only) ----
+function isBrowser(){ return typeof document!=="undefined" && typeof window!=="undefined"; }
+function buildDatasets(entry, breakdown, maxRound){
+  const groups = seriesFor(entry, breakdown);
+  return Object.entries(groups).map(([name,arr],i)=>({
+    label:name, data:sliceTo(arr,maxRound), borderColor:PALETTE[i%PALETTE.length],
+    backgroundColor:"transparent", borderWidth:2.5, tension:.25, pointRadius:2
+  }));
+}
+function initStoryline(){
+  if(!isBrowser()) return;
+  const seriesEl=document.getElementById("sl-series");
+  if(!seriesEl) return;
+  const SERIES=parseSeries(JSON.parse(seriesEl.textContent));
+  const card=document.getElementById("sl-chart"); if(!card) return;
+  const ctx=card.querySelector("canvas"); const title=card.querySelector("h3");
+  const chips=card.querySelector(".chips-bd"); const scrub=card.querySelector('input[type=range]');
+  let state={indicator:null, breakdown:"overall", maxRound:8};
+  let chart=null;
+  function render(){
+    const e=SERIES[state.indicator]; if(!e) return;
+    title.textContent=e.label||state.indicator;
+    state.maxRound=clampRound(state.maxRound, e.rounds.length);
+    const labels=sliceTo(e.rounds.map(r=>"R"+r), state.maxRound);
+    const datasets=buildDatasets(e, state.breakdown, state.maxRound);
+    if(chart) chart.destroy();
+    chart=new Chart(ctx,{type:"line",data:{labels,datasets},
+      options:{responsive:true,maintainAspectRatio:false,
+        scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:v=>v+"%"}}},
+        plugins:{legend:{display:datasets.length>1,position:"bottom",labels:{boxWidth:10,font:{size:10}}},
+                 tooltip:{callbacks:{label:c=>`${c.dataset.label} · R${c.dataIndex+1}: ${c.parsed.y}%`}}}}});
+    if(chips){ const avail=availableBreakdowns(e);
+      chips.querySelectorAll(".chip").forEach(ch=>{
+        const bd=ch.dataset.bd; ch.disabled=!avail.includes(bd); ch.classList.toggle("on",bd===state.breakdown);});
+    }
+  }
+  if(chips) chips.addEventListener("click",ev=>{ const ch=ev.target.closest(".chip"); if(!ch||ch.disabled) return;
+    state.breakdown=ch.dataset.bd; render(); });
+  if(scrub) scrub.addEventListener("input",()=>{ state.maxRound=+scrub.value; render(); });
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){
+    const b=e.target.dataset; if(b.indicator) state.indicator=b.indicator;
+    if(b.breakdown) state.breakdown=b.breakdown; if(b.round) state.maxRound=+b.round; render(); }}),{threshold:.55});
+  document.querySelectorAll("[data-indicator]").forEach(b=>io.observe(b));
+  const first=document.querySelector("[data-indicator]"); if(first){ const b=first.dataset;
+    state.indicator=b.indicator; state.breakdown=b.breakdown||"overall"; state.maxRound=+(b.round||8); render(); }
+  // baseline-style scroll reveal: .rev -> .vis (the baseline's CSS sets .rev{opacity:0})
+  const revObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){
+    e.target.classList.add("vis"); revObs.unobserve(e.target); }}),{threshold:.15});
+  document.querySelectorAll(".rev").forEach(el=>revObs.observe(el));
+}
+if(isBrowser()) window.addEventListener("DOMContentLoaded", initStoryline);
+</script>
+</body></html>

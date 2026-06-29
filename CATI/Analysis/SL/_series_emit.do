@@ -6,7 +6,8 @@
 // =============================================================================
 // Storyline series emitter — one indicator → an R1–R8 series (overall + by each
 // requested breakdown), written into sl_series.json via the _stat_emit primitives.
-// Requires _stat_emit.do already included (stat_arr / _se_guard / _se_append in scope).
+// Per-round subpop means, so indicators present in only some rounds (e.g. f17/f18
+// R5–R8) emit JSON null for the empty rounds. Requires _stat_emit.do included.
 
 	version 18
 
@@ -19,51 +20,60 @@
 			Scale(real 100)]
 		gettoken nm ind : namelist
 		if "`unit'" == "" local unit "pct"
-
-		* --- rounds present (sorted) ---
 		qui levelsof `round', local(RDS)
-		local nr : word count `RDS'
+		tempvar sp
 
-		* --- meta (strings emitted directly through the _stat_emit body) ---
+		* --- meta + rounds ---
 		_se_guard "series.`nm'.label"
 		_se_append `"${SE_q}series.`nm'.label${SE_q}:${SE_q}`label'${SE_q}"'
 		_se_guard "series.`nm'.unit"
 		_se_append `"${SE_q}series.`nm'.unit${SE_q}:${SE_q}`unit'${SE_q}"'
 		stat_arr "series.`nm'.rounds" `RDS'
 
-		* --- overall series over rounds ---
-		qui svy: mean `ind', over(`round')
-		matrix bmat = e(b)
+		* --- overall: per-round subpop mean (null where not estimable) ---
 		local ov ""
-		forvalues k = 1/`nr' {
-			local v = string(bmat[1,`k']*`scale', "%9.1f")
-			local ov "`ov' `v'"
+		foreach r of local RDS {
+			qui count if `round'==`r' & !missing(`ind')
+			if r(N) == 0 {
+				local ov "`ov' null"
+			}
+			else {
+				cap drop `sp'
+				qui gen byte `sp' = (`round'==`r')
+				qui svy, subpop(`sp'): mean `ind'
+				local v = string(_b[`ind']*`scale', "%9.1f")
+				local ov "`ov' `v'"
+			}
 		}
 		stat_arr "series.`nm'.overall" `ov'
 
-		* --- breakdowns: one subpop per level, over rounds ---
+		* --- breakdowns: per (round × level) subpop mean ---
 		foreach bd in quintile region urbrur {
 			local bv ``bd''
 			if "`bv'" == "" continue
 			qui count if !missing(`bv')
-			if r(N) == 0 continue                       // var absent/degraded (e.g. inc_q)
+			if r(N) == 0 continue
 			local jkey = cond("`bd'"=="quintile","by_quintile", ///
 			             cond("`bd'"=="region","by_region","by_urbrur"))
 			qui levelsof `bv', local(LV)
-			tempvar sp
 			foreach L of local LV {
-				qui gen byte `sp' = (`bv'==`L')
-				qui svy, subpop(`sp'): mean `ind', over(`round')
-				matrix bsub = e(b)
-				local arr ""
-				forvalues k = 1/`nr' {
-					local v = string(bsub[1,`k']*`scale', "%9.1f")
-					local arr "`arr' `v'"
-				}
 				local lab : label (`bv') `L'
-				if `"`lab'"' == "`L'" local lab "`bd'`L'"   // no value label → fallback
+				if `"`lab'"' == "`L'" local lab "`bd'`L'"
+				local arr ""
+				foreach r of local RDS {
+					qui count if `round'==`r' & `bv'==`L' & !missing(`ind')
+					if r(N) == 0 {
+						local arr "`arr' null"
+					}
+					else {
+						cap drop `sp'
+						qui gen byte `sp' = (`round'==`r' & `bv'==`L')
+						qui svy, subpop(`sp'): mean `ind'
+						local v = string(_b[`ind']*`scale', "%9.1f")
+						local arr "`arr' `v'"
+					}
+				}
 				stat_arr "series.`nm'.`jkey'.`lab'" `arr'
-				drop `sp'
 			}
 		}
 	end

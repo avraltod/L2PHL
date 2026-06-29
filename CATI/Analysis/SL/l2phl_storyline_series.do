@@ -62,5 +62,20 @@
 		label("Households reporting any shock") unit("pct") ///
 		quintile(inc_q) region(reg4) urbrur(urbrur)
 
+	***************************************************************************
+	**# 3. Digital finance (M06) — mobile-money & formal-bank account, R5–R8
+	***************************************************************************
+	use "$HF/l2phl_M06_finance.dta", clear
+	gen byte mobile_money = (f18==1) if inlist(f18,1,2)        // has mobile-money account
+	gen byte bank_account = (f17==1) if inlist(f17,1,2)        // has formal bank account
+	svyset psu [pweight=hhw], strata(stratum)
+	do "$wd/_breakdowns.do"
+	series_emit mobile_money mobile_money, round(round) ///
+		label("Has a mobile-money account") unit("pct") ///
+		quintile(inc_q) region(reg4) urbrur(urbrur)
+	series_emit bank_account bank_account, round(round) ///
+		label("Has a formal bank account") unit("pct") ///
+		quintile(inc_q) region(reg4) urbrur(urbrur)
+
 	stat_close
 	di as result "storyline series written: $wd/sl_series.json"

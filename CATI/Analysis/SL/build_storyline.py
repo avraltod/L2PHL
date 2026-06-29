@@ -22,31 +22,44 @@ def _engine_inline():
     js = re.sub(r'^import\s+.*$', '', js, flags=re.M)        # drop any imports
     return "/* scrollytelling engine */\n" + js
 
+def _topic_indicators(slug):
+    t = next((x for x in TOPICS if x["slug"] == slug), None)
+    return (t or {}).get("indicators") or []
+
 def _series_for_topic(slug):
-    """Embed only the series this topic uses (Slice 1: recovery uses both)."""
+    """Embed only the series THIS topic uses (its registry indicator list)."""
     path = os.path.join(HERE,"sl_series.json")
     flat = json.load(open(path, encoding="utf-8"))
-    return {k:v for k,v in flat.items() if k.startswith("series.") or k=="_meta"}
+    inds = _topic_indicators(slug)
+    keep = lambda k: k == "_meta" or any(k.startswith(f"series.{i}.") for i in inds)
+    return {k:v for k,v in flat.items() if keep(k)}
 
-# Slice-1 prose binds to numbers DERIVED from the series (single source of truth):
-# food.* / shock.* groups built from each indicator's overall[] endpoints.
-_DERIVE_MAP = {"food_insecurity": "food", "any_shock": "shock"}
-def _derive_pointstats(series_path):
+# Prose binds to numbers DERIVED from the series (single source of truth). nn = the
+# non-null endpoints, so R5-start indicators (mobile_money/bank_account) get r5/r8.
+_DERIVE_MAP = {"food_insecurity": "food", "any_shock": "shock",
+               "mobile_money": "mm", "bank_account": "bank"}
+def _derive_pointstats(series_path, indicators):
     nested = load_series(series_path)                 # {'series': {...}, '_meta': ...}
     out = {}
-    for ind, grp in _DERIVE_MAP.items():
+    for ind in indicators:
+        grp = _DERIVE_MAP.get(ind)
+        if not grp:
+            continue
         e = nested.get("series", {}).get(ind)
-        if e and e.get("overall"):
-            ov = e["overall"]
-            out[grp] = {"r1": round(ov[0], 1), "r8": round(ov[-1], 1),
-                        "drop": round(ov[0] - ov[-1], 1)}
+        if not e:
+            continue
+        nn = [x for x in (e.get("overall") or []) if x is not None]
+        if not nn:
+            continue
+        out[grp] = {"r1": round(nn[0], 1), "r5": round(nn[0], 1),
+                    "r8": round(nn[-1], 1), "drop": round(nn[0] - nn[-1], 1)}
     return out
 
 def build_topic(slug, outdir, check=False):
     frag = _read(os.path.join(HERE,"topics",f"{slug}.html"))
     css  = _read(os.path.join(HERE,"storyline.css"))
     series = _series_for_topic(slug)
-    bind = _derive_pointstats(os.path.join(HERE,"sl_series.json"))
+    bind = _derive_pointstats(os.path.join(HERE,"sl_series.json"), _topic_indicators(slug))
     if os.path.exists(os.path.join(HERE,"sl_stats.json")):
         bind.update(json.load(open(os.path.join(HERE,"sl_stats.json"), encoding="utf-8")))
     doc = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">

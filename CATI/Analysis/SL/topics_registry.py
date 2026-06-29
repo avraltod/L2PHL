@@ -1,11 +1,13 @@
 """The 9 storyline themes. Slice 1 builds only those with live=True."""
 TOPICS = [
   {"slug":"recovery","title":"Recovery is measurable","modules":"Food · Shocks",
-   "headline":"Food stress 41% → 21%","accent":"#00A651","spark":"food_insecurity","live":True},
+   "headline":"Food stress 41% → 21%","accent":"#00A651","spark":"food_insecurity","live":True,
+   "indicators":["food_insecurity","any_shock"]},
   {"slug":"vulnerability","title":"Vulnerability hasn't moved","modules":"Finance · Employment · Shocks",
    "headline":"~2% can cover an emergency","accent":"#CE1126","spark":None,"live":False},
   {"slug":"digital","title":"The digital shift","modules":"Finance",
-   "headline":"Mobile money → 50%","accent":"#009FDA","spark":None,"live":False},
+   "headline":"Mobile money → 55%","accent":"#009FDA","spark":"mobile_money","live":True,
+   "indicators":["mobile_money","bank_account"]},
   {"slug":"work","title":"Work without security","modules":"Employment · Income",
    "headline":"72% have no contract","accent":"#002244","spark":None,"live":False},
   {"slug":"lifelines","title":"Lifelines","modules":"Migration · Finance",
