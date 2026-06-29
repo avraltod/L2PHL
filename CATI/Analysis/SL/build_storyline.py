@@ -82,6 +82,14 @@ def _derive_pointstats(series_path, indicators):
         out[grp] = {"r1": round(nn[0], 1), "r5": round(nn[0], 1),
                     "r8": round(nn[-1], 1), "drop": round(nn[0] - nn[-1], 1),
                     "peak": round(max(nn), 1)}
+        # poorest/richest quintile endpoints (last non-null), for the equity synthesis
+        bq = e.get("by_quintile") or {}
+        lo = next((v for k, v in bq.items() if "poorest" in k.lower()), None)
+        hi = next((v for k, v in bq.items() if "richest" in k.lower()), None)
+        lonn = [x for x in (lo or []) if x is not None]
+        hinn = [x for x in (hi or []) if x is not None]
+        if lonn: out[grp]["q1_r8"] = round(lonn[-1], 1)
+        if hinn: out[grp]["q5_r8"] = round(hinn[-1], 1)
     return out
 
 def _series_for_story(indicators):

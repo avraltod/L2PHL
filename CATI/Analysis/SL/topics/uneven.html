@@ -1,0 +1,55 @@
+<!-- Chapter content for topic 'uneven' (equity synthesis; reuses food + mobile-money
+     series by quintile). The builder prepends the .chap band + a <div data-chapter="uneven"> wrapper. -->
+<div class="sec cream-bg">
+  <div class="sec" style="padding:60px 40px 30px;max-width:1100px;margin:0 auto;">
+    <span class="eyebrow t">By income &amp; region</span>
+    <h2 class="hed">The recovery flowed up the income ladder, <em class="t">not down it</em></h2>
+    <div class="two-col">
+      <div>
+        <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="quintile" data-round="8">
+          Every chapter so far hides a second story inside the income distribution. Take food security.
+          The poorest fifth of households began the panel above 55 percent food-insecure and ended near
+          a quarter, at <span data-stat="food.q1_r8" data-fmt="pct0">OLD</span>. The richest fifth ended
+          at <span data-stat="food.q5_r8" data-fmt="pct0">OLD</span>. Both improved, and the poorest
+          never closed the distance to the richest.
+        </p>
+
+        <div class="sgrid sgrid-3 rev d1">
+          <div class="scell"><div class="scell-n"><span data-stat="food.q1_r8" data-fmt="pct0">OLD</span></div><div class="scell-l">poorest fifth · food insecure R8</div></div>
+          <div class="scell"><div class="scell-n"><span data-stat="food.q5_r8" data-fmt="pct0">OLD</span></div><div class="scell-l">richest fifth · food insecure R8</div></div>
+          <div class="scell"><div class="scell-n"><span data-stat="mm.q5_r8" data-fmt="pct0">OLD</span></div><div class="scell-l">richest fifth · mobile money R8</div></div>
+        </div>
+
+        <p class="body-copy rev" data-indicator="mobile_money" data-breakdown="quintile" data-round="8">
+          The same ladder shapes the gains, not only the losses. Switch the chart to mobile money by
+          quintile. The richest fifth held accounts at <span data-stat="mm.q5_r8" data-fmt="pct0">OLD</span>,
+          the poorest fifth at <span data-stat="mm.q1_r8" data-fmt="pct0">OLD</span>. A new technology
+          widened access and reproduced the old gradient, because the households with phones, identity
+          documents, and steady cash adopt first.
+        </p>
+        <blockquote class="rev">Recovery reached every group. It reached the top first.</blockquote>
+
+        <p class="body-copy rev" data-indicator="food_insecurity" data-breakdown="region" data-round="8">
+          Geography traces the same line. The poorest regions, in the Visayas and Mindanao, carried the
+          highest food insecurity throughout, while Metro Manila and Luzon sat below. Across the panel
+          one pattern repeats. The averages improved while the distances held, so a household near the
+          bottom gained real relief and kept the same relative position.
+        </p>
+      </div>
+
+      <div style="position:sticky;top:24px">
+        <div class="cbox sl-chart">
+          <h3>Moderate-to-severe food insecurity, by income quintile</h3>
+          <div class="chips-bd">
+            <button class="chip on" data-bd="quintile">Income quintile</button>
+            <button class="chip" data-bd="region">Region</button>
+            <button class="chip" data-bd="overall">Overall</button>
+          </div>
+          <div class="chart-wrap"><canvas></canvas></div>
+          <div class="scrub">R1<input type="range" min="1" max="8" value="8">R8</div>
+          <div class="src">Source: FIES &amp; M06 finance · weighted · baseline welfare quintile · hover any point</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
