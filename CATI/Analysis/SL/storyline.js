@@ -58,8 +58,12 @@ function initStoryline(){
   const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){
     const b=e.target.dataset; if(b.indicator) state.indicator=b.indicator;
     if(b.breakdown) state.breakdown=b.breakdown; if(b.round) state.maxRound=+b.round; render(); }}),{threshold:.55});
-  document.querySelectorAll(".beat").forEach(b=>io.observe(b));
-  const first=document.querySelector(".beat"); if(first){ const b=first.dataset;
+  document.querySelectorAll("[data-indicator]").forEach(b=>io.observe(b));
+  const first=document.querySelector("[data-indicator]"); if(first){ const b=first.dataset;
     state.indicator=b.indicator; state.breakdown=b.breakdown||"overall"; state.maxRound=+(b.round||8); render(); }
+  // baseline-style scroll reveal: .rev -> .vis (the baseline's CSS sets .rev{opacity:0})
+  const revObs=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){
+    e.target.classList.add("vis"); revObs.unobserve(e.target); }}),{threshold:.15});
+  document.querySelectorAll(".rev").forEach(el=>revObs.observe(el));
 }
 if(isBrowser()) window.addEventListener("DOMContentLoaded", initStoryline);
