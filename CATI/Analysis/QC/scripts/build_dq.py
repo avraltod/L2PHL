@@ -338,12 +338,17 @@ if 'member_leftreason' in m01.columns:
             all_miss = pd.Series(True, index=sub.index)
             for dc in dest_cols:
                 all_miss &= sub[dc].isna()
+            # Firm QC Tracker 20260701: D26_2/3 (prov/city) are required only for DOMESTIC
+            # moves (country_moved=1=Philippines). Moves abroad (e.g. Jordan/KSA/Korea) or
+            # with no country recorded leave prov/city legitimately blank -> not a violation.
+            if 'country_moved' in sub.columns:
+                all_miss &= (n(sub['country_moved']) == 1)
             c2[r] = int(all_miss.sum())
             p2[r] = round(100*all_miss.mean(),1)
         mandatory_issues.append({
             'module':'M01','rule':'D5a=2 AND D25=1/2 (moved away) but D26 (destination) is missing',
             'variable':'D25=1/2 → D26_2, D26_3','counts_by_round':c2,'pct_by_round':p2,'severity':'medium',
-            'note':'Kobo: D26_1 relevant=${D25}=1 or ${D25}=2. Destination region/city must be recorded.'
+            'note':'Firm QC 20260701: D26_2/3 required only when country_moved=Philippines (domestic). Abroad/unspecified -> blank valid.'
         })
 
 # ── isfmid → moved_in_reason (D27) ──
@@ -782,14 +787,31 @@ if 'a7' in m04.columns and 'a5' in m04.columns and 'a6' in m04.columns:
     })
 
 # ── A1=2 (not working) → A10/A11 should be empty ──
-# CAVEAT: Kobo routing is complex (A1=1 OR A24=1 OR A25 OR A26=1 OR A27=1 OR ...).
-# a24/a26/a27 being added to pooled .dta (2026-04-03), but check remains approximate.
-c,p = check_skip(m04, 'a1', [2], ['a10','a11'])
+# Firm-confirmed routing (per the A18/A19 clarification, Firm QC Tracker 20260701):
+# A10/A11 are reached via the employment BLOCK (A1=1 OR A24=1 OR A26=1 OR A27=1), not A1
+# alone. Someone with A1=2 who still worked in the reference period (A24/A26/A27=1)
+# legitimately has days/hours. Flag only A1=2 with NO work path (the genuine residual).
+c, p = {}, {}
+_work_paths = [w for w in ['a24','a26','a27'] if w in m04.columns]
+for r in ROUNDS:
+    sub = m04[m04['round']==r]
+    if not len(sub):
+        c[r]=0; p[r]=0; continue
+    a1_v = n(sub['a1'])
+    reached = (a1_v==1)
+    for wp in _work_paths:
+        reached = reached | (n(sub[wp])==1)
+    not_working = (a1_v==2) & ~reached
+    filled = pd.Series(False, index=sub.index)
+    for dc in ['a10','a11']:
+        if dc in sub.columns: filled |= n(sub[dc]).notna()
+    viol = not_working & filled
+    gate = int(not_working.sum())
+    c[r] = int(viol.sum()); p[r] = round(100*int(viol.sum())/gate,1) if gate else 0
 skip_issues.append({
     'module':'M04','rule':'A1=2 (not working) but A10/A11 (days/hours) are filled',
     'variable':'A1=2 → A10,A11 should be empty','counts_by_round':c,'pct_by_round':p,'severity':'medium',
-    'note':'Kobo: A10 routing depends on A24/A26/A27 in addition to A1. '
-          'E.g. A1=2 routes to A26, skipping A10/A11. If A10 is filled, it is a violation.'
+    'note':'Firm QC 20260701 routing: A10/A11 reached via A1=1 OR A24/A26/A27=1. Residual flags = A1=2 with NO work path but days/hours filled (genuine, for the firm).'
 })
 
 # ── A24-A27 routing chain (all rounds, panel routing) ──
@@ -899,13 +921,16 @@ if 'a18' in m04.columns and 'a6' in m04.columns:
             c18[r]=None; p18[r]=None; continue
         a1_v = n(sub['a1']); a6_v = n(sub['a6']); a18_v = n(sub['a18'])
         employed = a1_v == 1
-        eligible = a6_v.isin([1,2,3])
-        # R4+ questionnaires ALSO ask A18 when A16=3 (no written contract) or
-        # A16=99 (DK) — Kobo R4+: A18 relevant = (...) and (A6=1|2|3 or A16=3 or
-        # A16=99). Without this, ~68 legitimate A16=3|99 respondents were falsely
-        # flagged as skip violations.
-        if r >= 4 and 'a16' in sub.columns:
-            eligible = eligible | n(sub['a16']).isin([3,99])
+        # Firm QC Tracker 20260701: A18 is NOT gated on A6 alone. R2-R3 route through
+        # the employment block with NO class-of-worker filter (so any employed reply is
+        # valid); R4+ add A16=3|99 and A8=2|99. Our old R4+-only A16 path still
+        # false-flagged the R2 cases (all A1=1, A16=3). Widened to the firm's routing.
+        if r in (2, 3):
+            eligible = employed
+        else:
+            eligible = a6_v.isin([1,2,3])
+            if 'a16' in sub.columns: eligible = eligible | n(sub['a16']).isin([3,99])
+            if 'a8'  in sub.columns: eligible = eligible | n(sub['a8']).isin([2,99])
         filled_18 = a18_v.notna()
         violations = employed & ~eligible & filled_18
         total_gate = int((employed & ~eligible).sum())
@@ -914,7 +939,7 @@ if 'a18' in m04.columns and 'a6' in m04.columns:
     skip_issues.append({
         'module':'M04','rule':'A1=1, not eligible for A18 (A6∉{1,2,3}; R4+ also A16∉{3,99}) but A18 (pension) is filled',
         'variable':'A18 should be empty when not asked','counts_by_round':c18,'pct_by_round':p18,'severity':'medium',
-        'note':'Kobo R2+: A18 relevant=${A1}=1 and (${A6}=1|2|3); R4+ also or ${A16}=3 or ${A16}=99. R1 skipped (may lack filter).'
+        'note':'Corrected per Firm QC Tracker 20260701: R2-R3 employment-block route (no class gate); R4+ add A16=3|99, A8=2|99. R1 skipped.'
     })
 
 # ── A19 skip (R2+): benefits only for wage/salary workers ──
@@ -934,7 +959,15 @@ if 'a6' in m04.columns:
                 c19[r]=None; p19[r]=None; continue
             a1_v = n(sub['a1']); a6_v = n(sub['a6'])
             employed = a1_v == 1
-            not_wage = ~a6_v.isin([1,2,3])
+            # Firm QC Tracker 20260701: same fuller routing as A18 (R2-R3 no class-of-worker
+            # gate; R4+ add A16=3|99 and A8=2|99). Widened so legitimate replies aren't flagged.
+            if r in (2, 3):
+                not_wage = pd.Series(False, index=sub.index)
+            else:
+                elig19 = a6_v.isin([1,2,3])
+                if 'a16' in sub.columns: elig19 = elig19 | n(sub['a16']).isin([3,99])
+                if 'a8'  in sub.columns: elig19 = elig19 | n(sub['a8']).isin([2,99])
+                not_wage = ~elig19
             # Check if any a19 value is filled
             filled_19 = pd.Series(False, index=sub.index)
             if has_a19_base:
@@ -949,7 +982,7 @@ if 'a6' in m04.columns:
         skip_issues.append({
             'module':'M04','rule':'A1=1, A6≠1|2|3 (not wage worker) but A19 (benefits) is filled',
             'variable':'A6∉{1,2,3} → A19 should be empty','counts_by_round':c19,'pct_by_round':p19,'severity':'medium',
-            'note':'Kobo R2+: A19 relevant=${A1}=1 and (${A6}=1 or ${A6}=2 or ${A6}=3). R1 skipped (may lack filter).'
+            'note':'Corrected per Firm QC Tracker 20260701: R2-R3 employment-block route (no class gate); R4+ add A16=3|99, A8=2|99. R1 skipped.'
         })
 
 # ── A10 OOR (days worked per week) ──

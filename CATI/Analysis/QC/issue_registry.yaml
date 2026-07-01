@@ -1,33 +1,34 @@
 M01/d26_2/d5a-2-and-d25-1-2-moved-away-but-d26-destination-is-missing:
-  notes: D26 (migration destination) is missing where D5a=2 (member moved) and D25 in {1,2} (moved away).
-    Affects R1, R3, R7. Please capture/recover the destination for these movers, or confirm it was legitimately
-    not asked in those rounds.
-  report_to_firm: true
-  status: resolved
   date_closed: '20260701'
   firm_response: d26_2/d26_3 are legitimately blank when d26_1 (country) is not the Philippines; d25=96
     cases carry the verbatim in d25_other (member_leftreason_other); the flagged D5A cases are not permanent
     members (D5A!=1). Roster fixes done. (Firm QC Tracker 20260701)
-  resolution: 'False alarm: skip logic. Firm fixes already in the 2026-06-29 cleaned base.'
+  notes: D26 (migration destination) is missing where D5a=2 (member moved) and D25 in {1,2} (moved away).
+    Affects R1, R3, R7. Please capture/recover the destination for these movers, or confirm it was legitimately
+    not asked in those rounds.
+  report_to_firm: true
+  resolution: 'False alarm: firm skip logic (D26_2/3 required only for domestic moves, country_moved=Philippines).
+    QC rule widened; flag now 0. (build_dq 20260701)'
+  status: resolved
 M04/a18/a1-1-not-eligible-for-a18-a6-1-2-3-r4-also-a16-3-99-but-a18-:
+  date_closed: '20260701'
+  firm_response: 'Data meets the routing condition: A18 is reached via A1/A24/A26/A27 and (R4+) A16 in
+    {3,99} / A8 in {2,99} paths, not only A6 in {1,2,3}. (Firm QC Tracker 20260701)'
   notes: A18 (pension contributions) is filled for respondents who are A1=1 but NOT eligible (A6 not in
     {1,2,3}; R4+ also A16 not in {3,99}) — i.e. not a wage/salary worker. Stata-verified as genuine (esp.
     R2). Please check whether A18 was asked/entered in error, or whether A6/A16 (class-of-worker / contract
     type) is miscoded for these cases, and correct at source.
   report_to_firm: true
-  status: resolved
-  date_closed: '20260701'
-  firm_response: 'Data meets the routing condition: A18 is reached via A1/A24/A26/A27 and (R4+) A16 in
-    {3,99} / A8 in {2,99} paths, not only A6 in {1,2,3}. (Firm QC Tracker 20260701)'
   resolution: 'False alarm: our QC gate (A6 in {1,2,3}) was narrower than the actual routing. Re-checked
     the 3 R2 cases: all A1=1 and A16=3, two have A26=1, so they legitimately reach A18. ACTION: widen
     the QC a18 eligibility rule to the full routing.'
-M04/a19/a1-1-a6-1-2-3-not-wage-worker-but-a19-benefits-is-filled:
-  notes: A19 (employment benefits) is filled when A1=1 but A6 not in {1,2,3} (not a wage worker). Same
-    pattern as A18 — verify A19 was wrongly captured or A6 miscoded for these respondents.
-  report_to_firm: true
   status: resolved
+M04/a19/a1-1-a6-1-2-3-not-wage-worker-but-a19-benefits-is-filled:
   date_closed: '20260701'
   firm_response: Data meets the routing condition (already flagged in a previous QC dashboard; same fuller
     routing as A18). (Firm QC Tracker 20260701)
+  notes: A19 (employment benefits) is filled when A1=1 but A6 not in {1,2,3} (not a wage worker). Same
+    pattern as A18 — verify A19 was wrongly captured or A6 miscoded for these respondents.
+  report_to_firm: true
   resolution: 'False alarm: same as A18 (QC gate too narrow). ACTION: widen the QC a19 eligibility rule.'
+  status: resolved
