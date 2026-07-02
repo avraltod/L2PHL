@@ -32,3 +32,10 @@ M04/a19/a1-1-a6-1-2-3-not-wage-worker-but-a19-benefits-is-filled:
   report_to_firm: true
   resolution: 'False alarm: same as A18 (QC gate too narrow). ACTION: widen the QC a19 eligibility rule.'
   status: resolved
+M04/a10/a1-2-not-working-but-a10-a11-days-hours-are-filled:
+  notes: A10/A11 (days & hours worked) are filled for 50 respondents who report not working (A1=2) with
+    NO working path (A24/A26/A27 all != 1). Concentrated ENTIRELY in R1 (0 in R2-R8, where the employment-block
+    routing fully explains the data). Please check whether R1's A10/A11 were carried over from a prior
+    status or A1 is miscoded for these cases, and clear/correct at source.
+  report_to_firm: true
+  status: acknowledged
