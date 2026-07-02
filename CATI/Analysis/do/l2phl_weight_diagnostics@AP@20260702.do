@@ -26,10 +26,7 @@
 	cap mkdir "$out"
 	glo xlsx "$out/weight_diagnostics_results.xlsx"
 
-	qui foreach prog in putexcel {
-		cap which `prog'
-		if _rc ssc install `prog', replace all
-	}
+	* (no external ssc deps -- putexcel/export excel are Stata built-ins)
 
 **# Reusable diagnostic program
 cap program drop wdiag
@@ -208,7 +205,10 @@ end
 		replace urban = 2 - urban   // 1->1 (urban), 2->0 (rural)
 	}
 
-	// FIXED baseline income quintile: one row per hhid, xtile, merge back
+	// FIXED baseline income quintile: one row per hhid, xtile, merge back.
+	// pcinc_imp_mean is the baseline panel per-capita income (constant per
+	// hhid across rounds), so taking the first observed round is intentional
+	// and quintile membership is fixed across the panel.
 	preserve
 		bys hhid (round): keep if _n==1
 		xtile incq = pcinc_imp_mean [pweight=hhw], nq(5)
