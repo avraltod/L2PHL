@@ -7,7 +7,7 @@ reviewer or management queries about methodology.
 **Date:** March 2026
 **Authors:** L2Phl analysis team
 
-> **See also:** `CAPI/Analysis/SL/doc/L2PHL_WEIGHTING_TECHNICAL_NOTE.docx` — the combined
+> **See also:** `CAPI/Analysis/SL/tex/L2PHL_WEIGHTING_TECHNICAL_NOTE.tex` (LaTeX, compiles to PDF) — the combined
 > CAPI + CATI weighting technical note (sampling design, weight construction, performance
 > diagnostics, and usage guidance). That note is the authoritative methodology reference
 > for both modes; this file remains the module-by-module weight-assignment rationale.

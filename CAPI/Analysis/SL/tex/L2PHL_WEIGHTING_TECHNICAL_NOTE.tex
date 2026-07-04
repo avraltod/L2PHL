@@ -63,6 +63,14 @@ closes with usage guidance and the corresponding survey-estimation commands.
 
 \maketitle
 
+% WB Official-Use note, not an AEJ issue: strip the journal name, volume/number,
+% and month/year from the running heads. Set directly after \maketitle so the
+% class's own \pagestyle{headings} (invoked inside \maketitle) cannot overwrite it.
+\makeatletter
+\def\@oddhead{{\small\textit{\hfil\@shortTitle\hfil}}\quad\thepage}
+\def\@evenhead{\thepage\quad{\small\textit{\hfil\@shortTitle\hfil}}}
+\makeatother
+
 % =============================================================================
 \section{Overview and Purpose}
 % =============================================================================
