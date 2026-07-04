@@ -1,0 +1,537 @@
+% =============================================================================
+% L2PHL_WEIGHTING_TECHNICAL_NOTE.tex
+% Project: L2Phl (Listening to the Philippines) - survey weighting technical note
+% Author:  Avralt-Od Purevjav
+% Style:   AEJ (AEA document class); house tables via avtables.sty (UKR/FIES practice)
+% Compile: tectonic L2PHL_WEIGHTING_TECHNICAL_NOTE.tex
+%          (or: pdflatex + bibtex 3-pass). Table fragments in tab/ are written by
+%          make_tex_tables.py from the Stata diagnostics workbook.
+% =============================================================================
+
+\documentclass[AEJ]{AEA}
+
+\usepackage{natbib}
+\draftSpacing{1.5}
+
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{avtables}   % house style: booktabs, dcolumn, threeparttable, \sym, \notesize
+\usepackage{tabularx}
+\newcolumntype{Y}[1]{>{\raggedright\arraybackslash\hsize=#1\hsize}X}
+\usepackage{microtype}
+\emergencystretch=2em
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+\makeatletter
+\renewcommand{\fnum@table}{\tablename\nobreakspace\thetable}
+\renewcommand{\fnum@figure}{\figurename\nobreakspace\thefigure}
+\makeatother
+
+\begin{document}
+
+\title{Survey Weighting for Listening to the Philippines:
+Construction, Performance, and Use}
+\shortTitle{L2Phl Survey Weighting}
+\author{Avralt-Od Purevjav\thanks{%
+Purevjav: World Bank, Poverty and Equity Global Practice, East Asia and Pacific;
+apurevjav@worldbank.org. This note documents the survey weights for the
+\textit{Listening to the Philippines} (L2Phl) 2025 baseline and its CATI phone
+panel. All diagnostic figures are produced by a self-checking Stata do-file; the
+tables are generated from its output. Official Use Only.%
+}}
+\date{\today}
+\pubMonth{July}
+\pubYear{2026}
+\pubVolume{}
+\pubIssue{}
+
+\begin{abstract}
+This note documents how the L2Phl survey weights are constructed, how they
+perform, and which weight to apply to each indicator. It covers both data
+collection modes: the CAPI face-to-face baseline of September--October 2025, for
+which the weights are built once and frozen, and the CATI phone panel, for which
+the weights are re-calibrated against census margins each round. The note states
+the sampling design and the weighting arithmetic, reports weight dispersion, the
+design effect from weighting, effective sample sizes, and reconciliation to
+census totals, analyses panel attrition and its effect on representativeness, and
+closes with usage guidance and the corresponding survey-estimation commands.
+\end{abstract}
+
+\maketitle
+
+% =============================================================================
+\section{Overview and Purpose}
+% =============================================================================
+
+This note documents how the L2Phl survey weights are constructed, how they
+perform, and which weight to apply to each indicator. It covers both data
+collection modes: the CAPI face-to-face baseline of September--October 2025, for
+which the weights are built once and frozen, and the CATI phone panel, for which
+the weights are re-calibrated each round against census margins.
+
+The intended readers are the fieldwork firm, who carry the weighting into
+production, and World Bank colleagues, who use the weighted estimates in analysis
+and reporting. The note states the design and the arithmetic plainly, so that any
+weighted figure can be traced back to its construction and reproduced.
+
+The survey delivers three analytical weights, and each answers a different
+question about the same data (Table~\ref{tab:threeweights}). The population weight
+$\mathrm{popw}$ is the World Bank convention for welfare and SDG reporting,
+because larger households, which are often poorer, carry weight in proportion to
+the people who live in them.
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{The three analytical weights}
+\label{tab:threeweights}
+\begin{tabularx}{\textwidth}{@{}Y{0.6} Y{1.0} Y{1.4}@{}}
+\toprule
+Weight & Unit of analysis & Reads as \\
+\midrule
+$\mathrm{indw}$ & Individual (person) & ``X.X\% of individuals\ldots'' or a per-person mean \\
+$\mathrm{hhw}$  & Household & ``X.X\% of households\ldots'' or a per-household mean \\
+$\mathrm{popw}$ & Population (via household) & ``X.X\% of Filipinos live in households where\ldots'' \\
+\bottomrule
+\end{tabularx}
+\end{threeparttable}
+\end{table}
+
+% =============================================================================
+\section{CAPI Baseline Sampling Design}
+% =============================================================================
+
+The baseline uses a two-stage stratified cluster design. Strata are defined by
+region crossed with urban/rural residence, so most regions contribute an urban
+and a rural stratum. Five special geographic areas enter as a single stratum
+each, so the design comprises 39 strata in total.
+
+At the first stage, primary sampling units---barangays or enumeration
+areas---are drawn with probability proportional to size (PPS), where the measure
+of size is the 2020 census population of the unit. The frame is the 2020 census
+PSU list with official population counts, PSGC identifiers, and urban/rural flags;
+units missing a population count or a residence status are excluded, and stratum
+totals are computed from the frame. In total, 247 PSUs are selected across strata.
+
+At the second stage, field teams select a fixed number of households per
+PSU---ten completed interviews---using a random-walk protocol, with no advance
+listing of households. Interviewers start from a random point and follow a fixed
+route and skip rule; when an address is ineligible or does not respond, the team
+continues under the same rule until ten completed households are reached. This
+approximates equal-probability selection of households within the PSU, and any
+small departures are absorbed by the measure-of-size correction and
+post-stratification described below.
+
+% =============================================================================
+\section{CAPI Weight Construction}
+% =============================================================================
+
+The base household weight is the inverse of the joint probability that a
+household is selected. Within a stratum $s$, the first-stage probability that PSU
+$p$ enters the sample is the standard PPS inclusion probability, and at the second
+stage households are selected with equal probability inside the PSU:
+%
+\begin{equation}
+\pi^{1}_{sp} = \frac{n_s\,\mathrm{POP}_{sp}}{\mathrm{POP}_s},
+\qquad
+\pi^{2}_{sp} = \frac{m_{sp}}{\mathrm{HH}_{sp}},
+\end{equation}
+%
+where $n_s$ is the number of sampled PSUs in stratum $s$, $\mathrm{POP}_{sp}$ and
+$\mathrm{HH}_{sp}$ the population and household count of PSU $p$, $\mathrm{POP}_s$
+the stratum population, and $m_{sp}=10$ the completed interviews per PSU. The
+joint inclusion probability is the product, and the base household weight is its
+inverse:
+%
+\begin{equation}
+\pi_{sph} = \pi^{1}_{sp}\,\pi^{2}_{sp}
+= \frac{n_s\, m_{sp}}{\mathrm{POP}_s}\,\overline{hs}_{sp},
+\qquad
+w^{\mathrm{base}}_{sph} = \frac{1}{\pi_{sph}}
+= \frac{\mathrm{POP}_s}{n_s\, m_{sp}\,\overline{hs}_{sp}},
+\end{equation}
+%
+with $\overline{hs}_{sp}=\mathrm{POP}_{sp}/\mathrm{HH}_{sp}$ the average household
+size of PSU $p$. Within a PSU all sampled households share the same base weight.
+
+Because the first stage uses population rather than the number of households as
+the measure of size, the base design carries a small mismatch, and the correction
+for it is exact. Multiplying by the ratio of the PSU's average household size to
+the stratum's average household size converts the PPS-by-population weight to the
+weight a PPS-by-households design would have produced:
+%
+\begin{equation}
+w^{\mathrm{adj}}_{sph}
+= w^{\mathrm{base}}_{sph}\,\frac{\overline{hs}_{sp}}{\overline{hs}_{s}}
+= \frac{\mathrm{HH}_s}{n_s\, m_{sp}},
+\qquad
+\overline{hs}_{s}=\frac{\mathrm{POP}_s}{\mathrm{HH}_s}.
+\end{equation}
+%
+A PSU with larger-than-average households is scaled up, because PPS-by-population
+under-represents it in household terms, while a PSU with smaller households is
+scaled down. Each stratum is then aligned to its official census household total
+by a single ratio, so that the sum of household weights in every stratum equals
+the census count while within-PSU constancy is preserved:
+%
+\begin{equation}
+\mathrm{hhw}_{sph}
+= w^{\mathrm{adj}}_{sph}\,
+\frac{\mathrm{HH}^{\mathrm{cen}}_s}{\sum_{p,h} w^{\mathrm{adj}}_{sph}}.
+\end{equation}
+
+Because every member of a sampled household is in scope, each person initially
+carries the household weight. Ratio calibration is then applied on the person file,
+cell by cell, so that the weighted count in each age-sex cell $c$ within a stratum
+equals its census total; the population weight is the within-household sum of
+person weights:
+%
+\begin{equation}
+\mathrm{indw}_i
+= \mathrm{hhw}_{sph}\,
+\frac{\mathrm{POP}^{\mathrm{cen}}_{s,c}}{\sum_{i\in(s,c)}\mathrm{hhw}_{sph}},
+\qquad
+\mathrm{popw}_h = \sum_{i\in h}\mathrm{indw}_i.
+\end{equation}
+%
+These steps produce the three outputs. The individual weight $\mathrm{indw}$ is
+the age-sex-calibrated person weight; the household weight $\mathrm{hhw}$ is
+carried one per household; and the population weight $\mathrm{popw}$ is the
+within-household sum of person weights, so that a household-level indicator
+weighted by $\mathrm{popw}$ reports the number of people rather than the number of
+households. By construction, a person indicator weighted by $\mathrm{indw}$ and a
+household indicator weighted by $\mathrm{popw}$ give consistent population totals.
+
+% =============================================================================
+\section{CATI Panel Re-weighting}
+% =============================================================================
+
+Every CATI round is re-weighted from the frozen CAPI baseline weights rather than
+from scratch. The baseline individual weight is the starting point each round, and
+the re-weighting re-anchors it to census margins for that round's achieved sample.
+The individual weight is rescaled cell by cell so that each census
+age-by-sex-by-stratum cell $c$ sums to its census population for round $r$; the
+population weight is the within-household sum and the household weight the
+within-household mean:
+%
+\begin{align}
+\mathrm{indw}_{i,r}
+&= w^{\mathrm{base}}_i\,
+\frac{N^{\mathrm{cen}}_{c}}{\sum_{j\in c,\,r} w^{\mathrm{base}}_j},
+\\[2pt]
+\mathrm{popw}_{h,r} = \sum_{i\in h}\mathrm{indw}_{i,r},
+\qquad
+&\tilde{h}_{h,r} = \frac{1}{n_h}\sum_{i\in h}\mathrm{indw}_{i,r}
+= \frac{\mathrm{popw}_{h,r}}{n_h}.
+\end{align}
+%
+The household weight is then smoothed to the PSU average to damp variation and
+finally rescaled so that each stratum $s$ matches its census household total:
+%
+\begin{equation}
+\bar{h}_{h,r} = \frac{1}{|P(h)|}\sum_{h'\in P(h)}\tilde{h}_{h',r},
+\qquad
+\mathrm{hhw}_{h,r} = \bar{h}_{h,r}\,
+\frac{H^{\mathrm{cen}}_{s}}{\sum_{h'\in s}\bar{h}_{h',r}},
+\end{equation}
+%
+where $w^{\mathrm{base}}_i$ is the frozen baseline individual weight,
+$N^{\mathrm{cen}}_{c}$ the census population of cell $c$, $n_h$ the size of
+household $h$, $P(h)$ its PSU, and $H^{\mathrm{cen}}_{s}$ the census household count
+of stratum $s$. Age is grouped into 0--17, 18--45, and 46 and older, crossed with
+sex and stratum. Re-anchoring to census margins each round is what absorbs panel
+attrition and non-response: a round with fewer completed interviews in a cell
+simply carries larger weights there, and each round remains nationally
+representative on the age, sex, and geographic margins.
+
+% =============================================================================
+\section{Weight Performance and Diagnostics}
+% =============================================================================
+
+This section reports how the weights behave. For the CAPI baseline and for each
+CATI round it documents weight dispersion, the design effect from weighting
+($\mathrm{DEFF}_w = 1 + \mathrm{CV}^2$, where CV is the coefficient of variation of
+the weights), the effective sample size ($\mathrm{ESS} = N / \mathrm{DEFF}_w$,
+cross-checked against Kish's effective sample size), and the reconciliation of
+weighted totals to census benchmarks.
+
+Table~\ref{tab:capidist} reports the CAPI baseline. The household weight is the
+most efficient, with a design effect near $1.07$ and an effective sample close to
+its nominal size; the population weight, which spreads across household sizes, is
+the least. All 39 strata reconcile to their census population and household totals:
+the largest absolute residual is $6.3\times 10^{-8}$ for the population total and
+$2.3\times 10^{-9}$ for the household total, so the weighted totals match the
+census benchmarks to within rounding. Calibration slightly raises dispersion
+relative to the design weights (Table~\ref{tab:caleffect}).
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{CAPI baseline: weight distribution and design effect}
+\label{tab:capidist}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}l r r r r r r r r r r@{}}
+\toprule
+Weight & $N$ & Mean & Median & Min & Max & CV & Max/min & $\mathrm{DEFF}_w$ & ESS & Kish ESS \\
+\midrule
+\input{tab/capi_dist}\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\notesize
+\item \textit{Notes:} $\mathrm{DEFF}_w = 1+\mathrm{CV}^2$; $\mathrm{ESS}=N/\mathrm{DEFF}_w$.
+$\mathrm{indw}$ over all persons; $\mathrm{popw}$ and $\mathrm{hhw}$ over households.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{CAPI baseline: effect of calibration (design vs.\ final weights)}
+\label{tab:caleffect}
+\footnotesize
+\begin{tabular}{@{}l l r r r@{}}
+\toprule
+Weight & Stage & CV & $\mathrm{DEFF}_w$ & ESS \\
+\midrule
+\input{tab/capi_caleffect}\\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+\end{table}
+
+Table~\ref{tab:catiindw} and Table~\ref{tab:catihhw} report the CATI panel by
+round. The design effect stays stable across the eight rounds, near $1.1$--$1.2$
+for the household weight, so the per-round re-calibration does not inflate weight
+variation as the panel rolls forward.
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{CATI panel: individual weight by round}
+\label{tab:catiindw}
+\footnotesize
+\begin{tabular}{@{}c r r r r r r@{}}
+\toprule
+Round & $N$ & CV & $\mathrm{DEFF}_w$ & ESS & Kish ESS & $\sum \mathrm{indw}$ \\
+\midrule
+\input{tab/cati_indw}\\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{CATI panel: household and population weight by round}
+\label{tab:catihhw}
+\footnotesize
+\begin{tabular}{@{}c r r r r r r@{}}
+\toprule
+Round & $N_{hh}$ & $\mathrm{CV}_{hhw}$ & $\mathrm{DEFF}_{hhw}$ & $\mathrm{ESS}_{hhw}$ & $\mathrm{CV}_{popw}$ & $\mathrm{ESS}_{popw}$ \\
+\midrule
+\input{tab/cati_hhw}\\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{CATI panel: weighted composition by round}
+\label{tab:caticomp}
+\footnotesize
+\begin{tabular}{@{}c r r r r@{}}
+\toprule
+Round & $N_{hh}$ & Urban share & $Q1$ share & $Q5$ share \\
+\midrule
+\input{tab/cati_attrition}\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\notesize
+\item \textit{Notes:} Urban is a calibration margin, so its weighted share is
+held fixed by construction. $Q1$/$Q5$ are the bottom and top income quintiles.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+% =============================================================================
+\section{Panel Attrition and Representativeness}
+% =============================================================================
+
+The CATI panel is not a closed cohort. Of the 1{,}239 households reached in Round
+1, 705 (56.9 percent) are still interviewed in Round 8, while 534 have left; each
+round also brings households first reached later, 410 of them by Round 8
+(Table~\ref{tab:retention}). Because the weights re-anchor the achieved sample to
+census margins every round, attrition on the calibrated dimensions---age, sex,
+stratum, and the household total---is corrected by construction. The open question
+is whether the households that leave differ systematically from those that stay on
+characteristics the calibration does not target.
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{Retention by round}
+\label{tab:retention}
+\footnotesize
+\begin{tabular}{@{}c r r r r@{}}
+\toprule
+Round & Present & From R1 cohort & \% R1 retained & New since R1 \\
+\midrule
+\input{tab/attr_retention}\\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+\end{table}
+
+To test for selection, households present in Round 1 are split into those retained
+through Round 8 and those that left, and compared on their Round-1 characteristics
+(Table~\ref{tab:attrbias}). On the characteristics that matter most for welfare
+measurement the two groups are statistically indistinguishable: income quintile,
+food insecurity, the head's sex, urban residence, and geographic composition show
+no significant stayer-leaver difference (all $p>0.05$). The one significant
+difference is household size: retained households are larger by about a third of a
+member ($4.48$ against $4.15$, $p=0.005$). Because household size enters the
+age-sex calibration indirectly, since larger households contribute more
+person-cells, this residual is partly absorbed by the person-weight step. Baseline
+employment is not tested here, because the phone panel's employment module has
+thin Round-1 coverage.
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{Attrition: stayers versus leavers (Round-1 characteristics)}
+\label{tab:attrbias}
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}l r r r c r r c l@{}}
+\toprule
+Characteristic & Stayer & Leaver & Diff. & Test & Stat. & $p$ & Sig. & Verdict \\
+\midrule
+\input{tab/attr_bias}\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\notesize
+\item \textit{Notes:} Percentages except household size and income quintile
+(means). Geographic composition is tested across the 39 strata (region proxy).
+Significance: *** $p<0.01$, ** $p<0.05$, * $p<0.10$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+A formal joint test therefore flags the panel as biased, but the selection is
+confined to household size and is modest; on income and food security, the
+dimensions the reweighting does not calibrate to, the households that remain are
+not a selected subset. A direct check on the headline food-security series supports
+this. Re-estimating the moderate-or-severe rate on the balanced panel, households
+present in all eight rounds, tracks the full-sample series closely (Round 1, $42.4$
+against $41.0$ percent; Round 8, $20.4$ against $20.8$), so the recovery in food
+security is a within-household improvement rather than an artefact of who leaves
+the panel.
+
+% =============================================================================
+\section{Usage Guidance: Which Weight, When}
+% =============================================================================
+
+The weight to apply follows from the unit of analysis and the framing of the
+indicator. Estimates should carry design-based standard errors, so the survey
+design is declared once and the \texttt{svy:} prefix is used throughout:
+%
+\begin{quote}\ttfamily
+svyset psu [pweight=hhw], strata(stratum)\\
+svyset psu [pweight=indw], strata(stratum)
+\end{quote}
+%
+for household-level and person-level estimates respectively. Population-framed
+welfare indicators use \texttt{[pweight=popw]} on the household file. The weight
+mapping for the CAPI modules (Table~\ref{tab:usecapi}) and the CATI modules
+(Table~\ref{tab:usecati}) follows the unit of analysis and, for welfare framings,
+the population weight.
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{CAPI modules: which weight}
+\label{tab:usecapi}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}Y{0.7} Y{0.7} Y{1.6}@{}}
+\toprule
+Module & Weight & Basis \\
+\midrule
+M01 Roster & indw & individual characteristics \\
+M02 Education & indw & individual attendance/attainment/spend \\
+M03 Employment & indw & individual labour-market outcomes \\
+M04 Income & indw / hhw / popw & earnings = indw; HH transfers = hhw; welfare coverage (pension, 4Ps) = popw \\
+M05 Finance & hhw (popw for emergency capacity) & HH financial decisions; vulnerability framed per population \\
+M06 Migration & hhw / indw & HH intent = hhw; individual displacement = indw \\
+M07 Health & indw (popw for hospital bill) & individual care-seeking/coverage; HH expense per population \\
+M08 Food & hhw / indw & HH sourcing = hhw; individual SSB consumption = indw \\
+M09 Hazards & popw & share of affected population warned/assisted \\
+M10 Dwelling & popw & housing conditions (people) \\
+M11 Sanitation & popw (hhw for waste behaviour) & SDG-6 people with improved sanitation \\
+M12 Utilities & popw & SDG-6/7 people with electricity/water/internet \\
+M13 Assets & hhw (popw for cooking fuel) & HH asset stock; clean-cooking exposure per population \\
+M14 Views & hhw & HH head's subjective assessment \\
+\bottomrule
+\end{tabularx}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[!t]
+\raggedright
+\begin{threeparttable}
+\caption{CATI modules: which weight}
+\label{tab:usecati}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}Y{0.7} Y{0.7} Y{1.6}@{}}
+\toprule
+Module & Weight & Basis \\
+\midrule
+M00 Passport & --- & identifiers/metadata, not analysed \\
+M01 Roster & indw & individual characteristics \\
+M02 Education & indw & individual attendance \\
+M03 Shocks & hhw & household exposure \\
+M04 Employment & indw & individual labour-market outcomes \\
+M05 Income & hhw (indw for individual earnings) & household transfers; individual earnings \\
+M06 Finance & hhw & household financial decisions \\
+M07 Health & indw & individual care-seeking/coverage \\
+M08 Food (FIES) & hhw & household food security \\
+M09 Views & hhw & HH respondent's assessment \\
+\bottomrule
+\end{tabularx}
+\end{threeparttable}
+\end{table}
+
+% =============================================================================
+\section{Limitations and Caveats}
+% =============================================================================
+
+The two modes do not always measure the same thing. The CAPI baseline records
+financial usage---money received into or paid out of a bank or mobile-money
+account---while the CATI panel records account ownership. Ownership exceeds recent
+usage, so the two figures are not comparable, and a rise from the baseline usage
+figure to a panel ownership figure is a definitional artefact rather than adoption.
+The valid comparison is within the panel, round to round.
+
+Attitudinal items shift with the mode. Life satisfaction and similar subjective
+measures run lower on the phone panel than face-to-face. The story is in the panel
+band across rounds, because the gap between the CAPI level and the CATI level is a
+mode difference rather than a change in welfare.
+
+Small subgroup cells should be read with caution. Cells below about 30
+observations are thin, and in the CATI panel some modules run only in selected
+rounds, which thins the base further. Disaggregated estimates in those cells carry
+wide sampling error.
+
+Headline estimates should report design-based standard errors under the
+\texttt{svy:} prefix and cite the effective sample size, so that the precision
+behind each figure is transparent.
+
+\end{document}
