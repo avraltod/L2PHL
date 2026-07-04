@@ -242,4 +242,207 @@ end
 	}
 	di as res "cati_attrition written."
 
+**# Table 7: attr_retention -- panel retention by round (R1 cohort)
+	use "$hf/l2phl_cati_household.dta", clear
+
+	// R1 cohort = set of hhids present at round 1
+	preserve
+		keep if round==1
+		keep hhid
+		duplicates drop
+		gen byte in_r1 = 1
+		tempfile r1set
+		save "`r1set'"
+	restore
+	merge m:1 hhid using "`r1set'", keep(master match) nogen
+	replace in_r1 = 0 if missing(in_r1)
+
+	qui count if round==1
+	scalar _n_r1 = r(N)          // 1239 baseline denominator
+
+	putexcel set "$xlsx", sheet("attr_retention") modify
+	putexcel A1="round" B1="n_present" C1="n_r1cohort_present" ///
+			 D1="pct_r1_retained" E1="n_new_since_r1"
+
+	loc row = 2
+	forval rd = 1/8 {
+		qui count if round==`rd'
+		loc np = r(N)
+		qui count if round==`rd' & in_r1==1
+		loc nr1 = r(N)
+		loc pct = 100*`nr1'/_n_r1
+		loc nnew = `np' - `nr1'
+		putexcel A`row'=`rd' B`row'=`np' C`row'=`nr1' ///
+				 D`row'=`pct' E`row'=`nnew'
+		loc ++row
+	}
+	di as res "attr_retention written."
+
+**# Table 8: attr_bias -- stayers vs attriters, R1 baseline characteristics
+	// stayer = R1-cohort HH also present at R8; attriter = R1 HH not in R8.
+	// All characteristics measured at R1.
+
+	// significance/verdict helper
+	cap program drop _sigv
+	program define _sigv
+		args p
+		loc sig "ns"
+		if `p'<.10 loc sig "*"
+		if `p'<.05 loc sig "**"
+		if `p'<.01 loc sig "***"
+		c_local sig  "`sig'"
+		c_local verd = cond(`p'<.05,"differs","similar")
+	end
+
+	// R8 set (stayer membership)
+	use "$hf/l2phl_cati_household.dta", clear
+	keep if round==8
+	keep hhid
+	duplicates drop
+	gen byte in_r8 = 1
+	tempfile r8set
+	save "`r8set'"
+
+	// head sex at R1 (roster fmid==1; gender 1=male, 2=female)
+	use "$hf/l2phl_M01_roster.dta", clear
+	keep if fmid==1 & round==1
+	gen byte head_female = (gender==2) if !missing(gender)
+	keep hhid head_female
+	tempfile hf1
+	save "`hf1'"
+
+	// employment at R1: HH-level "any working respondent" (isfmid==1, a1==1).
+	// isfmid==1 is multi-row per HH, so aggregate to a per-HH binary; defined
+	// only for HHs with >=1 non-missing a1.
+	use "$hf/l2phl_M04_employment.dta", clear
+	keep if isfmid==1 & round==1
+	gen byte _wk = (a1==1) if !missing(a1)
+	collapse (max) emp_any=_wk (count) n_a1=_wk, by(hhid)
+	replace emp_any = . if n_a1==0
+	keep hhid emp_any
+	tempfile emp1
+	save "`emp1'"
+
+	// R1 HH analysis file
+	use "$hf/l2phl_cati_household.dta", clear
+	keep if round==1
+	isid hhid
+
+	// urban recode to 0/1 (rural=0, urban=1) if coded 1/2
+	qui summ urban
+	if r(min)==1 & r(max)==2 	replace urban = 2 - urban
+
+	// FIES moderate-or-severe at R1: count of affirmative (==1) among f08_a-e
+	gen byte fies_score  = (f08_a==1)+(f08_b==1)+(f08_c==1)+(f08_d==1)+(f08_e==1)
+	gen byte fies_modsev = (fies_score>=3)
+
+	// fixed baseline income quintile (pcinc_imp_mean constant per hhid)
+	xtile incq = pcinc_imp_mean [pweight=hhw], nq(5)
+
+	// stayer flag
+	merge m:1 hhid using "`r8set'", keep(master match) nogen
+	replace in_r8 = 0 if missing(in_r8)
+	gen byte stayer = in_r8
+
+	// merge head sex + employment
+	merge 1:1 hhid using "`hf1'",  keep(master match) nogen
+	merge 1:1 hhid using "`emp1'", keep(master match) nogen
+
+	qui count if stayer==1
+	di as txt "stayers (R1&R8) = " r(N)
+	qui count if stayer==0
+	di as txt "attriters (R1 only) = " r(N)
+
+	putexcel set "$xlsx", sheet("attr_bias") modify
+	putexcel A1="characteristic" B1="stayer" C1="attriter" D1="difference" ///
+			 E1="test" F1="stat" G1="p_value" H1="sig" I1="verdict"
+
+	loc row = 2
+	loc anydiff = 0
+
+	// ---- binary characteristics: % in each group, chi2 test ----
+	// name  variable
+	foreach pair in "urban urban" "head_female head_female" ///
+					"employed emp_any" "fies_modsev fies_modsev" {
+		gettoken cname pair : pair
+		gettoken cvar  pair : pair
+		cap {
+			qui summ `cvar' if stayer==1
+			loc s = r(mean)*100
+			qui summ `cvar' if stayer==0
+			loc a = r(mean)*100
+			loc d = `s' - `a'
+			qui tab `cvar' stayer, chi2
+			loc st = r(chi2)
+			loc p  = r(p)
+		}
+		if _rc | missing(`p') {
+			putexcel A`row'="`cname'" E`row'="chi2" I`row'="n/a"
+		}
+		else {
+			_sigv `p'
+			if `p'<.05 loc anydiff = 1
+			putexcel A`row'="`cname'" B`row'=`s' C`row'=`a' D`row'=`d' ///
+					 E`row'="chi2" F`row'=`st' G`row'=`p' H`row'="`sig'" ///
+					 I`row'="`verd'"
+		}
+		loc ++row
+	}
+
+	// ---- continuous characteristics: means, t-test ----
+	// name  variable
+	foreach pair in "hhsize hhsize" "inc_quintile incq" {
+		gettoken cname pair : pair
+		gettoken cvar  pair : pair
+		cap {
+			qui ttest `cvar', by(stayer)
+			loc a  = r(mu_1)          // stayer==0 (attriter)
+			loc s  = r(mu_2)          // stayer==1 (stayer)
+			loc d  = `s' - `a'
+			loc st = r(t)
+			loc p  = r(p)
+		}
+		if _rc | missing(`p') {
+			putexcel A`row'="`cname'" E`row'="ttest" I`row'="n/a"
+		}
+		else {
+			_sigv `p'
+			if `p'<.05 loc anydiff = 1
+			putexcel A`row'="`cname'" B`row'=`s' C`row'=`a' D`row'=`d' ///
+					 E`row'="ttest" F`row'=`st' G`row'=`p' H`row'="`sig'" ///
+					 I`row'="`verd'"
+		}
+		loc ++row
+	}
+
+	// ---- geographic composition: chi2 across strata ----
+	// region is ~99.5% missing in the CATI household file, so stratum (1-39,
+	// complete) -- which embeds region -- is used as the geographic composition
+	// variable. Cells hold the count of distinct strata per group.
+	cap {
+		qui tab stratum stayer, chi2
+		loc st = r(chi2)
+		loc p  = r(p)
+		qui levelsof stratum if stayer==1, local(_ls)
+		loc ns : word count `_ls'
+		qui levelsof stratum if stayer==0, local(_la)
+		loc na : word count `_la'
+	}
+	if _rc | missing(`p') {
+		putexcel A`row'="region(via stratum)" E`row'="chi2" I`row'="n/a"
+	}
+	else {
+		_sigv `p'
+		if `p'<.05 loc anydiff = 1
+		putexcel A`row'="region(via stratum)" B`row'="`ns' strata" ///
+				 C`row'="`na' strata" E`row'="chi2" F`row'=`st' ///
+				 G`row'=`p' H`row'="`sig'" I`row'="`verd'"
+	}
+	loc ++row
+
+	// ---- overall verdict ----
+	loc overall = cond(`anydiff'==1,"BIASED","OK")
+	putexcel A`row'="OVERALL" I`row'="`overall'"
+	di as res "attr_bias written (anydiff=`anydiff')."
+
 	di as res _n "ALL TABLES WRITTEN: $xlsx"
