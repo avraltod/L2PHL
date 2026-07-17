@@ -119,7 +119,8 @@ and re-run without ambiguity:
         \verb|YYYYMMDD| stamp, so the version used in a run is unambiguous.
   \item \textbf{\rd{@AP@} do-file naming, one live file per slot:} each logical
         role has exactly one live file, the latest-dated \verb|@AP@| version;
-        superseded files move to a local \rd{_attic/} folder.
+        superseded files move to a local \texttt{\_attic/} folder (for example
+        \rd{CAPI/Round00/do/_attic/}).
   \item \textbf{Three-stage flow:} raw $\rightarrow$ cleaned/weighted
         $\rightarrow$ analysis. Inputs only ever flow forward; a later stage
         never writes back to an earlier one.

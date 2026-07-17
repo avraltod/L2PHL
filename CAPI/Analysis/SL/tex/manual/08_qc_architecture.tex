@@ -25,25 +25,25 @@ data, drop in the round questionnaire and do-file, and re-run.
 
 \begin{procbox}{Full pipeline run}
 \begin{enumerate}
-  \item \textbf{Detect files:} scan \rd{Analysis/HF/} for pooled and per-round
+  \item \textbf{Detect files:} scan \rd{CATI/Analysis/HF/} for pooled and per-round
         \rd{.dta} masters, \rd{CATI/Questionnaire/} for questionnaire Excel
         files, and \rd{CATI/Round*/do/} for processing do-files.
   \item \textbf{Build DQ data (\rd{build_dq.py}):} run the data-quality checks
-        on the pooled masters and write \rd{cache/dq_data.json}.
+        on the pooled masters and write \rd{CATI/Analysis/QC/cache/dq_data.json}.
   \item \textbf{Build panel tracker (\rd{build_panel.py}):} compute per-round
-        household participation and attrition into \rd{cache/panel_data.json}.
+        household participation and attrition into \rd{CATI/Analysis/QC/cache/panel_data.json}.
   \item \textbf{Build interviewer performance (\rd{build_interviewer.py}):}
-        summarize operator performance into \rd{cache/interviewer_data.json}.
+        summarize operator performance into \rd{CATI/Analysis/QC/cache/interviewer_data.json}.
   \item \textbf{Parse questionnaires and Kobo skip logic (\rd{parse_kobo.py}):}
         extract the cross-round question tables and the Kobo relevant/skip
-        rules per variable into \rd{cache/kobo_skip_logic.json}.
+        rules per variable into \rd{CATI/Analysis/QC/cache/kobo_skip_logic.json}.
   \item \textbf{Build issue intelligence (\rd{build_issues.py}):} assemble the
-        tracked data-quality issues into \rd{cache/issues.json}.
+        tracked data-quality issues into \rd{CATI/Analysis/QC/cache/issues.json}.
   \item \textbf{Render dashboard (\rd{gen_dashboard.py}):} read the cache and
-        write \rd{output/l2phl_dq_dashboard.html}.
+        write \rd{CATI/Analysis/QC/output/l2phl_dq_dashboard.html}.
   \item \textbf{Build Excel report (\rd{build_report.py}):} write the
         cross-round questionnaire comparison to
-        \rd{output/L2PHL_Questionnaire_Cross_Round_Report.xlsx}.
+        \rd{CATI/Analysis/QC/output/L2PHL_Questionnaire_Cross_Round_Report.xlsx}.
 \end{enumerate}
 Single command: \verb|python3 update_pipeline.py --all|
 \end{procbox}

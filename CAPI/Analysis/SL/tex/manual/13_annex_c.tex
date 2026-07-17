@@ -1,1 +1,26 @@
 % 13_annex_c
+
+\parttitle{Annex C: Data Access and Security}
+
+Replication of the workflow requires World Bank authorization for the underlying
+household-level datasets. The survey data contain confidential household
+information and are not part of the shared repository: the microdata
+\texttt{.dta} files, the raw exports, and the sample frames are all gitignored
+and travel outside the version-controlled paths.
+
+Sensitive materials --- direct identifiers, phone numbers, and GPS coordinates
+--- are kept out of the shared and replicability paths, following the World Bank
+Poverty and Equity data-protection protocol. The HTML dashboards and storylines
+are self-contained single files and are safe to share; the pooled \texttt{.dta}
+masters are not, and should remain within the authorized environment.
+
+\begin{procbox}{To replicate the workflow}
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.2em]
+  \item Obtain access to the repository and to the authorized datasets.
+  \item Install Stata and the Python dependencies for the QC pipeline.
+  \item Run each stage in sequence: the baseline Round~00 pipeline, then the
+        per-round CATI processing, then the QC pipeline.
+  \item Use the procedure boxes in Parts~II--IV and the script tables in
+        Annex~A as the working reference.
+\end{enumerate}
+\end{procbox}
