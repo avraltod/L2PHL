@@ -1,0 +1,43 @@
+\section{Maintenance Playbook}
+
+Three operations account for nearly all routine upkeep of the data-quality pipeline: adding a new panel round, handling a question that is added to or removed from the questionnaire, and updating the dashboard filters when a skip rule changes. Each is a short, ordered procedure.
+
+\subsection{Adding a New Round}
+
+\begin{procbox}{Add a round (worked example: R9)}
+\begin{enumerate}
+  \item Bump the round-count constant in four scripts. Add the new round number and label to the \texttt{ROUNDS} list in \rd{build_dq.py}, \rd{build_panel.py}, \rd{build_interviewer.py}, and \rd{build_report.py}. In \rd{build_report.py} also add the round's date label.
+  \item In \rd{gen_dashboard.py} and \rd{issue_rollup.py}, change the round range \texttt{range(1, N)} to \texttt{range(1, N+1)}. In \rd{gen_dashboard.py} also extend the JavaScript round arrays, the round labels (\texttt{RLABELS}), the CSV export header and rows, and the Module-00 skip-logic fallback round list.
+  \item Register the round's questionnaire. Add the round's Kobo XLSForm to \texttt{KOBO\_FILES} in \rd{parse_kobo.py}, and add the round to \texttt{ROUND\_MAP} in \rd{update_pipeline.py}.
+  \item Regenerate everything: \texttt{python3 update\_pipeline.py -{}-all}.
+  \item Verify. Confirm the new round appears in the rounds list of \rd{CATI/Analysis/QC/cache/dq_data.json}, and that the round's column and label render in \rd{CATI/Analysis/QC/output/l2phl_dq_dashboard.html}.
+\end{enumerate}
+\end{procbox}
+
+\begin{notebox}{Why so few edits}
+The pooled \texttt{.dta} masters are data-driven by a \texttt{round} column, so the checks themselves need no change: only the round-count constants and the new questionnaire form are touched. A partial, in-progress round shows as provisional. Round~9, for example, held 558 households at hand-over; its completeness flags should be read as ``round not finished,'' not as data problems.
+\end{notebox}
+
+\subsection{New or Removed Questions}
+
+\begin{procbox}{Handle a new or removed question}
+\begin{enumerate}
+  \item Check the round's Kobo XLSForm first. It is the ground truth for which variables exist.
+  \item Update the module's authoritative variable list and heatmap rows in \rd{build_dq.py}: add or remove the variable, and set its expected non-missing condition.
+  \item In \rd{gen_dashboard.py}, standardize the variable in the module-standardization block so the Tracker, Kobo, and Heatmap panels show it consistently.
+  \item Annotate variables that are gated by an upstream preload or skip, so they are not falsely flagged as missing.
+  \item Re-run \texttt{python3 update\_pipeline.py -{}-all}.
+\end{enumerate}
+\end{procbox}
+
+\subsection{Updating Filters When Questionnaire Logic Changes}
+
+\begin{procbox}{Update dashboard filters}
+\begin{enumerate}
+  \item Add the new round's Kobo XLSForm to \rd{parse_kobo.py}, as in ``Adding a New Round.''
+  \item \rd{parse_kobo.py} folds each variable's enclosing repeat or group \texttt{relevant} condition into that variable, so a changed skip rule flows into the dashboard's skip-logic panel automatically once the new form is registered.
+  \item Re-run \texttt{python3 update\_pipeline.py -{}-all}. The refreshed skip-logic panel and gated checks reflect the new logic.
+\end{enumerate}
+\end{procbox}
+
+Because the checks are gated by the Kobo \texttt{relevant} conditions, updating a filter is usually just registering the new form, not editing check code by hand.

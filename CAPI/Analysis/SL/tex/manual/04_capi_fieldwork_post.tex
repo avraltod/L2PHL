@@ -1,0 +1,64 @@
+% 04_capi_fieldwork_post
+
+\section{Fieldwork Operations}
+
+The CAPI baseline was carried out face-to-face using Tablet-Assisted Personal
+Interviews on a mobile data-collection platform (SurveyToGo), with the
+questionnaire developed by the World Bank in collaboration with the Philippine
+Survey and Research Center (PSRC). Data collection ran from September 18 to
+October 15, 2025. Each baseline interview lasted approximately two hours, and
+the call sheet was also programmed in SurveyToGo with embedded GPS coordinates
+to facilitate field monitoring.
+
+Fieldwork achieved its full target: the completed interviews totalled 2,470
+households, distributed across the broad areas as NCR (450), North-Central Luzon
+(510), South Luzon (530), Visayas (430), and Mindanao (550). A separate pilot
+of 12 interviews across four language programs (Tagalog, Cebuano, Hiligaynon,
+and Waray) was conducted before the launch of baseline fieldwork to test the
+instrument.
+
+The Field Documentation Summary records material operational challenges during
+the window. Multiple natural disasters struck between September and October
+2025, including Super Typhoon Ragasa (September 22), Typhoon Opong (September
+26--30), a magnitude 6.9 earthquake offshore near Cebu City (September 30), and
+a magnitude 7.4 earthquake in Manay, Davao Oriental (October 10). These events
+disrupted schedules, restricted movement, and limited access to respondents, and
+were compounded by interviewer attrition (back-outs mid-fieldwork and illness
+during harsh weather). PSRC responded with prompt interviewer replacement,
+additional training days, and timeline extensions to secure comprehensive
+coverage.
+
+\begin{refbox}
+Baseline field documentation:\\
+\rd{CATI/Field Reports/L2PHL- Field Documentation Summary (Baseline & CATI R1) v2 17December2025.pdf}
+\end{refbox}
+
+\section{Post-Fieldwork Processing}
+
+Raw tablet data is transformed into an analysis-ready sample through a fixed,
+ordered pipeline of Stata do-files. Each stage reads the output of the previous
+stage and writes a new dataset, so the full path from raw export to weighted
+sample is reproducible end to end.
+
+\begin{procbox}{Baseline Processing Pipeline}
+\begin{enumerate}
+  \item \textbf{Stage 1 --- stg2raw:} the raw survey export is converted to a
+        Stata \rd{.dta} file.
+  \item \textbf{Stage 2 --- raw2dta:} cleaning, variable renaming, labeling, and
+        consistency corrections are applied.
+  \item \textbf{Stage 3 --- psu2wgt:} sampling weights are constructed.
+  \item \textbf{Stage 4 --- dta2smp:} the analysis sample is assembled.
+\end{enumerate}
+\end{procbox}
+
+Raw data is never modified in place; every cleaning step runs through a Stata
+do-file so that each transformation can be audited and re-run.
+
+\begin{refbox}
+Round00 pipeline do-files:\\
+\rd{CAPI/Round00/do/}\\
+\rd{CAPI/Round00/do/1_L2PHL_CAPI_R00_stg2raw@AP@20260407.do}\\
+\rd{CAPI/Round00/do/2_L2PHL_CAPI_R00_raw2dta@AP@20260407.do}\\
+\rd{CAPI/Round00/do/3_L2PHL_CAPI_R00_psu2wgt@AP@20260407.do}\\
+\rd{CAPI/Round00/do/4_L2PHL_CAPI_R00_dta2smp@AP@20260407.do}
+\end{refbox}

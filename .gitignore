@@ -66,3 +66,9 @@ CAPI/Analysis/SL/philippines_l2p_revised.html
 # superpowers brainstorm scratch
 .superpowers/
 CATI/Analysis/do/output/
+
+# ── LaTeX build artifacts (Operational Manual) ───────────────────────────────
+CAPI/Analysis/SL/tex/*.aux
+CAPI/Analysis/SL/tex/*.toc
+CAPI/Analysis/SL/tex/*.out
+CAPI/Analysis/SL/tex/*.log

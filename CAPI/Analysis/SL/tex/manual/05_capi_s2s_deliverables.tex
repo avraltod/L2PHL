@@ -1,0 +1,118 @@
+% 05_capi_s2s_deliverables
+
+\section{Income Imputation (Survey-to-Survey)}
+
+The L2Phl 2025 baseline does not field a full consumption module, so
+household welfare cannot be measured directly. Instead it is predicted
+through survey-to-survey (S2S) imputation from the Family Income and
+Expenditure Survey--Labor Force Survey (FIES--LFS) 2023, which observes
+welfare directly. Poverty is then a downstream indicator: predicted
+welfare is compared against regional poverty lines. The method and
+diagnostics summarized here follow the technical note prepared by
+Sandra Segovia Juarez.
+
+\subsection{Method}
+
+The imputation proceeds in three steps.
+
+\begin{procbox}{S2S imputation}
+\textbf{1. Estimate the welfare model.} A weighted OLS model is fit in
+FIES--LFS 2023 with log per-capita income as the dependent variable and
+predictors available in both surveys: demographic composition, household
+size, assets, housing and sanitation conditions, tenure, urban location,
+and region fixed effects. The model uses 162{,}687 observations, with an
+R-squared of 0.5108 and a root MSE of 0.4798.
+
+\textbf{2. Apply the coefficients.} The estimated coefficients are
+applied to the harmonized L2Phl variables to predict welfare for each
+household.
+
+\textbf{3. Add stochastic residuals.} Resampled source-survey residuals
+are added to each prediction, so the imputed welfare distribution is not
+artificially compressed.
+\end{procbox}
+
+Harmonizing the predictor definitions across the two surveys is the
+critical step, and the most common source of error.
+
+\subsection{GDP adjustment}
+
+Because the model captures 2023 relationships, predicted welfare is
+scaled up by cumulative real GDP growth over 2024--2025:
+$(1 + 0.057) \times (1 + 0.044) = 1.104$. This is implemented as an
+intercept shift of $\ln(1.104)$, which preserves the ranking of
+households.
+
+\subsection{Validation}
+
+Applied back to the 2023 source, the model predicts 15.61 percent
+poverty against 15.50 percent observed, a close match. In L2Phl 2025 the
+unadjusted prediction implies 16.96 percent poverty; after the GDP
+adjustment, the preferred estimate is 13.20 percent.
+
+\subsection{Output and link to weighting}
+
+\begin{sloppypar}
+The product is \rd{CAPI/S2S/target_hh_imputed.dta}, which holds a
+per-capita imputed household income measure in the variable
+\texttt{pcinc\_imp\_mean}. It is copied to
+\rd{CATI/Analysis/HF/R00/target_hh_imputed.dta} and, in the CATI
+analysis, merged onto the baseline weight file by household id to attach
+imputed income for income-quintile breakdowns. It is an imputed-welfare
+input, not a component of weight construction; Part~III documents how it
+is merged.
+\end{sloppypar}
+
+\begin{notebox}{Caveat}
+Updated 2025 regional poverty lines are not yet available, so the 2025
+exercise uses the 2023 regional lines. If those lines rose with
+inflation, the exercise may modestly understate 2025 poverty.
+\end{notebox}
+
+\begin{refbox}
+\begin{sloppypar}
+\rd{CAPI/S2S/S2S_PHL_note.docx} --- methodology (Sandra Segovia Juarez).
+\rd{CAPI/S2S/s2s_diagnostics.xlsx} --- diagnostics.
+\rd{CAPI/S2S/target_hh_imputed.dta} --- imputed output.
+\end{sloppypar}
+\end{refbox}
+
+\section{Deliverables and Analytical Outputs}
+
+The baseline findings are disseminated through a set of interactive HTML
+products; this manual catalogs them and documents how they are rebuilt,
+but does not reproduce their findings.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}p{2.7cm}p{1.8cm}>{\raggedright\arraybackslash}p{10.4cm}@{}}
+\toprule
+Deliverable & Type & Location \\
+\midrule
+16-tab CAPI dashboard & dashboard & \rd{CAPI/Analysis/DB/html/l2phl_capi_dashboard.html} \\
+12-chapter baseline storyline & storyline & \rd{CAPI/Analysis/SL/html/l2phl_baseline_story.html} \\
+Wealth deep-dive chapter & storyline & \rd{CAPI/Analysis/SL/html/l2phl_wealth_chapter.html} \\
+10 thematic deep dives & deep dives & \rd{CAPI/Analysis/DD/} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{sloppypar}
+\noindent The individual deep-dive storylines live under each topic's
+\texttt{html/} subfolder within \rd{CAPI/Analysis/DD/}. These products
+are published on GitHub Pages at \url{https://avraltod.github.io/L2PHL/}.
+\end{sloppypar}
+
+\subsection{Production and Rebuild Pipeline}
+
+Each deliverable is generated from a Stata do-file that writes results to
+a machine-readable results file (\texttt{.md} or JSON), which a build
+step then renders into a single self-contained HTML page (Chart.js via
+CDN, Google Fonts). The storyline-rebuild and replication-audit workflows
+regenerate a chapter from fresh Stata output, so the reported numbers
+stay traceable back to the microdata.
+
+\begin{refbox}
+\rd{.claude/docs/storyline-update-workflow.md} --- storyline rebuild and
+update workflow.
+\end{refbox}

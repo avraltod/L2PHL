@@ -1,0 +1,87 @@
+% 10_qc_verify_conventions
+
+\section{Verifying Flags and Tracing Numbers}
+
+Two questions come up on every hand-over: where did a given number come from, and is a red cell a real problem or an artifact of how the data were routed. This section gives the tracing procedure and the rules for telling a genuine flag from a filtering artifact.
+
+\subsection{Tracing a Number to Source}
+
+Every number the dashboard shows traces back through the pipeline to a variable in a pooled \rd{.dta} master and the check that produced it. The chain is short and always the same.
+
+\begin{procbox}{Trace a number}
+\begin{enumerate}
+  \item \textbf{Identify the panel and variable.} Note which dashboard panel the number sits on (Tracker, Kobo, Heatmap, Panel, or Issue) and the variable it reports.
+  \item \textbf{Find it in the cache.} Open the relevant JSON in \rd{CATI/Analysis/QC/cache/} --- for the data-quality panels this is \texttt{dq\_data.json} --- and locate the module and variable. The cache holds the computed counts the dashboard renders.
+  \item \textbf{Find the check.} Open \rd{build_dq.py} and locate the check for that module and variable: which authoritative variable list it belongs to and the expected non-missing condition that defines a pass or a flag.
+  \item \textbf{Trace to the data.} Follow the variable to its column in the pooled master in \rd{CATI/Analysis/HF/} (the module master, e.g. the employment or income file, or the combined individual and household files). The check reads that column by round.
+  \item \textbf{Confirm computed statistics against Stata.} If the number is a computed statistic rather than a completeness count, confirm it against the Stata do-file and its log, which are the authoritative source for the figure.
+\end{enumerate}
+\end{procbox}
+
+\begin{notebox}{Stata is the single source of truth}
+The general L2Phl rule is that Stata do-files are the sole authoritative source for statistics: a number is traced through do-file $\rightarrow$ log $\rightarrow$ Excel $\rightarrow$ HTML, and any divergence is diagnosed at the earliest link before anything downstream is changed. A number that appears in a deliverable but cannot be traced to any do-file or log is treated as an error, not as data. A \texttt{cross-checker} helper automates walking a statistic through that chain and reporting where the values diverge.
+\end{notebox}
+
+\subsection{Real Issue versus Filtering Artifact}
+
+A red cell can be a genuine data problem or a skip-gate mismatch --- a variable that is legitimately empty because the respondent was routed past the question. The pipeline gates each check by the Kobo \texttt{relevant} condition and annotates variables that are gated by an upstream preload, so the first step on any surprising flag is to check it against the skip logic before treating it as a data error. In practice, several flags that first read as data errors were shown to meet the questionnaire's full routing once the gate was widened.
+
+The issue-intelligence backend classifies each flag by root cause and owner. The categories, defined in \rd{issue_classifier.py} and \rd{issue_model.py}, are:
+
+\begin{itemize}
+  \item \textbf{A1 --- gate missing.} A constraint is violated and the Kobo skip logic for the variable is itself missing or empty; the questionnaire routing is the likely cause (owner: firm questionnaire).
+  \item \textbf{A2 --- gate correct, response violates it.} The skip logic is present and correct, but a response breaks it; a genuine field-data problem (owner: firm field).
+  \item \textbf{B --- gate reference absent.} The questionnaire says the question was asked, but a variable the gate references is absent from the pooled data and no do-file touches it (owner: firm do-file / processing).
+  \item \textbf{C --- our check disagrees with Kobo.} The check's declared gate disagrees with the Kobo \texttt{relevant} condition; a representation issue on our side (owner: us). This rule is held dormant because a variable-set difference cannot distinguish an OR-alternative from a missed conjunct; the gate references are still shown for manual inspection.
+  \item \textbf{D --- structural, expected.} Not a real issue: derived variables, other-specify (\texttt{\_oth}) fields, preload-gated variables, or variables not present in the Kobo form for that round (owner: expected).
+  \item \textbf{REVIEW --- unassigned.} No rule fired; the flag awaits manual judgment.
+\end{itemize}
+
+\subsection{Real-Time Fieldwork Monitoring}
+
+The dashboard doubles as a live fieldwork monitor. Re-running \texttt{python3 update\_pipeline.py -{}-all} on the latest pooled masters refreshes completion counts and flags mid-round, so the survey team can watch a round fill in as the firm delivers data. A partial round shows provisional counts: its low completeness is a statement that the round is not finished, not a data problem.
+
+\subsection{Common Causes of Incorrect Flags or Counts}
+
+Most spurious flags trace to one of a small set of causes:
+
+\begin{itemize}
+  \item \textbf{Cross-module variables absent from the pooled \rd{.dta}.} If a variable a gate depends on is not in the master, the gate cannot be applied and the check may over- or under-count.
+  \item \textbf{Preload or pre-filled variables gated upstream.} Variables carried in from a preload are populated by routing, not by a fresh response, and read as anomalies unless annotated.
+  \item \textbf{Module items introduced mid-panel.} Items added in a later round --- for example, the later FIES items --- read as ``missing'' for the rounds before their introduction.
+  \item \textbf{Case-normalized variable names.} Variables whose names differ only in case across rounds must be normalized, or the same item is counted as two.
+  \item \textbf{Derived or other-specify variables.} Computed variables and \texttt{\_oth} fields are excluded from completeness checks; including them produces false flags.
+  \item \textbf{Skip-gate drift.} When a round tightens or loosens a routing condition, a gate calibrated to the old logic misclassifies the new data until it is updated.
+\end{itemize}
+
+\subsection{Most Frequent Dashboard Issues}
+
+The recurring operational issues, in rough order of frequency, are:
+
+\begin{itemize}
+  \item A new round's questionnaire form not yet registered in \rd{parse_kobo.py}, so its skip logic is not folded into the checks.
+  \item A variable renamed in a later round, which breaks the match against the earlier column.
+  \item A partial, in-progress round read as attrition rather than as an unfinished delivery.
+  \item Stale cache from not re-running the full pipeline after new data or a new form.
+\end{itemize}
+
+\section{Conventions and File Maintenance}
+
+\subsection{Naming and the One-Live-File Rule}
+
+Do-files and dated deliverables follow \texttt{L2PHL\_<MODE>@<ROUND>@AP@YYYYMMDD}. The prefix is always \texttt{L2PHL} (never \texttt{L2PH}) and the author is always \texttt{AP}; the date is the revision date. Exactly one live file exists per slot --- a slot being a logical role such as a round master do-file, an analysis script, a stats JSON, or a deliverable --- and the live file is the latest-dated \texttt{@AP@} version. When the date is bumped, the prior file moves to a \texttt{\_attic/} folder local to its working directory. \texttt{\_attic/} is the only archive name in use.
+
+\begin{refbox}
+Full naming and archiving rules: \rd{.claude/rules/file-organization.md}. Survey methodology and the tracing chain: \rd{.claude/rules/survey-methodology.md}.
+\end{refbox}
+
+\subsection{Files Modified Most Often}
+
+Routine pipeline work touches a short list of scripts:
+
+\begin{itemize}
+  \item \rd{build_dq.py} --- the checks: authoritative variable lists, expected non-missing conditions, and gates.
+  \item \rd{gen_dashboard.py} --- the rendering: module standardization and the panels the dashboard shows.
+  \item \rd{parse_kobo.py} --- the skip logic: registering each round's Kobo form and folding its \texttt{relevant} conditions into each variable.
+  \item \rd{update_pipeline.py} --- round registration and orchestration: the single entry point that regenerates everything.
+\end{itemize}

@@ -1,0 +1,103 @@
+% 08_qc_architecture
+
+\parttitle{Part IV: Quality Control and the DQ Dashboard}
+
+Quality control is the live, hand-over-critical workstream of the panel. Each
+round the firm delivers new data, and the survey team must confirm that the
+delivery holds together before any indicator is trusted. The data-quality (DQ)
+dashboard is the instrument for that confirmation: it is regenerated from the
+pooled masters by a single command, so the checks never drift from the code.
+This part documents how to run the pipeline, how to read the panels it
+produces, how to maintain it as rounds and questionnaires change, and why its
+outputs can be trusted.
+
+\section{Pipeline Architecture}
+
+\begin{sloppypar}
+One entry point regenerates everything. The pipeline script
+\rd{CATI/Analysis/QC/update_pipeline.py}, run as \verb|python3 update_pipeline.py --all|,
+reads the pooled high-frequency masters, runs the check and build scripts in
+order, writes intermediate JSON to \rd{CATI/Analysis/QC/cache/}, and produces
+the HTML dashboard and the Excel cross-round report. Because the checks read a
+round column in the pooled data, adding a round requires only a few round-count
+constant edits and registering the new questionnaire form, not changes to the
+check logic; the step-by-step procedure is in the maintenance playbook.
+\end{sloppypar}
+
+\begin{procbox}{Full pipeline run}
+\begin{enumerate}
+  \item \textbf{Detect files:} scan \rd{CATI/Analysis/HF/} for pooled and per-round
+        \rd{.dta} masters, \rd{CATI/Questionnaire/} for questionnaire Excel
+        files, and \rd{CATI/Round*/do/} for processing do-files.
+  \item \textbf{Build DQ data (\rd{build_dq.py}):} run the data-quality checks
+        on the pooled masters and write \rd{CATI/Analysis/QC/cache/dq_data.json}.
+  \item \textbf{Build panel tracker (\rd{build_panel.py}):} compute per-round
+        household participation and attrition into \rd{CATI/Analysis/QC/cache/panel_data.json}.
+  \item \textbf{Build interviewer performance (\rd{build_interviewer.py}):}
+        summarize operator performance into \rd{CATI/Analysis/QC/cache/interviewer_data.json}.
+  \item \textbf{Parse questionnaires and Kobo skip logic (\rd{parse_kobo.py}):}
+        extract the cross-round question tables and the Kobo relevant/skip
+        rules per variable into \rd{CATI/Analysis/QC/cache/kobo_skip_logic.json}.
+  \item \textbf{Build issue intelligence (\rd{build_issues.py}):} assemble the
+        tracked data-quality issues into \rd{CATI/Analysis/QC/cache/issues.json}.
+  \item \textbf{Render dashboard (\rd{gen_dashboard.py}):} read the cache and
+        write \rd{CATI/Analysis/QC/output/l2phl_dq_dashboard.html}.
+  \item \textbf{Build Excel report (\rd{build_report.py}):} write the
+        cross-round questionnaire comparison to
+        \rd{CATI/Analysis/QC/output/L2PHL_Questionnaire_Cross_Round_Report.xlsx}.
+\end{enumerate}
+Single command: \verb|python3 update_pipeline.py --all|
+\end{procbox}
+
+The seven build and check scripts each own one stage of the run:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Script} & \textbf{Role} \\
+\midrule
+\rd{build_dq.py}          & Runs the data-quality checks on the pooled masters. \\
+\rd{build_panel.py}       & Builds the household participation and attrition tracker. \\
+\rd{build_interviewer.py} & Summarizes interviewer/operator performance. \\
+\rd{parse_kobo.py}        & Extracts skip logic from the Kobo XLSForms. \\
+\rd{build_issues.py}      & Assembles the tracked data-quality issues. \\
+\rd{gen_dashboard.py}     & Renders the HTML dashboard from the cache. \\
+\rd{build_report.py}      & Builds the Excel cross-round questionnaire report. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{refbox}
+Pipeline entry point, scripts, and documentation:\\
+\rd{CATI/Analysis/QC/update_pipeline.py}\\
+\rd{CATI/Analysis/QC/scripts/}\\
+\rd{CATI/Analysis/QC/README.md}\\[4pt]
+Generated outputs:\\
+\rd{CATI/Analysis/QC/output/l2phl_dq_dashboard.html}\\
+\rd{CATI/Analysis/QC/output/L2PHL_Questionnaire_Cross_Round_Report.xlsx}
+\end{refbox}
+
+\section{Dashboard Panels}
+
+The dashboard collects, in one page, the panels a reviewer needs to judge a
+delivery:
+
+\begin{itemize}
+  \item \textbf{Completion tracker:} per-round household participation, showing
+        how many baseline households answered each round.
+  \item \textbf{Data-quality heatmap:} per-module red/amber/green cells by
+        variable, flagging skip-logic violations, missing mandatory fields, and
+        out-of-range values.
+  \item \textbf{Kobo skip-logic panel:} the relevant/skip rules parsed from the
+        XLSForms for each variable, so a flagged cell can be checked against the
+        rule that should govern it.
+  \item \textbf{Issue intelligence:} the tracked data-quality issues, with their
+        classification and status.
+  \item \textbf{Interviewer performance:} operator-level summaries of throughput
+        and quality.
+  \item \textbf{Cross-round questionnaire report:} which variables are present in
+        each round, with new, dropped, and changed questions surfaced across the
+        panel.
+\end{itemize}
