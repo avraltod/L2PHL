@@ -1,1 +1,90 @@
 % 03_capi_sampling_quest
+\parttitle{Part II: Baseline Household Survey (CAPI)}
+
+The CAPI baseline is the first stage of the L2Phl programme and the foundation for
+everything that follows. Conducted face-to-face between September and October 2025,
+it produces the nationally representative, household-level estimates that anchor the
+project, and it serves as the sampling frame from which the CATI panel draws its
+follow-up respondents. The baseline is frozen once fieldwork closes: its statistics
+do not change as the panel rolls forward, so it provides a stable reference against
+which subsequent rounds are measured.
+
+\section{Sampling}
+
+The baseline uses a two-stage stratified cluster design. The primary sampling unit
+(PSU) is the barangay, which serves as the enumeration area; the second-stage unit
+is the household. The realized sample covers 2,470 households and 10,496 members
+across 247 PSUs.
+
+Strata are defined geographically. Most regions contribute two strata, an urban
+stratum and a rural stratum, so the 17 regions yield 34 strata. Five special
+geographic areas in the Bangsamoro Autonomous Region in Muslim Mindanao (BARMM),
+carrying region codes 101 through 105, each enter as a single stratum. Together
+these give 39 strata in total.
+
+Within this frame, PSUs are selected with probability proportional to size (PPS),
+and households are then selected within each sampled PSU. This design concentrates
+fieldwork in a manageable number of enumeration areas while preserving national
+representativeness after weighting.
+
+Three analytical weights accompany the data, each suited to a different level of
+analysis. The individual weight scales person-level indicators, so that estimates
+such as employment, educational attainment, and health status represent the adult
+or member population. The household weight scales household-level behaviour and
+decisions, such as finances, asset ownership, and household perceptions. The
+population weight expresses results in terms of the number of Filipinos affected,
+supporting welfare and SDG-style framing of the kind "X\% of Filipinos live in
+households where\ldots". The full construction of these weights, including the base
+weight, the exact measure-of-size correction, post-stratification to census
+household totals, and age--sex person calibration, is documented in the weighting
+technical note.
+
+\begin{refbox}
+\rd{CAPI/Analysis/SL/tex/L2PHL_WEIGHTING_TECHNICAL_NOTE.tex}\\
+\rd{CAPI/Analysis/SL/tex/L2PHL_WEIGHTING_TECHNICAL_NOTE.pdf}
+\end{refbox}
+
+\begin{notebox}{Which weight, in one line}
+Use the individual weight for person-level indicators (employment, education,
+health); the household weight for household decisions (finance, assets,
+perceptions); and the population weight for welfare and SDG framing
+("X\% of Filipinos live in households where\ldots").
+\end{notebox}
+
+\section{Questionnaire and Modules}
+
+The baseline instrument comprises 14 modules. Each module has a primary unit of
+analysis, which determines the weight applied to its indicators.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Module} & \textbf{Name} & \textbf{Primary unit / weight} \\
+\midrule
+M00 & Passport   & --- \\
+M01 & Roster     & Individual \\
+M02 & Education  & Individual \\
+M03 & Employment & Individual \\
+M04 & Income     & Mixed \\
+M05 & Finance    & Household \\
+M06 & Migration  & Individual \\
+M07 & Health     & Individual \\
+M08 & Food       & Household / individual \\
+M09 & Hazards    & Household \\
+M10 & Dwelling   & Household \\
+M11 & Sanitation & Household \\
+M12 & Utilities  & Household \\
+M13 & Assets     & Household \\
+M14 & Views      & Household \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The module-by-module rationale for each weight assignment is set out in the weight
+rationale note.
+
+\begin{refbox}
+\rd{CAPI/Analysis/DB/doc/WEIGHT_RATIONALE.md}
+\end{refbox}
