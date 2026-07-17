@@ -1,1 +1,67 @@
 % 07_cati_processing_weighting
+
+\section{Per-Round Processing}
+
+Each round is processed from its raw Kobo export through a round-specific do-file and then
+pooled into the harmonized high-frequency masters that the analysis and quality-control
+pipeline read. The round do-file cleans and standardizes that round's delivery; the pooling
+step stacks the cleaned rounds into one file per module, keyed by round and household, so that
+every downstream analysis reads a single harmonized panel rather than nine separate deliveries.
+
+When the firm delivers revised round data, the masters are re-pooled rather than merely
+appended. The pooling step rebuilds the harmonized files across all rounds from the current
+round deliveries, so a late correction to an earlier round is reflected in the masters instead
+of being lost behind an already-frozen pool. This is why a revised delivery can change values
+in earlier rounds and not only add the newest round.
+
+\section{Weighting}
+
+The panel weights are recomputed each round rather than carried forward unchanged, because the
+achieved sample changes composition from round to round. The construction proceeds in three
+steps, summarized here; the full derivation is in the weighting technical note cited below.
+
+The individual weight is recalibrated each round to census population cells defined by age
+group $\times$ sex $\times$ stratum. It starts from a baseline individual weight and is scaled
+within each cell so that the sum of individual weights in the cell matches the census population
+total for that cell in that round. The result is the per-round individual weight \rd{indw}.
+
+The population weight for a household is the sum of the individual weights of its members. The
+household weight is the mean individual weight within the household; it is then smoothed at the
+primary-sampling-unit level (replaced by the PSU mean) and rescaled so that household totals
+match census household totals per stratum. These give \rd{popw} and \rd{hhw} on the
+household-level file.
+
+\begin{refbox}
+Full derivation of the panel weights:\\
+\rd{CAPI/Analysis/SL/tex/L2PHL_WEIGHTING_TECHNICAL_NOTE.pdf}
+\end{refbox}
+
+\subsection{The target\_hh\_imputed.dta file}
+
+A recurring firm-turnover question is what \rd{target_hh_imputed.dta} is and whether it is part
+of the weight construction. It is not. This file is the survey-to-survey (S2S) income-imputation
+product described in Part~II (Income Imputation); it is not produced by the weighting code.
+
+\begin{sloppypar}
+The file is created under \rd{CAPI/S2S/target_hh_imputed.dta} and copied to
+\rd{CATI/Analysis/HF/R00/target_hh_imputed.dta}. In the CATI analysis do-file it is merged onto
+the baseline weight file by household id: an \rd{m:1} merge on \rd{hhid} that keeps the single
+variable \rd{pcinc_imp_mean} (labeled ``PC HH imputed income''), with \rd{assert(3)} requiring a
+full match on both sides. The merge attaches a per-capita imputed household income to each
+household.
+\end{sloppypar}
+
+The purpose is to enable income-quintile and welfare breakdowns of the panel indicators.
+\rd{pcinc_imp_mean} is an imputed-welfare input, not a component of the survey weights. This is
+why it appears in the analysis do-file but not in the earlier weighting do-file: it is joined to
+the already-weighted file, not used to build the weights.
+
+\begin{sloppypar}
+\begin{refbox}
+The merge (analysis do-file) and the baseline weight file it merges onto:\\
+\rd{CATI/Analysis/do/hf_l2phl_analysis@AP@20260709.do}\\
+\rd{CATI/Analysis/HF/R00/final_weights.dta}\\[4pt]
+The imputation method (S2S note):\\
+\rd{CAPI/S2S/S2S_PHL_note.docx}
+\end{refbox}
+\end{sloppypar}
