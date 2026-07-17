@@ -1,0 +1,95 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+
+% ── World Bank palette ───────────────────────────────────────────────
+\definecolor{wbnavy}{HTML}{002244}
+\definecolor{wbblue}{HTML}{009FDA}
+\definecolor{boxblue}{HTML}{DCEBF7}
+\definecolor{boxgrey}{HTML}{EFEFEF}
+\definecolor{rulegrey}{HTML}{999999}
+
+\hypersetup{colorlinks=true, linkcolor=wbblue, urlcolor=wbblue,
+  pdftitle={L2PHL Operational Manual}, pdfauthor={Purevjav, Piza, Sousa}}
+
+% ── Blue headings ────────────────────────────────────────────────────
+\titleformat{\section}{\Large\bfseries\color{wbnavy}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\color{wbblue}}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{wbnavy}}{\thesubsubsection}{0.5em}{}
+\newcommand{\parttitle}[1]{\clearpage\begin{center}\LARGE\bfseries\color{wbnavy} #1\end{center}\vspace{1em}}
+
+% ── Header / footer ──────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{wbnavy}L2Phl Operational Manual}
+\fancyhead[R]{\small\thepage}
+\fancyfoot[C]{\small\color{wbnavy}World Bank -- Poverty and Equity Global Practice}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% ── Box styles ───────────────────────────────────────────────────────
+% Procedure box (light blue): step-by-step workflows
+\newtcolorbox{procbox}[1]{colback=boxblue,colframe=wbblue,boxrule=0.6pt,
+  arc=1mm,left=3mm,right=3mm,top=2mm,bottom=2mm,
+  title={\bfseries #1},coltitle=wbnavy,fonttitle=\bfseries}
+% Reference box (grey): exact repo file paths
+\newtcolorbox{refbox}{colback=boxgrey,colframe=rulegrey,boxrule=0.4pt,
+  arc=0.5mm,left=3mm,right=3mm,top=2mm,bottom=2mm}
+% Note / recommendation callout
+\newtcolorbox{notebox}[1]{colback=boxblue!40,colframe=wbnavy,boxrule=0.6pt,
+  arc=1mm,left=3mm,right=3mm,top=2mm,bottom=2mm,
+  title={\bfseries #1},coltitle=wbnavy}
+% Repo-path shorthand. \detokenize prints underscores literally, so paths are
+% written as-is: \rd{CATI/Analysis/HF/l2phl_M00_passport.dta} (no \_ escaping).
+\newcommand{\rd}[1]{\texttt{\small\detokenize{#1}}}
+
+\begin{document}
+
+% Title page
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{wbnavy} Listening to the Philippines (L2Phl)\par}
+\vspace{0.8cm}
+{\LARGE\color{wbblue} Operational Manual\par}
+\vspace{1.5cm}
+{\large Baseline (CAPI) and High-Frequency Panel (CATI):\\[0.3em]
+Implementation, Data Processing, and Quality Control\par}
+\vspace{2cm}
+{\large Avralt-Od Purevjav\\[0.3em] Sharon Faye Alariao Piza\\[0.3em] Liliana D. Sousa\par}
+\vspace{1.5cm}
+{\large July 2026\par}
+\vfill
+{\small\itshape Internal project codename: Project TIPON.\par}
+\end{titlepage}
+
+\tableofcontents
+
+\input{manual/00_frontmatter}
+\input{manual/01_overview}
+\input{manual/02_part1_setup}
+\input{manual/03_capi_sampling_quest}
+\input{manual/04_capi_fieldwork_post}
+\input{manual/05_capi_s2s_deliverables}
+\input{manual/06_cati_design_quest}
+\input{manual/07_cati_processing_weighting}
+\input{manual/08_qc_architecture}
+\input{manual/09_qc_playbook}
+\input{manual/10_qc_verify_conventions}
+\input{manual/11_annex_a}
+\input{manual/12_annex_b}
+\input{manual/13_annex_c}
+
+\end{document}
