@@ -13,7 +13,7 @@ from issue_model import OPEN_STATES   # single source of truth for lifecycle sta
 FIRM_VERDICTS = {"A1", "A2", "B"}
 
 
-def rollup(records, rounds=range(1, 9)):
+def rollup(records, rounds=range(1, 10)):
     out = {}
     by_mod = {}
     for r in records:

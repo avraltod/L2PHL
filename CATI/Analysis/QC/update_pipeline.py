@@ -17,7 +17,7 @@ Flags:
 The HTML dashboard and Excel report are always regenerated at the end.
 
 Outputs:
-  output/l2ph_dq_dashboard.html
+  output/l2phl_dq_dashboard.html
   output/L2PHL_Questionnaire_Cross_Round_Report.xlsx
 
 Cache (intermediate JSON):
@@ -311,6 +311,8 @@ def rebuild_questionnaire(quest_files):
         'R5': ['r5 questionnaire', 'cati r5'],
         'R6': ['r6 questionnaire', 'cati r6'],
         'R7': ['r7 questionnaire', 'cati r7'],
+        'R8': ['r8 questionnaire', 'cati r8'],
+        'R9': ['r9 questionnaire', 'cati r9'],
     }
     SHEETS = {
         'Introduction': 'M00', 'Demographics': 'M01', 'Education': 'M02',
@@ -427,14 +429,15 @@ def rebuild_questionnaire(quest_files):
         json.dump(all_qs, f, indent=2)
     log(f"cache/all_questions.json written ({(CACHE/'all_questions.json').stat().st_size//1024} KB)", 'OK')
 
-    # R8 stand-in: no R8 questionnaire is in the repo yet (only on Drive), and the
-    # R8 Kobo form is the R7 clone — so mirror R7 as R8 for the question tracker /
-    # change panels so every section shows R8 (= R7). Replace when the real R8
-    # questionnaire is added. (all_questions.json above stays truthful R1–R7.)
-    if 'R7' in all_qs and 'R8' not in all_qs:
-        all_qs['R8'] = all_qs['R7']
-        if 'R8' not in ROUNDS:
-            ROUNDS = sorted(ROUNDS + ['R8'])
+    # Last-round stand-in: real R8 and R9 questionnaires are now mapped via
+    # ROUND_MAP, so this clone is normally inert. It only fires if the newest
+    # round's questionnaire Excel is missing from CATI/Questionnaire/ — in which
+    # case mirror the prior round so the tracker/change panels still show it.
+    for _pr, _cr in (('R7', 'R8'), ('R8', 'R9')):
+        if _pr in all_qs and _cr not in all_qs:
+            all_qs[_cr] = all_qs[_pr]
+            if _cr not in ROUNDS:
+                ROUNDS = sorted(ROUNDS + [_cr])
 
     # Build module_tables
     MODULES = ['M00', 'M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08', 'M09']
@@ -765,8 +768,8 @@ def rebuild_dashboard():
     step(5, "Regenerating HTML dashboard")
     ok = run_script('gen_dashboard.py')
     if ok:
-        size = (OUTPUT / 'l2ph_dq_dashboard.html').stat().st_size // 1024
-        log(f"output/l2ph_dq_dashboard.html ({size} KB)", 'OK')
+        size = (OUTPUT / 'l2phl_dq_dashboard.html').stat().st_size // 1024
+        log(f"output/l2phl_dq_dashboard.html ({size} KB)", 'OK')
     return ok
 
 
@@ -825,7 +828,7 @@ if __name__ == '__main__':
     else:
         print(f"║  ✅ All outputs updated in {elapsed:.1f}s")
         print("║")
-        print("║  📊 output/l2ph_dq_dashboard.html")
+        print("║  📊 output/l2phl_dq_dashboard.html")
         print("║  📋 output/L2PHL_Questionnaire_Cross_Round_Report.xlsx")
     print("╚══════════════════════════════════════════════╝")
     print()

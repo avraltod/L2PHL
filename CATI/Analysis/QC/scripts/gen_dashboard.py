@@ -16,13 +16,13 @@ with open(_os.path.join(_CACHE, 'all_questions.json')) as f:
     all_qs = json.load(f)
 
 # ── Kobo round-presence index ───────────────────────────────────────────
-# Pre-scan all 5 Kobo XLSForms to build a lookup of which variables exist
-# in which rounds. Used to populate in_R1-R5 on injected tracker rows so
+# Pre-scan all Kobo XLSForms (R1-R9) to build a lookup of which variables exist
+# in which rounds. Used to populate in_R1-R9 on injected tracker rows so
 # they show green ✓ instead of red —.
 import openpyxl as _openpyxl
 _KOBO_DIR = _os.path.join(_os.path.dirname(_QC), '..', 'KOBO')
 _KOBO_ROUND_PRESENCE = {}   # {VAR_UPPER: set of round ints}
-for _rn in range(1, 9):
+for _rn in range(1, 10):
     _kobo_file = _os.path.join(_KOBO_DIR, f'L2PHL_CATI_R0{_rn}.xlsx')
     if not _os.path.exists(_kobo_file):
         continue
@@ -38,12 +38,12 @@ for _rn in range(1, 9):
     _wb.close()
 
 def _set_round_presence(synth_row, var_name):
-    """Populate in_R1-R5 and first_round on a synthetic tracker row
+    """Populate in_R1-R9 and first_round on a synthetic tracker row
     based on Kobo XLSForm presence."""
     _key = var_name.upper().rstrip('_')
     _rounds = _KOBO_ROUND_PRESENCE.get(_key, set())
     _first = None
-    for _r in range(1, 9):
+    for _r in range(1, 10):
         _present = _r in _rounds
         synth_row[f'in_R{_r}'] = '✓' if _present else ''
         if _present and _first is None:
@@ -262,7 +262,7 @@ if 'M01' in kobo_raw and 'variables' in kobo_raw['M01']:
             _ordered.append({
                 'name': _auth_var,
                 'label': _auth_var,
-                'rules_by_round': {str(r): [] for r in range(1, 9)},
+                'rules_by_round': {str(r): [] for r in range(1, 10)},
             })
             _kobo_seen.add(_key)
     # Append remaining Kobo vars not in authoritative list (safety net)
@@ -374,7 +374,7 @@ if 'M00' in module_tables:
         'Z4':      '${Z20}=2',
         'Z5':      '${Z20}=2',
     }
-    _ROUNDS = ['r1', 'r2', 'r3', 'r4', 'r5']
+    _ROUNDS = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8', 'r9']
     for _row in module_tables['M00']:
         _kobo_skip = _M00_KOBO_SKIP.get(_row['variable'].upper())
         if _kobo_skip:
@@ -482,7 +482,7 @@ if 'M02' in module_tables:
             # ed19_* Kobo names use no underscore separator (Kobo: ED19a vs Stata: ed19_a),
             # so _set_round_presence fails to find them in the Kobo index. Override: R8 only.
             if _var.startswith('ed19_') and not _synth.get('in_R8'):
-                for _r in range(1, 9):
+                for _r in range(1, 10):
                     _synth[f'in_R{_r}'] = '✓' if _r == 8 else ''
                 _synth['first_round'] = 'R8'
                 _synth['status'] = 'R8 only'
@@ -535,7 +535,7 @@ if 'M02' in kobo_raw and 'variables' in kobo_raw.get('M02', {}):
     _m02_kobo_ordered = []
     _synth_rules_tpl = {str(r): {'type': None, 'relevant': None, 'required': False,
                                   'constraint': None, 'constraint_message': None}
-                        for r in range(1, 9)}
+                        for r in range(1, 10)}
     for _v in _M02_AUTHORITATIVE:
         _entry = _m02_kobo_collapsed.get(_v.upper())
         if _entry:
@@ -548,7 +548,7 @@ if 'M02' in kobo_raw and 'variables' in kobo_raw.get('M02', {}):
                 'type': 'binary (split dummy)' if _is_dummy else 'decimal' if _v == 'dur_edu' else 'metadata',
                 'label': _v.upper() + ' (Stata split dummy from select_multiple ED16)' if _is_dummy else _v.upper(),
                 'relevant': '', 'constraint': '', 'choice_filter': '',
-                'rounds': {str(r): True for r in range(1, 9)},
+                'rounds': {str(r): True for r in range(1, 10)},
                 'rules_by_round': {k: dict(v) for k, v in _synth_rules_tpl.items()},
             })
     kobo_raw['M02']['variables'] = _m02_kobo_ordered
@@ -736,7 +736,7 @@ if 'M03' in module_tables:
     _M03_NH_VARS = {'nh2', 'nh3', 'nh7', 'nh10', 'nh14', 'nh15', 'nh16', 'nh17', 'n1', 'n3'}
     for _row in module_tables['M03']:
         if _row.get('variable', '').lower() in _M03_NH_VARS:
-            for _r in range(1, 9):
+            for _r in range(1, 10):
                 _row[f'in_R{_r}'] = '✓' if _r in (3, 6) else ''
             _row['first_round'] = 'R3'
 
@@ -762,7 +762,7 @@ if 'M03' in kobo_raw and 'variables' in kobo_raw.get('M03', {}):
 
     _synth_rules = {str(r): {'relevant': None, 'required': False,
                               'constraint': None, 'constraint_message': None}
-                    for r in range(1, 9)}
+                    for r in range(1, 10)}
 
     _m03_kobo_ordered = []
     for _v in _M03_AUTHORITATIVE:
@@ -783,7 +783,7 @@ if 'M03' in kobo_raw and 'variables' in kobo_raw.get('M03', {}):
             _m03_kobo_ordered.append({
                 'name': _v, 'type': 'metadata', 'label': _v.upper(),
                 'relevant': '', 'constraint': '', 'choice_filter': '',
-                'rounds': {str(r): True for r in range(1, 9)},
+                'rounds': {str(r): True for r in range(1, 10)},
                 'rules_by_round': _synth_rules,
             })
     kobo_raw['M03']['variables'] = _m03_kobo_ordered
@@ -896,7 +896,7 @@ if 'M04' in kobo_raw and 'variables' in kobo_raw.get('M04', {}):
 
     _synth_rules = {str(r): {'relevant': None, 'required': False,
                               'constraint': None, 'constraint_message': None}
-                    for r in range(1, 9)}
+                    for r in range(1, 10)}
 
     _m04_kobo_ordered = []
     for _v in _M04_AUTHORITATIVE:
@@ -910,7 +910,7 @@ if 'M04' in kobo_raw and 'variables' in kobo_raw.get('M04', {}):
             _m04_kobo_ordered.append({
                 'name': _v, 'type': 'metadata', 'label': _v.upper(),
                 'relevant': '', 'constraint': '', 'choice_filter': '',
-                'rounds': {str(r): True for r in range(1, 9)},
+                'rounds': {str(r): True for r in range(1, 10)},
                 'rules_by_round': _synth_rules,
             })
     kobo_raw['M04']['variables'] = _m04_kobo_ordered
@@ -1038,7 +1038,7 @@ if 'M05' in kobo_raw and 'variables' in kobo_raw.get('M05', {}):
             _m05_kobo_lookup[_key] = _v
     _synth_rules = {str(r): {'relevant': None, 'required': False,
                               'constraint': None, 'constraint_message': None}
-                    for r in range(1, 9)}
+                    for r in range(1, 10)}
     _m05_kobo_ordered = []
     for _v in _M05_AUTHORITATIVE:
         _key = _v.upper()
@@ -1051,7 +1051,7 @@ if 'M05' in kobo_raw and 'variables' in kobo_raw.get('M05', {}):
             _m05_kobo_ordered.append({
                 'name': _v, 'type': 'metadata', 'label': _v.upper(),
                 'relevant': '', 'constraint': '', 'choice_filter': '',
-                'rounds': {str(r): True for r in range(1, 9)},
+                'rounds': {str(r): True for r in range(1, 10)},
                 'rules_by_round': _synth_rules,
             })
     kobo_raw['M05']['variables'] = _m05_kobo_ordered
@@ -1131,7 +1131,7 @@ if 'M06' in kobo_raw and 'variables' in kobo_raw.get('M06', {}):
             _m06_kobo_lookup[_key] = _v
     _synth_rules = {str(r): {'relevant': None, 'required': False,
                               'constraint': None, 'constraint_message': None}
-                    for r in range(1, 9)}
+                    for r in range(1, 10)}
     _m06_kobo_ordered = []
     for _v in _M06_AUTHORITATIVE:
         _key = _v.upper()
@@ -1144,7 +1144,7 @@ if 'M06' in kobo_raw and 'variables' in kobo_raw.get('M06', {}):
             _m06_kobo_ordered.append({
                 'name': _v, 'type': 'metadata', 'label': _v.upper(),
                 'relevant': '', 'constraint': '', 'choice_filter': '',
-                'rounds': {str(r): True for r in range(1, 9)},
+                'rounds': {str(r): True for r in range(1, 10)},
                 'rules_by_round': _synth_rules,
             })
     kobo_raw['M06']['variables'] = _m06_kobo_ordered
@@ -1231,7 +1231,7 @@ if 'M07' in module_tables:
                       'h16','h16_oth','h17'}
     for _row in module_tables['M07']:
         if _row.get('variable','').lower() in _M07_EXPANSION:
-            for _r in range(1, 9):
+            for _r in range(1, 10):
                 _row[f'in_R{_r}'] = '✓' if _r in (5, 8) else ''
             _row['first_round'] = 'R5'
 
@@ -1247,7 +1247,7 @@ if 'M07' in kobo_raw and 'variables' in kobo_raw.get('M07', {}):
     }
     _synth_rules = {str(r): {'relevant': None, 'required': False,
                               'constraint': None, 'constraint_message': None}
-                    for r in range(1, 9)}
+                    for r in range(1, 10)}
     _m07_kobo_ordered = []
     for _v in _M07_AUTHORITATIVE:
         _key = _v.upper()
@@ -1265,7 +1265,7 @@ if 'M07' in kobo_raw and 'variables' in kobo_raw.get('M07', {}):
             _m07_kobo_ordered.append({
                 'name': _v, 'type': 'metadata', 'label': _v.upper(),
                 'relevant': '', 'constraint': '', 'choice_filter': '',
-                'rounds': {str(r): True for r in range(1, 9)},
+                'rounds': {str(r): True for r in range(1, 10)},
                 'rules_by_round': _synth_rules,
             })
     kobo_raw['M07']['variables'] = _m07_kobo_ordered
@@ -1346,7 +1346,7 @@ if 'M08' in kobo_raw and 'variables' in kobo_raw.get('M08', {}):
             _m08_kobo_lookup[_key] = _v
     _synth_rules = {str(r): {'relevant': None, 'required': False,
                               'constraint': None, 'constraint_message': None}
-                    for r in range(1, 9)}
+                    for r in range(1, 10)}
     _m08_kobo_ordered = []
     for _v in _M08_AUTHORITATIVE:
         _entry = _m08_kobo_lookup.get(_v.upper())
@@ -1358,7 +1358,7 @@ if 'M08' in kobo_raw and 'variables' in kobo_raw.get('M08', {}):
             _m08_kobo_ordered.append({
                 'name': _v, 'type': 'metadata', 'label': _v.upper(),
                 'relevant': '', 'constraint': '', 'choice_filter': '',
-                'rounds': {str(r): True for r in range(1, 9)},
+                'rounds': {str(r): True for r in range(1, 10)},
                 'rules_by_round': _synth_rules,
             })
     kobo_raw['M08']['variables'] = _m08_kobo_ordered
@@ -1445,7 +1445,7 @@ if 'M09' in kobo_raw and 'variables' in kobo_raw.get('M09', {}):
     _M09_KOBO_DROP = {'HIDDEN_SELECT_V9'}
     _synth_rules = {str(r): {'relevant': None, 'required': False,
                               'constraint': None, 'constraint_message': None}
-                    for r in range(1, 9)}
+                    for r in range(1, 10)}
     _m09_kobo_ordered = []
     for _v in _M09_AUTHORITATIVE:
         _entry = _m09_kobo_lookup.get(_v.upper())
@@ -1457,7 +1457,7 @@ if 'M09' in kobo_raw and 'variables' in kobo_raw.get('M09', {}):
             _m09_kobo_ordered.append({
                 'name': _v, 'type': 'metadata', 'label': _v.upper(),
                 'relevant': '', 'constraint': '', 'choice_filter': '',
-                'rounds': {str(r): True for r in range(1, 9)},
+                'rounds': {str(r): True for r in range(1, 10)},
                 'rules_by_round': _synth_rules,
             })
     kobo_raw['M09']['variables'] = _m09_kobo_ordered
@@ -2145,8 +2145,8 @@ const KOBO = """ + KOBO + """;
 const ISSUES = """ + ISSUES + """;
 const ISUM   = """ + ISUM + """;
 
-const ROUNDS = [1,2,3,4,5,6,7,8];
-const RLABELS = {1:'R1 (Nov)',2:'R2 (Dec)',3:'R3 (Jan)',4:'R4 (Feb)',5:'R5 (Mar)',6:'R6 (Apr)',7:'R7 (May)',8:'R8 (Jun)'};
+const ROUNDS = [1,2,3,4,5,6,7,8,9];
+const RLABELS = {1:'R1 (Nov)',2:'R2 (Dec)',3:'R3 (Jan)',4:'R4 (Feb)',5:'R5 (Mar)',6:'R6 (Apr)',7:'R7 (May)',8:'R8 (Jun)',9:'R9 (Jul)'};
 const R_COLORS = ['#3498db','#2ecc71','#e67e22','#e74c3c','#8e44ad'];
 const MODULES = ['M00','M01','M02','M03','M04','M05','M06','M07','M08','M09'];
 const MOD_NAMES = {
@@ -2536,7 +2536,7 @@ function buildOverview(){
     const _ord = {green:0, yellow:1, red:2};
     const _ih = iss.headline || 'green';
     const rag = _ord[_ih] >= _ord[_missSig] ? _ih : _missSig;   // worst of open-issue status + missing%
-    const istrip = [1,2,3,4,5,6,7,8].map(r=>{
+    const istrip = [1,2,3,4,5,6,7,8,9].map(r=>{
       const st = iss.strip[String(r)] || 'green';
       const ch = st==='red' ? '!' : (st==='closed' ? '·' : '');
       return `<span class="idot ${st}" title="R${r}: ${st}">${ch}</span>`;
@@ -2608,8 +2608,8 @@ function countAllQChanges(){
 function buildChangeSummaryBar(){
   const container = document.getElementById('change-summary-bar');
   // Count changes by round
-  const rounds = ['R2','R3','R4','R5','R6','R7','R8'];
-  const prev   = {R2:'R1',R3:'R2',R4:'R3',R5:'R4',R6:'R5',R7:'R6',R8:'R7'};
+  const rounds = ['R2','R3','R4','R5','R6','R7','R8','R9'];
+  const prev   = {R2:'R1',R3:'R2',R4:'R3',R5:'R4',R6:'R5',R7:'R6',R8:'R7',R9:'R8'};
   let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">';
   rounds.forEach(rnd=>{
     let newQ=0,dropped=0,changed=0;
@@ -2617,8 +2617,8 @@ function buildChangeSummaryBar(){
       (MT[m]||[]).forEach(row=>{
         const inC = row[`in_${rnd}`]==='✓';
         const inP = row[`in_${prev[rnd]}`]==='✓';
-        const rIdx = ['R1','R2','R3','R4','R5','R6','R7','R8'].indexOf(rnd);
-        const isFirst = ['R1','R2','R3','R4','R5','R6','R7','R8'].slice(0,rIdx).every(pr=>row[`in_${pr}`]!=='✓');
+        const rIdx = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].indexOf(rnd);
+        const isFirst = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].slice(0,rIdx).every(pr=>row[`in_${pr}`]!=='✓');
         if(inC&&isFirst) newQ++;
         if(!inC&&inP) dropped++;
         if(inC&&inP&&(row.title_changes||row.skip_changes||row.option_changes)) changed++;
@@ -3642,7 +3642,7 @@ function buildPanel(){
       'New Entry → Left': {bg:'#fff3cd', txt:'#856404'},
       'Intermittent':     {bg:'#e2e3e5', txt:'#383d41'},
     };
-    const ROUNDS_DISP = [1,2,3,4,5,6,7,8];
+    const ROUNDS_DISP = [1,2,3,4,5,6,7,8,9];
 
     // Badge
     const matBadge = document.getElementById('hh-matrix-badge');
@@ -3819,14 +3819,14 @@ function buildPanel(){
     // CSV download
     window._hhDownloadCsv=function(){
       const filtered=getFiltered();
-      const header=['hhid','psu','region','region_name','urban_label','R1','R2','R3','R4','R5','R6','R7','R8','days_to_R2','days_to_R3','days_to_R4','days_to_R5','days_to_R6','days_to_R7','days_to_R8','rounds_present','first_round','last_round','status','pattern'];
+      const header=['hhid','psu','region','region_name','urban_label','R1','R2','R3','R4','R5','R6','R7','R8','R9','days_to_R2','days_to_R3','days_to_R4','days_to_R5','days_to_R6','days_to_R7','days_to_R8','days_to_R9','rounds_present','first_round','last_round','status','pattern'];
       const rows=filtered.map(h=>{
         const dg=h.days_gap||{};
         return [
           h.hhid, h.psu, h.region, h.region_name, h.urban_label,
-          h.presence['1'], h.presence['2'], h.presence['3'], h.presence['4'], h.presence['5'], h.presence['6'], h.presence['7'], h.presence['8'],
+          h.presence['1'], h.presence['2'], h.presence['3'], h.presence['4'], h.presence['5'], h.presence['6'], h.presence['7'], h.presence['8'], h.presence['9'],
           dg['2']!=null?dg['2']:'', dg['3']!=null?dg['3']:'', dg['4']!=null?dg['4']:'', dg['5']!=null?dg['5']:'',
-          dg['6']!=null?dg['6']:'', dg['7']!=null?dg['7']:'', dg['8']!=null?dg['8']:'',
+          dg['6']!=null?dg['6']:'', dg['7']!=null?dg['7']:'', dg['8']!=null?dg['8']:'', dg['9']!=null?dg['9']:'',
           h.rounds_present, h.first_round||'', h.last_round||'', h.status, h.pattern
         ];
       });
@@ -4583,8 +4583,8 @@ function renderChanges(){
     MODULES.forEach(m=>{
       (MT[m]||[]).forEach(row=>{
         const inC=row[`in_${rnd}`]==='✓', inP=row[`in_${prevR[rnd]}`]==='✓';
-        const rIdx=['R1','R2','R3','R4','R5','R6','R7','R8'].indexOf(rnd);
-        const isFirst=['R1','R2','R3','R4','R5','R6','R7','R8'].slice(0,rIdx).every(pr=>row[`in_${pr}`]!=='✓');
+        const rIdx=['R1','R2','R3','R4','R5','R6','R7','R8','R9'].indexOf(rnd);
+        const isFirst=['R1','R2','R3','R4','R5','R6','R7','R8','R9'].slice(0,rIdx).every(pr=>row[`in_${pr}`]!=='✓');
         if(inC&&isFirst) changes.push({type:'new',var:row.variable,mod:m,title:row.question_title,text:row.english_text,detail:`First appears in ${rnd}`});
         if(!inC&&inP) changes.push({type:'drop',var:row.variable,mod:m,title:row.question_title,text:row.english_text,detail:`Present in ${prevR[rnd]}, absent in ${rnd}+`});
         if(inC&&inP){
@@ -4772,7 +4772,7 @@ function buildModulePage(mod){
 
   // Per-round question presence counts
   const presCount = {};
-  ['R1','R2','R3','R4','R5','R6','R7','R8'].forEach(r=>{presCount[r]=rows.filter(x=>x[`in_${r}`]==='✓').length});
+  ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].forEach(r=>{presCount[r]=rows.filter(x=>x[`in_${r}`]==='✓').length});
 
   // Build the HTML
   let html = `
@@ -4782,7 +4782,7 @@ function buildModulePage(mod){
       <p class="subtitle">Per-question tracker · Questionnaire changes · Data quality issues</p>
     </div>
     <div class="mod-round-summary">
-      ${['R1','R2','R3','R4','R5','R6','R7','R8'].map(r=>{
+      ${['R1','R2','R3','R4','R5','R6','R7','R8','R9'].map(r=>{
         const n=presCount[r];
         const cls = n===0?'mrs-na':'mrs-ok';
         return `<div class="${cls} mrs-pill">R${r.slice(1)}: ${n}q</div>`;
@@ -4877,7 +4877,7 @@ function buildModulePage(mod){
       <tr>
         <th class="left" style="min-width:80px">Variable</th>
         <th class="left" style="min-width:160px">Question Title</th>
-        ${['R1','R2','R3','R4','R5','R6','R7','R8'].map(r=>`<th style="min-width:42px">${r}</th>`).join('')}
+        ${['R1','R2','R3','R4','R5','R6','R7','R8','R9'].map(r=>`<th style="min-width:42px">${r}</th>`).join('')}
         <th class="left" style="min-width:130px">Changes</th>
         <th class="left" style="min-width:100px">DQ Issues</th>
         <th class="left" style="min-width:90px">Type</th>
@@ -4911,7 +4911,7 @@ function buildModulePage(mod){
     if(dq.oor.length>0) dqTags+=`<span class="dq-inline dq-oor">⚠ OOR</span>`;
 
     // Presence cells
-    const pres = ['R1','R2','R3','R4','R5','R6','R7','R8'].map(r=>{
+    const pres = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'].map(r=>{
       const p = row[`in_${r}`]==='✓';
       return `<td style="text-align:center"><span class="pres ${p?'yes':'no'}">${p?'✓':'—'}</span></td>`;
     }).join('');
@@ -5371,7 +5371,7 @@ function buildModulePage(mod){
 }
 
 function buildDetailPanel(row, dq, mod){
-  const rounds = ['R1','R2','R3','R4','R5','R6','R7','R8'];
+  const rounds = ['R1','R2','R3','R4','R5','R6','R7','R8','R9'];
 
   // English text (most recent)
   const engText = row.english_text||'';
@@ -5482,7 +5482,7 @@ function buildDetailPanel(row, dq, mod){
       <dt>Title</dt><dd>${row.question_title||'—'}</dd>
       <dt>Type</dt><dd>${row.question_type||'—'}</dd>
       <dt>Status</dt><dd>${row.status||'—'}</dd>
-      <dt>Rounds</dt><dd>${['R1','R2','R3','R4','R5','R6','R7','R8'].filter(r=>row[`in_${r}`]==='✓').join(', ')}</dd>
+      <dt>Rounds</dt><dd>${['R1','R2','R3','R4','R5','R6','R7','R8','R9'].filter(r=>row[`in_${r}`]==='✓').join(', ')}</dd>
       ${row.english_text?`<dt>Question Text</dt><dd style="font-style:italic">${engText}</dd>`:''}
       ${row.title_changes?`<dt>Title Change</dt><dd style="color:#856404">${row.title_changes}</dd>`:''}
       ${row.option_changes?`<dt>Option Changes</dt><dd style="color:#4a235a">${row.option_changes}</dd>`:''}
@@ -5615,7 +5615,7 @@ buildOperators();
 </body>
 </html>"""
 
-out = _os.path.join(_OUTPUT, 'l2ph_dq_dashboard.html')
+out = _os.path.join(_OUTPUT, 'l2phl_dq_dashboard.html')
 # Replace placeholders with actual JSON data
 content = HTML
 content = content.replace('""" + DQ   + """', DQ)

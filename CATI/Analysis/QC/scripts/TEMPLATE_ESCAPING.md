@@ -75,7 +75,7 @@ python3 gen_dashboard.py
 
 # Check JS syntax
 python3 -c "
-with open('../output/l2ph_dq_dashboard.html') as f:
+with open('../output/l2phl_dq_dashboard.html') as f:
     content = f.read()
 start = content.find('<script>\n// ── DATA')
 end = content.rfind('</script>')
@@ -91,7 +91,7 @@ If `node --check` prints nothing, the JS is valid. If it prints an error, fix it
 Every item line should have exactly **6 single quotes** (3 pairs for `rounds`, `tag`, `text`):
 ```bash
 # In the output HTML, check MODULE_NOTES items
-sed -n '/const MODULE_NOTES/,/^  };/p' ../output/l2ph_dq_dashboard.html | \
+sed -n '/const MODULE_NOTES/,/^  };/p' ../output/l2phl_dq_dashboard.html | \
   grep "rounds:" | while IFS= read -r line; do
     count=$(echo "$line" | tr -cd "'" | wc -c)
     [ "$count" -ne 6 ] && echo "BAD ($count quotes): $(echo "$line" | head -c 100)"
@@ -104,6 +104,6 @@ sed -n '/const MODULE_NOTES/,/^  };/p' ../output/l2ph_dq_dashboard.html | \
 |------|------|-----------|
 | Data pipeline | `build_dq.py` | Yes (produces `dq_data.json`) |
 | HTML template + all JS | `gen_dashboard.py` | Yes (source of truth) |
-| Output dashboard | `output/l2ph_dq_dashboard.html` | **NO — regenerated, never edit directly** |
+| Output dashboard | `output/l2phl_dq_dashboard.html` | **NO — regenerated, never edit directly** |
 
 **ALL customizations must be in `gen_dashboard.py`.** The output HTML is disposable.

@@ -3,7 +3,7 @@
 Automated QC pipeline for the **L2PHL (Project TIPON) CATI Panel Survey** (Rounds 1–5+).
 
 Generates two outputs from the actual project data:
-- **`output/l2ph_dq_dashboard.html`** — interactive data quality dashboard
+- **`output/l2phl_dq_dashboard.html`** — interactive data quality dashboard
 - **`output/L2PHL_Questionnaire_Cross_Round_Report.xlsx`** — cross-round questionnaire comparison
 
 ---

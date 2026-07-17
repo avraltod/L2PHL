@@ -30,7 +30,7 @@ _QC      = os.path.dirname(_SCRIPTS)
 _HF      = os.path.join(os.path.dirname(_QC), 'HF')
 _CACHE   = os.path.join(_QC, 'cache')
 
-ROUNDS = [1, 2, 3, 4, 5, 6, 7, 8]
+ROUNDS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 DUR_FAST   = 5      # minutes — suspiciously short
 DUR_VFAST  = 10     # minutes — very fast (flag)
 DUR_SLOW   = 90     # minutes — suspiciously long

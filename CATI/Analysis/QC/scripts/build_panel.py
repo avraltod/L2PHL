@@ -22,7 +22,7 @@ import json, sys
 import pandas as pd
 import numpy as np
 
-ROUNDS = [1, 2, 3, 4, 5, 6, 7, 8]
+ROUNDS = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 URBAN_TARGET  = 6   # HH per urban PSU
 RURAL_TARGET  = 7   # HH per rural PSU
 
@@ -833,7 +833,7 @@ def main():
                              .head(20)
                              .to_dict(orient='records'))
 
-    always_in  = int((pivot['rounds_present'] == 5).sum())
+    always_in  = int((pivot['rounds_present'] == len(ROUNDS)).sum())
     r1_only    = int(((pivot[1]==1) & (pivot['rounds_present']==1)).sum())
     never_r1   = int((pivot[1]==0).sum())
     all_hhs    = len(pivot)
@@ -878,7 +878,7 @@ def main():
         last_r  = max(participated) if participated else None
 
         # Status label
-        if row['rounds_present'] == 5:
+        if row['rounds_present'] == len(ROUNDS):
             status = 'All Rounds'
         elif first_r == 1 and last_r == max(ROUNDS):
             status = 'Intermittent'

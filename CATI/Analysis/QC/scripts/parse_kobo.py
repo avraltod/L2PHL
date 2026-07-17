@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Parse all 5 L2PHL CATI Kobo XLSForm files and extract skip logic, mandatory, constraint rules.
+Parse all L2PHL CATI Kobo XLSForm files (R1-R9) and extract skip logic, mandatory, constraint rules.
 Output: kobo_skip_logic.json with comprehensive variable-by-round mapping.
 Handles nested groups properly by tracking the group stack.
 """
@@ -21,7 +21,8 @@ KOBO_FILES = {
     "5": f"{_KOBO_DIR}/L2PHL_CATI_R05.xlsx",
     "6": f"{_KOBO_DIR}/L2PHL_CATI_R06.xlsx",
     "7": f"{_KOBO_DIR}/L2PHL_CATI_R07.xlsx",
-    "8": f"{_KOBO_DIR}/L2PHL_CATI_R08.xlsx",  # R8 = R07 clone (assumption; replace when firm exports real R08 XLSForm)
+    "8": f"{_KOBO_DIR}/L2PHL_CATI_R08.xlsx",  # real R08 XLSForm (firm export)
+    "9": f"{_KOBO_DIR}/L2PHL_CATI_R09.xlsx",  # real R09 XLSForm (firm export, 06Jul2026)
 }
 
 # Top-level group name → Module mapping
