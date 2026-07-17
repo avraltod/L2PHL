@@ -112,7 +112,7 @@ def build_cover(wb):
 
     ws.merge_cells('B3:C3')
     c = ws['B3']
-    c.value = 'Rounds R1 (Nov 2025) – R5 (Mar 2026)  |  Modules M00–M09'
+    c.value = f'Rounds {ROUND_LABELS[ROUNDS[0]]} – {ROUND_LABELS[ROUNDS[-1]]}  |  Modules M00–M09'
     c.font = Font(name=FONT_NAME, size=12, color='FFFFFF', italic=True)
     c.fill = fill(CLR_HEADER_MID)
     c.alignment = Alignment(horizontal='left', vertical='center')
@@ -158,7 +158,7 @@ def build_cover(wb):
 
     legend = [
         (CLR_NEW,        'New question (not in R1)'),
-        (CLR_DROPPED,    'Question dropped before R5'),
+        (CLR_DROPPED,    'Question dropped in a later round'),
         (CLR_CHANGED,    'Variable changed across rounds'),
         (CLR_CONSISTENT, 'Consistent across all rounds'),
         (CLR_PRESENT,    '✓  Present in this round'),
@@ -268,44 +268,46 @@ def build_module_sheet(wb, mod):
     ws.sheet_view.showGridLines = False
     ws.freeze_panes = 'D5'
 
+    # ── Dynamic column layout (round-count driven: R1..R{n}) ──────────
+    n_r = len(ROUNDS)
+    pres_start = 4                       # first per-round presence column
+    pres_end = 3 + n_r                   # last per-round presence column
+    ncol = 3 + n_r + 10                  # total columns
+    last_L = get_column_letter(ncol)
+    first_r, last_r = ROUNDS[0], ROUNDS[-1]
+
     # Title row
-    ws.merge_cells('A1:R1')
+    ws.merge_cells(f'A1:{last_L}1')
     c = ws['A1']
-    c.value = f'{mod} – {mod_name}  |  Cross-Round Variable Tracker  (R1–R5)'
+    c.value = f'{mod} – {mod_name}  |  Cross-Round Variable Tracker  ({first_r}–{last_r})'
     c.font = Font(name=FONT_NAME, bold=True, size=13, color='FFFFFF')
     c.fill = fill(CLR_HEADER_DARK)
     c.alignment = Alignment(horizontal='left', vertical='center', indent=1)
     ws.row_dimensions[1].height = 28
 
-    # Sub-header row: round dates
-    dates_row = ['','','','R1\nNov 2025','R2\nDec 2025','R3\nJan 2026','R4\nFeb 2026','R5\nMar 2026','','','','','','','','','','']
+    # Sub-header row 2: per-round date labels across the presence block
     ws.row_dimensions[2].height = 32
-    for ci, val in enumerate(dates_row[:18], 1):
-        cell = ws.cell(row=2, column=ci, value=val)
-        if val.startswith('R'):
-            style_cell(cell, bold=True, size=10, color='FFFFFF', bg=CLR_HEADER_MID, h_align='center', v_align='center', wrap=True)
-        else:
-            cell.fill = fill('EEF3FB')
+    for idx, rnd in enumerate(ROUNDS):
+        disp = ROUND_LABELS.get(rnd, rnd).replace(' (', '\n').replace(')', '')
+        cell = ws.cell(row=2, column=pres_start + idx, value=disp)
+        style_cell(cell, bold=True, size=9, color='FFFFFF', bg=CLR_HEADER_MID,
+                   h_align='center', v_align='center', wrap=True)
+    for ci in list(range(1, pres_start)) + list(range(pres_end + 1, ncol + 1)):
+        ws.cell(row=2, column=ci).fill = fill('EEF3FB')
 
-    # Merge presence header over R1-R5
-    ws.merge_cells('D2:H2')
-
-    # Column headers
-    ws.row_dimensions[3].height = 36
-    headers = [
-        'Variable', 'Question Title', 'Status',
-        'R1', 'R2', 'R3', 'R4', 'R5',
-        'Question Text (English)', 'Question Type',
-        '# Codes R1', '# Codes R5',
-        'Title / Wording Change', 'Skip Logic Change',
-        'Skip Logic (R1)', 'Skip Logic (R5)',
-        'Data Check Notes (R5)', 'Remarks'
-    ]
-    write_header_row(ws, 3, headers, bg=CLR_HEADER_MID, size=9)
+    # Column headers (row 3)
     ws.row_dimensions[3].height = 40
+    headers = (['Variable', 'Question Title', 'Status']
+               + list(ROUNDS)
+               + ['Question Text (English)', 'Question Type',
+                  f'# Codes {first_r}', f'# Codes {last_r}',
+                  'Title / Wording Change', 'Skip Logic Change',
+                  f'Skip Logic ({first_r})', f'Skip Logic ({last_r})',
+                  f'Data Check Notes ({last_r})', 'Remarks'])
+    write_header_row(ws, 3, headers, bg=CLR_HEADER_MID, size=9)
 
     # Column widths
-    col_widths = [12, 35, 18, 5, 5, 5, 5, 5, 50, 16, 9, 9, 42, 30, 35, 35, 40, 35]
+    col_widths = [12, 35, 18] + [5] * n_r + [50, 16, 9, 9, 42, 30, 35, 35, 40, 35]
     for ci, w in enumerate(col_widths, 1):
         ws.column_dimensions[get_column_letter(ci)].width = w
 
@@ -334,42 +336,40 @@ def build_module_sheet(wb, mod):
 
         ws.row_dimensions[data_row].height = 40
 
-        # Get skip logic for R1 and R5
-        skip_r1 = row.get('skip_r1','')
-        skip_r5 = row.get('skip_r5','') or row.get('skip_r4','') or row.get('skip_r3','')
+        # Skip logic: first round, and the latest available round
+        skip_first = row.get(f'skip_{first_r.lower()}', '')
+        skip_last = ''
+        for rnd in reversed(ROUNDS):
+            v = row.get(f'skip_{rnd.lower()}', '')
+            if v:
+                skip_last = v; break
+        # Data check: latest available round
+        data_check = ''
+        for rnd in reversed(ROUNDS):
+            v = row.get(f'data_check_{rnd.lower()}', '')
+            if v:
+                data_check = v; break
 
-        # Get data check from R5 (most complete)
-        data_check = row.get('data_check_r5','') or row.get('data_check_r4','') or row.get('data_check_r3','')
+        row_vals = ([row.get('variable',''), row.get('question_title',''), status]
+                    + [row.get(f'in_{rnd}', '') for rnd in ROUNDS]
+                    + [row.get('english_text',''), row.get('question_type',''),
+                       row.get(f'codes_{first_r.lower()}','') or '',
+                       row.get(f'codes_{last_r.lower()}','') or '',
+                       row.get('title_changes',''), row.get('skip_changes',''),
+                       skip_first, skip_last, data_check, row.get('remarks','')])
 
-        row_vals = [
-            row.get('variable',''),
-            row.get('question_title',''),
-            status,
-            row.get('in_R1',''),
-            row.get('in_R2',''),
-            row.get('in_R3',''),
-            row.get('in_R4',''),
-            row.get('in_R5',''),
-            row.get('english_text',''),
-            row.get('question_type',''),
-            row.get('codes_r1','') if row.get('codes_r1','') else '',
-            row.get('codes_r5','') if row.get('codes_r5','') else '',
-            row.get('title_changes',''),
-            row.get('skip_changes',''),
-            skip_r1,
-            skip_r5,
-            data_check,
-            row.get('remarks',''),
-        ]
+        center_cols = {1, 3} | set(range(pres_start, pres_end + 1)) | {pres_end + 3, pres_end + 4}
+        chg_cols = {pres_end + 5, pres_end + 6}
+        datacheck_col = pres_end + 9
 
         for ci, val in enumerate(row_vals, 1):
             cell = ws.cell(row=data_row, column=ci, value=val)
-            h = 'center' if ci in (1, 3, 4, 5, 6, 7, 8, 11, 12) else 'left'
-            wrap = ci not in (1, 2, 3, 4, 5, 6, 7, 8, 11, 12)
+            h = 'center' if ci in center_cols else 'left'
+            wrap = ci not in center_cols and ci != 1
             style_cell(cell, size=9, bg=row_bg, h_align=h, v_align='top', wrap=wrap)
 
             # Presence cells: color individually
-            if ci in (4, 5, 6, 7, 8):
+            if pres_start <= ci <= pres_end:
                 if val == '✓':
                     cell.fill = fill(CLR_PRESENT)
                     cell.font = Font(name=FONT_NAME, bold=True, size=11, color='006100')
@@ -395,12 +395,12 @@ def build_module_sheet(wb, mod):
                     cell.font = Font(name=FONT_NAME, size=9, color='404040')
 
             # Highlight changes
-            if ci in (13, 14) and val:
+            if ci in chg_cols and val:
                 cell.fill = fill('FFF2CC')
                 cell.font = Font(name=FONT_NAME, size=9, color='7F4F00', italic=True)
 
             # Data check notes: highlight
-            if ci == 17 and val:
+            if ci == datacheck_col and val:
                 cell.fill = fill('EAF2FF')
                 cell.font = Font(name=FONT_NAME, size=9, color='003366', italic=True)
 
@@ -408,22 +408,27 @@ def build_module_sheet(wb, mod):
 
     # Add a "DO-file variables" section at the bottom
     data_row += 1
-    ws.merge_cells(f'A{data_row}:R{data_row}')
-    c = ws.cell(row=data_row, column=1, value=f'DO-FILE VARIABLE DETAILS (destring/generate operations per round)')
+    ws.merge_cells(f'A{data_row}:{last_L}{data_row}')
+    c = ws.cell(row=data_row, column=1, value='DO-FILE VARIABLE DETAILS (destring/generate operations per round)')
     c.font = Font(name=FONT_NAME, bold=True, size=10, color='FFFFFF')
     c.fill = fill(CLR_HEADER_DARK)
     c.alignment = Alignment(horizontal='left', vertical='center', indent=1)
     ws.row_dimensions[data_row].height = 20
     data_row += 1
 
-    # Headers for do-file section
-    do_headers = ['Round', 'Variables processed (destring/tostring)', 'Generated variables', 'Notes']
-    for ci, h in enumerate(do_headers, 1):
-        cell = ws.cell(row=data_row, column=ci, value=h)
-        style_cell(cell, bold=True, size=9, bg=CLR_SUBHEADER, h_align='left')
-    ws.merge_cells(f'B{data_row}:J{data_row}')
-    ws.merge_cells(f'K{data_row}:N{data_row}')
-    ws.merge_cells(f'O{data_row}:R{data_row}')
+    # Headers for do-file section (dynamic column bands)
+    var_end = pres_end + 2
+    gen_start, gen_end = pres_end + 3, pres_end + 6
+    notes_start = pres_end + 7
+    ws.cell(row=data_row, column=1, value='Round')
+    ws.cell(row=data_row, column=2, value='Variables processed (destring/tostring)')
+    ws.cell(row=data_row, column=gen_start, value='Generated variables')
+    ws.cell(row=data_row, column=notes_start, value='Notes')
+    for cc in (1, 2, gen_start, notes_start):
+        style_cell(ws.cell(row=data_row, column=cc), bold=True, size=9, bg=CLR_SUBHEADER, h_align='left')
+    ws.merge_cells(f'{get_column_letter(2)}{data_row}:{get_column_letter(var_end)}{data_row}')
+    ws.merge_cells(f'{get_column_letter(gen_start)}{data_row}:{get_column_letter(gen_end)}{data_row}')
+    ws.merge_cells(f'{get_column_letter(notes_start)}{data_row}:{last_L}{data_row}')
     ws.row_dimensions[data_row].height = 18
     data_row += 1
 
@@ -440,21 +445,21 @@ def build_module_sheet(wb, mod):
 
         cell2 = ws.cell(row=data_row, column=2, value=', '.join(destr_vars[:30]) + ('...' if len(destr_vars)>30 else ''))
         style_cell(cell2, size=9, bg=bg, wrap=True)
-        ws.merge_cells(f'B{data_row}:J{data_row}')
+        ws.merge_cells(f'{get_column_letter(2)}{data_row}:{get_column_letter(var_end)}{data_row}')
 
         gen_str = ', '.join([g['var'] for g in gen_vars[:20]]) if gen_vars else ''
-        cell3 = ws.cell(row=data_row, column=11, value=gen_str)
+        cell3 = ws.cell(row=data_row, column=gen_start, value=gen_str)
         style_cell(cell3, size=9, bg=bg, wrap=True)
-        ws.merge_cells(f'K{data_row}:N{data_row}')
+        ws.merge_cells(f'{get_column_letter(gen_start)}{data_row}:{get_column_letter(gen_end)}{data_row}')
 
         # Notes about differences
         q_vars = set(q['qnum'].lower() for q in all_qs.get(rnd, {}).get(mod, []))
         do_vars_set = set(destr_vars)
         in_do_not_q = sorted(do_vars_set - q_vars)[:15]
         note = ('Raw/derived only: ' + ', '.join(in_do_not_q)) if in_do_not_q else 'Matches questionnaire'
-        cell4 = ws.cell(row=data_row, column=15, value=note)
+        cell4 = ws.cell(row=data_row, column=notes_start, value=note)
         style_cell(cell4, size=9, bg=bg, wrap=True, italic=bool(in_do_not_q))
-        ws.merge_cells(f'O{data_row}:R{data_row}')
+        ws.merge_cells(f'{get_column_letter(notes_start)}{data_row}:{last_L}{data_row}')
 
         data_row += 1
 
@@ -467,7 +472,7 @@ def build_changes_sheet(wb):
 
     ws.merge_cells('A1:H1')
     c = ws['A1']
-    c.value = 'L2PHL CATI – All Questionnaire Changes by Round (R2–R5 vs Previous)'
+    c.value = f'L2PHL CATI – All Questionnaire Changes by Round (R2–{ROUNDS[-1]} vs Previous)'
     c.font = Font(name=FONT_NAME, bold=True, size=13, color='FFFFFF')
     c.fill = fill(CLR_HEADER_DARK)
     c.alignment = Alignment(horizontal='left', vertical='center', indent=1)
