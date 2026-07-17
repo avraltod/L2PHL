@@ -1,1 +1,131 @@
 % 11_annex_a
+
+\parttitle{Annex A: Replicability Package}
+
+This annex lists the key scripts and folders by workflow stage. All paths are
+relative to the repository root. Running each stage in sequence reproduces the
+processing, weights, quality control, and deliverables of the survey: the
+baseline (CAPI) pipeline, the per-round panel (CATI) processing, the quality
+control pipeline, and the storyline, dashboard, and deep-dive products.
+
+\section{Replication by Stage}
+
+\subsection{Baseline (CAPI)}
+
+The baseline is processed by four numbered do-files in \rd{CAPI/Round00/do/},
+run in order. Each stage reads the output of the prior stage; inputs only ever
+flow forward.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}llp{6.2cm}@{}}
+\toprule
+\textbf{Stage} & \textbf{Script} & \textbf{Purpose} \\
+\midrule
+1 & \rd{1_L2PHL_CAPI_R00_stg2raw@AP@20260407.do} &
+    Assemble the field-server staging exports into a raw dataset. \\
+2 & \rd{2_L2PHL_CAPI_R00_raw2dta@AP@20260407.do} &
+    Clean and label the raw data into module datasets. \\
+3 & \rd{3_L2PHL_CAPI_R00_psu2wgt@AP@20260407.do} &
+    Build the sampling design and compute the survey weights (indw, hhw). \\
+4 & \rd{4_L2PHL_CAPI_R00_dta2smp@AP@20260407.do} &
+    Produce the analysis-ready sample datasets. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Survey-to-Survey (S2S) income imputation is a separate baseline product; its
+scripts and datasets live in \rd{CAPI/S2S/} and link imputed income to the
+baseline records for the income-quintile and region breakdowns.
+
+\subsection{Panel (CATI) --- Per-Round Processing}
+
+Each round is processed in its own round folder, one per delivery, from
+\rd{CATI/Round01/} through \rd{CATI/Round09/}. A round folder holds that
+round's raw delivery, processing do-file, and fixes. The processed rounds are
+then pooled into the high-frequency masters and analyzed centrally.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lp{7.2cm}@{}}
+\toprule
+\textbf{Folder} & \textbf{Contents} \\
+\midrule
+\rd{CATI/Round01/} \ldots \rd{CATI/Round09/} &
+    Per-round processing: raw delivery, round do-file, and fixes. \\
+\rd{CATI/Analysis/HF/} &
+    Pooled high-frequency panel masters (individual and household), rebuilt when
+    a round is added or re-pooled. \\
+\rd{CATI/Analysis/do/} &
+    Central panel analysis do-file
+    (\rd{hf_l2phl_analysis@AP@20260709.do}) run over the pooled masters. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Quality Control Pipeline}
+
+\begin{sloppypar}
+One entry point regenerates the data-quality outputs. The orchestrator
+\rd{CATI/Analysis/QC/update_pipeline.py} runs the build and check scripts in
+\rd{CATI/Analysis/QC/scripts/} against the pooled masters and writes the
+dashboard and cross-round report to \rd{CATI/Analysis/QC/output/}.
+\end{sloppypar}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Script} & \textbf{Role} \\
+\midrule
+\rd{build_dq.py}          & Runs the data-quality checks on the pooled masters. \\
+\rd{build_panel.py}       & Builds the household participation and attrition tracker. \\
+\rd{build_interviewer.py} & Summarizes interviewer/operator performance. \\
+\rd{parse_kobo.py}        & Extracts skip logic from the Kobo XLSForms. \\
+\rd{build_issues.py}      & Assembles the tracked data-quality issues. \\
+\rd{gen_dashboard.py}     & Renders the HTML dashboard from the cache. \\
+\rd{build_report.py}      & Builds the Excel cross-round questionnaire report. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Storylines, Dashboards, and Deep Dives}
+
+The analytical products read the finished datasets and present the results. The
+baseline dashboard is built in \rd{CAPI/Analysis/DB/}, the baseline storyline in
+\rd{CAPI/Analysis/SL/}, and the ten thematic deep dives in
+\rd{CAPI/Analysis/DD/}. The panel storyline is built under
+\rd{CATI/Analysis/SL/}. Each folder holds the do-files or code, results, and the
+self-contained HTML deliverable for its product.
+
+\begin{refbox}
+Deliverable workstreams:\\
+\rd{CAPI/Analysis/DB/} --- baseline dashboard\\
+\rd{CAPI/Analysis/SL/} --- baseline storyline\\
+\rd{CAPI/Analysis/DD/} --- ten thematic deep dives\\
+\rd{CATI/Analysis/SL/} --- panel storyline
+\end{refbox}
+
+\section{Key Conventions}
+
+The pipeline follows a small set of conventions so that any stage can be located
+and re-run without ambiguity:
+
+\begin{itemize}
+  \item \textbf{Date-stamped folders and files:} working outputs carry a
+        \verb|YYYYMMDD| stamp, so the version used in a run is unambiguous.
+  \item \textbf{\rd{@AP@} do-file naming, one live file per slot:} each logical
+        role has exactly one live file, the latest-dated \verb|@AP@| version;
+        superseded files move to a local \rd{_attic/} folder.
+  \item \textbf{Three-stage flow:} raw $\rightarrow$ cleaned/weighted
+        $\rightarrow$ analysis. Inputs only ever flow forward; a later stage
+        never writes back to an earlier one.
+  \item \textbf{Forward-slash paths:} all paths are written with forward slashes,
+        relative to the repository root, so they resolve on any platform.
+  \item \textbf{Raw data never modified in place:} raw snapshots are preserved
+        for audit; cleaning and fixes are applied downstream, never to the raw
+        delivery.
+\end{itemize}
