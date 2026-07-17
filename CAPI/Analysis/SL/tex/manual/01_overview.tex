@@ -1,1 +1,57 @@
 % 01_overview
+
+\section*{Overview}
+
+This manual follows the repository layout, moving through the survey lifecycle in
+the order the folders present it. The CAPI baseline is frozen, while the CATI
+panel rolls forward with each new round. The QC dashboard and the weighting
+procedures receive the deepest treatment because they are the live,
+hand-over-critical workstreams that a new team must be able to run without
+supervision.
+
+\subsection*{Project Folder Structure}
+
+\begin{refbox}
+{\footnotesize
+\begin{verbatim}
+L2PHL/
+|-- CAPI/
+|   |-- Analysis/   (DB dashboard . DD 10 deep dives . SL storyline . SSB)
+|   |-- Round00/    (baseline processing: do/, fix/, doc/)
+|   \-- S2S/        (survey-to-survey income imputation)
+|-- CATI/
+|   |-- Analysis/   (QC pipeline . SL storyline . HF masters . do/ . 2share)
+|   |-- KOBO/       (XLSForms R01-R09, skip-logic ground truth)
+|   |-- Questionnaire/
+|   |-- Field Reports/   (8 Field Documentation Summaries)
+|   \-- Round01-Round09/ (per-round processing)
+|-- docs/           (specs, plans)
+\-- .claude/        (rules, docs, skills)
+\end{verbatim}
+}
+\end{refbox}
+
+\subsection*{Survey at a Glance}
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}p{2.1cm}p{2.3cm}p{2.6cm}p{2.4cm}>{\raggedright\arraybackslash}p{3.9cm}@{}}
+\toprule
+\textbf{Component} & \textbf{Mode} & \textbf{N} & \textbf{Fieldwork} & \textbf{Key design features} \\
+\midrule
+Baseline & CAPI (face-to-face) & 2,470 HH /\newline 10,496 persons & Sep--Oct 2025 &
+Two-stage stratified PPS; 247 PSUs; 39 strata; sampling frame for CATI \\
+\addlinespace
+Panel R1--R9 & CATI (phone) & \textasciitilde1,100 per round & Nov 2025--Jul 2026 &
+Baseline-household panel; attrition + replenishment; per-round recalibrated weights \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Round dates are R1 25 Nov 2025 $\cdot$ R2 28 Dec 2025 $\cdot$ R3 28 Jan 2026
+$\cdot$ R4 28 Feb 2026 $\cdot$ R5 30 Mar 2026 $\cdot$ R6 29 Apr 2026 $\cdot$ R7
+20 May 2026 $\cdot$ R8 26 Jun 2026 $\cdot$ R9 July 2026. Round 9 fieldwork is in
+progress at the time of writing (558 households as of mid-July 2026), and its
+figures should be read as provisional.
