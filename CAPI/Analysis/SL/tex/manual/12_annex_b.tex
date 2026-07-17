@@ -1,1 +1,93 @@
 % 12_annex_b
+
+\parttitle{Annex B: Turnover Questions --- Answered}
+
+This annex answers, in the firm's own grouping, each question raised for the
+turnover meeting, with a short answer and a pointer to the section that covers
+it in full.
+
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{5.1cm} >{\raggedright\arraybackslash}p{7.4cm} >{\raggedright\arraybackslash}p{2.2cm}}
+\toprule
+\textbf{Question} & \textbf{Short answer} & \textbf{See} \\
+\midrule
+\endhead
+\multicolumn{3}{@{}l}{\textbf{Quality Checks}} \\
+Will we keep access to the QC Flags Dashboard after turnover? &
+The dashboard is a self-contained HTML regenerated from the repository pipeline;
+the receiving team runs and owns it going forward, with no external dependency. &
+Part IV; Annex C \\[0.4em]
+Will our team own creating and maintaining the QC dashboard? Please walk us
+through it. &
+Yes. The full generate-and-maintain process --- architecture, the one-command
+run, and the maintenance playbook --- is documented in Part IV. &
+Part IV \\[0.4em]
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Data Processing --- Weighting}} \\
+Where does \texttt{target\_hh\_imputed.dta} come from, and what is its purpose
+in weighting? &
+It is the survey-to-survey (S2S) income-imputation product (per-capita imputed
+income), copied to the high-frequency R00 folder and merged onto the baseline
+weight file by household id for income-quintile breakdowns; it is not a
+component of weight construction. &
+Part II (Income Imputation); Part III (Weighting) \\[0.4em]
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Dashboard}} \\
+What edits are needed when a new round of data is uploaded, and how do they
+reach the dashboard? &
+Bump the round-count constant in four build scripts, register the round's Kobo
+form in \texttt{parse\_kobo} and \texttt{update\_pipeline}, then run the
+pipeline; the worked Round~9 example is in the playbook. &
+Part IV (Playbook) \\[0.4em]
+For rounds with new or removed questions, what edits are needed? &
+Update the module's authoritative variable list and heatmap in
+\texttt{build\_dq} and the standardization in \texttt{gen\_dashboard}; the Kobo
+form is the ground truth for what exists in a round. &
+Part IV (Playbook) \\[0.4em]
+How can we efficiently update dashboard filters when questionnaire logic
+changes? &
+Register the new Kobo form; \texttt{parse\_kobo} folds each variable's enclosing
+relevant condition into the variable automatically, so the skip-logic panel and
+gated checks update on re-run. &
+Part IV (Playbook) \\[0.4em]
+What is the full process from data preparation to final dashboard output? &
+A single command, \texttt{update\_pipeline.py -{}-all}, runs the ordered
+pipeline from the pooled data to the HTML dashboard and the Excel cross-round
+report. &
+Part IV (Architecture) \\[0.4em]
+\midrule
+\multicolumn{3}{@{}l}{\textbf{Other}} \\
+How can we trace a number on the dashboard back to the source data? &
+Follow the chain do-file to Stata log to Excel to HTML; on the dashboard, trace
+the panel value through the cache JSON to the check in \texttt{build\_dq} and
+the underlying .dta variable. A cross-checker helper automates this. &
+Part IV (Verifying) \\[0.4em]
+How can we verify a flag is a real issue and not just a filtering-condition
+problem? &
+Checks are gated by the Kobo relevant condition; compare any surprising flag
+against the skip logic and preload gating first, using the issue-classification
+categories. &
+Part IV (Verifying) \\[0.4em]
+Can the dashboard monitor fieldwork progress and data quality in real time? &
+Yes; re-running the pipeline on the latest masters refreshes completion counts
+and flags mid-round, so it doubles as a live fieldwork monitor. &
+Part IV (Verifying) \\[0.4em]
+Which files should we modify most often? &
+\texttt{build\_dq.py} (checks), \texttt{gen\_dashboard.py} (rendering),
+\texttt{parse\_kobo.py} (skip logic), and \texttt{update\_pipeline.py} (round
+registration). &
+Part IV (Conventions) \\[0.4em]
+Are there coding standards or naming conventions we should follow? &
+Yes --- the \texttt{@AP@} do-file naming with one live file per slot,
+superseded files archived to \texttt{\_attic}, and forward-slash paths. &
+Part IV (Conventions); Annex A \\[0.4em]
+What are the most common causes of incorrect flags or counts, and the most
+frequent dashboard issues? &
+Cross-module variables absent from the pooled data, preload-gated variables,
+module items introduced mid-panel, renamed or derived variables, and partial
+in-progress rounds read as attrition. &
+Part IV (Verifying) \\
+\bottomrule
+\end{longtable}
+\normalsize
