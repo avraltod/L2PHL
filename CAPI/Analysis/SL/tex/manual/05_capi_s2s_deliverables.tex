@@ -106,13 +106,8 @@ are published on GitHub Pages at \url{https://avraltod.github.io/L2PHL/}.
 \subsection{Production and Rebuild Pipeline}
 
 Each deliverable is generated from a Stata do-file that writes results to
-a machine-readable results file (\texttt{.md} or JSON), which a build
+a machine-readable results file (Markdown or JSON), which a build
 step then renders into a single self-contained HTML page (Chart.js via
 CDN, Google Fonts). The storyline-rebuild and replication-audit workflows
 regenerate a chapter from fresh Stata output, so the reported numbers
 stay traceable back to the microdata.
-
-\begin{refbox}
-\rd{.claude/docs/storyline-update-workflow.md} --- storyline rebuild and
-update workflow.
-\end{refbox}
