@@ -1,1 +1,93 @@
 % 06_cati_design_quest
+\parttitle{Part III: High-Frequency Panel Survey (CATI)}
+
+The high-frequency panel is the follow-up phase of the survey. Where the baseline
+provides a single, once-off portrait of the population, the CATI panel is a monthly
+telephone survey of the baseline households that tracks fast-moving conditions in the
+months between rounds. It trades the breadth and depth of the face-to-face baseline for
+frequency, allowing the programme to monitor how households experience shocks, income
+changes, and food security as they unfold rather than only at a single point in time.
+
+\section{Panel Design}
+
+The CATI sample follows the baseline households by phone. Rounds R1 through R9 run
+monthly from November 2025 to July 2026, giving a rolling monthly reading on the same
+population that the baseline measured once.
+
+The panel is an \emph{attrition-plus-replenishment} design; it is not a closed cohort.
+Households drop out across rounds as phone numbers go stale or respondents decline, and
+new households enter to keep the achieved sample near target. The round-to-round sample
+is therefore a mix of stayers (households present in consecutive rounds), leavers
+(households that drop out), and new entrants (households added in later rounds). Any
+round-over-round comparison must account for this composition rather than assume the same
+households throughout.
+
+The pooled, harmonized masters that the analysis and quality-control pipeline read live
+in the high-frequency working directory. Two spine files carry the survey weights, and one
+pooled file per module carries the harmonized responses across all rounds.
+
+\begin{refbox}
+Panel spine masters (person-round and household-round):\\
+\rd{CATI/Analysis/HF/l2phl_cati_individual.dta} (holds the individual weight)\\
+\rd{CATI/Analysis/HF/l2phl_cati_household.dta} (holds household and population weights)\\[4pt]
+Per-module pooled masters (M00--M09):\\
+\rd{CATI/Analysis/HF/l2phl_M00_passport.dta}\\
+\rd{CATI/Analysis/HF/l2phl_M01_roster.dta}\\
+\rd{CATI/Analysis/HF/l2phl_M02_education.dta}\\
+\rd{CATI/Analysis/HF/l2phl_M03_shock.dta}\\
+\rd{CATI/Analysis/HF/l2phl_M04_employment.dta}\\
+\rd{CATI/Analysis/HF/l2phl_M05_income.dta}\\
+\rd{CATI/Analysis/HF/l2phl_M06_finance.dta}\\
+\rd{CATI/Analysis/HF/l2phl_M07_health.dta}\\
+\rd{CATI/Analysis/HF/l2phl_M08_food_nonfood.dta}\\
+\rd{CATI/Analysis/HF/l2phl_M09_views.dta}
+\end{refbox}
+
+\section{Questionnaire and Round-Specific Modules}
+
+The CATI instrument has ten modules. It reuses the baseline module structure but is
+shorter, since a telephone interview cannot carry the full baseline battery.
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Module} & \textbf{Name} \\
+\midrule
+M00 & Passport \\
+M01 & Roster \\
+M02 & Education \\
+M03 & Shocks \\
+M04 & Employment \\
+M05 & Income \\
+M06 & Finance \\
+M07 & Health \\
+M08 & Food / FIES \\
+M09 & Views \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Some blocks are round-specific or rotating rather than fixed across all rounds. The health
+module (M07) carries only a short set of items in most rounds but has a full expansion in
+Rounds 5 and 8. A Middle-East situation block appears within the Views module (M09) in
+Rounds 6 through 8. Finance bank and mobile-money gate questions are introduced from Round
+5 onward. Because of this evolution, the per-round Kobo XLSForms are the ground truth for
+exactly which questions exist in each round, and any analysis of a single variable should
+confirm its presence round by round against the relevant form.
+
+\begin{sloppypar}
+\begin{refbox}
+Per-round Kobo XLSForms (ground truth for round-specific content), in \rd{CATI/KOBO/}:\\
+\rd{CATI/KOBO/L2PHL_CATI_R01.xlsx}\\
+\rd{CATI/KOBO/L2PHL_CATI_R02.xlsx}\\
+\rd{CATI/KOBO/L2PHL_CATI_R03.xlsx}\\
+\rd{CATI/KOBO/L2PHL_CATI_R04.xlsx}\\
+\rd{CATI/KOBO/L2PHL_CATI_R05.xlsx}\\
+\rd{CATI/KOBO/L2PHL_CATI_R06.xlsx}\\
+\rd{CATI/KOBO/L2PHL_CATI_R07.xlsx}\\
+\rd{CATI/KOBO/L2PHL_CATI_R08.xlsx}\\
+\rd{CATI/KOBO/L2PHL_CATI_R09.xlsx}\\[4pt]
+Pipeline reference documentation:\\
+\rd{.claude/docs/qc-pipeline.md}
+\end{refbox}
+\end{sloppypar}
