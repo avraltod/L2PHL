@@ -1,1 +1,56 @@
 % 02_part1_setup
+\parttitle{Part I: Program Setup}
+
+Part I covers the preparatory arrangements that precede data collection: the division of responsibilities between the World Bank team and the implementing firm, and the location of the data and documentation the receiving team works from. Procurement and terms-of-reference history are condensed in this revision; items not recorded in the repository are noted for a future revision.
+
+\section{Roles and Responsibilities}
+
+The World Bank team is responsible for:
+\begin{itemize}[leftmargin=1.5em]
+  \item survey methodology and sampling design;
+  \item questionnaire design and revision;
+  \item construction and verification of survey weights;
+  \item the quality-control (QC) dashboard and monitoring;
+  \item analysis, storylines, and reporting.
+\end{itemize}
+
+The implementing firm is responsible for:
+\begin{itemize}[leftmargin=1.5em]
+  \item programming the questionnaires in the survey platform (SurveyCTO/Kobo);
+  \item enumerator recruitment and training;
+  \item conducting CAPI and CATI fieldwork;
+  \item internal quality control;
+  \item delivering raw and cleaned datasets with field documentation.
+\end{itemize}
+
+The terms of reference and vendor-selection history are condensed in this revision; where procurement records are not held in the repository they are noted for a future revision.
+
+\section{Data Sources and Access}
+
+The receiving team works from four inputs.
+
+The \textbf{repository} holds the do-files, the QC pipeline, HTML deliverables, and documentation, all tracked in git; microdata (\rd{.dta}), raw exports, and sample frames are gitignored as sensitive and are not committed. The two mode-level trees are:
+
+\begin{refbox}
+\rd{CAPI/} \\
+\rd{CATI/}
+\end{refbox}
+
+The \textbf{Google Drive masters} hold the pooled, harmonized \rd{.dta} datasets, restored to the high-frequency working directory. These files are household-level and confidential, and require World Bank authorization for access:
+
+\begin{refbox}
+\rd{CATI/Analysis/HF/}
+\end{refbox}
+
+The \textbf{Kobo XLSForms} provide the per-round questionnaire definitions and the skip-logic ground truth. One file exists per round, from the Baseline$+$R1 form through R9:
+
+\begin{refbox}
+\rd{CATI/KOBO/} \\
+\rd{CATI/KOBO/L2PHL_CATI_R01.xlsx} \ldots{} \rd{CATI/KOBO/L2PHL_CATI_R09.xlsx}
+\end{refbox}
+
+The \textbf{field reports} comprise eight Field Documentation Summary PDFs, one per collection wave (Baseline$+$R1 through R8):
+
+\begin{refbox}
+\rd{CATI/Field Reports/}
+\end{refbox}
