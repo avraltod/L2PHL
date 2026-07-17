@@ -1,0 +1,335 @@
+% L2Phl Operational Handover — Beamer deck (WB Poverty & Equity styling)
+% Compile: cd CAPI/Analysis/SL/tex && tectonic L2PHL_Handover_Slides.tex
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+
+% ── World Bank palette ───────────────────────────────────────────────
+\definecolor{wbnavy}{HTML}{002244}
+\definecolor{wbblue}{HTML}{009FDA}
+\definecolor{wbgrey}{HTML}{5A5A5A}
+\definecolor{wbgreen}{HTML}{00A651}
+
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{structure}{fg=wbblue}
+\setbeamercolor{frametitle}{fg=wbnavy}
+\setbeamerfont{frametitle}{series=\bfseries,size=\Large}
+\setbeamercolor{title}{fg=wbnavy}
+\setbeamercolor{subtitle}{fg=wbblue}
+\setbeamercolor{item}{fg=wbblue}
+\setbeamercolor{block title}{bg=wbnavy,fg=white}
+\setbeamercolor{block body}{bg=wbnavy!6,fg=black}
+\setbeamercolor{block title example}{bg=wbblue,fg=white}
+\setbeamercolor{block body example}{bg=wbblue!8,fg=black}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+% footline: title | codename | frame number
+\setbeamertemplate{footline}{%
+  \hbox{\begin{beamercolorbox}[wd=\paperwidth,ht=2.6ex,dp=1.1ex,leftskip=2ex,rightskip=2ex]{}%
+  {\color{wbgrey}\footnotesize L2Phl Operational Handover}\hfill
+  {\color{wbgrey}\footnotesize Project TIPON}\hfill
+  {\color{wbgrey}\footnotesize \insertframenumber}%
+  \end{beamercolorbox}}%
+}
+
+% section divider slide
+\AtBeginSection[]{%
+  \begin{frame}[plain]
+  \vfill\centering
+  {\color{wbblue}\rule{0.45\textwidth}{1pt}}\\[1em]
+  {\Large\color{wbnavy}\bfseries\insertsectionhead}\\[0.6em]
+  {\color{wbblue}\rule{0.45\textwidth}{1pt}}
+  \vfill
+  \end{frame}
+}
+
+\newcommand{\code}[1]{{\ttfamily\small\detokenize{#1}}}
+\newcommand{\cmd}[1]{{\ttfamily\detokenize{#1}}}
+
+\title{Listening to the Philippines (L2Phl)}
+\subtitle{Operational Handover}
+\author{Avralt-Od Purevjav \and Sharon Faye Alariao Piza \and Liliana D. Sousa}
+\institute{World Bank -- Poverty and Equity Global Practice}
+\date{July 2026}
+
+\begin{document}
+
+% ── 1. Title ─────────────────────────────────────────────────────────
+\begin{frame}[plain]
+  \titlepage
+  \begin{center}\small\color{wbgrey}Internal project codename: Project TIPON\end{center}
+\end{frame}
+
+% ── 2. Agenda ────────────────────────────────────────────────────────
+\begin{frame}{What we are handing over}
+  \begin{itemize}
+    \item The \textbf{CATI quality-control (QC) dashboard} and its data pipeline --- the live, hand-over-critical workstream.
+    \item How to \textbf{run} it (one command), \textbf{maintain} it (new rounds, new questions), and \textbf{trust} it (trace a number, verify a flag).
+    \item The \textbf{weighting} procedure and where \code{target_hh_imputed.dta} comes from.
+    \item Where everything lives: the repository, the datasets, and the \textbf{Operational Manual} (26-page reference).
+  \end{itemize}
+  \vfill
+  \begin{block}{Companion reference}
+  Every item here is documented in full in \textbf{\itshape L2Phl Operational Manual}, with an annex that answers each of your turnover questions and points to the relevant section.
+  \end{block}
+\end{frame}
+
+% ── 3. Survey at a glance ────────────────────────────────────────────
+\begin{frame}{The survey at a glance}
+  \small
+  \begin{center}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    \textbf{Component} & \textbf{Mode} & \textbf{N} & \textbf{Fieldwork}\\
+    \midrule
+    Baseline & CAPI (face-to-face) & 2,470 HH / 10,496 persons & Sep--Oct 2025\\
+    Panel R1--R9 & CATI (phone) & \textasciitilde1,100 per round & Nov 2025--Jul 2026\\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.5em}
+  \begin{itemize}
+    \item Nationally representative: two-stage stratified PPS, 247 PSUs, \textbf{39 strata}, 18 regions.
+    \item CAPI baseline is \textbf{frozen}; the CATI panel \textbf{rolls forward} (attrition + replenishment, not a closed cohort).
+    \item Round 9 is in progress at hand-over (558 households as of mid-July 2026 --- read as provisional).
+  \end{itemize}
+\end{frame}
+
+% ── 4. Workflow + where things live ──────────────────────────────────
+\begin{frame}[fragile]{Two modes, one repository}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \textbf{CAPI baseline} \code{CAPI/}
+      \begin{itemize}\small
+        \item \code{Round00/} processing pipeline
+        \item \code{S2S/} income imputation
+        \item \code{Analysis/} dashboards, storylines, deep dives
+      \end{itemize}
+      \vspace{0.4em}
+      \textbf{CATI panel} \code{CATI/}
+      \begin{itemize}\small
+        \item \code{Analysis/QC/} the QC dashboard pipeline
+        \item \code{Analysis/HF/} pooled masters
+        \item \code{KOBO/} per-round questionnaire forms
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{The three-stage flow}
+      raw export \;$\rightarrow$\; cleaned \& weighted \;$\rightarrow$\; analysis \& deliverables.
+      \\[0.4em]
+      Inputs only ever flow forward; raw data is never modified in place.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{The QC Dashboard}
+% ═══════════════════════════════════════════════════════════════════
+
+% ── 5. What the dashboard shows ──────────────────────────────────────
+\begin{frame}{What the dashboard shows}
+  A single self-contained HTML page, regenerated from the pooled data:
+  \begin{itemize}
+    \item \textbf{Completion tracker} --- household participation by round.
+    \item \textbf{Data-quality heatmap} --- red / amber / green cells by variable and module.
+    \item \textbf{Kobo skip-logic panel} --- the routing rule for each variable.
+    \item \textbf{Issue intelligence} --- tracked, classified data-quality issues.
+    \item \textbf{Interviewer performance} --- operator-level monitoring.
+    \item \textbf{Cross-round questionnaire report} --- which variables exist in which round.
+  \end{itemize}
+  \vfill
+  {\small\color{wbgrey}Output: \code{CATI/Analysis/QC/output/l2phl_dq_dashboard.html}}
+\end{frame}
+
+% ── 6. Pipeline: one command, six steps ──────────────────────────────
+\begin{frame}[fragile]{The pipeline: one command}
+  \begin{exampleblock}{Regenerate everything}
+  \centering\cmd{python3 update_pipeline.py --all}
+  \end{exampleblock}
+  \vspace{0.3em}
+  Reads the pooled masters, writes JSON to \code{cache/}, produces the HTML + Excel:
+  \begin{enumerate}\small
+    \item detect files
+    \item build DQ data \hfill(\code{build_dq.py})
+    \item build panel tracker \hfill(\code{build_panel.py})
+    \item build interviewer performance \hfill(\code{build_interviewer.py})
+    \item parse questionnaires + Kobo skip logic \hfill(\code{parse_kobo.py})
+    \item build issue intelligence \hfill(\code{build_issues.py})
+    \item render dashboard + Excel report \hfill(\code{gen_dashboard.py}, \code{build_report.py})
+  \end{enumerate}
+\end{frame}
+
+% ── 7. Maintenance: add a round (R9) ─────────────────────────────────
+\begin{frame}[fragile]{Maintenance: adding a new round (worked example: R9)}
+  \begin{enumerate}\small
+    \item Bump the \code{ROUNDS} constant in \code{build_dq.py}, \code{build_panel.py}, \code{build_interviewer.py}, \code{build_report.py} (add the date label).
+    \item In \code{gen_dashboard.py} + \code{issue_rollup.py}: extend the round range and the JS round arrays, labels, and CSV export.
+    \item Register the round's Kobo form in \code{parse_kobo.py} and \code{update_pipeline.py}.
+    \item Run \cmd{python3 update_pipeline.py --all}.
+    \item Verify the new round appears in \code{dq_data.json} and renders in the dashboard.
+  \end{enumerate}
+  \begin{block}{Why so few edits}
+  The pooled data is keyed by a \code{round} column, so the checks need \emph{no} change --- only the round-count constants and the new form. A partial round shows as provisional, not as a data problem.
+  \end{block}
+\end{frame}
+
+% ── 8. Maintenance: questions + filters ──────────────────────────────
+\begin{frame}[fragile]{Maintenance: new/removed questions \& filters}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \textbf{New or removed question}
+      \begin{enumerate}\small
+        \item The round's Kobo form is the ground truth --- check it first.
+        \item Update the module's variable list + heatmap in \code{build_dq.py}.
+        \item Standardize it in \code{gen_dashboard.py}.
+        \item Re-run the pipeline.
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Questionnaire logic changed}
+      \begin{enumerate}\small
+        \item Register the new Kobo form in \code{parse_kobo.py}.
+        \item It folds each variable's \code{relevant} rule in automatically.
+        \item Re-run --- the skip-logic panel and gated checks update.
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+  \vfill
+  {\small\color{wbgrey}Because checks are gated by the Kobo \code{relevant} conditions, updating a filter is usually just registering the new form --- not editing check code.}
+\end{frame}
+
+% ── 9. Trust: trace a number ─────────────────────────────────────────
+\begin{frame}[fragile]{Trusting the numbers: trace to source}
+  Every dashboard number traces back through the pipeline to a variable and a check:
+  \begin{enumerate}\small
+    \item Identify the panel / variable on the dashboard.
+    \item Find it in the relevant \code{cache/*.json} (e.g. \code{dq_data.json}).
+    \item Find the check in \code{build_dq.py} --- which module, which condition.
+    \item Trace to the \code{.dta} variable in \code{CATI/Analysis/HF/}.
+    \item If it is a computed statistic, confirm against the Stata do-file / log.
+  \end{enumerate}
+  \begin{block}{Single source of truth}
+  Stata do-files are authoritative: do-file $\rightarrow$ log $\rightarrow$ Excel $\rightarrow$ HTML. A \code{cross-checker} helper automates tracing a statistic through that chain.
+  \end{block}
+\end{frame}
+
+% ── 10. Trust: real flag vs artifact ─────────────────────────────────
+\begin{frame}{Real issue, or a filtering artifact?}
+  A red cell can be a genuine data problem \emph{or} a skip-gate mismatch (a variable legitimately empty because the respondent was routed past it).
+  \vspace{0.4em}
+  \begin{itemize}\small
+    \item Checks are gated by the Kobo \code{relevant} condition; preload-gated variables are annotated.
+    \item \textbf{First step on any surprising flag: check it against the skip logic before treating it as an error.}
+  \end{itemize}
+  \vspace{0.3em}
+  \textbf{Issue classification (automatic):}
+  \begin{itemize}\small
+    \item \textbf{A1} gate missing \quad \textbf{A2} response violates the gate
+    \item \textbf{B} gate reference absent from the data \quad \textbf{C} our check disagrees with Kobo (held dormant)
+    \item \textbf{D} structural / expected (derived, \code{_oth}, preload-gated) \quad \textbf{REVIEW} unassigned
+  \end{itemize}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Weighting \& Income}
+% ═══════════════════════════════════════════════════════════════════
+
+% ── 11. Which weight, when ───────────────────────────────────────────
+\begin{frame}{Which weight, when}
+  \begin{itemize}
+    \item \textbf{Individual weight} --- person-level indicators (employment, education, health).
+    \item \textbf{Household weight} --- household-level behaviour (finance, assets, perceptions).
+    \item \textbf{Population weight} --- welfare / SDG framing (``X\% of Filipinos live in households where\ldots'').
+  \end{itemize}
+  \vfill
+  \begin{block}{CATI per-round reweighting}
+  The individual weight is recalibrated each round to census cells (age $\times$ sex $\times$ stratum); the household weight is the within-household mean, smoothed at PSU level and rescaled to census household totals. Full derivation: the \textit{Weighting Technical Note}.
+  \end{block}
+\end{frame}
+
+% ── 12. target_hh_imputed / S2S ──────────────────────────────────────
+\begin{frame}[fragile]{Where \code{target\_hh\_imputed.dta} comes from}
+  It is \textbf{not} produced by the weighting code. It is the \textbf{survey-to-survey (S2S) income-imputation} product:
+  \begin{itemize}\small
+    \item A welfare model (log per-capita income) is estimated on \textbf{FIES-LFS 2023} and applied to L2Phl 2025 (N = 162,687; $R^2$ = 0.51), with a GDP adjustment of $\times$1.104.
+    \item Output: \code{pcinc_imp_mean} (per-capita imputed income), in \code{CAPI/S2S/target_hh_imputed.dta}.
+    \item Copied to \code{CATI/Analysis/HF/R00/}, merged onto the baseline weight file by \code{hhid} for \textbf{income-quintile breakdowns}.
+  \end{itemize}
+  \begin{exampleblock}{The key point}
+  It is an \textbf{imputed-welfare input}, joined to the weighted file --- \textbf{not a component of the survey weights}. That is why it appears in the analysis do-file but not the weighting do-file.
+  \end{exampleblock}
+\end{frame}
+
+% ═══════════════════════════════════════════════════════════════════
+\section{Handover}
+% ═══════════════════════════════════════════════════════════════════
+
+% ── 13. Turnover questions answered ──────────────────────────────────
+\begin{frame}{Your turnover questions --- answered}
+  \footnotesize
+  \begin{tabular}{@{}p{0.62\textwidth}p{0.32\textwidth}@{}}
+    \toprule
+    \textbf{Question} & \textbf{Where}\\
+    \midrule
+    Dashboard access + ownership after turnover & Manual Part IV; Annex C\\
+    \code{target_hh_imputed.dta} provenance \& purpose & Part II (S2S); Part III\\
+    Edits when a new round is uploaded & Part IV playbook\\
+    Edits for new / removed questions & Part IV playbook\\
+    Updating filters when logic changes & Part IV playbook\\
+    Full data $\rightarrow$ dashboard process & Part IV architecture\\
+    Trace a number to source & Part IV verifying\\
+    Real issue vs filtering artifact & Part IV verifying\\
+    Real-time fieldwork monitoring & Part IV verifying\\
+    Which files to modify most / naming conventions & Part IV conventions\\
+    Common causes \& most frequent issues & Part IV verifying\\
+    \bottomrule
+  \end{tabular}
+  \vspace{0.3em}\\
+  {\color{wbgrey}All 13 questions are answered in full in the manual's \textbf{Annex B} crosswalk.}
+\end{frame}
+
+% ── 14. Handover checklist ───────────────────────────────────────────
+\begin{frame}[fragile]{Handover checklist}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{You inherit}
+      \begin{itemize}\small
+        \item The QC pipeline (\code{CATI/Analysis/QC/}) and dashboard.
+        \item The pooled masters (\code{CATI/Analysis/HF/}) --- WB authorization required.
+        \item The per-round Kobo forms (\code{CATI/KOBO/}).
+        \item The Operational Manual + Weighting Note.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{To run it}
+      \begin{itemize}\small
+        \item Python + the QC pipeline dependencies.
+        \item \cmd{python3 update_pipeline.py --all}
+        \item Stata for the weighting / analysis do-files.
+      \end{itemize}
+      \vspace{0.3em}
+      \textbf{Note}
+      \begin{itemize}\small
+        \item Datasets are confidential (household-level); keep identifiers out of shared paths.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ── 15. Closing ──────────────────────────────────────────────────────
+\begin{frame}[plain]
+  \vfill\centering
+  {\Large\color{wbnavy}\bfseries Thank you}\\[0.8em]
+  {\color{wbblue}Questions?}\\[1.2em]
+  {\small\color{wbgrey}Full reference: \itshape L2Phl Operational Manual}\\
+  {\small\color{wbgrey}\code{CAPI/Analysis/SL/tex/L2PHL_Operational_Manual.pdf}}
+  \vfill
+\end{frame}
+
+\end{document}
