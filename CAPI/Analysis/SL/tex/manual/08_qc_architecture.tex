@@ -18,9 +18,10 @@ One entry point regenerates everything. The pipeline script
 \rd{CATI/Analysis/QC/update_pipeline.py}, run as \verb|python3 update_pipeline.py --all|,
 reads the pooled high-frequency masters, runs the check and build scripts in
 order, writes intermediate JSON to \rd{CATI/Analysis/QC/cache/}, and produces
-the HTML dashboard and the Excel cross-round report. Round numbers and modules
-are auto-detected, so adding a round requires no code change --- pool the new
-data, drop in the round questionnaire and do-file, and re-run.
+the HTML dashboard and the Excel cross-round report. Because the checks read a
+round column in the pooled data, adding a round requires only a few round-count
+constant edits and registering the new questionnaire form, not changes to the
+check logic; the step-by-step procedure is in the maintenance playbook.
 \end{sloppypar}
 
 \begin{procbox}{Full pipeline run}
