@@ -1,6 +1,6 @@
 # L2PHL Operational Manual — Design Spec
 
-**Date:** 2026-07-16 · **Author:** Avralt-Od Purevjav · **Status:** design, pending user review
+**Date:** 2026-07-16 · **Authors:** Avralt-Od Purevjav, Sharon Faye Alariao Piza, Liliana D. Sousa · **Status:** design, pending user review
 **Deadline driver:** WB ↔ firm turnover meeting, 2026-07-17
 
 ## Goal
@@ -53,7 +53,10 @@ dashboards, which are cataloged and shown how to rebuild, not summarized here).
   - `booktabs` tables; `hyperref` blue TOC links; Latin Modern / matching serif.
 - **Source file:** `CAPI/Analysis/SL/tex/L2PHL_Operational_Manual.tex`
   **Output PDF:** `CAPI/Analysis/SL/tex/L2PHL_Operational_Manual.pdf` (compiled; also the
-  hand-over artifact). *(Path/author confirmable at review.)*
+  hand-over artifact).
+- **Byline (title page):** Avralt-Od Purevjav, Sharon Faye Alariao Piza, Liliana D. Sousa
+  (WB titles/units optional — supply to match L2SC's "Name (Title, Unit)" format, or list
+  names only).
 - Numbers and file paths are Stata/repo-sourced; nothing invented. Absent material is
   flagged, not fabricated.
 
